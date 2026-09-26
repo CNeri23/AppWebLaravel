@@ -14,31 +14,6 @@
         </button>
     </div>
 
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fa-solid fa-circle-check me-2"></i>
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-        </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <div class="fw-semibold mb-1">
-                <i class="fa-solid fa-circle-exclamation me-2"></i>
-                Hay algunos errores en el formulario.
-            </div>
-
-            <ul class="mb-0 ps-4">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-        </div>
-    @endif
-
     <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -71,12 +46,29 @@
 
                                 <td class="text-end px-4">
                                     <div class="usuario-actions">
+
                                         <button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn"
-                                            title="Editar usuario" data-bs-toggle="modal" data-bs-target="#modalEditarUsuario"
+                                            title="Editar datos" data-bs-toggle="modal" data-bs-target="#modalEditarUsuario"
                                             data-id="{{ $usuario->id }}" data-name="{{ $usuario->name }}"
                                             data-email="{{ $usuario->email }}"
                                             data-url="{{ route('usuarios.update', $usuario) }}">
                                             <i class="fa-solid fa-pen"></i>
+                                        </button>
+
+                                        <button type="button" class="btn btn-sm btn-outline-warning usuario-action-btn"
+                                            title="Cambiar contraseña" data-bs-toggle="modal"
+                                            data-bs-target="#modalPasswordUsuario" data-id="{{ $usuario->id }}"
+                                            data-name="{{ $usuario->name }}"
+                                            data-url="{{ route('usuarios.password', $usuario) }}">
+                                            <i class="fa-solid fa-key"></i>
+                                        </button>
+
+                                        <button type="button" class="btn btn-sm btn-outline-success usuario-action-btn"
+                                            title="Asignar roles" data-bs-toggle="modal" data-bs-target="#modalRolesUsuario"
+                                            data-id="{{ $usuario->id }}" data-name="{{ $usuario->name }}"
+                                            data-roles="{{ $usuario->roles->pluck('id')->implode(',') }}"
+                                            data-url="{{ route('usuarios.roles', $usuario) }}">
+                                            <i class="fa-solid fa-user-shield"></i>
                                         </button>
 
                                         <button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn"
@@ -86,6 +78,7 @@
                                             data-url="{{ route('usuarios.destroy', $usuario) }}">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
+
                                     </div>
                                 </td>
                             </tr>
@@ -107,8 +100,7 @@
     </div>
 
     {{-- MODAL NUEVO USUARIO --}}
-    <div class="modal fade" id="modalNuevoUsuario" tabindex="-1" aria-labelledby="modalNuevoUsuarioLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="modalNuevoUsuario" tabindex="-1" aria-labelledby="modalNuevoUsuarioLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -122,6 +114,7 @@
 
                 <form method="POST" action="{{ route('usuarios.store') }}" novalidate autocomplete="off">
                     @csrf
+
                     <div class="modal-body">
 
                         <div class="mb-3">
@@ -129,6 +122,7 @@
 
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
                                 name="name" value="{{ old('name') }}" required>
+
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -139,6 +133,7 @@
 
                             <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
                                 name="email" value="{{ old('email') }}" required>
+
                             @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -149,6 +144,7 @@
 
                             <input type="password" class="form-control @error('password') is-invalid @enderror"
                                 id="password" name="password" required>
+
                             @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -160,6 +156,7 @@
                             <input type="password" class="form-control" id="password_confirmation"
                                 name="password_confirmation" required>
                         </div>
+
                     </div>
 
                     <div class="modal-footer">
@@ -169,7 +166,7 @@
 
                         <button type="submit" class="btn btn-primary">
                             <i class="fa-solid fa-floppy-disk me-2"></i>
-                            Guardar usuario
+                            Guardar
                         </button>
                     </div>
                 </form>
@@ -178,8 +175,7 @@
     </div>
 
     {{-- MODAL EDITAR USUARIO --}}
-    <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-labelledby="modalEditarUsuarioLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -196,6 +192,7 @@
                     @method('PUT')
 
                     <div class="modal-body">
+
                         <input type="hidden" id="editar_id" name="id">
 
                         <div class="mb-3">
@@ -204,37 +201,12 @@
                             <input type="text" class="form-control" id="editar_name" name="name" required>
                         </div>
 
-                        <div class="mb-3">
+                        <div>
                             <label for="editar_email" class="form-label">Correo electrónico</label>
 
                             <input type="email" class="form-control" id="editar_email" name="email" required>
                         </div>
 
-                        <div class="alert alert-light border mb-3">
-                            <div class="d-flex gap-2">
-                                <i class="fa-solid fa-circle-info text-primary mt-1"></i>
-
-                                <div>
-                                    <div class="fw-semibold">Cambiar contraseña</div>
-                                    <small class="text-secondary">
-                                        Deja estos campos vacíos si no deseas cambiar la contraseña.
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="editar_password" class="form-label">Nueva contraseña</label>
-
-                            <input type="password" class="form-control" id="editar_password" name="password">
-                        </div>
-
-                        <div>
-                            <label for="editar_password_confirmation" class="form-label">Confirmar nueva contraseña</label>
-
-                            <input type="password" class="form-control" id="editar_password_confirmation"
-                                name="password_confirmation">
-                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -244,7 +216,166 @@
 
                         <button type="submit" class="btn btn-primary">
                             <i class="fa-solid fa-floppy-disk me-2"></i>
-                            Guardar cambios
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- MODAL CAMBIAR CONTRASEÑA --}}
+    <div class="modal fade" id="modalPasswordUsuario" tabindex="-1" aria-labelledby="modalPasswordUsuarioLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPasswordUsuarioLabel">
+                        <i class="fa-solid fa-key me-2"></i>
+                        Cambiar contraseña
+                    </h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <form method="POST" id="formPasswordUsuario" novalidate autocomplete="off">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="modal-body">
+
+                        <input type="hidden" id="password_usuario_id" name="id">
+
+                        <div class="alert alert-light border mb-3">
+                            <div class="d-flex gap-2">
+                                <i class="fa-solid fa-circle-info text-primary mt-1"></i>
+
+                                <div>
+                                    <div class="fw-semibold">Cambiar contraseña</div>
+
+                                    <small class="text-secondary">
+                                        Estás cambiando la contraseña del usuario
+                                        <strong id="password_usuario_nombre">
+                                            este usuario
+                                        </strong>.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password_nueva" class="form-label">Nueva contraseña</label>
+
+                            <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                id="password_nueva" name="password" required>
+
+                            @error('password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="password_nueva_confirmation" class="form-label">
+                                Confirmar nueva contraseña
+                            </label>
+
+                            <input type="password" class="form-control" id="password_nueva_confirmation"
+                                name="password_confirmation" required>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-floppy-disk me-2"></i>
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- MODAL ASIGNAR ROLES --}}
+    <div class="modal fade" id="modalRolesUsuario" tabindex="-1" aria-labelledby="modalRolesUsuarioLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalRolesUsuarioLabel">
+                        <i class="fa-solid fa-user-shield me-2"></i>
+                        Asignar roles
+                    </h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <form method="POST" id="formRolesUsuario" novalidate>
+                    @csrf
+                    @method('PUT')
+
+                    <div class="modal-body">
+
+                        <input type="hidden" id="roles_usuario_id" name="id">
+
+                        <div class="mb-3">
+                            <div class="fw-semibold">
+                                Usuario
+                            </div>
+
+                            <div class="text-secondary" id="roles_usuario_nombre">
+                                Este usuario
+                            </div>
+                        </div>
+
+                        @if ($roles->isNotEmpty())
+                            <div>
+                                <label class="form-label fw-semibold">
+                                    Roles disponibles
+                                </label>
+
+                                <div class="border rounded p-3">
+
+                                    @foreach ($roles as $rol)
+                                        <div class="form-check">
+                                            <input class="form-check-input rol-usuario-checkbox" type="checkbox" name="roles[]"
+                                                value="{{ $rol->id }}" id="rol_usuario_{{ $rol->id }}">
+
+                                            <label class="form-check-label" for="rol_usuario_{{ $rol->id }}">
+
+                                                {{ $rol->name }}
+
+                                                @if ($rol->description)
+                                                    <span class="text-secondary">
+                                                        — {{ $rol->description }}
+                                                    </span>
+                                                @endif
+
+                                            </label>
+                                        </div>
+                                    @endforeach
+
+                                </div>
+                            </div>
+                        @else
+                            <div class="alert alert-light border mb-0">
+                                <i class="fa-solid fa-circle-info me-2"></i>
+                                No hay roles registrados.
+                            </div>
+                        @endif
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-floppy-disk me-2"></i>
+                            Guardar
                         </button>
                     </div>
                 </form>
@@ -255,7 +386,7 @@
     {{-- MODAL ELIMINAR USUARIO --}}
     <div class="modal fade" id="modalEliminarUsuario" tabindex="-1" aria-labelledby="modalEliminarUsuarioLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-dialog modal-dialog-centered modal-md">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalEliminarUsuarioLabel">
@@ -271,18 +402,22 @@
                     @method('DELETE')
 
                     <div class="modal-body text-center">
+
                         <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center"
                             style="width: 58px; height: 58px;">
                             <i class="fa-solid fa-trash fa-lg"></i>
                         </div>
 
                         <h6 class="fw-bold mb-2">¿Eliminar usuario?</h6>
-                        <p class="text-secondary mb-0">Estás a punto de eliminar a
+
+                        <p class="text-secondary mb-0">
+                            Estás a punto de eliminar a
                             <strong id="eliminar_nombre">
                                 este usuario
                             </strong>.
                             Esta acción no se puede deshacer.
                         </p>
+
                     </div>
 
                     <div class="modal-footer justify-content-center">

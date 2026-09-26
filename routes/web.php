@@ -3,6 +3,8 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\LogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,7 +16,6 @@ Route::get('/login', [LoginController::class, 'showLogin'])
 
 Route::post('/login', [LoginController::class, 'login'])
     ->name('login.submit');
-
 
 Route::middleware('auth')->group(function () {
 
@@ -33,7 +34,27 @@ Route::middleware('auth')->group(function () {
     Route::put('/usuarios/{usuario}', [UserController::class, 'update'])
         ->name('usuarios.update');
 
+    Route::put('/usuarios/{usuario}/password', [UserController::class, 'updatePassword'])
+        ->name('usuarios.password');
+
+    Route::put('/usuarios/{usuario}/roles', [UserController::class, 'updateRoles'])
+        ->name('usuarios.roles');
+
     Route::delete('/usuarios/{usuario}', [UserController::class, 'destroy'])
         ->name('usuarios.destroy');
 
+    Route::get('/roles', [RoleController::class, 'index'])
+        ->name('roles.index');
+
+    Route::post('/roles', [RoleController::class, 'store'])
+        ->name('roles.store');
+
+    Route::put('/roles/{rol}', [RoleController::class, 'update'])
+        ->name('roles.update');
+
+    Route::delete('/roles/{rol}', [RoleController::class, 'destroy'])
+        ->name('roles.destroy');
+
+    Route::get('/logs', [LogController::class, 'index'])
+    ->name('logs.index');
 });

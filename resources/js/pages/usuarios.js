@@ -19,24 +19,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     last: 'Último'
                 }
             },
+
             pageLength: 10,
+
             lengthMenu: [
                 [10, 25, 50, 100],
                 [10, 25, 50, 100]
             ],
-
             order: [
                 [1, 'asc']
             ],
-
             columnDefs: [
-
                 {
                     orderable: false,
                     searchable: false,
                     targets: 3
                 }
-
             ],
             layout: {
                 topStart: 'pageLength',
@@ -56,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!button) {
                 return;
             }
+
             const id = button.dataset.id;
             const name = button.dataset.name;
             const email = button.dataset.email;
@@ -64,9 +63,54 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('editar_id').value = id;
             document.getElementById('editar_name').value = name;
             document.getElementById('editar_email').value = email;
-            document.getElementById('editar_password').value = '';
-            document.getElementById('editar_password_confirmation').value = '';
             document.getElementById('formEditarUsuario').setAttribute('action', url);
+        });
+    }
+
+    const modalPassword = document.getElementById('modalPasswordUsuario');
+
+    if (modalPassword) {
+        modalPassword.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+
+            if (!button) {
+                return;
+            }
+
+            const id = button.dataset.id;
+            const name = button.dataset.name;
+            const url = button.dataset.url;
+
+            document.getElementById('password_usuario_id').value = id;
+            document.getElementById('password_usuario_nombre').textContent = name;
+            document.getElementById('password_nueva').value = '';
+            document.getElementById('password_nueva_confirmation').value = '';
+            document.getElementById('formPasswordUsuario').setAttribute('action', url);
+        });
+    }
+
+    const modalRoles = document.getElementById('modalRolesUsuario');
+
+    if (modalRoles) {
+        modalRoles.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+
+            if (!button) {
+                return;
+            }
+            const id = button.dataset.id;
+            const name = button.dataset.name;
+            const roles = button.dataset.roles
+                ? button.dataset.roles.split(',')
+                : [];
+            const url = button.dataset.url;
+
+            document.getElementById('roles_usuario_id').value = id;
+            document.getElementById('roles_usuario_nombre').textContent = name;
+            document.querySelectorAll('.rol-usuario-checkbox').forEach(function (checkbox) {
+                checkbox.checked = roles.includes(checkbox.value);
+            });
+            document.getElementById('formRolesUsuario').setAttribute('action', url);
         });
     }
 

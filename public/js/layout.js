@@ -15,10 +15,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         html.setAttribute('data-bs-theme', finalTheme);
 
-        if (finalTheme === 'dark') {
-            themeIcon.className = 'fa-solid fa-moon';
-        } else {
-            themeIcon.className = 'fa-solid fa-sun';
+        if (themeIcon) {
+            if (theme === 'auto') {
+                themeIcon.className = 'fa-solid fa-circle-half-stroke';
+            } else if (finalTheme === 'dark') {
+                themeIcon.className = 'fa-solid fa-moon';
+            } else {
+                themeIcon.className = 'fa-solid fa-sun';
+            }
         }
     }
 
