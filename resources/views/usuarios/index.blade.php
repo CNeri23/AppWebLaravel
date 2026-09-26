@@ -112,7 +112,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
 
-                <form method="POST" action="{{ route('usuarios.store') }}" novalidate autocomplete="off">
+                <form method="POST" id="formNuevoUsuario" action="{{ route('usuarios.store') }}" novalidate autocomplete="off">
                     @csrf
 
                     <div class="modal-body">
@@ -400,6 +400,8 @@
                 <form method="POST" id="formEliminarUsuario">
                     @csrf
                     @method('DELETE')
+
+                    <input type="hidden" id="eliminar_id" name="id">
 
                     <div class="modal-body text-center">
 

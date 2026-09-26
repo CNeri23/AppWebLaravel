@@ -88,7 +88,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
-            <form method="POST" action="{{ route('roles.store') }}" novalidate autocomplete="off">
+            <form method="POST" id="formNuevoRol" action="{{ route('roles.store') }}" novalidate autocomplete="off">
                 @csrf
 
                 <div class="modal-body">
@@ -197,6 +197,8 @@
             <form method="POST" id="formEliminarRol">
                 @csrf
                 @method('DELETE')
+
+                <input type="hidden" id="eliminar_id" name="id">
 
                 <div class="modal-body text-center">
                     <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center"

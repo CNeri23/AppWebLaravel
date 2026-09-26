@@ -36,8 +36,16 @@ class RoleController extends Controller
             entity: $rol
         );
 
-        return redirect()->route('roles.index')
-            ->with('success', 'Rol creado correctamente.');
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Rol creado correctamente.',
+            'rol' => $rol,
+            'fecha_registro' => $rol->created_at?->format('d/m/Y H:i'),
+            'urls' => [
+                'update' => route('roles.update', $rol),
+                'delete' => route('roles.destroy', $rol),
+            ],
+        ]);
     }
 
     public function update(Request $request, Role $rol)
@@ -82,14 +90,23 @@ class RoleController extends Controller
             );
         }
 
-        return redirect()->route('roles.index')
-            ->with('success', 'Rol actualizado correctamente.');
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Rol actualizado correctamente.',
+            'rol' => $rol,
+            'fecha_registro' => $rol->created_at?->format('d/m/Y H:i'),
+            'urls' => [
+                'update' => route('roles.update', $rol),
+                'delete' => route('roles.destroy', $rol),
+            ],
+        ]);
     }
 
     public function destroy(Role $rol)
     {
         $nombre = $rol->name;
         $descripcion = $rol->description;
+        $id = $rol->id;
 
         AuditLogService::log(
             module: 'roles',
@@ -102,7 +119,10 @@ class RoleController extends Controller
 
         $rol->delete();
 
-        return redirect()->route('roles.index')
-            ->with('success', 'Rol eliminado correctamente.');
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Rol eliminado correctamente.',
+            'id' => $id,
+        ]);
     }
 }

@@ -19,9 +19,13 @@ class LoginController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
+        ], [
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Ingresa un correo electrónico válido.',
+            'password.required' => 'La contraseña es obligatoria.',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
 
             $request->session()->regenerate();
 
@@ -36,7 +40,11 @@ class LoginController extends Controller
                 entity: $usuario
             );
 
-            return redirect()->intended('/dashboard');
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Inicio de sesión correcto.',
+                'redirect' => redirect()->intended('/dashboard')->getTargetUrl(),
+            ]);
         }
 
         AuditLogService::log(
@@ -45,10 +53,10 @@ class LoginController extends Controller
             description: 'Se intentó iniciar sesión con el correo "' .
                 $request->email . '", pero las credenciales no fueron correctas.'
         );
-
-        return back()->withErrors([
-            'email' => 'Las credenciales no son correctas.',
-        ])->onlyInput('email');
+        return response()->json([
+            'success' => false,
+            'mensaje' => 'Las credenciales no son correctas.',
+        ], 401);
     }
 
     public function logout(Request $request)

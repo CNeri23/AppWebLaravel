@@ -44,15 +44,26 @@ class UserController extends Controller
             entity: $usuario
         );
 
-        return redirect()->route('usuarios.index')
-            ->with('success', 'Usuario creado correctamente.');
+        $usuario->load('roles');
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Usuario creado correctamente.',
+            'usuario' => $usuario,
+        ]);
     }
 
     public function update(Request $request, User $usuario)
     {
         $datos = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $usuario->id],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users,email,' . $usuario->id,
+            ],
         ]);
 
         $nombreAnterior = $usuario->name;
@@ -74,7 +85,6 @@ class UserController extends Controller
         $usuario->save();
 
         if (!empty($cambios)) {
-
             AuditLogService::log(
                 module: 'usuarios',
                 action: 'EDITAR_USUARIO',
@@ -84,8 +94,11 @@ class UserController extends Controller
             );
         }
 
-        return redirect()->route('usuarios.index')
-            ->with('success', 'Datos del usuario actualizados correctamente.');
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Datos del usuario actualizados correctamente.',
+            'usuario' => $usuario,
+        ]);
     }
 
     public function updatePassword(Request $request, User $usuario)
@@ -106,8 +119,10 @@ class UserController extends Controller
             entity: $usuario
         );
 
-        return redirect()->route('usuarios.index')
-            ->with('success', 'Contraseña actualizada correctamente.');
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Contraseña actualizada correctamente.',
+        ]);
     }
 
     public function updateRoles(Request $request, User $usuario)
@@ -147,8 +162,13 @@ class UserController extends Controller
             entity: $usuario
         );
 
-        return redirect()->route('usuarios.index')
-            ->with('success', 'Roles del usuario actualizados correctamente.');
+        $usuario->load('roles');
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Roles del usuario actualizados correctamente.',
+            'usuario' => $usuario,
+        ]);
     }
 
     public function destroy(User $usuario)
@@ -166,7 +186,10 @@ class UserController extends Controller
 
         $usuario->delete();
 
-        return redirect()->route('usuarios.index')
-            ->with('success', 'Usuario eliminado correctamente.');
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Usuario eliminado correctamente.',
+            'id' => $usuario->id,
+        ]);
     }
 }
