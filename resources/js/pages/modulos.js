@@ -112,14 +112,13 @@ document.addEventListener('DOMContentLoaded', function () {
         modalEliminar?.show();
     }
 
-
     const contextMenu = document.getElementById('moduloContextMenu');
     const toggleLabel = contextMenu?.querySelector('[data-role="toggle-label"]');
     let itemActivo = null;
     let botonActivo = null;
 
     function cerrarMenu() {
-        contextMenu.classList.remove('show');
+        contextMenu?.classList.remove('show');
         botonActivo?.classList.remove('menu-open');
         botonActivo = null;
         itemActivo = null;
@@ -139,30 +138,33 @@ document.addEventListener('DOMContentLoaded', function () {
             btnToggle.className = activo ? 'fa-solid fa-power-off' : 'fa-solid fa-play';
         }
 
-        contextMenu
-            .querySelector('[data-action="subir"]')
-            .classList.toggle('disabled', esPrimero);
+        const btnSubir = contextMenu.querySelector('[data-action="subir"]');
+        const btnBajar = contextMenu.querySelector('[data-action="bajar"]');
 
-        contextMenu
-            .querySelector('[data-action="bajar"]')
-            .classList.toggle('disabled', esUltimo);
+        btnSubir?.classList.toggle('disabled', esPrimero);
+        btnBajar?.classList.toggle('disabled', esUltimo);
     }
 
     function abrirMenu(item, x, y, boton) {
+        if (!contextMenu) {
+            return;
+        }
         itemActivo = item;
         botonActivo = boton || null;
         botonActivo?.classList.add('menu-open');
 
         actualizarEstadoAcciones(item);
-
         contextMenu.classList.add('show');
 
         const rect = contextMenu.getBoundingClientRect();
         const maxX = window.innerWidth - rect.width - 8;
         const maxY = window.innerHeight - rect.height - 8;
 
-        contextMenu.style.left = Math.min(x, Math.max(maxX, 8)) + 'px';
-        contextMenu.style.top = Math.min(y, Math.max(maxY, 8)) + 'px';
+        contextMenu.style.left =
+            Math.min(x, Math.max(maxX, 8)) + 'px';
+
+        contextMenu.style.top =
+            Math.min(y, Math.max(maxY, 8)) + 'px';
     }
 
     items.forEach((item) => {

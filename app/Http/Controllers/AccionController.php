@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Submodulo;
 use App\Models\Accion;
+use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 
 class AccionController extends Controller
@@ -28,7 +29,18 @@ class AccionController extends Controller
             'orden' => ['required', 'integer', 'min:0'],
         ]);
 
-        $submodulo->acciones()->create($datos);
+        $accion = $submodulo->acciones()->create($datos);
+
+        AuditLogService::log(
+            'ACCIONES',
+            'CREAR_ACCION',
+            'Se creó la acción "' .
+            $accion->nombre .
+            '" en el submódulo "' .
+            $submodulo->nombre .
+            '".',
+            $accion
+        );
 
         return redirect()
             ->route('acciones.index', $submodulo)
@@ -50,7 +62,34 @@ class AccionController extends Controller
             'orden' => ['required', 'integer', 'min:0'],
         ]);
 
+        $cambios = [];
+
+        foreach ($datos as $campo => $valorNuevo) {
+            $valorAnterior = $accion->getOriginal($campo);
+
+            if ((string) $valorAnterior !== (string) $valorNuevo) {
+                $cambios[] = $campo;
+            }
+        }
+
+        $submoduloNombre = $accion->submodulo?->nombre ?? 'Sin submódulo';
+
         $accion->update($datos);
+
+        if (!empty($cambios)) {
+            AuditLogService::log(
+                'ACCIONES',
+                'EDITAR_ACCION',
+                'Se actualizó la acción "' .
+                $accion->nombre .
+                '" del submódulo "' .
+                $submoduloNombre .
+                '". Campos modificados: ' .
+                implode(', ', $cambios) .
+                '.',
+                $accion
+            );
+        }
 
         return redirect()
             ->route('acciones.index', $accion->submodulo_id)
@@ -63,6 +102,29 @@ class AccionController extends Controller
             'activo' => !$accion->activo,
         ]);
 
+        $accionTipo = $accion->activo
+            ? 'ACTIVAR_ACCION'
+            : 'DESACTIVAR_ACCION';
+
+        $estado = $accion->activo
+            ? 'activada'
+            : 'desactivada';
+
+        $submoduloNombre = $accion->submodulo?->nombre ?? 'Sin submódulo';
+
+        AuditLogService::log(
+            'ACCIONES',
+            $accionTipo,
+            'Se ' .
+            $estado .
+            ' la acción "' .
+            $accion->nombre .
+            '" del submódulo "' .
+            $submoduloNombre .
+            '".',
+            $accion
+        );
+
         return response()->json([
             'success' => true,
             'activo' => $accion->activo,
@@ -72,10 +134,6 @@ class AccionController extends Controller
         ]);
     }
 
-    /**
-     * Igual que Modulo::reorder, pero acotado a las acciones del
-     * mismo submódulo.
-     */
     public function reorder(Request $request, Accion $accion)
     {
         $datos = $request->validate([
@@ -110,8 +168,28 @@ class AccionController extends Controller
                 : $ordenActual + 1;
         }
 
-        $accion->update(['orden' => $ordenVecino]);
-        $vecino->update(['orden' => $ordenActual]);
+        $accion->update([
+            'orden' => $ordenVecino,
+        ]);
+
+        $vecino->update([
+            'orden' => $ordenActual,
+        ]);
+
+        $submoduloNombre = $accion->submodulo?->nombre ?? 'Sin submódulo';
+
+        AuditLogService::log(
+            'ACCIONES',
+            'REORDENAR_ACCION',
+            'Se movió la acción "' .
+            $accion->nombre .
+            '" ' .
+            $datos['direccion'] .
+            ' dentro del submódulo "' .
+            $submoduloNombre .
+            '".',
+            $accion
+        );
 
         return response()->json([
             'success' => true,
@@ -122,6 +200,20 @@ class AccionController extends Controller
     public function destroy(Accion $accion)
     {
         $submoduloId = $accion->submodulo_id;
+        $submoduloNombre = $accion->submodulo?->nombre ?? 'Sin submódulo';
+        $accionNombre = $accion->nombre;
+
+        AuditLogService::log(
+            'ACCIONES',
+            'ELIMINAR_ACCION',
+            'Se eliminó la acción "' .
+            $accionNombre .
+            '" del submódulo "' .
+            $submoduloNombre .
+            '".',
+            $accion
+        );
+
         $accion->delete();
 
         return redirect()

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Modulo;
 use App\Models\Submodulo;
+use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 
 class SubModuloController extends Controller
@@ -29,7 +30,15 @@ class SubModuloController extends Controller
             'orden' => ['required', 'integer', 'min:0'],
         ]);
 
-        $modulo->submodulos()->create($datos);
+        $submodulo = $modulo->submodulos()->create($datos);
+
+        AuditLogService::log(
+            'SUBMODULOS',
+            'CREAR_SUBMODULO',
+            'Se creó el submódulo "' . $submodulo->nombre .
+            '" en el módulo "' . $modulo->nombre . '".',
+            $submodulo
+        );
 
         return redirect()
             ->route('submodulos.index', $modulo)
@@ -52,7 +61,30 @@ class SubModuloController extends Controller
             'orden' => ['required', 'integer', 'min:0'],
         ]);
 
+        $cambios = [];
+
+        foreach ($datos as $campo => $valorNuevo) {
+            $valorAnterior = $submodulo->getOriginal($campo);
+
+            if ((string) $valorAnterior !== (string) $valorNuevo) {
+                $cambios[] = $campo;
+            }
+        }
+
+        $moduloNombre = $submodulo->modulo?->nombre ?? 'Sin módulo';
+
         $submodulo->update($datos);
+
+        if (!empty($cambios)) {
+            AuditLogService::log(
+                'SUBMODULOS',
+                'EDITAR_SUBMODULO',
+                'Se actualizó el submódulo "' . $submodulo->nombre .
+                '" del módulo "' . $moduloNombre .
+                '". Campos modificados: ' . implode(', ', $cambios) . '.',
+                $submodulo
+            );
+        }
 
         return redirect()
             ->route('submodulos.index', $submodulo->modulo_id)
@@ -65,6 +97,25 @@ class SubModuloController extends Controller
             'activo' => !$submodulo->activo,
         ]);
 
+        $accion = $submodulo->activo
+            ? 'ACTIVAR_SUBMODULO'
+            : 'DESACTIVAR_SUBMODULO';
+
+        $estado = $submodulo->activo
+            ? 'activado'
+            : 'desactivado';
+
+        $moduloNombre = $submodulo->modulo?->nombre ?? 'Sin módulo';
+
+        AuditLogService::log(
+            'SUBMODULOS',
+            $accion,
+            'Se ' . $estado . ' el submódulo "' .
+            $submodulo->nombre .
+            '" del módulo "' . $moduloNombre . '".',
+            $submodulo
+        );
+
         return response()->json([
             'success' => true,
             'activo' => $submodulo->activo,
@@ -74,10 +125,6 @@ class SubModuloController extends Controller
         ]);
     }
 
-    /**
-     * Igual que Modulo::reorder, pero acotado a los submódulos del
-     * mismo módulo (no se puede "subir" hacia otro módulo).
-     */
     public function reorder(Request $request, Submodulo $submodulo)
     {
         $datos = $request->validate([
@@ -112,8 +159,25 @@ class SubModuloController extends Controller
                 : $ordenActual + 1;
         }
 
-        $submodulo->update(['orden' => $ordenVecino]);
-        $vecino->update(['orden' => $ordenActual]);
+        $submodulo->update([
+            'orden' => $ordenVecino,
+        ]);
+
+        $vecino->update([
+            'orden' => $ordenActual,
+        ]);
+
+        $moduloNombre = $submodulo->modulo?->nombre ?? 'Sin módulo';
+
+        AuditLogService::log(
+            'SUBMODULOS',
+            'REORDENAR_SUBMODULO',
+            'Se movió el submódulo "' .
+            $submodulo->nombre .
+            '" ' . $datos['direccion'] .
+            ' dentro del módulo "' . $moduloNombre . '".',
+            $submodulo
+        );
 
         return response()->json([
             'success' => true,
@@ -124,6 +188,18 @@ class SubModuloController extends Controller
     public function destroy(Submodulo $submodulo)
     {
         $moduloId = $submodulo->modulo_id;
+        $moduloNombre = $submodulo->modulo?->nombre ?? 'Sin módulo';
+        $submoduloNombre = $submodulo->nombre;
+
+        AuditLogService::log(
+            'SUBMODULOS',
+            'ELIMINAR_SUBMODULO',
+            'Se eliminó el submódulo "' .
+            $submoduloNombre .
+            '" del módulo "' . $moduloNombre . '".',
+            $submodulo
+        );
+
         $submodulo->delete();
 
         return redirect()

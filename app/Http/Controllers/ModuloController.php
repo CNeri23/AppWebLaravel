@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Modulo;
+use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 
 class ModuloController extends Controller
@@ -26,7 +27,14 @@ class ModuloController extends Controller
             'orden' => ['required', 'integer', 'min:0'],
         ]);
 
-        Modulo::create($datos);
+        $modulo = Modulo::create($datos);
+
+        AuditLogService::log(
+            'MODULOS',
+            'CREAR_MODULO',
+            'Se creó el módulo "' . $modulo->nombre . '".',
+            $modulo
+        );
 
         return redirect()
             ->route('modulos.index')
@@ -48,7 +56,27 @@ class ModuloController extends Controller
             'orden' => ['required', 'integer', 'min:0'],
         ]);
 
+        $cambios = [];
+
+        foreach ($datos as $campo => $valorNuevo) {
+            $valorAnterior = $modulo->getOriginal($campo);
+
+            if ((string) $valorAnterior !== (string) $valorNuevo) {
+                $cambios[] = $campo;
+            }
+        }
+
         $modulo->update($datos);
+
+        if (!empty($cambios)) {
+            AuditLogService::log(
+                'MODULOS',
+                'EDITAR_MODULO',
+                'Se actualizó el módulo "' . $modulo->nombre .
+                '". Campos modificados: ' . implode(', ', $cambios) . '.',
+                $modulo
+            );
+        }
 
         return redirect()
             ->route('modulos.index')
@@ -60,6 +88,21 @@ class ModuloController extends Controller
         $modulo->update([
             'activo' => !$modulo->activo,
         ]);
+
+        $accion = $modulo->activo
+            ? 'ACTIVAR_MODULO'
+            : 'DESACTIVAR_MODULO';
+
+        $estado = $modulo->activo
+            ? 'activado'
+            : 'desactivado';
+
+        AuditLogService::log(
+            'MODULOS',
+            $accion,
+            'Se ' . $estado . ' el módulo "' . $modulo->nombre . '".',
+            $modulo
+        );
 
         return response()->json([
             'success' => true,
@@ -102,8 +145,21 @@ class ModuloController extends Controller
                 : $ordenModulo + 1;
         }
 
-        $modulo->update(['orden' => $ordenVecino]);
-        $vecino->update(['orden' => $ordenModulo]);
+        $modulo->update([
+            'orden' => $ordenVecino,
+        ]);
+
+        $vecino->update([
+            'orden' => $ordenModulo,
+        ]);
+
+        AuditLogService::log(
+            'MODULOS',
+            'REORDENAR_MODULO',
+            'Se movió el módulo "' . $modulo->nombre . '" ' .
+            $datos['direccion'] . '.',
+            $modulo
+        );
 
         return response()->json([
             'success' => true,
@@ -113,6 +169,15 @@ class ModuloController extends Controller
 
     public function destroy(Modulo $modulo)
     {
+        $nombreModulo = $modulo->nombre;
+
+        AuditLogService::log(
+            'MODULOS',
+            'ELIMINAR_MODULO',
+            'Se eliminó el módulo "' . $nombreModulo . '".',
+            $modulo
+        );
+
         $modulo->delete();
 
         return redirect()

@@ -9,10 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function applyTheme(theme) {
-        const finalTheme = theme === 'auto'
-            ? getSystemTheme()
-            : theme;
-
+        const finalTheme = theme === 'auto' ? getSystemTheme() : theme;
         html.setAttribute('data-bs-theme', finalTheme);
 
         if (themeIcon) {
@@ -27,8 +24,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const savedTheme = localStorage.getItem('admin-theme') || 'light';
-    applyTheme(savedTheme);
 
+    applyTheme(savedTheme);
     document.querySelectorAll('.theme-option').forEach(button => {
         button.addEventListener('click', function () {
             const theme = this.dataset.theme;
@@ -41,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .matchMedia('(prefers-color-scheme: dark)')
         .addEventListener('change', function () {
             const saved = localStorage.getItem('admin-theme');
+
             if (saved === 'auto') {
                 applyTheme('auto');
             }
@@ -50,38 +48,171 @@ document.addEventListener('DOMContentLoaded', function () {
     const overlay = document.getElementById('sidebarOverlay');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 
+    if (!sidebar) {
+        return;
+    }
+
     function toggleMobileSidebar() {
         sidebar.classList.toggle('show');
-        overlay.classList.toggle('show');
+        overlay?.classList.toggle('show');
     }
 
     mobileMenuBtn?.addEventListener('click', toggleMobileSidebar);
     overlay?.addEventListener('click', toggleMobileSidebar);
 
-    const collapseButtons = document.querySelectorAll('[data-sidebar-collapse-toggle]');
+    const sidebarGroups = document.querySelectorAll(
+        '.sidebar-group-toggle[data-bs-target]'
+    );
+
+    function obtenerSubmenu(button) {
+        const target = button.getAttribute('data-bs-target');
+
+        if (!target) {
+            return null;
+        }
+        try {
+            return document.querySelector(target);
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function cerrarSubmenu(button, submenu) {
+        if (!submenu) {
+            return;
+        }
+        submenu.classList.remove('show');
+        submenu.classList.remove('collapsing');
+        submenu.style.height = '';
+        submenu.style.overflow = '';
+        button.setAttribute('aria-expanded', 'false');
+    }
+
+    function abrirSubmenu(button, submenu) {
+        if (!submenu) {
+            return;
+        }
+        submenu.classList.remove('collapsing');
+        submenu.classList.add('show');
+        submenu.style.height = 'auto';
+        submenu.style.overflow = 'visible';
+        button.setAttribute('aria-expanded', 'true');
+    }
+
+    function cerrarTodosLosSubmenus() {
+        sidebarGroups.forEach(button => {
+            const submenu = obtenerSubmenu(button);
+            cerrarSubmenu(button, submenu);
+        });
+    }
+
+    sidebarGroups.forEach(button => {
+        button.removeAttribute('data-bs-toggle');
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            if (sidebar.classList.contains('collapsed')) {
+                return;
+            }
+            const submenu = obtenerSubmenu(button);
+
+            if (!submenu) {
+                return;
+            }
+            const abierto = submenu.classList.contains('show');
+
+            if (abierto) {
+                cerrarSubmenu(button, submenu);
+            } else {
+                abrirSubmenu(button, submenu);
+            }
+        });
+    });
+
+    sidebarGroups.forEach(button => {
+        const submenu = obtenerSubmenu(button);
+
+        if (!submenu) {
+            return;
+        }
+
+        if (submenu.classList.contains('show')) {
+            abrirSubmenu(button, submenu);
+        } else {
+            cerrarSubmenu(button, submenu);
+        }
+    });
+
+    const collapseButtons = document.querySelectorAll(
+        '[data-sidebar-collapse-toggle]'
+    );
 
     function setCollapsed(collapsed) {
         sidebar.classList.toggle('collapsed', collapsed);
-        document.body.classList.toggle('sidebar-collapsed', collapsed);
-        localStorage.setItem('sidebar-collapsed', collapsed ? '1' : '0');
 
-        collapseButtons.forEach(btn => {
-            const icon = btn.querySelector('i');
-            if (icon) {
-                icon.className = collapsed
-                    ? 'fa-solid fa-angles-right'
-                    : 'fa-solid fa-angles-left';
+        document.body.classList.toggle(
+            'sidebar-collapsed',
+            collapsed
+        );
+
+        localStorage.setItem(
+            'sidebar-collapsed',
+            collapsed ? '1' : '0'
+        );
+
+        collapseButtons.forEach(button => {
+            const icon = button.querySelector('i');
+
+            if (!icon) {
+                return;
             }
+
+            icon.className = collapsed
+                ? 'fa-solid fa-angles-right'
+                : 'fa-solid fa-angles-left';
         });
+
+        if (collapsed) {
+            cerrarTodosLosSubmenus();
+        }
     }
 
     if (window.matchMedia('(min-width: 992px)').matches) {
-        setCollapsed(localStorage.getItem('sidebar-collapsed') === '1');
+        const guardado = localStorage.getItem('sidebar-collapsed') === '1';
+        setCollapsed(guardado);
     }
 
-    collapseButtons.forEach(btn => {
-        btn.addEventListener('click', function () {
-            setCollapsed(!sidebar.classList.contains('collapsed'));
+    collapseButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const estaColapsado = sidebar.classList.contains('collapsed');
+            setCollapsed(!estaColapsado);
         });
+    });
+
+    let anchoAnterior = window.innerWidth;
+
+    window.addEventListener('resize', function () {
+        const anchoActual = window.innerWidth;
+
+        if (
+            anchoAnterior >= 992 &&
+            anchoActual < 992
+        ) {
+            sidebar.classList.remove('collapsed');
+            document.body.classList.remove('sidebar-collapsed');
+
+            cerrarTodosLosSubmenus();
+        }
+
+        if (
+            anchoAnterior < 992 &&
+            anchoActual >= 992
+        ) {
+            const guardado =
+                localStorage.getItem('sidebar-collapsed') === '1';
+
+            setCollapsed(guardado);
+        }
+        anchoAnterior = anchoActual;
     });
 });

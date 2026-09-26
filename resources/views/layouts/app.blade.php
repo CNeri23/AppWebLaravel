@@ -1,23 +1,27 @@
 @php
-    $hour = now()->format('G');
-    if ($hour < 12) {
+    $horaActual = now('America/Mexico_City')->hour;
+
+    if ($horaActual < 12) {
         $greeting = 'Buenos días';
-    } elseif ($hour < 19) {
+    } elseif ($horaActual < 19) {
         $greeting = 'Buenas tardes';
     } else {
         $greeting = 'Buenas noches';
     }
 
-    $modulosMenu = \App\Models\Modulo::with(['submodulos' => function ($query) {
-        $query->where('activo', true)
-            ->orderBy('orden')
-            ->orderBy('nombre');
-    }])
+    $modulosMenu = \App\Models\Modulo::with([
+        'submodulos' => function ($query) {
+            $query->where('activo', true)
+                ->orderBy('orden')
+                ->orderBy('nombre');
+        }
+    ])
         ->where('activo', true)
         ->orderBy('orden')
         ->orderBy('nombre')
         ->get();
 @endphp
+
 <!DOCTYPE html>
 <html lang="es" data-bs-theme="light">
 
@@ -37,68 +41,6 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
-
-    <style>
-        /* --- Grupo de sidebar con dropdown (Modulo -> Submodulos) --- */
-        .sidebar-group-toggle {
-            width: 100%;
-            border: none;
-            background: transparent;
-            text-align: left;
-            justify-content: flex-start;
-        }
-
-        .sidebar-group-caret {
-            margin-left: auto;
-            font-size: 0.75rem;
-            transition: transform 0.15s ease;
-        }
-
-        .sidebar-group-toggle[aria-expanded="true"] .sidebar-group-caret {
-            transform: rotate(180deg);
-        }
-
-        .sidebar-submenu {
-            padding-left: 30px;
-        }
-
-        .sidebar-sublink {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 6px 12px;
-            margin: 1px 0;
-            border-radius: 6px;
-            font-size: 0.86rem;
-            color: inherit;
-            text-decoration: none;
-            opacity: 0.85;
-        }
-
-        .sidebar-sublink:hover {
-            background-color: rgba(47, 113, 170, 0.08);
-            opacity: 1;
-        }
-
-        .sidebar-sublink.active {
-            background-color: rgba(47, 113, 170, 0.12);
-            font-weight: 600;
-            opacity: 1;
-        }
-
-        .sidebar-sublink.sidebar-link-pendiente {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .sidebar-sublink-empty {
-            display: block;
-            padding: 6px 12px;
-            font-size: 0.8rem;
-            opacity: 0.5;
-            font-style: italic;
-        }
-    </style>
 </head>
 
 <body>
@@ -108,9 +50,8 @@
                 <div class="sidebar-brand-icon">
                     <i class="fa-solid fa-layer-group"></i>
                 </div>
-                <span class="sidebar-brand-text">
-                    Admin Panel
-                </span>
+
+                <span class="sidebar-brand-text">Admin Panel</span>
             </div>
 
             <button type="button" class="sidebar-collapse-toggle" data-sidebar-collapse-toggle
@@ -120,7 +61,6 @@
         </div>
 
         <nav class="sidebar-menu">
-
             <div class="sidebar-section">
                 <span>Principal</span>
             </div>
@@ -136,20 +76,19 @@
             </div>
 
             @foreach ($modulosMenu as $modulo)
-
                 @php
                     $idAcordeon = 'moduloMenu' . $modulo->id;
-
                     $tieneSubmoduloActivo = $modulo->submodulos->contains(
-                        fn ($submodulo) => $submodulo->ruta && request()->routeIs($submodulo->ruta)
+                        fn($submodulo) =>
+                            $submodulo->ruta &&
+                            request()->routeIs($submodulo->ruta)
                     );
                 @endphp
 
-                <button type="button"
-                    class="sidebar-link sidebar-group-toggle {{ $tieneSubmoduloActivo ? 'active' : '' }}"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#{{ $idAcordeon }}"
-                    aria-expanded="{{ $tieneSubmoduloActivo ? 'true' : 'false' }}">
+                {{-- Módulos --}}
+                <button type="button" class="sidebar-group-toggle {{ $tieneSubmoduloActivo ? 'active' : '' }}"
+                    data-bs-toggle="collapse" data-bs-target="#{{ $idAcordeon }}"
+                    aria-expanded="{{ $tieneSubmoduloActivo ? 'true' : 'false' }}" aria-controls="{{ $idAcordeon }}">
 
                     @if ($modulo->icono)
                         {!! $modulo->icono !!}
@@ -158,20 +97,17 @@
                     @endif
 
                     <span>{{ $modulo->nombre }}</span>
-
                     <i class="fa-solid fa-chevron-down sidebar-group-caret"></i>
                 </button>
 
-                <div class="collapse sidebar-submenu {{ $tieneSubmoduloActivo ? 'show' : '' }}"
-                    id="{{ $idAcordeon }}">
-
+                {{-- Submódulos --}}
+                <div class="collapse sidebar-submenu {{ $tieneSubmoduloActivo ? 'show' : '' }}" id="{{ $idAcordeon }}">
                     @forelse ($modulo->submodulos as $submodulo)
-
                         @php
-                            $url = $submodulo->ruta && \Illuminate\Support\Facades\Route::has($submodulo->ruta)
+                            $url = $submodulo->ruta &&
+                                \Illuminate\Support\Facades\Route::has($submodulo->ruta)
                                 ? route($submodulo->ruta)
                                 : '#';
-
                             $esActivo = $url !== '#' && request()->routeIs($submodulo->ruta);
                         @endphp
 
@@ -184,18 +120,11 @@
                             @else
                                 <i class="fa-solid fa-circle-dot"></i>
                             @endif
-
                             <span>{{ $submodulo->nombre }}</span>
                         </a>
-
                     @empty
-
-                        <span class="sidebar-sublink-empty">Sin submódulos</span>
-
                     @endforelse
-
                 </div>
-
             @endforeach
 
             <div class="sidebar-section">
@@ -206,30 +135,23 @@
                 <i class="fa-solid fa-gear"></i>
                 <span>Configuración</span>
             </a>
-
         </nav>
-
-        <div class="sidebar-footer">
-            <div class="sidebar-version">
-                <i class="fa-solid fa-code"></i>
-                <span>Laravel {{ app()->version() }}</span>
-            </div>
         </div>
-
     </aside>
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
+    <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true">
+    </div>
 
     <div class="app-main">
         <header class="app-topbar">
             <div class="topbar-actions">
                 <span class="topbar-greeting">
-                    {{ $greeting }}, <strong>{{ auth()->user()->name }}</strong>
+                    {{ $greeting }},
+                    <strong>{{ auth()->user()->name }}</strong>
                 </span>
 
                 <span class="topbar-divider"></span>
-
                 <a href="{{ route('dashboard') }}" class="topbar-icon-btn" title="Inicio">
                     <i class="fa-solid fa-house"></i>
                 </a>
@@ -321,19 +243,19 @@
             @if (session('success'))
                 window.showToast('success', @json(session('success')));
             @endif
-
+ 
             @if (session('error'))
                 window.showToast('error', @json(session('error')));
             @endif
-
+ 
             @if (session('warning'))
                 window.showToast('warning', @json(session('warning')));
             @endif
-
+ 
             @if (session('info'))
                 window.showToast('info', @json(session('info')));
             @endif
-
+ 
             @if ($errors->any())
                 window.showToast('error', @json($errors->all()), {
                     title: 'Hay algunos errores en el formulario',
@@ -341,7 +263,6 @@
             @endif
         });
     </script>
-
 </body>
 
 </html>
