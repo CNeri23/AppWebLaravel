@@ -4,21 +4,36 @@ import { bunny } from 'laravel-vite-plugin/fonts';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
+
+    server: {
+        host: '127.0.0.1',
+        port: 8100,
+        strictPort: true,
+
+        watch: {
+            ignored: ['**/storage/framework/views/**'],
+        },
+    },
+
     plugins: [
+
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: [
+                'resources/css/app.css',
+                'resources/js/app.js',
+            ],
+
             refresh: true,
+
             fonts: [
                 bunny('Instrument Sans', {
                     weights: [400, 500, 600],
                 }),
             ],
         }),
+
         tailwindcss(),
+
     ],
-    server: {
-        watch: {
-            ignored: ['**/storage/framework/views/**'],
-        },
-    },
+
 });
