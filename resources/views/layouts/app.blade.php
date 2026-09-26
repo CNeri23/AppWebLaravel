@@ -1,28 +1,30 @@
 @php
-    $horaActual = now('America/Mexico_City')->hour;
+$horaActual = now('America/Mexico_City')->hour;
 
-    if ($horaActual < 12) {
-        $greeting = 'Buenos días';
-    } elseif ($horaActual < 19) {
-        $greeting = 'Buenas tardes';
-    } else {
-        $greeting = 'Buenas noches';
+if ($horaActual < 12) {
+    $greeting = 'Buenos días';
+} elseif ($horaActual < 19) {
+    $greeting = 'Buenas tardes';
+} else {
+    $greeting = 'Buenas noches';
+}
+
+$modulosMenu = \App\Models\Modulo::with([
+    'submodulos' => function ($query) {
+        $query->where('activo', true)
+            ->orderBy('orden')
+            ->orderBy('nombre');
     }
+])
+    ->where('activo', true)
+    ->orderBy('orden')
+    ->orderBy('nombre')
+    ->get();
 
-    $modulosMenu = \App\Models\Modulo::with([
-        'submodulos' => function ($query) {
-            $query->where('activo', true)
-                ->orderBy('orden')
-                ->orderBy('nombre');
-        }
-    ])
-        ->where('activo', true)
-        ->orderBy('orden')
-        ->orderBy('nombre')
-        ->get();
 @endphp
 
 <!DOCTYPE html>
+
 <html lang="es" data-bs-theme="light">
 
 <head>
@@ -41,6 +43,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
+
 </head>
 
 <body>
@@ -87,6 +90,7 @@
 
                 {{-- Módulos --}}
                 <button type="button" class="sidebar-group-toggle {{ $tieneSubmoduloActivo ? 'active' : '' }}"
+                    data-modulo-id="{{ $modulo->id }}"
                     data-bs-toggle="collapse" data-bs-target="#{{ $idAcordeon }}"
                     aria-expanded="{{ $tieneSubmoduloActivo ? 'true' : 'false' }}" aria-controls="{{ $idAcordeon }}">
 
@@ -101,7 +105,8 @@
                 </button>
 
                 {{-- Submódulos --}}
-                <div class="collapse sidebar-submenu {{ $tieneSubmoduloActivo ? 'show' : '' }}" id="{{ $idAcordeon }}">
+                <div class="collapse sidebar-submenu {{ $tieneSubmoduloActivo ? 'show' : '' }}"
+                    id="{{ $idAcordeon }}" data-modulo-id="{{ $modulo->id }}">
                     @forelse ($modulo->submodulos as $submodulo)
                         @php
                             $url = $submodulo->ruta &&
@@ -113,6 +118,8 @@
 
                         <a href="{{ $url }}"
                             class="sidebar-sublink {{ $esActivo ? 'active' : '' }} {{ $url === '#' ? 'sidebar-link-pendiente' : '' }}"
+                            data-submodulo-id="{{ $submodulo->id }}"
+                            data-modulo-id="{{ $modulo->id }}"
                             @if ($url === '#') title="Este submódulo aún no tiene una ruta configurada" @endif>
 
                             @if ($submodulo->icono)
@@ -120,6 +127,7 @@
                             @else
                                 <i class="fa-solid fa-circle-dot"></i>
                             @endif
+
                             <span>{{ $submodulo->nombre }}</span>
                         </a>
                     @empty
@@ -136,10 +144,10 @@
                 <span>Configuración</span>
             </a>
         </nav>
-        </div>
     </aside>
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true">
     </div>
 
@@ -152,6 +160,7 @@
                 </span>
 
                 <span class="topbar-divider"></span>
+
                 <a href="{{ route('dashboard') }}" class="topbar-icon-btn" title="Inicio">
                     <i class="fa-solid fa-house"></i>
                 </a>
@@ -187,6 +196,7 @@
                 </div>
 
                 <span class="topbar-divider"></span>
+
                 <div class="dropdown user-dropdown">
                     <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
                         title="{{ auth()->user()->name }}">
@@ -215,6 +225,7 @@
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
+
                                 <button type="submit" class="dropdown-item logout-item">
                                     <i class="fa-solid fa-right-from-bracket"></i>
                                     Cerrar sesión
@@ -243,19 +254,19 @@
             @if (session('success'))
                 window.showToast('success', @json(session('success')));
             @endif
- 
+
             @if (session('error'))
                 window.showToast('error', @json(session('error')));
             @endif
- 
+
             @if (session('warning'))
                 window.showToast('warning', @json(session('warning')));
             @endif
- 
+
             @if (session('info'))
                 window.showToast('info', @json(session('info')));
             @endif
- 
+
             @if ($errors->any())
                 window.showToast('error', @json($errors->all()), {
                     title: 'Hay algunos errores en el formulario',
@@ -263,6 +274,7 @@
             @endif
         });
     </script>
+
 </body>
 
 </html>

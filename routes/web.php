@@ -79,9 +79,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/modulos/{modulo}/reordenar', [ModuloController::class, 'reorder'])
         ->name('modulos.reordenar');
 
-    Route::get('/modulos/{modulo}/submodulos', [SubmoduloController::class, 'index'])
-        ->name('submodulos.index');
-
     Route::post('/modulos/{modulo}/submodulos', [SubmoduloController::class, 'store'])
         ->name('submodulos.store');
 

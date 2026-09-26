@@ -9,16 +9,6 @@ use Illuminate\Http\Request;
 
 class AccionController extends Controller
 {
-    public function index(Submodulo $submodulo)
-    {
-        $acciones = $submodulo->acciones()
-            ->orderBy('orden')
-            ->orderBy('nombre')
-            ->get();
-
-        return view('acciones.index', compact('submodulo', 'acciones'));
-    }
-
     public function store(Request $request, Submodulo $submodulo)
     {
         $datos = $request->validate([
@@ -43,7 +33,7 @@ class AccionController extends Controller
         );
 
         return redirect()
-            ->route('acciones.index', $submodulo)
+            ->route('modulos.index', $submodulo)
             ->with('success', 'Acción creada correctamente.');
     }
 
@@ -92,7 +82,7 @@ class AccionController extends Controller
         }
 
         return redirect()
-            ->route('acciones.index', $accion->submodulo_id)
+            ->route('modulos.index', $accion->submodulo_id)
             ->with('success', 'Acción actualizada correctamente.');
     }
 
@@ -217,7 +207,7 @@ class AccionController extends Controller
         $accion->delete();
 
         return redirect()
-            ->route('acciones.index', $submoduloId)
+            ->route('modulos.index', $submoduloId)
             ->with('success', 'Acción eliminada correctamente.');
     }
 }

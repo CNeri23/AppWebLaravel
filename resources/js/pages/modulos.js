@@ -1,237 +1,1405 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
+    const csrfToken = csrfTokenElement ? csrfTokenElement.content : '';
 
-    function peticion(url, method) {
-        return fetch(url, {
+    function peticion(url, method, body = null) {
+        const opciones = {
             method,
             headers: {
                 'X-CSRF-TOKEN': csrfToken,
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
             },
-        }).then(async (response) => {
+        };
+
+        if (body instanceof FormData) {
+            opciones.body = body;
+        } else if (body) {
+            opciones.headers['Content-Type'] = 'application/json';
+            opciones.body = body;
+        }
+
+        return fetch(url, opciones).then(async (response) => {
             const data = await response.json().catch(() => ({}));
 
             if (!response.ok || data.success === false) {
-                throw new Error(data.mensaje || 'Ocurrió un error al procesar la solicitud.');
+                if (data.errors) {
+                    const primerError =
+                        Object.values(data.errors).flat()[0];
+
+                    throw new Error(
+                        primerError ||
+                        data.mensaje ||
+                        data.message ||
+                        'Ocurrió un error al procesar la solicitud.'
+                    );
+                }
+
+                throw new Error(
+                    data.mensaje ||
+                    data.message ||
+                    'Ocurrió un error al procesar la solicitud.'
+                );
             }
 
             return data;
         });
     }
 
-    const items = document.querySelectorAll('.modulo-tree-item');
+    function actualizarSidebar() {
+        if (typeof window.actualizarSidebar === 'function') {
+            return window.actualizarSidebar();
+        }
+
+        return Promise.resolve();
+    }
+
+    function obtenerTreeview() {
+        const treeview =
+            document.getElementById('modulosTree');
+
+        if (!treeview) {
+            return null;
+        }
+
+        return treeview;
+    }
+
+    function actualizarTreeview() {
+        const treeview = obtenerTreeview();
+
+        if (!treeview) {
+            return Promise.resolve();
+        }
+
+        const modulosExpandidos = Array.from(
+            document.querySelectorAll(
+                '.tree-node.expanded > .modulo-tree-item'
+            )
+        ).map((item) => item.dataset.id);
+
+        const moduloSeleccionado =
+            document.querySelector(
+                '.modulo-tree-item.selected'
+            )?.dataset.id || null;
+
+        const submoduloSeleccionado =
+            document.querySelector(
+                '.submodulo-tree-item.selected'
+            )?.dataset.id || null;
+
+        cerrarMenu();
+
+        return fetch(window.location.href, {
+            method: 'GET',
+            headers: {
+                'Accept': 'text/html',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            cache: 'no-store',
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(
+                        'No fue posible actualizar la lista.'
+                    );
+                }
+
+                return response.text();
+            })
+            .then((html) => {
+                const documento =
+                    new DOMParser().parseFromString(
+                        html,
+                        'text/html'
+                    );
+
+                const nuevoTreeview =
+                    documento.getElementById('modulosTree');
+
+                if (!nuevoTreeview) {
+                    throw new Error(
+                        'No fue posible encontrar la lista de módulos.'
+                    );
+                }
+
+                treeview.replaceWith(nuevoTreeview);
+
+                inicializarTreeview();
+
+                modulosExpandidos.forEach((id) => {
+                    const item =
+                        document.querySelector(
+                            '.modulo-tree-item[data-id="' +
+                            CSS.escape(id) +
+                            '"]'
+                        );
+
+                    if (!item) {
+                        return;
+                    }
+
+                    const nodo =
+                        item.closest('.tree-node');
+
+                    if (!nodo) {
+                        return;
+                    }
+
+                    const submenu =
+                        nodo.querySelector(
+                            ':scope > .tree-children'
+                        );
+
+                    const folderIcon =
+                        item.querySelector(
+                            '.tree-folder i'
+                        );
+
+                    if (!submenu) {
+                        return;
+                    }
+
+                    nodo.classList.add('expanded');
+
+                    if (folderIcon) {
+                        folderIcon.classList.remove(
+                            'fa-folder'
+                        );
+
+                        folderIcon.classList.add(
+                            'fa-folder-open'
+                        );
+                    }
+                });
+
+                if (moduloSeleccionado) {
+                    const item =
+                        document.querySelector(
+                            '.modulo-tree-item[data-id="' +
+                            CSS.escape(moduloSeleccionado) +
+                            '"]'
+                        );
+
+                    item?.classList.add('selected');
+                }
+
+                if (submoduloSeleccionado) {
+                    const item =
+                        document.querySelector(
+                            '.submodulo-tree-item[data-id="' +
+                            CSS.escape(submoduloSeleccionado) +
+                            '"]'
+                        );
+
+                    item?.classList.add('selected');
+                }
+            });
+    }
+
+    let items = [];
+    let submoduloItems = [];
 
     function seleccionar(item) {
-        items.forEach((el) => el.classList.remove('selected'));
+        items.forEach((el) => {
+            el.classList.remove('selected');
+        });
+
+        submoduloItems.forEach((el) => {
+            el.classList.remove('selected');
+        });
+
         item.classList.add('selected');
     }
 
-    items.forEach((item) => {
-        item.addEventListener('click', function () {
-            seleccionar(item);
-        });
-    });
+    function alternarModulo(item) {
+        const nodo = item.closest('.tree-node');
+
+        if (!nodo) {
+            return;
+        }
+
+        const submenu =
+            nodo.querySelector(
+                ':scope > .tree-children'
+            );
+
+        const folderIcon =
+            item.querySelector('.tree-folder i');
+
+        if (!submenu) {
+            return;
+        }
+
+        const expandido =
+            nodo.classList.toggle('expanded');
+
+        if (folderIcon) {
+            folderIcon.classList.toggle(
+                'fa-folder-open',
+                expandido
+            );
+
+            folderIcon.classList.toggle(
+                'fa-folder',
+                !expandido
+            );
+        }
+    }
 
     function toggleModulo(item) {
         const url = item.dataset.toggleUrl;
 
-        return peticion(url, 'PATCH').then((data) => {
-            item.dataset.activo = data.activo ? '1' : '0';
-            item.classList.toggle('is-inactive', !data.activo);
+        return peticion(url, 'PATCH')
+            .then((data) => {
+                item.dataset.activo =
+                    data.activo ? '1' : '0';
 
-            const folderIcon = item.querySelector('.tree-folder i');
-            if (folderIcon) {
-                folderIcon.classList.toggle('fa-folder-open', data.activo);
-                folderIcon.classList.toggle('fa-folder', !data.activo);
-            }
+                item.classList.toggle(
+                    'is-inactive',
+                    !data.activo
+                );
 
-            let badge = item.querySelector('.tree-badge');
-            if (!data.activo && !badge) {
-                badge = document.createElement('span');
-                badge.className = 'tree-badge';
-                badge.textContent = 'Inactivo';
-                item.querySelector('.tree-name').insertAdjacentElement('afterend', badge);
-            } else if (data.activo && badge) {
-                badge.remove();
-            }
+                const folderIcon =
+                    item.querySelector(
+                        '.tree-folder i'
+                    );
 
-            window.showToast('success', data.mensaje);
-        }).catch((error) => {
-            window.showToast('error', error.message);
-        });
+                if (folderIcon) {
+                    const nodo =
+                        item.closest('.tree-node');
+
+                    const expandido =
+                        nodo?.classList.contains(
+                            'expanded'
+                        );
+
+                    folderIcon.classList.toggle(
+                        'fa-folder-open',
+                        expandido && data.activo
+                    );
+
+                    folderIcon.classList.toggle(
+                        'fa-folder',
+                        !expandido || !data.activo
+                    );
+                }
+
+                let badge =
+                    item.querySelector(
+                        '.tree-badge'
+                    );
+
+                if (!data.activo && !badge) {
+                    badge =
+                        document.createElement('span');
+
+                    badge.className =
+                        'tree-badge';
+
+                    badge.textContent =
+                        'Inactivo';
+
+                    item.querySelector('.tree-name')
+                        ?.insertAdjacentElement(
+                            'afterend',
+                            badge
+                        );
+                } else if (data.activo && badge) {
+                    badge.remove();
+                }
+
+                actualizarEstadoAcciones(item);
+
+                window.showToast(
+                    'success',
+                    data.mensaje
+                );
+
+                return actualizarSidebar();
+            })
+            .catch((error) => {
+                window.showToast(
+                    'error',
+                    error.message
+                );
+            });
+    }
+
+    function toggleSubmodulo(item) {
+        const url = item.dataset.toggleUrl;
+
+        return peticion(url, 'PATCH')
+            .then((data) => {
+                item.dataset.activo =
+                    data.activo ? '1' : '0';
+
+                item.classList.toggle(
+                    'is-inactive',
+                    !data.activo
+                );
+
+                const folderIcon =
+                    item.querySelector(
+                        '.tree-subfolder i'
+                    );
+
+                if (folderIcon) {
+                    folderIcon.classList.toggle(
+                        'fa-folder',
+                        data.activo
+                    );
+
+                    folderIcon.classList.toggle(
+                        'fa-folder-closed',
+                        !data.activo
+                    );
+                }
+
+                let badge =
+                    item.querySelector(
+                        '.tree-badge'
+                    );
+
+                if (!data.activo && !badge) {
+                    badge =
+                        document.createElement('span');
+
+                    badge.className =
+                        'tree-badge';
+
+                    badge.textContent =
+                        'Inactivo';
+
+                    item.querySelector('.tree-name')
+                        ?.insertAdjacentElement(
+                            'afterend',
+                            badge
+                        );
+                } else if (data.activo && badge) {
+                    badge.remove();
+                }
+
+                actualizarEstadoAccionesSubmodulo(
+                    item
+                );
+
+                window.showToast(
+                    'success',
+                    data.mensaje
+                );
+
+                return actualizarSidebar();
+            })
+            .catch((error) => {
+                window.showToast(
+                    'error',
+                    error.message
+                );
+            });
     }
 
     function moverModulo(item, direccion) {
         const url = item.dataset.reorderUrl;
 
-        return fetch(url, {
-            method: 'PATCH',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ direccion }),
-        }).then(async (response) => {
-            const data = await response.json().catch(() => ({}));
+        return peticion(
+            url,
+            'PATCH',
+            JSON.stringify({
+                direccion,
+            })
+        )
+            .then((data) => {
+                window.showToast(
+                    'success',
+                    data.mensaje
+                );
 
-            if (!response.ok || !data.success) {
-                throw new Error(data.mensaje || 'No fue posible cambiar el orden del módulo.');
-            }
-
-            window.showToast('success', data.mensaje);
-            setTimeout(() => window.location.reload(), 400);
-        }).catch((error) => {
-            window.showToast('error', error.message);
-        });
+                return actualizarTreeview();
+            })
+            .then(() => {
+                return actualizarSidebar();
+            })
+            .catch((error) => {
+                window.showToast(
+                    'error',
+                    error.message
+                );
+            });
     }
 
+    function moverSubmodulo(item, direccion) {
+        const url = item.dataset.reorderUrl;
 
+        return peticion(
+            url,
+            'PATCH',
+            JSON.stringify({
+                direccion,
+            })
+        )
+            .then((data) => {
+                window.showToast(
+                    'success',
+                    data.mensaje
+                );
+
+                return actualizarTreeview();
+            })
+            .then(() => {
+                return actualizarSidebar();
+            })
+            .catch((error) => {
+                window.showToast(
+                    'error',
+                    error.message
+                );
+            });
+    }
+
+    const modalNuevoModuloEl = document.getElementById('modalNuevoModulo');
     const modalEditarEl = document.getElementById('modalEditarModulo');
     const modalEliminarEl = document.getElementById('modalEliminarModulo');
-    const modalEditar = modalEditarEl ? new bootstrap.Modal(modalEditarEl) : null;
-    const modalEliminar = modalEliminarEl ? new bootstrap.Modal(modalEliminarEl) : null;
+    const modalNuevoSubmoduloEl = document.getElementById('modalNuevoSubmodulo');
+    const modalEditarSubmoduloEl = document.getElementById('modalEditarSubmodulo');
+    const modalEliminarSubmoduloEl = document.getElementById('modalEliminarSubmodulo');
+
+    const modalNuevoModulo =
+        modalNuevoModuloEl
+            ? new bootstrap.Modal(
+                modalNuevoModuloEl
+            )
+            : null;
+
+    const modalEditar =
+        modalEditarEl
+            ? new bootstrap.Modal(
+                modalEditarEl
+            )
+            : null;
+
+    const modalEliminar =
+        modalEliminarEl
+            ? new bootstrap.Modal(
+                modalEliminarEl
+            )
+            : null;
+
+    const modalNuevoSubmodulo =
+        modalNuevoSubmoduloEl
+            ? new bootstrap.Modal(
+                modalNuevoSubmoduloEl
+            )
+            : null;
+
+    const modalEditarSubmodulo =
+        modalEditarSubmoduloEl
+            ? new bootstrap.Modal(
+                modalEditarSubmoduloEl
+            )
+            : null;
+
+    const modalEliminarSubmodulo =
+        modalEliminarSubmoduloEl
+            ? new bootstrap.Modal(
+                modalEliminarSubmoduloEl
+            )
+            : null;
 
     function abrirModalEditar(item) {
-        document.getElementById('editar_id').value = item.dataset.id;
-        document.getElementById('editar_nombre').value = item.dataset.nombre;
-        document.getElementById('editar_slug').value = item.dataset.slug || '';
-        document.getElementById('editar_descripcion').value = item.dataset.descripcion || '';
-        document.getElementById('editar_icono').value = item.dataset.icono || '';
-        document.getElementById('editar_orden').value = item.dataset.orden;
-        document.getElementById('formEditarModulo').setAttribute('action', item.dataset.editUrl);
+        document.getElementById(
+            'editar_id'
+        ).value = item.dataset.id;
+
+        document.getElementById(
+            'editar_nombre'
+        ).value = item.dataset.nombre;
+
+        document.getElementById(
+            'editar_slug'
+        ).value = item.dataset.slug || '';
+
+        document.getElementById(
+            'editar_descripcion'
+        ).value = item.dataset.descripcion || '';
+
+        document.getElementById(
+            'editar_icono'
+        ).value = item.dataset.icono || '';
+
+        document.getElementById(
+            'editar_orden'
+        ).value = item.dataset.orden;
+
+        document.getElementById(
+            'formEditarModulo'
+        ).setAttribute(
+            'action',
+            item.dataset.editUrl
+        );
 
         modalEditar?.show();
     }
 
     function abrirModalEliminar(item) {
-        document.getElementById('eliminar_nombre').textContent = item.dataset.nombre;
-        document.getElementById('formEliminarModulo').setAttribute('action', item.dataset.deleteUrl);
+        document.getElementById(
+            'eliminar_nombre'
+        ).textContent =
+            item.dataset.nombre;
+
+        document.getElementById(
+            'formEliminarModulo'
+        ).setAttribute(
+            'action',
+            item.dataset.deleteUrl
+        );
 
         modalEliminar?.show();
     }
 
-    const contextMenu = document.getElementById('moduloContextMenu');
-    const toggleLabel = contextMenu?.querySelector('[data-role="toggle-label"]');
+    function abrirModalNuevoSubmodulo(item) {
+        const moduloId = item.dataset.id;
+        const moduloNombre = item.dataset.nombre;
+
+        const form =
+            document.getElementById(
+                'formNuevoSubmodulo'
+            );
+
+        if (form) {
+            form.setAttribute(
+                'action',
+                '/modulos/' +
+                moduloId +
+                '/submodulos'
+            );
+        }
+
+        const moduloIdInput =
+            document.getElementById(
+                'submodulo_modulo_id'
+            );
+
+        const moduloNombreInput =
+            document.getElementById(
+                'submodulo_modulo_nombre'
+            );
+
+        if (moduloIdInput) {
+            moduloIdInput.value =
+                moduloId;
+        }
+
+        if (moduloNombreInput) {
+            moduloNombreInput.value =
+                moduloNombre;
+        }
+
+        document.getElementById(
+            'submodulo_nombre'
+        ).value = '';
+
+        document.getElementById(
+            'submodulo_slug'
+        ).value = '';
+
+        document.getElementById(
+            'submodulo_ruta'
+        ).value = '';
+
+        document.getElementById(
+            'submodulo_descripcion'
+        ).value = '';
+
+        document.getElementById(
+            'submodulo_icono'
+        ).value = '';
+
+        document.getElementById(
+            'submodulo_orden'
+        ).value = 0;
+
+        modalNuevoSubmodulo?.show();
+    }
+
+    function abrirModalEditarSubmodulo(item) {
+        document.getElementById(
+            'editar_submodulo_id'
+        ).value = item.dataset.id;
+
+        document.getElementById(
+            'editar_submodulo_modulo_id'
+        ).value = item.dataset.moduloId;
+
+        document.getElementById(
+            'editar_submodulo_modulo_nombre'
+        ).value = item.dataset.moduloNombre || '';
+
+        document.getElementById(
+            'editar_submodulo_nombre'
+        ).value = item.dataset.nombre || '';
+
+        document.getElementById(
+            'editar_submodulo_slug'
+        ).value = item.dataset.slug || '';
+
+        document.getElementById(
+            'editar_submodulo_ruta'
+        ).value = item.dataset.ruta || '';
+
+        document.getElementById(
+            'editar_submodulo_descripcion'
+        ).value = item.dataset.descripcion || '';
+
+        document.getElementById(
+            'editar_submodulo_icono'
+        ).value = item.dataset.icono || '';
+
+        document.getElementById(
+            'editar_submodulo_orden'
+        ).value = item.dataset.orden || 0;
+
+        document.getElementById(
+            'formEditarSubmodulo'
+        ).setAttribute(
+            'action',
+            item.dataset.editUrl
+        );
+
+        modalEditarSubmodulo?.show();
+    }
+
+    function abrirModalEliminarSubmodulo(item) {
+        document.getElementById(
+            'eliminar_submodulo_nombre'
+        ).textContent =
+            item.dataset.nombre;
+
+        document.getElementById(
+            'formEliminarSubmodulo'
+        ).setAttribute(
+            'action',
+            item.dataset.deleteUrl
+        );
+
+        modalEliminarSubmodulo?.show();
+    }
+
+    function cerrarModal(modal) {
+        if (modal) {
+            modal.hide();
+        }
+    }
+
+    function enviarFormulario(
+        form,
+        modal,
+        mensajePorDefecto
+    ) {
+        const botonSubmit =
+            form.querySelector(
+                'button[type="submit"]'
+            );
+
+        const textoOriginal =
+            botonSubmit?.innerHTML;
+
+        if (botonSubmit) {
+            botonSubmit.disabled = true;
+
+            botonSubmit.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2"></span>' +
+                'Guardando...';
+        }
+
+        const formData =
+            new FormData(form);
+
+        return peticion(
+            form.action,
+            'POST',
+            formData
+        )
+            .then((data) => {
+                cerrarModal(modal);
+
+                window.showToast(
+                    'success',
+                    data.mensaje ||
+                    mensajePorDefecto
+                );
+
+                return actualizarTreeview();
+            })
+            .then(() => {
+                return actualizarSidebar();
+            })
+            .catch((error) => {
+                window.showToast(
+                    'error',
+                    error.message
+                );
+
+                throw error;
+            })
+            .finally(() => {
+                if (botonSubmit) {
+                    botonSubmit.disabled = false;
+
+                    botonSubmit.innerHTML =
+                        textoOriginal;
+                }
+            });
+    }
+
+    function inicializarFormularios() {
+        const formNuevoModulo =
+            document.getElementById(
+                'formNuevoModulo'
+            );
+
+        const formEditarModulo =
+            document.getElementById(
+                'formEditarModulo'
+            );
+
+        const formEliminarModulo =
+            document.getElementById(
+                'formEliminarModulo'
+            );
+
+        const formNuevoSubmodulo =
+            document.getElementById(
+                'formNuevoSubmodulo'
+            );
+
+        const formEditarSubmodulo =
+            document.getElementById(
+                'formEditarSubmodulo'
+            );
+
+        const formEliminarSubmodulo =
+            document.getElementById(
+                'formEliminarSubmodulo'
+            );
+
+        if (formNuevoModulo) {
+            formNuevoModulo.addEventListener(
+                'submit',
+                function (event) {
+                    event.preventDefault();
+
+                    enviarFormulario(
+                        formNuevoModulo,
+                        modalNuevoModulo,
+                        'Módulo creado correctamente.'
+                    )
+                        .then(() => {
+                            formNuevoModulo.reset();
+                        })
+                        .catch(() => { });
+                }
+            );
+        }
+
+        if (formEditarModulo) {
+            formEditarModulo.addEventListener(
+                'submit',
+                function (event) {
+                    event.preventDefault();
+
+                    enviarFormulario(
+                        formEditarModulo,
+                        modalEditar,
+                        'Módulo actualizado correctamente.'
+                    ).catch(() => { });
+                }
+            );
+        }
+
+        if (formEliminarModulo) {
+            formEliminarModulo.addEventListener(
+                'submit',
+                function (event) {
+                    event.preventDefault();
+
+                    enviarFormulario(
+                        formEliminarModulo,
+                        modalEliminar,
+                        'Módulo eliminado correctamente.'
+                    ).catch(() => { });
+                }
+            );
+        }
+
+        if (formNuevoSubmodulo) {
+            formNuevoSubmodulo.addEventListener(
+                'submit',
+                function (event) {
+                    event.preventDefault();
+
+                    enviarFormulario(
+                        formNuevoSubmodulo,
+                        modalNuevoSubmodulo,
+                        'Submódulo creado correctamente.'
+                    )
+                        .then(() => {
+                            formNuevoSubmodulo.reset();
+                        })
+                        .catch(() => { });
+                }
+            );
+        }
+
+        if (formEditarSubmodulo) {
+            formEditarSubmodulo.addEventListener(
+                'submit',
+                function (event) {
+                    event.preventDefault();
+
+                    enviarFormulario(
+                        formEditarSubmodulo,
+                        modalEditarSubmodulo,
+                        'Submódulo actualizado correctamente.'
+                    ).catch(() => { });
+                }
+            );
+        }
+
+        if (formEliminarSubmodulo) {
+            formEliminarSubmodulo.addEventListener(
+                'submit',
+                function (event) {
+                    event.preventDefault();
+
+                    enviarFormulario(
+                        formEliminarSubmodulo,
+                        modalEliminarSubmodulo,
+                        'Submódulo eliminado correctamente.'
+                    ).catch(() => { });
+                }
+            );
+        }
+    }
+
+    const contextMenu =
+        document.getElementById(
+            'moduloContextMenu'
+        );
+
+    const submoduloContextMenu =
+        document.getElementById(
+            'submoduloContextMenu'
+        );
+
+    const toggleLabel =
+        contextMenu?.querySelector(
+            '[data-role="toggle-label"]'
+        );
+
+    const submoduloToggleLabel =
+        submoduloContextMenu?.querySelector(
+            '[data-role="toggle-label"]'
+        );
+
     let itemActivo = null;
     let botonActivo = null;
+    let submoduloActivo = null;
 
     function cerrarMenu() {
-        contextMenu?.classList.remove('show');
-        botonActivo?.classList.remove('menu-open');
+        contextMenu?.classList.remove(
+            'show'
+        );
+
+        submoduloContextMenu?.classList.remove(
+            'show'
+        );
+
+        botonActivo?.classList.remove(
+            'menu-open'
+        );
+
         botonActivo = null;
         itemActivo = null;
+        submoduloActivo = null;
     }
 
     function actualizarEstadoAcciones(item) {
-        const activo = item.dataset.activo === '1';
-        const esPrimero = item.dataset.first === '1';
-        const esUltimo = item.dataset.last === '1';
+        const activo =
+            item.dataset.activo === '1';
+
+        const esPrimero =
+            item.dataset.first === '1';
+
+        const esUltimo =
+            item.dataset.last === '1';
 
         if (toggleLabel) {
-            toggleLabel.textContent = activo ? 'Desactivar' : 'Activar';
+            toggleLabel.textContent =
+                activo
+                    ? 'Desactivar'
+                    : 'Activar';
         }
 
-        const btnToggle = contextMenu.querySelector('[data-action="toggle"] i');
+        const btnToggle =
+            contextMenu?.querySelector(
+                '[data-action="toggle"] i'
+            );
+
         if (btnToggle) {
-            btnToggle.className = activo ? 'fa-solid fa-power-off' : 'fa-solid fa-play';
+            btnToggle.className =
+                activo
+                    ? 'fa-solid fa-power-off'
+                    : 'fa-solid fa-play';
         }
 
-        const btnSubir = contextMenu.querySelector('[data-action="subir"]');
-        const btnBajar = contextMenu.querySelector('[data-action="bajar"]');
+        const btnSubir =
+            contextMenu?.querySelector(
+                '[data-action="subir"]'
+            );
 
-        btnSubir?.classList.toggle('disabled', esPrimero);
-        btnBajar?.classList.toggle('disabled', esUltimo);
+        const btnBajar =
+            contextMenu?.querySelector(
+                '[data-action="bajar"]'
+            );
+
+        btnSubir?.classList.toggle(
+            'disabled',
+            esPrimero
+        );
+
+        btnBajar?.classList.toggle(
+            'disabled',
+            esUltimo
+        );
     }
 
-    function abrirMenu(item, x, y, boton) {
+    function actualizarEstadoAccionesSubmodulo(
+        item
+    ) {
+        const activo =
+            item.dataset.activo === '1';
+
+        const esPrimero =
+            item.dataset.first === '1';
+
+        const esUltimo =
+            item.dataset.last === '1';
+
+        if (submoduloToggleLabel) {
+            submoduloToggleLabel.textContent =
+                activo
+                    ? 'Desactivar'
+                    : 'Activar';
+        }
+
+        const btnToggle =
+            submoduloContextMenu?.querySelector(
+                '[data-action="toggle"] i'
+            );
+
+        if (btnToggle) {
+            btnToggle.className =
+                activo
+                    ? 'fa-solid fa-power-off'
+                    : 'fa-solid fa-play';
+        }
+
+        const btnSubir =
+            submoduloContextMenu?.querySelector(
+                '[data-action="subir"]'
+            );
+
+        const btnBajar =
+            submoduloContextMenu?.querySelector(
+                '[data-action="bajar"]'
+            );
+
+        btnSubir?.classList.toggle(
+            'disabled',
+            esPrimero
+        );
+
+        btnBajar?.classList.toggle(
+            'disabled',
+            esUltimo
+        );
+    }
+
+    function posicionarMenu(menu, x, y) {
+        menu.classList.add('show');
+
+        const rect =
+            menu.getBoundingClientRect();
+
+        const maxX =
+            window.innerWidth -
+            rect.width -
+            8;
+
+        const maxY =
+            window.innerHeight -
+            rect.height -
+            8;
+
+        menu.style.left =
+            Math.min(
+                x,
+                Math.max(maxX, 8)
+            ) + 'px';
+
+        menu.style.top =
+            Math.min(
+                y,
+                Math.max(maxY, 8)
+            ) + 'px';
+    }
+
+    function abrirMenu(
+        item,
+        x,
+        y,
+        boton
+    ) {
         if (!contextMenu) {
             return;
         }
+
+        submoduloContextMenu?.classList.remove(
+            'show'
+        );
+
         itemActivo = item;
+        submoduloActivo = null;
         botonActivo = boton || null;
-        botonActivo?.classList.add('menu-open');
+
+        botonActivo?.classList.add(
+            'menu-open'
+        );
 
         actualizarEstadoAcciones(item);
-        contextMenu.classList.add('show');
 
-        const rect = contextMenu.getBoundingClientRect();
-        const maxX = window.innerWidth - rect.width - 8;
-        const maxY = window.innerHeight - rect.height - 8;
-
-        contextMenu.style.left =
-            Math.min(x, Math.max(maxX, 8)) + 'px';
-
-        contextMenu.style.top =
-            Math.min(y, Math.max(maxY, 8)) + 'px';
+        posicionarMenu(
+            contextMenu,
+            x,
+            y
+        );
     }
 
-    items.forEach((item) => {
-        item.addEventListener('contextmenu', function (event) {
-            event.preventDefault();
-            seleccionar(item);
-            abrirMenu(item, event.clientX, event.clientY, null);
-        });
-
-        const btnMas = item.querySelector('.tree-more-btn');
-        btnMas?.addEventListener('click', function (event) {
-            event.stopPropagation();
-            seleccionar(item);
-
-            if (item === itemActivo) {
-                cerrarMenu();
-                return;
-            }
-
-            const rect = btnMas.getBoundingClientRect();
-            abrirMenu(item, rect.left, rect.bottom + 4, btnMas);
-        });
-    });
-
-    contextMenu?.addEventListener('click', function (event) {
-        const opcion = event.target.closest('.context-menu-item');
-
-        if (!opcion || opcion.classList.contains('disabled') || !itemActivo) {
+    function abrirMenuSubmodulo(
+        item,
+        x,
+        y
+    ) {
+        if (!submoduloContextMenu) {
             return;
         }
 
-        const item = itemActivo;
-        const accion = opcion.dataset.action;
-        cerrarMenu();
+        contextMenu?.classList.remove(
+            'show'
+        );
 
-        switch (accion) {
-            case 'toggle':
-                toggleModulo(item);
-                break;
-            case 'editar':
-                abrirModalEditar(item);
-                break;
-            case 'eliminar':
-                abrirModalEliminar(item);
-                break;
-            case 'subir':
-                moverModulo(item, 'arriba');
-                break;
-            case 'bajar':
-                moverModulo(item, 'abajo');
-                break;
-        }
-    });
+        botonActivo?.classList.remove(
+            'menu-open'
+        );
 
-    document.addEventListener('click', function (event) {
-        if (contextMenu && !contextMenu.contains(event.target)) {
+        itemActivo = null;
+        submoduloActivo = item;
+        botonActivo = null;
+
+        actualizarEstadoAccionesSubmodulo(
+            item
+        );
+
+        posicionarMenu(
+            submoduloContextMenu,
+            x,
+            y
+        );
+    }
+
+    function inicializarTreeview() {
+        items = document.querySelectorAll(
+            '.modulo-tree-item'
+        );
+
+        submoduloItems =
+            document.querySelectorAll(
+                '.submodulo-tree-item'
+            );
+
+        items.forEach((item) => {
+            item.addEventListener(
+                'click',
+                function () {
+                    seleccionar(item);
+                    alternarModulo(item);
+                }
+            );
+
+            item.addEventListener(
+                'contextmenu',
+                function (event) {
+                    event.preventDefault();
+
+                    seleccionar(item);
+
+                    abrirMenu(
+                        item,
+                        event.clientX,
+                        event.clientY,
+                        null
+                    );
+                }
+            );
+
+            const btnMas =
+                item.querySelector(
+                    '.tree-more-btn'
+                );
+
+            btnMas?.addEventListener(
+                'click',
+                function (event) {
+                    event.stopPropagation();
+
+                    seleccionar(item);
+
+                    if (item === itemActivo) {
+                        cerrarMenu();
+                        return;
+                    }
+
+                    const rect =
+                        btnMas.getBoundingClientRect();
+
+                    abrirMenu(
+                        item,
+                        rect.left,
+                        rect.bottom + 4,
+                        btnMas
+                    );
+                }
+            );
+        });
+
+        submoduloItems.forEach((item) => {
+            item.addEventListener(
+                'click',
+                function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            );
+
+            item.addEventListener(
+                'contextmenu',
+                function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    seleccionar(item);
+
+                    abrirMenuSubmodulo(
+                        item,
+                        event.clientX,
+                        event.clientY
+                    );
+                }
+            );
+
+            const btnMas =
+                item.querySelector(
+                    '.submodulo-more-btn'
+                );
+
+            btnMas?.addEventListener(
+                'click',
+                function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    seleccionar(item);
+
+                    if (
+                        item ===
+                        submoduloActivo
+                    ) {
+                        cerrarMenu();
+                        return;
+                    }
+
+                    const rect =
+                        btnMas.getBoundingClientRect();
+
+                    abrirMenuSubmodulo(
+                        item,
+                        rect.left,
+                        rect.bottom + 4
+                    );
+                }
+            );
+        });
+    }
+
+    contextMenu?.addEventListener(
+        'click',
+        function (event) {
+            const opcion =
+                event.target.closest(
+                    '.context-menu-item'
+                );
+
+            if (
+                !opcion ||
+                opcion.classList.contains(
+                    'disabled'
+                ) ||
+                !itemActivo
+            ) {
+                return;
+            }
+
+            const item = itemActivo;
+
+            const accion =
+                opcion.dataset.action;
+
             cerrarMenu();
+
+            switch (accion) {
+                case 'toggle':
+                    toggleModulo(item);
+                    break;
+
+                case 'editar':
+                    abrirModalEditar(item);
+                    break;
+
+                case 'nuevo-submodulo':
+                    abrirModalNuevoSubmodulo(
+                        item
+                    );
+                    break;
+
+                case 'eliminar':
+                    abrirModalEliminar(item);
+                    break;
+
+                case 'subir':
+                    moverModulo(
+                        item,
+                        'arriba'
+                    );
+                    break;
+
+                case 'bajar':
+                    moverModulo(
+                        item,
+                        'abajo'
+                    );
+                    break;
+            }
         }
-    });
+    );
 
-    document.addEventListener('scroll', cerrarMenu, true);
-    window.addEventListener('resize', cerrarMenu);
+    submoduloContextMenu?.addEventListener(
+        'click',
+        function (event) {
+            const opcion =
+                event.target.closest(
+                    '.context-menu-item'
+                );
 
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
+            if (
+                !opcion ||
+                opcion.classList.contains(
+                    'disabled'
+                ) ||
+                !submoduloActivo
+            ) {
+                return;
+            }
+
+            const item =
+                submoduloActivo;
+
+            const accion =
+                opcion.dataset.action;
+
             cerrarMenu();
-        }
-    });
 
+            switch (accion) {
+                case 'toggle':
+                    toggleSubmodulo(item);
+                    break;
+
+                case 'editar':
+                    abrirModalEditarSubmodulo(
+                        item
+                    );
+                    break;
+
+                case 'eliminar':
+                    abrirModalEliminarSubmodulo(
+                        item
+                    );
+                    break;
+
+                case 'subir':
+                    moverSubmodulo(
+                        item,
+                        'arriba'
+                    );
+                    break;
+
+                case 'bajar':
+                    moverSubmodulo(
+                        item,
+                        'abajo'
+                    );
+                    break;
+            }
+        }
+    );
+
+    document.addEventListener(
+        'click',
+        function (event) {
+            if (
+                contextMenu &&
+                !contextMenu.contains(
+                    event.target
+                ) &&
+                submoduloContextMenu &&
+                !submoduloContextMenu.contains(
+                    event.target
+                )
+            ) {
+                cerrarMenu();
+            }
+        }
+    );
+
+    document.addEventListener(
+        'scroll',
+        cerrarMenu,
+        true
+    );
+
+    window.addEventListener(
+        'resize',
+        cerrarMenu
+    );
+
+    document.addEventListener(
+        'keydown',
+        function (event) {
+            if (event.key === 'Escape') {
+                cerrarMenu();
+            }
+        }
+    );
+
+    inicializarFormularios();
+    inicializarTreeview();
 });
