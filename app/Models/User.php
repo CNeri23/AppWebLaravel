@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -34,5 +33,22 @@ class User extends Authenticatable
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    public function acciones()
+    {
+        return $this->roles()
+            ->with('acciones')
+            ->get()
+            ->pluck('acciones')
+            ->flatten()
+            ->unique('id')
+            ->values();
+    }
+
+    public function tienePermiso(string $permiso): bool
+    {
+        return $this->acciones()
+            ->contains('slug', $permiso);
     }
 }

@@ -7,6 +7,16 @@
     } else {
         $greeting = 'Buenas noches';
     }
+
+    $modulosMenu = \App\Models\Modulo::with(['submodulos' => function ($query) {
+        $query->where('activo', true)
+            ->orderBy('orden')
+            ->orderBy('nombre');
+    }])
+        ->where('activo', true)
+        ->orderBy('orden')
+        ->orderBy('nombre')
+        ->get();
 @endphp
 <!DOCTYPE html>
 <html lang="es" data-bs-theme="light">
@@ -14,6 +24,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>@yield('title', 'Panel administrativo')</title>
 
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -25,6 +37,68 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
+
+    <style>
+        /* --- Grupo de sidebar con dropdown (Modulo -> Submodulos) --- */
+        .sidebar-group-toggle {
+            width: 100%;
+            border: none;
+            background: transparent;
+            text-align: left;
+            justify-content: flex-start;
+        }
+
+        .sidebar-group-caret {
+            margin-left: auto;
+            font-size: 0.75rem;
+            transition: transform 0.15s ease;
+        }
+
+        .sidebar-group-toggle[aria-expanded="true"] .sidebar-group-caret {
+            transform: rotate(180deg);
+        }
+
+        .sidebar-submenu {
+            padding-left: 30px;
+        }
+
+        .sidebar-sublink {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            margin: 1px 0;
+            border-radius: 6px;
+            font-size: 0.86rem;
+            color: inherit;
+            text-decoration: none;
+            opacity: 0.85;
+        }
+
+        .sidebar-sublink:hover {
+            background-color: rgba(47, 113, 170, 0.08);
+            opacity: 1;
+        }
+
+        .sidebar-sublink.active {
+            background-color: rgba(47, 113, 170, 0.12);
+            font-weight: 600;
+            opacity: 1;
+        }
+
+        .sidebar-sublink.sidebar-link-pendiente {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .sidebar-sublink-empty {
+            display: block;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            opacity: 0.5;
+            font-style: italic;
+        }
+    </style>
 </head>
 
 <body>
@@ -46,6 +120,7 @@
         </div>
 
         <nav class="sidebar-menu">
+
             <div class="sidebar-section">
                 <span>Principal</span>
             </div>
@@ -60,28 +135,68 @@
                 <span>Administración</span>
             </div>
 
-            <a href="{{ route('usuarios.index') }}" data-label="Usuarios"
-                class="sidebar-link {{ request()->routeIs('usuarios.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-users"></i>
-                <span>Usuarios</span>
-            </a>
+            @foreach ($modulosMenu as $modulo)
 
-            <a href="{{ route('roles.index') }}" data-label="Roles"
-                class="sidebar-link {{ request()->routeIs('roles.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-user-shield"></i>
-                <span>Roles</span>
-            </a>
+                @php
+                    $idAcordeon = 'moduloMenu' . $modulo->id;
 
-            <a href="#" data-label="Permisos" class="sidebar-link">
-                <i class="fa-solid fa-key"></i>
-                <span>Permisos</span>
-            </a>
+                    $tieneSubmoduloActivo = $modulo->submodulos->contains(
+                        fn ($submodulo) => $submodulo->ruta && request()->routeIs($submodulo->ruta)
+                    );
+                @endphp
 
-            <a href="{{ route('logs.index') }}" data-label="Logs"
-                class="sidebar-link {{ request()->routeIs('logs.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-clock-rotate-left"></i>
-                <span>Logs</span>
-            </a>
+                <button type="button"
+                    class="sidebar-link sidebar-group-toggle {{ $tieneSubmoduloActivo ? 'active' : '' }}"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#{{ $idAcordeon }}"
+                    aria-expanded="{{ $tieneSubmoduloActivo ? 'true' : 'false' }}">
+
+                    @if ($modulo->icono)
+                        {!! $modulo->icono !!}
+                    @else
+                        <i class="fa-solid fa-layer-group"></i>
+                    @endif
+
+                    <span>{{ $modulo->nombre }}</span>
+
+                    <i class="fa-solid fa-chevron-down sidebar-group-caret"></i>
+                </button>
+
+                <div class="collapse sidebar-submenu {{ $tieneSubmoduloActivo ? 'show' : '' }}"
+                    id="{{ $idAcordeon }}">
+
+                    @forelse ($modulo->submodulos as $submodulo)
+
+                        @php
+                            $url = $submodulo->ruta && \Illuminate\Support\Facades\Route::has($submodulo->ruta)
+                                ? route($submodulo->ruta)
+                                : '#';
+
+                            $esActivo = $url !== '#' && request()->routeIs($submodulo->ruta);
+                        @endphp
+
+                        <a href="{{ $url }}"
+                            class="sidebar-sublink {{ $esActivo ? 'active' : '' }} {{ $url === '#' ? 'sidebar-link-pendiente' : '' }}"
+                            @if ($url === '#') title="Este submódulo aún no tiene una ruta configurada" @endif>
+
+                            @if ($submodulo->icono)
+                                {!! $submodulo->icono !!}
+                            @else
+                                <i class="fa-solid fa-circle-dot"></i>
+                            @endif
+
+                            <span>{{ $submodulo->nombre }}</span>
+                        </a>
+
+                    @empty
+
+                        <span class="sidebar-sublink-empty">Sin submódulos</span>
+
+                    @endforelse
+
+                </div>
+
+            @endforeach
 
             <div class="sidebar-section">
                 <span>Sistema</span>

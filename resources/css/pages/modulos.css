@@ -1,0 +1,365 @@
+.modulos-treeview {
+    width: 100%;
+    padding: 10px 6px 10px 2px;
+}
+
+.tree-node {
+    position: relative;
+    width: 100%;
+    padding-left: 26px;
+}
+
+.tree-node::before,
+.tree-node::after {
+    content: '';
+    position: absolute;
+    left: 9px;
+}
+
+.tree-node::before {
+    top: 0;
+    bottom: 0;
+    width: 0;
+    border-left: 1.5px dashed rgba(47, 113, 170, 0.28);
+}
+
+.tree-node:last-child::before {
+    bottom: 50%;
+}
+
+.tree-node::after {
+    top: 50%;
+    width: 15px;
+    height: 0;
+    border-top: 1.5px dashed rgba(47, 113, 170, 0.28);
+}
+
+.tree-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 6px 40px 6px 8px;
+    margin: 1px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.tree-item:hover,
+.tree-item:focus-visible {
+    background-color: rgba(47, 113, 170, 0.07);
+}
+
+.tree-item:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(47, 113, 170, 0.35);
+}
+
+.tree-folder {
+    width: 26px;
+    min-width: 26px;
+    text-align: center;
+    color: #2f71aa;
+    font-size: 16px;
+    transition:
+        color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.tree-icon {
+    width: 28px;
+    min-width: 28px;
+    text-align: center;
+    color: #2f71aa;
+    font-size: 16px;
+}
+
+.tree-name {
+    color: #1e293b;
+    font-size: 0.92rem;
+    font-weight: 500;
+    line-height: 1.4;
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tree-item:hover .tree-folder {
+    transform: translateY(-1px);
+}
+
+.tree-item.selected {
+    background-color: rgba(47, 113, 170, 0.1);
+}
+
+.tree-item.selected .tree-name {
+    font-weight: 600;
+}
+
+.tree-item.selected .tree-folder {
+    color: #2f71aa;
+}
+
+.tree-item.is-inactive {
+    background-color: rgba(148, 163, 184, 0.06);
+    box-shadow: inset 3px 0 0 rgba(217, 119, 6, 0.45);
+}
+
+.tree-item.is-inactive:hover {
+    background-color: rgba(217, 119, 6, 0.06);
+}
+
+.tree-item.is-inactive .tree-folder,
+.tree-item.is-inactive .tree-icon {
+    color: #94a3b8;
+    opacity: 0.75;
+}
+
+.tree-item.is-inactive .tree-name {
+    color: #64748b;
+    font-weight: 500;
+}
+
+.tree-item.is-inactive.selected {
+    background-color: rgba(217, 119, 6, 0.09);
+    box-shadow: inset 3px 0 0 #d97706;
+}
+
+.tree-item.is-inactive.selected .tree-folder,
+.tree-item.is-inactive.selected .tree-icon {
+    color: #d97706;
+    opacity: 1;
+}
+
+.tree-item.is-inactive.selected .tree-name {
+    color: #d97706;
+}
+
+.tree-badge {
+    flex: none;
+    margin-left: 10px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: rgba(217, 119, 6, 0.12);
+    color: #b45309;
+    border: 1px solid rgba(217, 119, 6, 0.25);
+    white-space: nowrap;
+}
+
+.tree-more-btn {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #64748b;
+    opacity: 0;
+    pointer-events: none;
+    transition: background-color 0.15s ease, opacity 0.15s ease, color 0.15s ease;
+}
+
+.tree-item:hover .tree-more-btn,
+.tree-item:focus-within .tree-more-btn,
+.tree-more-btn.menu-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.tree-more-btn:hover,
+.tree-more-btn.menu-open {
+    background-color: rgba(47, 113, 170, 0.12);
+    color: #2f71aa;
+}
+
+.tree-item.is-inactive .tree-more-btn:hover,
+.tree-item.is-inactive .tree-more-btn.menu-open {
+    background-color: rgba(217, 119, 6, 0.14);
+    color: #d97706;
+}
+
+.context-menu {
+    position: fixed;
+    z-index: 3000;
+    min-width: 200px;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 10px;
+    box-shadow:
+        0 12px 28px rgba(15, 23, 42, 0.16),
+        0 2px 6px rgba(15, 23, 42, 0.08);
+    padding: 6px;
+    display: none;
+}
+
+.context-menu.show {
+    display: block;
+    animation: contextMenuIn 0.12s ease;
+}
+
+@keyframes contextMenuIn {
+    from {
+        opacity: 0;
+        transform: scale(0.97) translateY(-2px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.context-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: #1e293b;
+    cursor: pointer;
+    user-select: none;
+}
+
+.context-menu-item i {
+    width: 16px;
+    text-align: center;
+    color: #2f71aa;
+    font-size: 0.85rem;
+}
+
+.context-menu-item:hover {
+    background-color: rgba(47, 113, 170, 0.08);
+}
+
+.context-menu-item.danger {
+    color: #dc2626;
+}
+
+.context-menu-item.danger i {
+    color: #dc2626;
+}
+
+.context-menu-item.danger:hover {
+    background-color: rgba(220, 38, 38, 0.08);
+}
+
+.context-menu-item.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.context-menu-divider {
+    height: 1px;
+    margin: 5px 4px;
+    background-color: rgba(15, 23, 42, 0.08);
+}
+
+[data-bs-theme="dark"] .tree-item:hover {
+    background-color: rgba(96, 165, 250, 0.08);
+}
+
+[data-bs-theme="dark"] .tree-node::before {
+    border-left-color: rgba(96, 165, 250, 0.25);
+}
+
+[data-bs-theme="dark"] .tree-node::after {
+    border-top-color: rgba(96, 165, 250, 0.25);
+}
+
+[data-bs-theme="dark"] .tree-folder {
+    color: #60a5fa;
+}
+
+[data-bs-theme="dark"] .tree-name {
+    color: #e2e8f0;
+}
+
+[data-bs-theme="dark"] .tree-item.selected {
+    background-color: rgba(96, 165, 250, 0.12);
+}
+
+[data-bs-theme="dark"] .tree-item.selected .tree-folder {
+    color: #60a5fa;
+}
+
+[data-bs-theme="dark"] .tree-item.is-inactive {
+    background-color: rgba(148, 163, 184, 0.05);
+    box-shadow: inset 3px 0 0 rgba(245, 158, 11, 0.4);
+}
+
+[data-bs-theme="dark"] .tree-item.is-inactive:hover {
+    background-color: rgba(245, 158, 11, 0.07);
+}
+
+[data-bs-theme="dark"] .tree-item.is-inactive .tree-folder,
+[data-bs-theme="dark"] .tree-item.is-inactive .tree-icon {
+    color: #64748b;
+}
+
+[data-bs-theme="dark"] .tree-item.is-inactive .tree-name {
+    color: #94a3b8;
+}
+
+[data-bs-theme="dark"] .tree-item.is-inactive.selected {
+    background-color: rgba(245, 158, 11, 0.1);
+    box-shadow: inset 3px 0 0 #f59e0b;
+}
+
+[data-bs-theme="dark"] .tree-item.is-inactive.selected .tree-folder,
+[data-bs-theme="dark"] .tree-item.is-inactive.selected .tree-icon,
+[data-bs-theme="dark"] .tree-item.is-inactive.selected .tree-name {
+    color: #f59e0b;
+}
+
+[data-bs-theme="dark"] .tree-badge {
+    background: rgba(245, 158, 11, 0.14);
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+[data-bs-theme="dark"] .tree-more-btn {
+    color: #94a3b8;
+}
+
+[data-bs-theme="dark"] .tree-more-btn:hover,
+[data-bs-theme="dark"] .tree-more-btn.menu-open {
+    background-color: rgba(96, 165, 250, 0.14);
+    color: #60a5fa;
+}
+
+[data-bs-theme="dark"] .context-menu {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.4),
+        0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+[data-bs-theme="dark"] .context-menu-item {
+    color: #e2e8f0;
+}
+
+[data-bs-theme="dark"] .context-menu-item:hover {
+    background-color: rgba(96, 165, 250, 0.1);
+}
+
+[data-bs-theme="dark"] .context-menu-divider {
+    background-color: rgba(255, 255, 255, 0.08);
+}
