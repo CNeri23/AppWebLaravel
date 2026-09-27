@@ -8,11 +8,31 @@
             <p class="text-secondary mb-0">Administración de usuarios del sistema.</p>
         </div>
 
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoUsuario">
-            <i class="fa-solid fa-user-plus me-2"></i>
-            Nuevo usuario
-        </button>
+        @foreach ($accionesUsuarios as $accion)
+            @if ($accion->slug === 'usuarios.crear')
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#modalNuevoUsuario" title="{{ $accion->nombre }}">
+                    {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
+                    {{ $accion->nombre }}
+                </button>
+            @endif
+        @endforeach
     </div>
+
+    @php
+        $accionesUsuariosJs = $accionesUsuarios->map(function ($accion) {
+            return [
+                'id' => $accion->id,
+                'nombre' => $accion->nombre,
+                'slug' => $accion->slug,
+                'icono' => $accion->icono,
+            ];
+        })->values();
+    @endphp
+
+    <script>
+        window.accionesUsuarios = @json($accionesUsuariosJs);
+    </script>
 
     <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
@@ -47,42 +67,66 @@
                                 <td class="text-end px-4">
                                     <div class="usuario-actions">
 
-                                        <button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn"
-                                            title="Editar datos" data-bs-toggle="modal" data-bs-target="#modalEditarUsuario"
-                                            data-id="{{ $usuario->id }}" data-name="{{ $usuario->name }}"
-                                            data-email="{{ $usuario->email }}"
-                                            data-url="{{ route('usuarios.update', $usuario) }}">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </button>
+                                        @foreach ($accionesUsuarios as $accion)
 
-                                        <button type="button" class="btn btn-sm btn-outline-warning usuario-action-btn"
-                                            title="Cambiar contraseña" data-bs-toggle="modal"
-                                            data-bs-target="#modalPasswordUsuario" data-id="{{ $usuario->id }}"
-                                            data-name="{{ $usuario->name }}"
-                                            data-url="{{ route('usuarios.password', $usuario) }}">
-                                            <i class="fa-solid fa-key"></i>
-                                        </button>
+                                            @if ($accion->slug === 'usuarios.editar')
 
-                                        <button type="button" class="btn btn-sm btn-outline-success usuario-action-btn"
-                                            title="Asignar roles" data-bs-toggle="modal" data-bs-target="#modalRolesUsuario"
-                                            data-id="{{ $usuario->id }}" data-name="{{ $usuario->name }}"
-                                            data-roles="{{ $usuario->roles->pluck('id')->implode(',') }}"
-                                            data-url="{{ route('usuarios.roles', $usuario) }}">
-                                            <i class="fa-solid fa-user-shield"></i>
-                                        </button>
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-primary usuario-action-btn"
+                                                    title="{{ $accion->nombre }}"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalEditarUsuario"
+                                                    data-id="{{ $usuario->id }}"
+                                                    data-name="{{ $usuario->name }}"
+                                                    data-email="{{ $usuario->email }}"
+                                                    data-url="{{ route('usuarios.update', $usuario) }}">
+                                                    {!! $accion->icono ?: '<i class="fa-solid fa-pen"></i>' !!}
+                                                </button>
 
-                                        <button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn"
-                                            title="Eliminar usuario" data-bs-toggle="modal"
-                                            data-bs-target="#modalEliminarUsuario" data-id="{{ $usuario->id }}"
-                                            data-name="{{ $usuario->name }}"
-                                            data-url="{{ route('usuarios.destroy', $usuario) }}">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
+                                            @elseif ($accion->slug === 'usuarios.password')
 
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-warning usuario-action-btn"
+                                                    title="{{ $accion->nombre }}"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalPasswordUsuario"
+                                                    data-id="{{ $usuario->id }}"
+                                                    data-name="{{ $usuario->name }}"
+                                                    data-url="{{ route('usuarios.password', $usuario) }}">
+                                                    {!! $accion->icono ?: '<i class="fa-solid fa-key"></i>' !!}
+                                                </button>
+
+                                            @elseif ($accion->slug === 'usuarios.roles')
+
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-success usuario-action-btn"
+                                                    title="{{ $accion->nombre }}"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalRolesUsuario"
+                                                    data-id="{{ $usuario->id }}"
+                                                    data-name="{{ $usuario->name }}"
+                                                    data-roles="{{ $usuario->roles->pluck('id')->implode(',') }}"
+                                                    data-url="{{ route('usuarios.roles', $usuario) }}">
+                                                    {!! $accion->icono ?: '<i class="fa-solid fa-user-shield"></i>' !!}
+                                                </button>
+
+                                            @elseif ($accion->slug === 'usuarios.eliminar')
+
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-danger usuario-action-btn"
+                                                    title="{{ $accion->nombre }}"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalEliminarUsuario"
+                                                    data-id="{{ $usuario->id }}"
+                                                    data-name="{{ $usuario->name }}"
+                                                    data-url="{{ route('usuarios.destroy', $usuario) }}">
+                                                    {!! $accion->icono ?: '<i class="fa-solid fa-trash"></i>' !!}
+                                                </button>
+                                            @endif
+                                        @endforeach
                                     </div>
                                 </td>
                             </tr>
-
                         @empty
                             <tr>
                                 <td colspan="4" class="text-center py-5">
@@ -116,13 +160,10 @@
                     @csrf
 
                     <div class="modal-body">
-
                         <div class="mb-3">
                             <label for="name" class="form-label">Nombre</label>
-
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
                                 name="name" value="{{ old('name') }}" required>
-
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -130,10 +171,8 @@
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Correo electrónico</label>
-
                             <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
                                 name="email" value="{{ old('email') }}" required>
-
                             @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -141,10 +180,8 @@
 
                         <div class="mb-3">
                             <label for="password" class="form-label">Contraseña</label>
-
                             <input type="password" class="form-control @error('password') is-invalid @enderror"
                                 id="password" name="password" required>
-
                             @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -152,7 +189,6 @@
 
                         <div>
                             <label for="password_confirmation" class="form-label">Confirmar contraseña</label>
-
                             <input type="password" class="form-control" id="password_confirmation"
                                 name="password_confirmation" required>
                         </div>

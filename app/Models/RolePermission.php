@@ -12,16 +12,12 @@ class RolePermission extends Model
 
     protected $fillable = [
         'role_id',
-        'accion_id',
+        'permission_type',
+        'permission_id',
     ];
 
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
-    }
-
-    public function accion(): BelongsTo
-    {
-        return $this->belongsTo(Accion::class);
     }
 }

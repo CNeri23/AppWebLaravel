@@ -16,17 +16,22 @@ return new class extends Migration
                 ->constrained('roles')
                 ->cascadeOnDelete();
 
-            $table->foreignId('accion_id')
-                ->constrained('acciones')
-                ->cascadeOnDelete();
+            $table->string('permission_type', 20);
+
+            $table->unsignedBigInteger('permission_id');
 
             $table->timestamps();
 
             $table->unique([
                 'role_id',
-                'accion_id',
+                'permission_type',
+                'permission_id',
             ]);
 
+            $table->index([
+                'permission_type',
+                'permission_id',
+            ]);
         });
     }
 

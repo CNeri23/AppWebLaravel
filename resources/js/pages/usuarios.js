@@ -86,35 +86,111 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    function actualizarBotonUsuario(
-        fila,
-        usuario
-    ) {
-        if (!fila || !usuario) {
-            return;
-        }
+    function escapeHtml(valor) {
+        const div =
+            document.createElement('div');
 
-        const botones =
-            fila.querySelectorAll(
-                '.usuario-action-btn'
-            );
+        div.textContent =
+            valor ?? '';
 
-        botones.forEach((boton) => {
-            boton.dataset.name =
-                usuario.name;
-
-            if (
-                boton.classList.contains(
-                    'btn-outline-primary'
-                )
-            ) {
-                boton.dataset.email =
-                    usuario.email;
-            }
-        });
+        return div.innerHTML;
     }
 
-    function crearFilaUsuario(usuario) {
+    function escapeAttribute(valor) {
+        return String(valor ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    function crearAccionesUsuario(usuario, urls) {
+        let html =
+            '<div class="usuario-actions">';
+
+        const acciones =
+            window.accionesUsuarios || [];
+
+        acciones.forEach(function (accion) {
+
+            if (accion.slug === 'usuarios.editar') {
+
+                html +=
+                    '<button type="button" ' +
+                    'class="btn btn-sm btn-outline-primary usuario-action-btn" ' +
+                    'title="' + escapeAttribute(accion.nombre) + '" ' +
+                    'data-bs-toggle="modal" ' +
+                    'data-bs-target="#modalEditarUsuario" ' +
+                    'data-id="' + escapeAttribute(usuario.id) + '" ' +
+                    'data-name="' + escapeAttribute(usuario.name) + '" ' +
+                    'data-email="' + escapeAttribute(usuario.email) + '" ' +
+                    'data-url="' + escapeAttribute(urls.update) + '">' +
+                    (accion.icono || '<i class="fa-solid fa-pen"></i>') +
+                    '</button>';
+            }
+
+            else if (accion.slug === 'usuarios.password') {
+
+                html +=
+                    '<button type="button" ' +
+                    'class="btn btn-sm btn-outline-warning usuario-action-btn" ' +
+                    'title="' + escapeAttribute(accion.nombre) + '" ' +
+                    'data-bs-toggle="modal" ' +
+                    'data-bs-target="#modalPasswordUsuario" ' +
+                    'data-id="' + escapeAttribute(usuario.id) + '" ' +
+                    'data-name="' + escapeAttribute(usuario.name) + '" ' +
+                    'data-url="' + escapeAttribute(urls.password) + '">' +
+                    (accion.icono || '<i class="fa-solid fa-key"></i>') +
+                    '</button>';
+            }
+
+            else if (accion.slug === 'usuarios.roles') {
+
+                const roles =
+                    usuario.roles
+                        ? usuario.roles
+                            .map((rol) => rol.id)
+                            .join(',')
+                        : '';
+
+                html +=
+                    '<button type="button" ' +
+                    'class="btn btn-sm btn-outline-success usuario-action-btn" ' +
+                    'title="' + escapeAttribute(accion.nombre) + '" ' +
+                    'data-bs-toggle="modal" ' +
+                    'data-bs-target="#modalRolesUsuario" ' +
+                    'data-id="' + escapeAttribute(usuario.id) + '" ' +
+                    'data-name="' + escapeAttribute(usuario.name) + '" ' +
+                    'data-roles="' + escapeAttribute(roles) + '" ' +
+                    'data-url="' + escapeAttribute(urls.roles) + '">' +
+                    (accion.icono || '<i class="fa-solid fa-user-shield"></i>') +
+                    '</button>';
+            }
+
+            else if (accion.slug === 'usuarios.eliminar') {
+
+                html +=
+                    '<button type="button" ' +
+                    'class="btn btn-sm btn-outline-danger usuario-action-btn" ' +
+                    'title="' + escapeAttribute(accion.nombre) + '" ' +
+                    'data-bs-toggle="modal" ' +
+                    'data-bs-target="#modalEliminarUsuario" ' +
+                    'data-id="' + escapeAttribute(usuario.id) + '" ' +
+                    'data-name="' + escapeAttribute(usuario.name) + '" ' +
+                    'data-url="' + escapeAttribute(urls.delete) + '">' +
+                    (accion.icono || '<i class="fa-solid fa-trash"></i>') +
+                    '</button>';
+            }
+
+        });
+
+        html +=
+            '</div>';
+
+        return html;
+    }
+
+    function crearFilaUsuario(usuario, urls = null) {
         const fila =
             document.createElement('tr');
 
@@ -149,12 +225,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 `${dia}/${mes}/${año} ${horas}:${minutos}`;
         }
 
-        const roles =
-            usuario.roles
-                ? usuario.roles
-                    .map((rol) => rol.id)
-                    .join(',')
-                : '';
+        const urlsUsuario =
+            urls || {
+                update: `/usuarios/${usuario.id}`,
+                password: `/usuarios/${usuario.id}/password`,
+                roles: `/usuarios/${usuario.id}/roles`,
+                delete: `/usuarios/${usuario.id}`,
+            };
 
         fila.innerHTML = `
             <td>
@@ -172,83 +249,19 @@ document.addEventListener('DOMContentLoaded', function () {
             </td>
 
             <td class="text-end px-4">
-                <div class="usuario-actions">
-
-                    <button type="button"
-                        class="btn btn-sm btn-outline-primary usuario-action-btn"
-                        title="Editar datos"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalEditarUsuario"
-                        data-id="${usuario.id}"
-                        data-name="${escapeAttribute(usuario.name)}"
-                        data-email="${escapeAttribute(usuario.email)}"
-                        data-url="/usuarios/${usuario.id}">
-                        <i class="fa-solid fa-pen"></i>
-                    </button>
-
-                    <button type="button"
-                        class="btn btn-sm btn-outline-warning usuario-action-btn"
-                        title="Cambiar contraseña"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalPasswordUsuario"
-                        data-id="${usuario.id}"
-                        data-name="${escapeAttribute(usuario.name)}"
-                        data-url="/usuarios/${usuario.id}/password">
-                        <i class="fa-solid fa-key"></i>
-                    </button>
-
-                    <button type="button"
-                        class="btn btn-sm btn-outline-success usuario-action-btn"
-                        title="Asignar roles"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalRolesUsuario"
-                        data-id="${usuario.id}"
-                        data-name="${escapeAttribute(usuario.name)}"
-                        data-roles="${roles}"
-                        data-url="/usuarios/${usuario.id}/roles">
-                        <i class="fa-solid fa-user-shield"></i>
-                    </button>
-
-                    <button type="button"
-                        class="btn btn-sm btn-outline-danger usuario-action-btn"
-                        title="Eliminar usuario"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalEliminarUsuario"
-                        data-id="${usuario.id}"
-                        data-name="${escapeAttribute(usuario.name)}"
-                        data-url="/usuarios/${usuario.id}">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-
-                </div>
+                ${crearAccionesUsuario(usuario, urlsUsuario)}
             </td>
         `;
 
         return fila;
     }
 
-    function escapeHtml(valor) {
-        const div =
-            document.createElement('div');
-
-        div.textContent =
-            valor ?? '';
-
-        return div.innerHTML;
-    }
-
-    function escapeAttribute(valor) {
-        return String(valor ?? '')
-            .replace(/&/g, '&amp;')
-            .replace(/"/g, '&quot;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-    }
-
     if (document.querySelector('#tablaUsuarios')) {
         tablaUsuarios = new DataTable(
             '#tablaUsuarios',
             {
+                autoWidth: false,
+
                 language: {
                     search: 'Buscar:',
                     lengthMenu: 'Mostrar _MENU_ registros',
@@ -274,14 +287,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 ],
 
                 order: [
-                    [1, 'asc']
+                    [0, 'asc']
                 ],
 
                 columnDefs: [
                     {
                         orderable: false,
                         searchable: false,
-                        targets: 3
+                        targets: 3,
+                        width: '20%'
                     }
                 ],
 
@@ -295,52 +309,158 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    function agregarUsuarioATabla(usuario) {
+    function ajustarFila(fila) {
+        if (!fila) {
+            return;
+        }
+
+        const celdas =
+            fila.children;
+
+        if (celdas.length < 4) {
+            return;
+        }
+
+        celdas[0].style.width = '27%';
+        celdas[1].style.width = '33%';
+        celdas[2].style.width = '20%';
+        celdas[3].style.width = '20%';
+
+        celdas[3].classList.add(
+            'text-end',
+            'px-4'
+        );
+
+        const acciones =
+            fila.querySelector(
+                '.usuario-actions'
+            );
+
+        if (acciones) {
+            acciones.style.width = '100%';
+            acciones.style.minWidth = '108px';
+        }
+    }
+
+    function ajustarTodasLasFilas() {
+        if (!tablaUsuarios) {
+            return;
+        }
+
+        tablaUsuarios
+            .rows()
+            .every(function () {
+                ajustarFila(
+                    this.node()
+                );
+            });
+    }
+
+    function actualizarBotonUsuario(
+        fila,
+        usuario
+    ) {
+        if (!fila || !usuario) {
+            return;
+        }
+
+        const botones =
+            fila.querySelectorAll(
+                '.usuario-action-btn'
+            );
+
+        botones.forEach((boton) => {
+            boton.dataset.name =
+                usuario.name;
+
+            if (
+                boton.dataset.id ===
+                String(usuario.id)
+            ) {
+                if (
+                    boton.dataset.email !== undefined
+                ) {
+                    boton.dataset.email =
+                        usuario.email;
+                }
+            }
+        });
+    }
+
+    function agregarUsuarioATabla(usuario, urls) {
         if (!tablaUsuarios) {
             return;
         }
 
         const fila =
-            crearFilaUsuario(usuario);
+            crearFilaUsuario(
+                usuario,
+                urls
+            );
 
         tablaUsuarios.row
             .add(fila)
             .draw(false);
+
+        ajustarTodasLasFilas();
+        tablaUsuarios.columns.adjust();
     }
 
-    function actualizarUsuarioEnTabla(usuario) {
+    function actualizarUsuarioEnTabla(usuario, urls) {
         if (!tablaUsuarios) {
             return;
         }
 
-        const filas =
-            tablaUsuarios.rows().nodes();
+        tablaUsuarios
+            .rows()
+            .every(function () {
 
-        filas.each(function (fila) {
-            const boton =
-                fila.querySelector(
-                    '.usuario-action-btn'
-                );
+                const fila =
+                    this.node();
 
-            if (
-                boton &&
-                boton.dataset.id ===
+                if (!fila) {
+                    return;
+                }
+
+                const boton =
+                    fila.querySelector(
+                        '.usuario-action-btn'
+                    );
+
+                if (
+                    boton &&
+                    boton.dataset.id ===
                     String(usuario.id)
-            ) {
-                fila.cells[0].textContent =
-                    usuario.name;
+                ) {
+                    const datos =
+                        this.data();
 
-                fila.cells[1].textContent =
-                    usuario.email;
+                    datos[0] =
+                        escapeHtml(
+                            usuario.name
+                        );
 
-                actualizarBotonUsuario(
-                    fila,
-                    usuario
-                );
-            }
-        });
+                    datos[1] =
+                        escapeHtml(
+                            usuario.email
+                        );
+
+                    datos[3] =
+                        crearAccionesUsuario(
+                            usuario,
+                            urls
+                        );
+
+                    this.data(
+                        datos
+                    );
+                }
+            });
 
         tablaUsuarios.draw(false);
+
+        ajustarTodasLasFilas();
+        tablaUsuarios.columns.adjust();
     }
 
     function actualizarRolesEnTabla(usuario) {
@@ -348,41 +468,48 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const filas =
-            tablaUsuarios.rows().nodes();
+        tablaUsuarios
+            .rows()
+            .every(function () {
 
-        filas.each(function (fila) {
-            const boton =
-                fila.querySelector(
-                    '.usuario-action-btn'
-                );
+                const fila =
+                    this.node();
 
-            if (
-                boton &&
-                boton.dataset.id ===
-                    String(usuario.id)
-            ) {
-                const roles =
-                    usuario.roles
-                        ? usuario.roles
-                            .map((rol) => rol.id)
-                            .join(',')
-                        : '';
+                if (!fila) {
+                    return;
+                }
 
-                const botonRoles =
+                const boton =
                     fila.querySelector(
-                        '.btn-outline-success'
+                        '.usuario-action-btn'
                     );
 
-                if (botonRoles) {
-                    botonRoles.dataset.roles =
-                        roles;
+                if (
+                    boton &&
+                    boton.dataset.id ===
+                    String(usuario.id)
+                ) {
+                    const roles =
+                        usuario.roles
+                            ? usuario.roles
+                                .map((rol) => rol.id)
+                                .join(',')
+                            : '';
 
-                    botonRoles.dataset.name =
-                        usuario.name;
+                    const botonRoles =
+                        fila.querySelector(
+                            '[data-bs-target="#modalRolesUsuario"]'
+                        );
+
+                    if (botonRoles) {
+                        botonRoles.dataset.roles =
+                            roles;
+
+                        botonRoles.dataset.name =
+                            usuario.name;
+                    }
                 }
-            }
-        });
+            });
     }
 
     function eliminarUsuarioDeTabla(id) {
@@ -390,27 +517,157 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const filas =
-            tablaUsuarios.rows().nodes();
+        tablaUsuarios
+            .rows()
+            .every(function () {
 
-        filas.each(function (fila) {
-            const boton =
-                fila.querySelector(
-                    '.usuario-action-btn'
-                );
+                const fila =
+                    this.node();
 
-            if (
-                boton &&
-                boton.dataset.id ===
+                if (!fila) {
+                    return;
+                }
+
+                const boton =
+                    fila.querySelector(
+                        '.usuario-action-btn'
+                    );
+
+                if (
+                    boton &&
+                    boton.dataset.id ===
                     String(id)
-            ) {
-                tablaUsuarios
-                    .row(fila)
-                    .remove();
-            }
-        });
+                ) {
+                    this.remove();
+                }
+            });
 
         tablaUsuarios.draw(false);
+
+        ajustarTodasLasFilas();
+    }
+
+    function actualizarAccionesDesdeServidor(
+        nombreUsuario
+    ) {
+        if (!tablaUsuarios) {
+            return Promise.resolve();
+        }
+
+        return fetch(
+            window.location.href,
+            {
+                method: 'GET',
+                headers: {
+                    'Accept': 'text/html',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                cache: 'no-store',
+            }
+        )
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error(
+                        'No se pudieron actualizar las acciones.'
+                    );
+                }
+
+                return response.text();
+            })
+            .then(function (html) {
+                const parser =
+                    new DOMParser();
+
+                const documento =
+                    parser.parseFromString(
+                        html,
+                        'text/html'
+                    );
+
+                const filasServidor =
+                    documento.querySelectorAll(
+                        '#tablaUsuarios tbody tr'
+                    );
+
+                let filaServidor = null;
+
+                filasServidor.forEach(
+                    function (fila) {
+
+                        const celdaNombre =
+                            fila.children[0];
+
+                        if (
+                            celdaNombre &&
+                            celdaNombre.textContent.trim() ===
+                            nombreUsuario.trim()
+                        ) {
+                            filaServidor =
+                                fila;
+                        }
+                    }
+                );
+
+                if (!filaServidor) {
+                    return;
+                }
+
+                const celdaAccionesServidor =
+                    filaServidor.children[3];
+
+                if (!celdaAccionesServidor) {
+                    return;
+                }
+
+                let filaDataTable = null;
+
+                tablaUsuarios
+                    .rows()
+                    .every(function () {
+
+                        const datos =
+                            this.data();
+
+                        const contenedor =
+                            document.createElement(
+                                'div'
+                            );
+
+                        contenedor.innerHTML =
+                            datos[0] || '';
+
+                        const nombreActual =
+                            contenedor.textContent.trim();
+
+                        if (
+                            nombreActual ===
+                            nombreUsuario.trim()
+                        ) {
+                            filaDataTable =
+                                this;
+                        }
+                    });
+
+                if (!filaDataTable) {
+                    return;
+                }
+
+                const datos =
+                    filaDataTable.data();
+
+                datos[3] =
+                    celdaAccionesServidor.innerHTML;
+
+                filaDataTable.data(
+                    datos
+                );
+
+                filaDataTable
+                    .draw(false);
+
+                ajustarTodasLasFilas();
+                tablaUsuarios.columns.adjust();
+            });
     }
 
     const modalEditar =
@@ -567,6 +824,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 document.getElementById(
+                    'eliminar_id'
+                ).value =
+                    button.dataset.id;
+
+                document.getElementById(
                     'eliminar_nombre'
                 ).textContent =
                     button.dataset.name;
@@ -649,7 +911,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 )
                     .then((data) => {
                         agregarUsuarioATabla(
-                            data.usuario
+                            data.usuario,
+                            data.urls
                         );
 
                         formNuevoUsuario.reset();
@@ -677,7 +940,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 )
                     .then((data) => {
                         actualizarUsuarioEnTabla(
-                            data.usuario
+                            data.usuario,
+                            data.urls
                         );
                     })
                     .catch(mostrarError);
@@ -746,9 +1010,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById(
                         'formEliminarUsuario'
                     )
-                    .querySelector(
-                        'input[name="id"]'
-                    )?.value;
+                        .querySelector(
+                            'input[name="id"]'
+                        )?.value;
 
                 enviarFormulario(
                     formEliminarUsuario,
@@ -764,4 +1028,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         );
     }
+
+    ajustarTodasLasFilas();
 });

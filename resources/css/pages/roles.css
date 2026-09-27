@@ -3,3 +3,185 @@
     gap: 6px;
     white-space: nowrap;
 }
+
+.permisos-tree {
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 8px;
+    background: #fff;
+    max-height: 430px;
+    overflow-y: auto;
+}
+
+.permisos-tree-node {
+    margin: 1px 0;
+}
+
+.permisos-tree-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 6px 10px;
+    border-radius: 7px;
+    transition:
+        background-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.permisos-tree-row:hover {
+    background-color: #f5f8fc;
+}
+
+.permisos-tree-row.modulo {
+    font-weight: 600;
+}
+
+.permisos-tree-row.submodulo {
+    padding-left: 34px;
+}
+
+.permisos-tree-row.accion {
+    padding-left: 58px;
+}
+
+.permisos-tree-toggle {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #6c757d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 22px;
+}
+
+.permisos-tree-toggle:hover {
+    color: #2f71aa;
+}
+
+.permisos-tree-toggle i {
+    transition: transform 0.15s ease;
+}
+
+.permisos-tree-toggle.collapsed i {
+    transform: rotate(-90deg);
+}
+
+.permisos-tree-spacer {
+    width: 22px;
+    flex: 0 0 22px;
+}
+
+.permisos-tree-icon {
+    width: 20px;
+    text-align: center;
+    color: #2f71aa;
+    flex: 0 0 20px;
+}
+
+.permisos-tree-row.submodulo .permisos-tree-icon {
+    color: #6c757d;
+}
+
+.permisos-tree-row.accion .permisos-tree-icon {
+    color: #8a94a6;
+}
+
+.permisos-tree-label {
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+}
+
+.permisos-tree-label small {
+    display: block;
+    font-weight: 400;
+    color: #6c757d;
+    margin-top: 1px;
+}
+
+.permisos-tree-children {
+    display: block;
+}
+
+.permisos-tree-children.collapsed {
+    display: none;
+}
+
+.permisos-tree input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    margin: 0;
+    cursor: pointer;
+    flex: 0 0 17px;
+}
+
+.permisos-tree-loading {
+    color: #6c757d;
+}
+
+[data-bs-theme="dark"] .permisos-tree {
+    border-color: #334155;
+    background: #1e293b;
+}
+
+[data-bs-theme="dark"] .permisos-tree-row:hover {
+    background-color: #27364a;
+}
+
+[data-bs-theme="dark"] .permisos-tree-toggle {
+    color: #94a3b8;
+}
+
+[data-bs-theme="dark"] .permisos-tree-toggle:hover {
+    color: #6ea8fe;
+}
+
+[data-bs-theme="dark"] .permisos-tree-icon {
+    color: #6ea8fe;
+}
+
+[data-bs-theme="dark"] .permisos-tree-row.submodulo .permisos-tree-icon {
+    color: #aab4c3;
+}
+
+[data-bs-theme="dark"] .permisos-tree-row.accion .permisos-tree-icon {
+    color: #8895a7;
+}
+
+[data-bs-theme="dark"] .permisos-tree-label small {
+    color: #94a3b8;
+}
+
+[data-bs-theme="dark"] .permisos-tree-loading {
+    color: #94a3b8;
+}
+
+[data-bs-theme="dark"] .permisos-tree input[type="checkbox"] {
+    background-color: #1e293b;
+    border-color: #64748b;
+}
+
+[data-bs-theme="dark"] .permisos-tree input[type="checkbox"]:checked {
+    background-color: #2f71aa;
+    border-color: #2f71aa;
+}
+
+
+@media (max-width: 576px) {
+
+    .permisos-tree {
+        max-height: 55vh;
+    }
+
+    .permisos-tree-row.submodulo {
+        padding-left: 25px;
+    }
+
+    .permisos-tree-row.accion {
+        padding-left: 42px;
+    }
+}

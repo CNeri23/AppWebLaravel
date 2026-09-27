@@ -1,25 +1,43 @@
 @php
-$horaActual = now('America/Mexico_City')->hour;
+    $horaActual = now('America/Mexico_City')->hour;
 
-if ($horaActual < 12) {
-    $greeting = 'Buenos días';
-} elseif ($horaActual < 19) {
-    $greeting = 'Buenas tardes';
-} else {
-    $greeting = 'Buenas noches';
-}
-
-$modulosMenu = \App\Models\Modulo::with([
-    'submodulos' => function ($query) {
-        $query->where('activo', true)
-            ->orderBy('orden')
-            ->orderBy('nombre');
+    if ($horaActual < 12) {
+        $greeting = 'Buenos días';
+    } elseif ($horaActual < 19) {
+        $greeting = 'Buenas tardes';
+    } else {
+        $greeting = 'Buenas noches';
     }
-])
-    ->where('activo', true)
-    ->orderBy('orden')
-    ->orderBy('nombre')
-    ->get();
+
+    $usuarioActual = auth()->user();
+
+    $permisosUsuario = $usuarioActual->permissions();
+
+    $modulosPermitidos = $permisosUsuario
+        ->where('permission_type', 'modulo')
+        ->pluck('permission_id');
+
+    $submodulosPermitidos = $permisosUsuario
+        ->where('permission_type', 'submodulo')
+        ->pluck('permission_id');
+
+    $modulosMenu = \App\Models\Modulo::with([
+        'submodulos' => function ($query) use ($submodulosPermitidos) {
+            $query
+                ->where('activo', true)
+                ->whereIn('id', $submodulosPermitidos)
+                ->orderBy('orden')
+                ->orderBy('nombre');
+        }
+    ])
+        ->where('activo', true)
+        ->whereIn('id', $modulosPermitidos)
+        ->orderBy('orden')
+        ->orderBy('nombre')
+        ->get()
+        ->filter(function ($modulo) {
+            return $modulo->submodulos->isNotEmpty();
+        });
 
 @endphp
 
@@ -81,6 +99,7 @@ $modulosMenu = \App\Models\Modulo::with([
             @foreach ($modulosMenu as $modulo)
                 @php
                     $idAcordeon = 'moduloMenu' . $modulo->id;
+
                     $tieneSubmoduloActivo = $modulo->submodulos->contains(
                         fn($submodulo) =>
                             $submodulo->ruta &&
@@ -88,10 +107,9 @@ $modulosMenu = \App\Models\Modulo::with([
                     );
                 @endphp
 
-                {{-- Módulos --}}
+                {{-- Módulo --}}
                 <button type="button" class="sidebar-group-toggle {{ $tieneSubmoduloActivo ? 'active' : '' }}"
-                    data-modulo-id="{{ $modulo->id }}"
-                    data-bs-toggle="collapse" data-bs-target="#{{ $idAcordeon }}"
+                    data-modulo-id="{{ $modulo->id }}" data-bs-toggle="collapse" data-bs-target="#{{ $idAcordeon }}"
                     aria-expanded="{{ $tieneSubmoduloActivo ? 'true' : 'false' }}" aria-controls="{{ $idAcordeon }}">
 
                     @if ($modulo->icono)
@@ -101,26 +119,29 @@ $modulosMenu = \App\Models\Modulo::with([
                     @endif
 
                     <span>{{ $modulo->nombre }}</span>
+
                     <i class="fa-solid fa-chevron-down sidebar-group-caret"></i>
                 </button>
 
                 {{-- Submódulos --}}
-                <div class="collapse sidebar-submenu {{ $tieneSubmoduloActivo ? 'show' : '' }}"
-                    id="{{ $idAcordeon }}" data-modulo-id="{{ $modulo->id }}">
-                    @forelse ($modulo->submodulos as $submodulo)
+                <div class="collapse sidebar-submenu {{ $tieneSubmoduloActivo ? 'show' : '' }}" id="{{ $idAcordeon }}"
+                    data-modulo-id="{{ $modulo->id }}">
+
+                    @foreach ($modulo->submodulos as $submodulo)
                         @php
                             $url = $submodulo->ruta &&
                                 \Illuminate\Support\Facades\Route::has($submodulo->ruta)
                                 ? route($submodulo->ruta)
                                 : '#';
-                            $esActivo = $url !== '#' && request()->routeIs($submodulo->ruta);
+
+                            $esActivo = $url !== '#' &&
+                                request()->routeIs($submodulo->ruta);
                         @endphp
 
                         <a href="{{ $url }}"
                             class="sidebar-sublink {{ $esActivo ? 'active' : '' }} {{ $url === '#' ? 'sidebar-link-pendiente' : '' }}"
-                            data-submodulo-id="{{ $submodulo->id }}"
-                            data-modulo-id="{{ $modulo->id }}"
-                            @if ($url === '#') title="Este submódulo aún no tiene una ruta configurada" @endif>
+                            data-submodulo-id="{{ $submodulo->id }}" data-modulo-id="{{ $modulo->id }}" @if ($url === '#')
+                            title="Este submódulo aún no tiene una ruta configurada" @endif>
 
                             @if ($submodulo->icono)
                                 {!! $submodulo->icono !!}
@@ -129,9 +150,10 @@ $modulosMenu = \App\Models\Modulo::with([
                             @endif
 
                             <span>{{ $submodulo->nombre }}</span>
+
                         </a>
-                    @empty
-                    @endforelse
+                    @endforeach
+
                 </div>
             @endforeach
 

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Accion;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\AuditLogService;
+use App\Services\PermissionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
@@ -19,7 +21,38 @@ class UserController extends Controller
 
         $roles = Role::orderBy('name')->get();
 
-        return view('usuarios.index', compact('usuarios', 'roles'));
+        $submoduloUsuarios = \App\Models\Submodulo::with([
+            'acciones' => function ($query) {
+                $query
+                    ->where('activo', true)
+                    ->orderBy('orden')
+                    ->orderBy('nombre');
+            }
+        ])
+            ->where('slug', 'usuarios')
+            ->where('activo', true)
+            ->first();
+
+        $permissionService = app(PermissionService::class);
+
+        $accionesUsuarios = collect();
+
+        if ($submoduloUsuarios) {
+            $accionesUsuarios = $submoduloUsuarios->acciones
+                ->filter(function ($accion) use ($permissionService) {
+                    return $permissionService->tieneAccion(
+                        auth()->user(),
+                        $accion->id
+                    );
+                })
+                ->values();
+        }
+
+        return view('usuarios.index', compact(
+            'usuarios',
+            'roles',
+            'accionesUsuarios'
+        ));
     }
 
     public function store(Request $request)
@@ -50,6 +83,12 @@ class UserController extends Controller
             'success' => true,
             'mensaje' => 'Usuario creado correctamente.',
             'usuario' => $usuario,
+            'urls' => [
+                'update' => route('usuarios.update', $usuario),
+                'password' => route('usuarios.password', $usuario),
+                'roles' => route('usuarios.roles', $usuario),
+                'delete' => route('usuarios.destroy', $usuario),
+            ],
         ]);
     }
 
@@ -98,6 +137,12 @@ class UserController extends Controller
             'success' => true,
             'mensaje' => 'Datos del usuario actualizados correctamente.',
             'usuario' => $usuario,
+            'urls' => [
+                'update' => route('usuarios.update', $usuario),
+                'password' => route('usuarios.password', $usuario),
+                'roles' => route('usuarios.roles', $usuario),
+                'delete' => route('usuarios.destroy', $usuario),
+            ],
         ]);
     }
 

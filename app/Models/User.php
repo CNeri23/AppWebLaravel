@@ -35,20 +35,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
-    public function acciones()
+    public function permissions()
     {
-        return $this->roles()
-            ->with('acciones')
-            ->get()
-            ->pluck('acciones')
-            ->flatten()
-            ->unique('id')
-            ->values();
-    }
-
-    public function tienePermiso(string $permiso): bool
-    {
-        return $this->acciones()
-            ->contains('slug', $permiso);
+        return RolePermission::query()
+            ->whereIn('role_id', $this->roles()->pluck('roles.id'))
+            ->get();
     }
 }
