@@ -343,3 +343,122 @@ a.link-muted:hover {
 .form-control:-moz-ui-invalid {
     box-shadow: none;
 }
+
+.auth-form-stage {
+    position: relative;
+    width: 100%;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+}
+
+.auth-form-stage {
+    position: relative;
+    width: 100%;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+}
+
+.auth-panel {
+    width: 100%;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+
+.auth-panel:not(.auth-panel-active) {
+    display: none;
+}
+
+.auth-panel.auth-panel-enter {
+    animation: authPanelEnter 0.28s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.auth-panel.auth-panel-exit {
+    animation: authPanelExit 0.28s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes authPanelExit {
+    0% {
+        opacity: 1;
+        transform: rotateY(0deg);
+    }
+
+    45% {
+        opacity: 0.5;
+        transform: rotateY(70deg);
+    }
+
+    100% {
+        opacity: 0;
+        transform: rotateY(90deg);
+    }
+}
+
+@keyframes authPanelEnter {
+    0% {
+        opacity: 0;
+        transform: rotateY(-90deg);
+    }
+
+    55% {
+        opacity: 0.5;
+        transform: rotateY(-35deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: rotateY(0deg);
+    }
+}
+
+.auth-switch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 22px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.auth-link {
+    appearance: none;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--accent);
+    font: inherit;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.auth-link:hover {
+    color: var(--accent-hover);
+}
+
+.auth-link:active {
+    transform: scale(0.97);
+}
+
+button.auth-link.link-muted {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+button.auth-link.link-muted:hover {
+    color: var(--accent);
+}
+
+.auth-panel .login-footer {
+    margin-top: 22px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .auth-panel.auth-panel-enter,
+    .auth-panel.auth-panel-exit {
+        animation-duration: 0.01ms;
+    }
+}

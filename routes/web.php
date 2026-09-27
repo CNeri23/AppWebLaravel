@@ -20,6 +20,18 @@ Route::get('/login', [LoginController::class, 'showLogin'])
 Route::post('/login', [LoginController::class, 'login'])
     ->name('login.submit');
 
+Route::post('/registro', [LoginController::class, 'register'])
+    ->name('register');
+
+Route::post('/recuperar-password', [LoginController::class, 'forgotPassword'])
+    ->name('password.email');
+
+Route::get('/restablecer-password/{token}', [LoginController::class, 'showResetPassword'])
+    ->name('password.reset');
+
+Route::post('/restablecer-password', [LoginController::class, 'resetPassword'])
+    ->name('password.update');
+
 Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
