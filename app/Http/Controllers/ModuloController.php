@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Modulo;
+use App\Models\Submodulo;
 use App\Services\AuditLogService;
+use App\Services\PermissionService;
 use Illuminate\Http\Request;
 
 class ModuloController extends Controller
@@ -27,8 +29,36 @@ class ModuloController extends Controller
             ->orderBy('orden')
             ->orderBy('nombre')
             ->get();
+            
+        $submoduloModulos = Submodulo::with([
+            'acciones' => function ($query) {
+                $query
+                    ->where('activo', true)
+                    ->orderBy('orden')
+                    ->orderBy('nombre');
+            }
+        ])
+            ->where('slug', 'modulos')
+            ->where('activo', true)
+            ->first();
 
-        return view('modulos.index', compact('modulos'));
+        $permissionService = app(PermissionService::class);
+
+        $accionesModulos = collect();
+
+        if ($submoduloModulos) {
+            $accionesModulos = $submoduloModulos->acciones
+                ->filter(function ($accion) use ($permissionService) {
+                    return $permissionService->tieneAccion(
+                        auth()->user(),
+                        $accion->id
+                    );
+                })
+                ->pluck('slug')
+                ->values();
+        }
+
+        return view('modulos.index', compact('modulos', 'accionesModulos'));
     }
 
     public function store(Request $request)

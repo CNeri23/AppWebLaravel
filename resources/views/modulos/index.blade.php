@@ -8,10 +8,12 @@
             <p class="text-secondary mb-0">Administración de los módulos principales del sistema.</p>
         </div>
 
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoModulo">
-            <i class="fa-solid fa-layer-group me-2"></i>
-            Nuevo módulo
-        </button>
+        @if ($accionesModulos->contains('modulos.crear'))
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoModulo">
+                <i class="fa-solid fa-layer-group me-2"></i>
+                Nuevo módulo
+            </button>
+        @endif
     </div>
 
     <div class="card border-0 shadow-sm">
@@ -53,12 +55,14 @@
                                 <span class="tree-badge">Inactivo</span>
                             @endunless
 
-                            <button type="button" class="tree-more-btn" data-action="abrir-menu"
-                                aria-label="Más acciones para {{ $modulo->nombre }}">
+                            @if ($accionesModulos->intersect(['modulos.activar', 'modulos.editar', 'modulos.reordenar', 'submodulos.crear', 'modulos.eliminar'])->isNotEmpty())
+                                <button type="button" class="tree-more-btn" data-action="abrir-menu"
+                                    aria-label="Más acciones para {{ $modulo->nombre }}">
 
-                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
 
-                            </button>
+                                </button>
+                            @endif
 
                         </div>
 
@@ -105,12 +109,14 @@
                                                 <span class="tree-badge">Inactivo</span>
                                             @endunless
 
-                                            <button type="button" class="tree-more-btn submodulo-more-btn" data-action="abrir-menu"
-                                                aria-label="Más acciones para {{ $submodulo->nombre }}">
+                                            @if ($accionesModulos->intersect(['submodulos.activar', 'submodulos.editar', 'submodulos.reordenar', 'acciones.crear', 'submodulos.eliminar'])->isNotEmpty())
+                                                <button type="button" class="tree-more-btn submodulo-more-btn" data-action="abrir-menu"
+                                                    aria-label="Más acciones para {{ $submodulo->nombre }}">
 
-                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                    <i class="fa-solid fa-ellipsis-vertical"></i>
 
-                                            </button>
+                                                </button>
+                                            @endif
 
                                         </div>
 
@@ -158,12 +164,14 @@
                                                                 <span class="tree-badge">Inactiva</span>
                                                             @endunless
 
-                                                            <button type="button" class="tree-more-btn accion-more-btn" data-action="abrir-menu"
-                                                                aria-label="Más acciones para {{ $accion->nombre }}">
+                                                            @if ($accionesModulos->intersect(['acciones.activar', 'acciones.editar', 'acciones.reordenar', 'acciones.eliminar'])->isNotEmpty())
+                                                                <button type="button" class="tree-more-btn accion-more-btn" data-action="abrir-menu"
+                                                                    aria-label="Más acciones para {{ $accion->nombre }}">
 
-                                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                                    <i class="fa-solid fa-ellipsis-vertical"></i>
 
-                                                            </button>
+                                                                </button>
+                                                            @endif
 
                                                         </div>
 
@@ -204,41 +212,51 @@
     {{-- MENÚ CONTEXTUAL MÓDULO --}}
     <div class="context-menu" id="moduloContextMenu">
 
-        <div class="context-menu-item" data-action="toggle">
-            <i class="fa-solid fa-power-off"></i>
-            <span class="context-menu-label" data-role="toggle-label">Desactivar</span>
-        </div>
+        @if ($accionesModulos->contains('modulos.toggle'))
+            <div class="context-menu-item" data-action="toggle">
+                <i class="fa-solid fa-power-off"></i>
+                <span class="context-menu-label" data-role="toggle-label">Desactivar</span>
+            </div>
+        @endif
 
-        <div class="context-menu-item" data-action="editar">
-            <i class="fa-solid fa-pen"></i>
-            <span>Editar</span>
-        </div>
+        @if ($accionesModulos->contains('modulos.editar'))
+            <div class="context-menu-item" data-action="editar">
+                <i class="fa-solid fa-pen"></i>
+                <span>Editar</span>
+            </div>
+        @endif
 
-        <div class="context-menu-divider"></div>
+        @if ($accionesModulos->contains('modulos.reordenar'))
+            <div class="context-menu-divider"></div>
 
-        <div class="context-menu-item" data-action="subir">
-            <i class="fa-solid fa-arrow-up"></i>
-            <span>Subir</span>
-        </div>
+            <div class="context-menu-item" data-action="subir">
+                <i class="fa-solid fa-arrow-up"></i>
+                <span>Subir</span>
+            </div>
 
-        <div class="context-menu-item" data-action="bajar">
-            <i class="fa-solid fa-arrow-down"></i>
-            <span>Bajar</span>
-        </div>
+            <div class="context-menu-item" data-action="bajar">
+                <i class="fa-solid fa-arrow-down"></i>
+                <span>Bajar</span>
+            </div>
+        @endif
 
-        <div class="context-menu-divider"></div>
+        @if ($accionesModulos->contains('submodulos.crear'))
+            <div class="context-menu-divider"></div>
 
-        <div class="context-menu-item" data-action="nuevo-submodulo">
-            <i class="fa-solid fa-folder-plus"></i>
-            <span>Nuevo submódulo</span>
-        </div>
+            <div class="context-menu-item" data-action="nuevo-submodulo">
+                <i class="fa-solid fa-folder-plus"></i>
+                <span>Nuevo submódulo</span>
+            </div>
+        @endif
 
-        <div class="context-menu-divider"></div>
+        @if ($accionesModulos->contains('modulos.eliminar'))
+            <div class="context-menu-divider"></div>
 
-        <div class="context-menu-item danger" data-action="eliminar">
-            <i class="fa-solid fa-trash"></i>
-            <span>Eliminar</span>
-        </div>
+            <div class="context-menu-item danger" data-action="eliminar">
+                <i class="fa-solid fa-trash"></i>
+                <span>Eliminar</span>
+            </div>
+        @endif
 
     </div>
 
@@ -246,41 +264,51 @@
     {{-- MENÚ CONTEXTUAL SUBMÓDULO --}}
     <div class="context-menu" id="submoduloContextMenu">
 
-        <div class="context-menu-item" data-action="toggle">
-            <i class="fa-solid fa-power-off"></i>
-            <span class="context-menu-label" data-role="toggle-label">Desactivar</span>
-        </div>
+        @if ($accionesModulos->contains('submodulos.toggle'))
+            <div class="context-menu-item" data-action="toggle">
+                <i class="fa-solid fa-power-off"></i>
+                <span class="context-menu-label" data-role="toggle-label">Desactivar</span>
+            </div>
+        @endif
 
-        <div class="context-menu-item" data-action="editar">
-            <i class="fa-solid fa-pen"></i>
-            <span>Editar</span>
-        </div>
+        @if ($accionesModulos->contains('submodulos.editar'))
+            <div class="context-menu-item" data-action="editar">
+                <i class="fa-solid fa-pen"></i>
+                <span>Editar</span>
+            </div>
+        @endif
 
-        <div class="context-menu-divider"></div>
+        @if ($accionesModulos->contains('submodulos.reordenar'))
+            <div class="context-menu-divider"></div>
 
-        <div class="context-menu-item" data-action="subir">
-            <i class="fa-solid fa-arrow-up"></i>
-            <span>Subir</span>
-        </div>
+            <div class="context-menu-item" data-action="subir">
+                <i class="fa-solid fa-arrow-up"></i>
+                <span>Subir</span>
+            </div>
 
-        <div class="context-menu-item" data-action="bajar">
-            <i class="fa-solid fa-arrow-down"></i>
-            <span>Bajar</span>
-        </div>
+            <div class="context-menu-item" data-action="bajar">
+                <i class="fa-solid fa-arrow-down"></i>
+                <span>Bajar</span>
+            </div>
+        @endif
 
-        <div class="context-menu-divider"></div>
+        @if ($accionesModulos->contains('acciones.crear'))
+            <div class="context-menu-divider"></div>
 
-        <div class="context-menu-item" data-action="nuevo-accion">
-            <i class="fa-solid fa-bolt"></i>
-            <span>Nueva acción</span>
-        </div>
+            <div class="context-menu-item" data-action="nuevo-accion">
+                <i class="fa-solid fa-bolt"></i>
+                <span>Nueva acción</span>
+            </div>
+        @endif
 
-        <div class="context-menu-divider"></div>
+        @if ($accionesModulos->contains('submodulos.eliminar'))
+            <div class="context-menu-divider"></div>
 
-        <div class="context-menu-item danger" data-action="eliminar">
-            <i class="fa-solid fa-trash"></i>
-            <span>Eliminar</span>
-        </div>
+            <div class="context-menu-item danger" data-action="eliminar">
+                <i class="fa-solid fa-trash"></i>
+                <span>Eliminar</span>
+            </div>
+        @endif
 
     </div>
 
@@ -288,34 +316,42 @@
     {{-- MENÚ CONTEXTUAL ACCIÓN --}}
     <div class="context-menu" id="accionContextMenu">
 
-        <div class="context-menu-item" data-action="toggle">
-            <i class="fa-solid fa-power-off"></i>
-            <span class="context-menu-label" data-role="toggle-label">Desactivar</span>
-        </div>
+        @if ($accionesModulos->contains('acciones.toggle'))
+            <div class="context-menu-item" data-action="toggle">
+                <i class="fa-solid fa-power-off"></i>
+                <span class="context-menu-label" data-role="toggle-label">Desactivar</span>
+            </div>
+        @endif
 
-        <div class="context-menu-item" data-action="editar">
-            <i class="fa-solid fa-pen"></i>
-            <span>Editar</span>
-        </div>
+        @if ($accionesModulos->contains('acciones.editar'))
+            <div class="context-menu-item" data-action="editar">
+                <i class="fa-solid fa-pen"></i>
+                <span>Editar</span>
+            </div>
+        @endif
 
-        <div class="context-menu-divider"></div>
+        @if ($accionesModulos->contains('acciones.reordenar'))
+            <div class="context-menu-divider"></div>
 
-        <div class="context-menu-item" data-action="subir">
-            <i class="fa-solid fa-arrow-up"></i>
-            <span>Subir</span>
-        </div>
+            <div class="context-menu-item" data-action="subir">
+                <i class="fa-solid fa-arrow-up"></i>
+                <span>Subir</span>
+            </div>
 
-        <div class="context-menu-item" data-action="bajar">
-            <i class="fa-solid fa-arrow-down"></i>
-            <span>Bajar</span>
-        </div>
+            <div class="context-menu-item" data-action="bajar">
+                <i class="fa-solid fa-arrow-down"></i>
+                <span>Bajar</span>
+            </div>
+        @endif
 
-        <div class="context-menu-divider"></div>
+        @if ($accionesModulos->contains('acciones.eliminar'))
+            <div class="context-menu-divider"></div>
 
-        <div class="context-menu-item danger" data-action="eliminar">
-            <i class="fa-solid fa-trash"></i>
-            <span>Eliminar</span>
-        </div>
+            <div class="context-menu-item danger" data-action="eliminar">
+                <i class="fa-solid fa-trash"></i>
+                <span>Eliminar</span>
+            </div>
+        @endif
 
     </div>
 

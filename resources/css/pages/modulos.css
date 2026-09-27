@@ -1,26 +1,26 @@
 .modulos-treeview {
     width: 100%;
-    padding: 10px 6px 10px 2px;
+    padding: 14px 10px 14px 4px;
 }
 
 .tree-node {
     position: relative;
     width: 100%;
-    padding-left: 26px;
+    padding-left: 28px;
 }
 
 .tree-node::before,
 .tree-node::after {
     content: '';
     position: absolute;
-    left: 9px;
+    left: 10px;
 }
 
 .tree-node::before {
     top: 0;
     bottom: 0;
     width: 0;
-    border-left: 1.5px dashed rgba(47, 113, 170, 0.28);
+    border-left: 1.5px solid rgba(47, 113, 170, 0.16);
 }
 
 .tree-node:last-child::before {
@@ -28,30 +28,32 @@
 }
 
 .tree-node::after {
-    top: 21px;
-    width: 15px;
+    top: 23px;
+    width: 16px;
     height: 0;
-    border-top: 1.5px dashed rgba(47, 113, 170, 0.28);
+    border-top: 1.5px solid rgba(47, 113, 170, 0.16);
 }
 
 .tree-item {
     position: relative;
     display: flex;
     align-items: center;
-    min-height: 42px;
-    padding: 6px 40px 6px 8px;
-    margin: 1px 0;
-    border-radius: 6px;
+    gap: 4px;
+    min-height: 46px;
+    padding: 6px 44px 6px 10px;
+    margin: 2px 0;
+    border-radius: 10px;
     cursor: pointer;
     transition:
         background-color 0.15s ease,
-        color 0.15s ease,
-        box-shadow 0.15s ease;
+        box-shadow 0.15s ease,
+        transform 0.15s ease;
 }
 
 .tree-item:hover,
 .tree-item:focus-visible {
     background-color: rgba(47, 113, 170, 0.07);
+    transform: translateX(1px);
 }
 
 .tree-item:focus-visible {
@@ -60,13 +62,20 @@
 }
 
 .tree-folder {
-    width: 26px;
-    min-width: 26px;
-    text-align: center;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    margin-right: 4px;
+    background: rgba(47, 113, 170, 0.1);
     color: #2f71aa;
-    font-size: 16px;
+    font-size: 14px;
     transition:
         color 0.15s ease,
+        background-color 0.15s ease,
         transform 0.15s ease;
 }
 
@@ -90,11 +99,12 @@
 }
 
 .tree-item:hover .tree-folder {
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(1.04);
 }
 
 .tree-item.selected {
-    background-color: rgba(47, 113, 170, 0.1);
+    background-color: rgba(47, 113, 170, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(47, 113, 170, 0.18);
 }
 
 .tree-item.selected .tree-name {
@@ -102,7 +112,8 @@
 }
 
 .tree-item.selected .tree-folder {
-    color: #2f71aa;
+    color: #ffffff;
+    background: #2f71aa;
 }
 
 .tree-item.is-inactive {
@@ -114,7 +125,12 @@
     background-color: rgba(217, 119, 6, 0.06);
 }
 
-.tree-item.is-inactive .tree-folder,
+.tree-item.is-inactive .tree-folder {
+    color: #94a3b8;
+    background: rgba(148, 163, 184, 0.14);
+    opacity: 0.9;
+}
+
 .tree-item.is-inactive .tree-icon {
     color: #94a3b8;
     opacity: 0.75;
@@ -130,7 +146,12 @@
     box-shadow: inset 3px 0 0 #d97706;
 }
 
-.tree-item.is-inactive.selected .tree-folder,
+.tree-item.is-inactive.selected .tree-folder {
+    color: #ffffff;
+    background: #d97706;
+    opacity: 1;
+}
+
 .tree-item.is-inactive.selected .tree-icon {
     color: #d97706;
     opacity: 1;
@@ -318,7 +339,7 @@
 }
 
 .submodulo-tree-item {
-    min-height: 38px;
+    min-height: 40px;
     padding-left: 8px;
     margin: 1px 0;
     color: inherit;
@@ -334,17 +355,58 @@
     min-width: 18px;
 }
 
+/* Chevron indicador de colapso: no requiere tocar el HTML,
+   se dibuja como pseudo-elemento antes del ícono de carpeta */
+.tree-child-node > .submodulo-tree-item::before {
+    content: '\f105';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 10px;
+    width: 14px;
+    min-width: 14px;
+    text-align: center;
+    color: #94a3b8;
+    transition: transform 0.18s ease, color 0.15s ease;
+}
+
+.tree-child-node.expanded > .submodulo-tree-item::before {
+    transform: rotate(90deg);
+    color: #2f71aa;
+}
+
+/* Si el submódulo no tiene acciones, no mostramos chevron */
+.tree-child-node:not(:has(.action-tree-node)) > .submodulo-tree-item::before {
+    content: '';
+    width: 0;
+    min-width: 0;
+}
+
 .tree-subfolder {
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(100, 116, 139, 0.1);
     color: #64748b;
-    font-size: 14px;
+    font-size: 13px;
     transition:
         color 0.15s ease,
+        background-color 0.15s ease,
         transform 0.15s ease;
 }
 
 .submodulo-tree-item:hover .tree-subfolder {
     color: #2f71aa;
+    background: rgba(47, 113, 170, 0.12);
     transform: translateY(-1px);
+}
+
+.submodulo-tree-item.selected .tree-subfolder {
+    color: #ffffff;
+    background: #2f71aa;
 }
 
 .submodulo-tree-item .tree-icon {
@@ -363,6 +425,22 @@
     font-size: 0.86rem;
     font-weight: 450;
     color: #475569;
+}
+
+.submodulo-tree-item.selected .tree-name {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+@keyframes treeChildrenIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .submodulo-tree-item.is-inactive {
@@ -402,6 +480,7 @@
 
 [data-bs-theme="dark"] .tree-folder {
     color: #60a5fa;
+    background: rgba(96, 165, 250, 0.12);
 }
 
 [data-bs-theme="dark"] .tree-name {
@@ -413,7 +492,8 @@
 }
 
 [data-bs-theme="dark"] .tree-item.selected .tree-folder {
-    color: #60a5fa;
+    color: #0f172a;
+    background: #60a5fa;
 }
 
 [data-bs-theme="dark"] .tree-item.is-inactive {
@@ -425,7 +505,11 @@
     background-color: rgba(245, 158, 11, 0.07);
 }
 
-[data-bs-theme="dark"] .tree-item.is-inactive .tree-folder,
+[data-bs-theme="dark"] .tree-item.is-inactive .tree-folder {
+    color: #64748b;
+    background: rgba(100, 116, 139, 0.14);
+}
+
 [data-bs-theme="dark"] .tree-item.is-inactive .tree-icon {
     color: #64748b;
 }
@@ -439,7 +523,11 @@
     box-shadow: inset 3px 0 0 #f59e0b;
 }
 
-[data-bs-theme="dark"] .tree-item.is-inactive.selected .tree-folder,
+[data-bs-theme="dark"] .tree-item.is-inactive.selected .tree-folder {
+    color: #0f172a;
+    background: #f59e0b;
+}
+
 [data-bs-theme="dark"] .tree-item.is-inactive.selected .tree-icon,
 [data-bs-theme="dark"] .tree-item.is-inactive.selected .tree-name {
     color: #f59e0b;
@@ -511,9 +599,28 @@
 
 [data-bs-theme="dark"] .tree-subfolder {
     color: #94a3b8;
+    background: rgba(148, 163, 184, 0.12);
 }
 
 [data-bs-theme="dark"] .submodulo-tree-item:hover .tree-subfolder {
+    color: #60a5fa;
+    background: rgba(96, 165, 250, 0.14);
+}
+
+[data-bs-theme="dark"] .submodulo-tree-item.selected .tree-subfolder {
+    color: #0f172a;
+    background: #60a5fa;
+}
+
+[data-bs-theme="dark"] .submodulo-tree-item.selected .tree-name {
+    color: #f1f5f9;
+}
+
+[data-bs-theme="dark"] .tree-child-node > .submodulo-tree-item::before {
+    color: #64748b;
+}
+
+[data-bs-theme="dark"] .tree-child-node.expanded > .submodulo-tree-item::before {
     color: #60a5fa;
 }
 
@@ -557,6 +664,12 @@
     position: relative;
     margin-left: 52px;
     padding-left: 26px;
+    display: none;
+}
+
+.tree-child-node.expanded > .action-children {
+    display: block;
+    animation: treeChildrenIn 0.16s ease;
 }
 
 .action-children::before {

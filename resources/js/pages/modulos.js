@@ -82,6 +82,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 '.modulo-tree-item.selected'
             )?.dataset.id || null;
 
+        const submodulosExpandidos = Array.from(
+            document.querySelectorAll(
+                '.tree-child-node.expanded > .submodulo-tree-item'
+            )
+        ).map((item) => item.dataset.id);
+
         const submoduloSeleccionado =
             document.querySelector(
                 '.submodulo-tree-item.selected'
@@ -177,6 +183,37 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
+                submodulosExpandidos.forEach((id) => {
+                    const item =
+                        document.querySelector(
+                            '.submodulo-tree-item[data-id="' +
+                            CSS.escape(id) +
+                            '"]'
+                        );
+
+                    if (!item) {
+                        return;
+                    }
+
+                    const nodo =
+                        item.closest('.tree-child-node');
+
+                    if (!nodo) {
+                        return;
+                    }
+
+                    const submenu =
+                        nodo.querySelector(
+                            ':scope > .action-children'
+                        );
+
+                    if (!submenu) {
+                        return;
+                    }
+
+                    nodo.classList.add('expanded');
+                });
+
                 if (moduloSeleccionado) {
                     const item =
                         document.querySelector(
@@ -265,6 +302,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 !expandido
             );
         }
+    }
+
+    function alternarSubmodulo(item) {
+        const nodo = item.closest('.tree-child-node');
+
+        if (!nodo) {
+            return;
+        }
+
+        const submenu =
+            nodo.querySelector(
+                ':scope > .action-children'
+            );
+
+        if (!submenu) {
+            return;
+        }
+
+        nodo.classList.toggle('expanded');
     }
 
     function toggleModulo(item) {
@@ -1523,7 +1579,7 @@ document.addEventListener('DOMContentLoaded', function () {
         y,
         boton
     ) {
-        if (!contextMenu) {
+        if (!contextMenu || !contextMenu.querySelector('.context-menu-item')) {
             return;
         }
 
@@ -1558,7 +1614,7 @@ document.addEventListener('DOMContentLoaded', function () {
         x,
         y
     ) {
-        if (!submoduloContextMenu) {
+        if (!submoduloContextMenu || !submoduloContextMenu.querySelector('.context-menu-item')) {
             return;
         }
 
@@ -1596,7 +1652,7 @@ document.addEventListener('DOMContentLoaded', function () {
         y,
         boton
     ) {
-        if (!accionContextMenu) {
+        if (!accionContextMenu || !accionContextMenu.querySelector('.context-menu-item')) {
             return;
         }
 
@@ -1710,6 +1766,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     event.stopPropagation();
 
                     seleccionar(item);
+                    alternarSubmodulo(item);
                 }
             );
 
