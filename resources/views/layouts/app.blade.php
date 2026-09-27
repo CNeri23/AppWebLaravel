@@ -198,8 +198,8 @@
                 <div class="sidebar-group">
                     <button type="button" class="sidebar-group-toggle {{ $tieneSubmoduloActivo ? 'active' : '' }}"
                         data-modulo-id="{{ $modulo->id }}" data-bs-toggle="collapse" data-bs-target="#{{ $idAcordeon }}"
-                        data-label="{{ $modulo->nombre }}"
-                        aria-expanded="{{ $tieneSubmoduloActivo ? 'true' : 'false' }}" aria-controls="{{ $idAcordeon }}">
+                        data-label="{{ $modulo->nombre }}" aria-expanded="{{ $tieneSubmoduloActivo ? 'true' : 'false' }}"
+                        aria-controls="{{ $idAcordeon }}">
 
                         @if ($modulo->icono)
                             {!! $modulo->icono !!}
@@ -239,10 +239,8 @@
                                 @endif
 
                                 <span>{{ $submodulo->nombre }}</span>
-
                             </a>
                         @endforeach
-
                     </div>
                 </div>
             @endforeach

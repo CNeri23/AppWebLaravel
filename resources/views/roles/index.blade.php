@@ -75,7 +75,6 @@
                                                     @break
 
                                                 @case('roles.permisos')
-
                                                     <button
                                                         type="button"
                                                         class="btn btn-sm btn-outline-success rol-action-btn"
@@ -87,9 +86,7 @@
                                                         data-url="{{ route('roles.permisos', $rol) }}"
                                                         data-save-url="{{ route('roles.actualizarPermisos', $rol) }}">
                                                         {!! $accion->icono !!}
-
                                                     </button>
-
                                                     @break
 
                                                 @case('roles.eliminar')
@@ -116,7 +113,6 @@
             </div>
         </div>
     </div>
-
 
     {{-- MODAL NUEVO ROL --}}
     <div class="modal fade" id="modalNuevoRol" tabindex="-1" aria-labelledby="modalNuevoRolLabel" aria-hidden="true" data-bs-backdrop="static">
@@ -179,7 +175,6 @@
         </div>
     </div>
 
-
     {{-- MODAL EDITAR ROL --}}
     <div class="modal fade" id="modalEditarRol" tabindex="-1" aria-labelledby="modalEditarRolLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
@@ -231,7 +226,6 @@
             </div>
         </div>
     </div>
-
 
     {{-- MODAL ASIGNAR PERMISOS --}}
     <div class="modal fade" id="modalPermisosRol" tabindex="-1" aria-labelledby="modalPermisosRolLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -295,7 +289,6 @@
             </div>
         </div>
     </div>
-
 
     {{-- MODAL ELIMINAR ROL --}}
     <div class="modal fade" id="modalEliminarRol" tabindex="-1" aria-labelledby="modalEliminarRolLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">

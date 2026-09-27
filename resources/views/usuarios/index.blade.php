@@ -70,7 +70,6 @@
                                         @foreach ($accionesUsuarios as $accion)
 
                                             @if ($accion->slug === 'usuarios.editar')
-
                                                 <button type="button"
                                                     class="btn btn-sm btn-outline-primary usuario-action-btn"
                                                     title="{{ $accion->nombre }}"
@@ -84,7 +83,6 @@
                                                 </button>
 
                                             @elseif ($accion->slug === 'usuarios.password')
-
                                                 <button type="button"
                                                     class="btn btn-sm btn-outline-warning usuario-action-btn"
                                                     title="{{ $accion->nombre }}"
@@ -97,7 +95,6 @@
                                                 </button>
 
                                             @elseif ($accion->slug === 'usuarios.roles')
-
                                                 <button type="button"
                                                     class="btn btn-sm btn-outline-success usuario-action-btn"
                                                     title="{{ $accion->nombre }}"
@@ -111,7 +108,6 @@
                                                 </button>
 
                                             @elseif ($accion->slug === 'usuarios.eliminar')
-
                                                 <button type="button"
                                                     class="btn btn-sm btn-outline-danger usuario-action-btn"
                                                     title="{{ $accion->nombre }}"
@@ -401,7 +397,6 @@
                                 No hay roles registrados.
                             </div>
                         @endif
-
                     </div>
 
                     <div class="modal-footer">
