@@ -7,21 +7,21 @@
     --input-bg: #ffffff;
     --input-icon-bg: #f3f4f8;
     --input-border: #dcdfe6;
-    --accent: #5b5bf6;
-    --accent-hover: #4747dd;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
 }
 
 [data-bs-theme="dark"] {
-    --bg: #0e0f13;
-    --card-bg: #191a21;
+    --bg: #111315;
+    --card-bg: #181a1d;
     --card-border: rgba(255, 255, 255, 0.06);
-    --text-main: #e7e8ec;
-    --text-muted: #8a8d98;
-    --input-bg: #14151b;
-    --input-icon-bg: #1e2029;
-    --input-border: #2a2c35;
-    --accent: #6c6cf8;
-    --accent-hover: #7f7ffa;
+    --text-main: #e7e9ec;
+    --text-muted: #92979f;
+    --input-bg: #151719;
+    --input-icon-bg: #1d2023;
+    --input-border: #2b2f34;
+    --accent: #2563eb;
+    --accent-hover: #153373;
 }
 
 * {
@@ -44,14 +44,10 @@ body {
         color 0.2s ease;
 }
 
-/* ---------- Layout general: panel de marca + panel de formulario ---------- */
-
 .login-page {
     display: flex;
     min-height: 100vh;
 }
-
-/* ---------- Panel de marca (izquierda) ---------- */
 
 .login-visual {
     position: relative;
@@ -61,7 +57,7 @@ body {
     justify-content: center;
     padding: 48px;
     overflow: hidden;
-    background: linear-gradient(160deg, #4338ca 0%, #4f46e5 48%, #6d28d9 100%);
+    background: linear-gradient(160deg, #1f2937 0%, #111827 48%, #0f172a 100%);
 }
 
 .visual-dots {
@@ -109,8 +105,8 @@ body {
     width: 34px;
     height: 34px;
     border-radius: 9px;
-    background: rgba(255, 255, 255, 0.16);
-    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -144,8 +140,6 @@ body {
         display: none;
     }
 }
-
-/* ---------- Panel del formulario (derecha) ---------- */
 
 .login-form-side {
     flex: 1 1 54%;
@@ -195,6 +189,7 @@ body {
 }
 
 .input-group {
+    position: relative;
     transition: transform 0.15s ease;
 }
 
@@ -226,7 +221,7 @@ body {
     background: var(--input-bg);
     color: var(--text-main);
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(91, 91, 246, 0.15);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .form-control::placeholder {
@@ -253,6 +248,10 @@ a.link-muted:hover {
 }
 
 .btn-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
     background: var(--accent);
     border: none;
     color: #fff;
@@ -260,16 +259,27 @@ a.link-muted:hover {
     padding: 11px;
     border-radius: 8px;
     transition:
-        background 0.15s ease,
-        transform 0.15s ease,
-        box-shadow 0.15s ease;
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn-login i {
+    display: inline-block;
+    transition:
+        transform 0.25s ease,
+        opacity 0.2s ease;
 }
 
 .btn-login:hover {
     background: var(--accent-hover);
     color: #fff;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 18px rgba(91, 91, 246, 0.28);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px rgba(59, 130, 246, 0.22);
+}
+
+.btn-login:hover i {
+    transform: translateX(4px);
 }
 
 .btn-login:active {
@@ -295,15 +305,33 @@ a.link-muted:hover {
     padding-right: 0.75rem;
 }
 
+#password {
+    padding-right: 48px;
+}
+
 .toggle-password {
-    cursor: pointer;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    padding: 0;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 7px 7px 0;
     color: var(--text-muted);
+    cursor: pointer;
     transition:
         color 0.15s ease,
         transform 0.15s ease;
 }
 
 .toggle-password:hover {
+    background: transparent !important;
     color: var(--accent);
 }
 

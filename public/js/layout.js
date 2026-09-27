@@ -48,10 +48,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const sidebar = document.getElementById('appSidebar');
     const overlay = document.getElementById('sidebarOverlay');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
 
     if (!sidebar) {
         return;
+    }
+
+    function esMovil() {
+        return window.matchMedia('(max-width: 991.98px)').matches;
     }
 
     function toggleMobileSidebar() {
@@ -59,7 +63,6 @@ document.addEventListener('DOMContentLoaded', function () {
         overlay?.classList.toggle('show');
     }
 
-    mobileMenuBtn?.addEventListener('click', toggleMobileSidebar);
     overlay?.addEventListener('click', toggleMobileSidebar);
 
     function obtenerGruposSidebar() {
@@ -266,10 +269,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     inicializarGruposSidebar();
 
-    const collapseButtons = document.querySelectorAll(
-        '[data-sidebar-collapse-toggle]'
-    );
-
     function setCollapsed(collapsed) {
         sidebar.classList.toggle('collapsed', collapsed);
 
@@ -283,18 +282,6 @@ document.addEventListener('DOMContentLoaded', function () {
             collapsed ? '1' : '0'
         );
 
-        collapseButtons.forEach(button => {
-            const icon = button.querySelector('i');
-
-            if (!icon) {
-                return;
-            }
-
-            icon.className = collapsed
-                ? 'fa-solid fa-angles-right'
-                : 'fa-solid fa-angles-left';
-        });
-
         if (collapsed) {
             cerrarTodosLosSubmenus();
         }
@@ -307,13 +294,16 @@ document.addEventListener('DOMContentLoaded', function () {
         setCollapsed(guardado);
     }
 
-    collapseButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const estaColapsado =
-                sidebar.classList.contains('collapsed');
+    sidebarToggleBtn?.addEventListener('click', function () {
+        if (esMovil()) {
+            toggleMobileSidebar();
+            return;
+        }
 
-            setCollapsed(!estaColapsado);
-        });
+        const estaColapsado =
+            sidebar.classList.contains('collapsed');
+
+        setCollapsed(!estaColapsado);
     });
 
     let anchoAnterior = window.innerWidth;

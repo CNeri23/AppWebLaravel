@@ -136,11 +136,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                window.showToast(
-                    'success',
-                    data.mensaje || 'Inicio de sesión correcto.'
-                );
-
                 if (rememberInput && rememberInput.checked) {
                     localStorage.setItem(REMEMBER_KEY, emailInput.value.trim());
                 } else {

@@ -17,31 +17,13 @@
 
 <body>
     <div id="toastStack" class="toast-stack"></div>
-
     <div class="login-page">
-        <div class="login-visual">
-            <div class="visual-dots"></div>
-            <div class="visual-frame"></div>
-
-            <div class="visual-content">
-                <div class="visual-brand">
-                    <span class="visual-brand-icon"><i class="fa-solid fa-layer-group"></i></span>
-                    <span class="visual-brand-name">Admin Panel</span>
-                </div>
-
-                <h2 class="visual-title">Todo tu sistema,<br>en un solo lugar.</h2>
-                <p class="visual-subtitle">
-                    Usuarios, roles, permisos y auditoría, administrados
-                    desde un mismo panel.
-                </p>
-            </div>
-        </div>
-
+    
         {{-- Panel del formulario --}}
         <div class="login-form-side">
             <div class="login-form-wrap">
-                <h1 class="login-title">Iniciar sesión</h1>
-                <p class="login-subtitle">Ingresa tus credenciales para acceder al panel.</p>
+                <h1 class="login-title text-center">Iniciar sesión</h1>
+                <p class="login-subtitle">Ingresa tus credenciales para acceder al sistema.</p>
 
                 <form method="POST" action="{{ route('login') }}" id="formLogin" novalidate>
                     @csrf
@@ -97,6 +79,23 @@
                 </form>
 
                 <p class="login-footer">© {{ date('Y') }} Todos los derechos reservados.</p>
+            </div>
+        </div>
+
+        <div class="login-visual">
+            <div class="visual-dots"></div>
+            <div class="visual-frame"></div>
+
+            <div class="visual-content">
+                <div class="visual-brand">
+                    <span class="visual-brand-icon"><i class="fa-solid fa-layer-group"></i></span>
+                    <span class="visual-brand-name">Admin Panel</span>
+                </div>
+
+                <h2 class="visual-title">Todo tu sistema,<br>en un solo lugar.</h2>
+                <p class="visual-subtitle">
+                    Usuarios, roles, permisos y auditoría, administrados desde un mismo panel.
+                </p>
             </div>
         </div>
     </div>

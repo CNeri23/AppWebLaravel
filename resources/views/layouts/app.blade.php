@@ -65,22 +65,109 @@
 </head>
 
 <body>
-    <aside class="app-sidebar" id="appSidebar">
-        <div class="sidebar-brand">
-            <div class="sidebar-brand-group">
-                <div class="sidebar-brand-icon">
-                    <i class="fa-solid fa-layer-group"></i>
-                </div>
+    <header class="app-topbar">
+        <div class="topbar-brand">
+            <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Colapsar / expandir menú">
+                <i class="fa-solid fa-bars"></i>
+            </button>
 
-                <span class="sidebar-brand-text">Admin Panel</span>
+            <div class="sidebar-brand-icon">
+                <i class="fa-solid fa-layer-group"></i>
             </div>
 
-            <button type="button" class="sidebar-collapse-toggle" data-sidebar-collapse-toggle
-                title="Colapsar / expandir menú">
-                <i class="fa-solid fa-angles-left"></i>
-            </button>
+            <span class="sidebar-brand-text">Admin Panel</span>
         </div>
 
+        <div class="topbar-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Buscar...">
+        </div>
+
+        <div class="topbar-actions">
+            <span class="topbar-greeting">
+                {{ $greeting }},
+                <strong>{{ auth()->user()->name }}</strong>
+            </span>
+
+            <span class="topbar-divider"></span>
+
+            <a href="{{ route('dashboard') }}" class="topbar-icon-btn" title="Inicio">
+                <i class="fa-solid fa-house"></i>
+            </a>
+
+            <div class="dropdown theme-dropdown">
+                <button class="dropdown-toggle topbar-icon-btn" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false" title="Cambiar tema">
+                    <i class="fa-solid fa-sun" id="themeIcon"></i>
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <button type="button" class="dropdown-item theme-option" data-theme="light">
+                            <i class="fa-solid fa-sun"></i>
+                            Claro
+                        </button>
+                    </li>
+
+                    <li>
+                        <button type="button" class="dropdown-item theme-option" data-theme="dark">
+                            <i class="fa-solid fa-moon"></i>
+                            Oscuro
+                        </button>
+                    </li>
+
+                    <li>
+                        <button type="button" class="dropdown-item theme-option" data-theme="auto">
+                            <i class="fa-solid fa-circle-half-stroke"></i>
+                            Automático
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <span class="topbar-divider"></span>
+
+            <div class="dropdown user-dropdown">
+                <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                    title="{{ auth()->user()->name }}">
+                    <div class="user-avatar">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </div>
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li class="user-dropdown-header">
+                        <strong>{{ auth()->user()->name }}</strong>
+                        <small>{{ auth()->user()->email }}</small>
+                    </li>
+
+                    <li>
+                        <a href="#" class="dropdown-item">
+                            <i class="fa-regular fa-user"></i>
+                            Mi perfil
+                        </a>
+                    </li>
+
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+
+                            <button type="submit" class="dropdown-item logout-item">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                Cerrar sesión
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <aside class="app-sidebar" id="appSidebar">
         <nav class="sidebar-menu">
             <div class="sidebar-section">
                 <span>Principal</span>
@@ -108,52 +195,55 @@
                 @endphp
 
                 {{-- Módulo --}}
-                <button type="button" class="sidebar-group-toggle {{ $tieneSubmoduloActivo ? 'active' : '' }}"
-                    data-modulo-id="{{ $modulo->id }}" data-bs-toggle="collapse" data-bs-target="#{{ $idAcordeon }}"
-                    aria-expanded="{{ $tieneSubmoduloActivo ? 'true' : 'false' }}" aria-controls="{{ $idAcordeon }}">
+                <div class="sidebar-group">
+                    <button type="button" class="sidebar-group-toggle {{ $tieneSubmoduloActivo ? 'active' : '' }}"
+                        data-modulo-id="{{ $modulo->id }}" data-bs-toggle="collapse" data-bs-target="#{{ $idAcordeon }}"
+                        data-label="{{ $modulo->nombre }}"
+                        aria-expanded="{{ $tieneSubmoduloActivo ? 'true' : 'false' }}" aria-controls="{{ $idAcordeon }}">
 
-                    @if ($modulo->icono)
-                        {!! $modulo->icono !!}
-                    @else
-                        <i class="fa-solid fa-layer-group"></i>
-                    @endif
+                        @if ($modulo->icono)
+                            {!! $modulo->icono !!}
+                        @else
+                            <i class="fa-solid fa-layer-group"></i>
+                        @endif
 
-                    <span>{{ $modulo->nombre }}</span>
+                        <span>{{ $modulo->nombre }}</span>
 
-                    <i class="fa-solid fa-chevron-down sidebar-group-caret"></i>
-                </button>
+                        <i class="fa-solid fa-chevron-down sidebar-group-caret"></i>
+                    </button>
 
-                {{-- Submódulos --}}
-                <div class="collapse sidebar-submenu {{ $tieneSubmoduloActivo ? 'show' : '' }}" id="{{ $idAcordeon }}"
-                    data-modulo-id="{{ $modulo->id }}">
+                    {{-- Submódulos --}}
+                    <div class="collapse sidebar-submenu {{ $tieneSubmoduloActivo ? 'show' : '' }}" id="{{ $idAcordeon }}"
+                        data-modulo-id="{{ $modulo->id }}">
 
-                    @foreach ($modulo->submodulos as $submodulo)
-                        @php
-                            $url = $submodulo->ruta &&
-                                \Illuminate\Support\Facades\Route::has($submodulo->ruta)
-                                ? route($submodulo->ruta)
-                                : '#';
+                        @foreach ($modulo->submodulos as $submodulo)
+                            @php
+                                $url = $submodulo->ruta &&
+                                    \Illuminate\Support\Facades\Route::has($submodulo->ruta)
+                                    ? route($submodulo->ruta)
+                                    : '#';
 
-                            $esActivo = $url !== '#' &&
-                                request()->routeIs($submodulo->ruta);
-                        @endphp
+                                $esActivo = $url !== '#' &&
+                                    request()->routeIs($submodulo->ruta);
+                            @endphp
 
-                        <a href="{{ $url }}"
-                            class="sidebar-sublink {{ $esActivo ? 'active' : '' }} {{ $url === '#' ? 'sidebar-link-pendiente' : '' }}"
-                            data-submodulo-id="{{ $submodulo->id }}" data-modulo-id="{{ $modulo->id }}" @if ($url === '#')
-                            title="Este submódulo aún no tiene una ruta configurada" @endif>
+                            <a href="{{ $url }}"
+                                class="sidebar-sublink {{ $esActivo ? 'active' : '' }} {{ $url === '#' ? 'sidebar-link-pendiente' : '' }}"
+                                data-submodulo-id="{{ $submodulo->id }}" data-modulo-id="{{ $modulo->id }}" @if ($url === '#')
+                                title="Este submódulo aún no tiene una ruta configurada" @endif>
 
-                            @if ($submodulo->icono)
-                                {!! $submodulo->icono !!}
-                            @else
-                                <i class="fa-solid fa-circle-dot"></i>
-                            @endif
+                                @if ($submodulo->icono)
+                                    {!! $submodulo->icono !!}
+                                @else
+                                    <i class="fa-solid fa-circle-dot"></i>
+                                @endif
 
-                            <span>{{ $submodulo->nombre }}</span>
+                                <span>{{ $submodulo->nombre }}</span>
 
-                        </a>
-                    @endforeach
+                            </a>
+                        @endforeach
 
+                    </div>
                 </div>
             @endforeach
 
@@ -174,91 +264,6 @@
     </div>
 
     <div class="app-main">
-        <header class="app-topbar">
-            <div class="topbar-actions">
-                <span class="topbar-greeting">
-                    {{ $greeting }},
-                    <strong>{{ auth()->user()->name }}</strong>
-                </span>
-
-                <span class="topbar-divider"></span>
-
-                <a href="{{ route('dashboard') }}" class="topbar-icon-btn" title="Inicio">
-                    <i class="fa-solid fa-house"></i>
-                </a>
-
-                <div class="dropdown theme-dropdown">
-                    <button class="dropdown-toggle topbar-icon-btn" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" title="Cambiar tema">
-                        <i class="fa-solid fa-sun" id="themeIcon"></i>
-                    </button>
-
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <button type="button" class="dropdown-item theme-option" data-theme="light">
-                                <i class="fa-solid fa-sun"></i>
-                                Claro
-                            </button>
-                        </li>
-
-                        <li>
-                            <button type="button" class="dropdown-item theme-option" data-theme="dark">
-                                <i class="fa-solid fa-moon"></i>
-                                Oscuro
-                            </button>
-                        </li>
-
-                        <li>
-                            <button type="button" class="dropdown-item theme-option" data-theme="auto">
-                                <i class="fa-solid fa-circle-half-stroke"></i>
-                                Automático
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-
-                <span class="topbar-divider"></span>
-
-                <div class="dropdown user-dropdown">
-                    <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                        title="{{ auth()->user()->name }}">
-                        <div class="user-avatar">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                        </div>
-                    </button>
-
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li class="user-dropdown-header">
-                            <strong>{{ auth()->user()->name }}</strong>
-                            <small>{{ auth()->user()->email }}</small>
-                        </li>
-
-                        <li>
-                            <a href="#" class="dropdown-item">
-                                <i class="fa-regular fa-user"></i>
-                                Mi perfil
-                            </a>
-                        </li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-
-                                <button type="submit" class="dropdown-item logout-item">
-                                    <i class="fa-solid fa-right-from-bracket"></i>
-                                    Cerrar sesión
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </header>
-
         <main class="app-content">
             @yield('content')
         </main>
