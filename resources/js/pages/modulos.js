@@ -87,6 +87,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 '.submodulo-tree-item.selected'
             )?.dataset.id || null;
 
+        const accionSeleccionada =
+            document.querySelector(
+                '.accion-tree-item.selected'
+            )?.dataset.id || null;
+
         cerrarMenu();
 
         return fetch(window.location.href, {
@@ -193,11 +198,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     item?.classList.add('selected');
                 }
+
+                if (accionSeleccionada) {
+                    const item =
+                        document.querySelector(
+                            '.accion-tree-item[data-id="' +
+                            CSS.escape(accionSeleccionada) +
+                            '"]'
+                        );
+
+                    item?.classList.add('selected');
+                }
             });
     }
 
     let items = [];
     let submoduloItems = [];
+    let accionItems = [];
 
     function seleccionar(item) {
         items.forEach((el) => {
@@ -205,6 +222,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         submoduloItems.forEach((el) => {
+            el.classList.remove('selected');
+        });
+
+        accionItems.forEach((el) => {
             el.classList.remove('selected');
         });
 
@@ -308,8 +329,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     badge.remove();
                 }
 
-                actualizarEstadoAcciones(item);
-
                 window.showToast(
                     'success',
                     data.mensaje
@@ -379,9 +398,57 @@ document.addEventListener('DOMContentLoaded', function () {
                     badge.remove();
                 }
 
-                actualizarEstadoAccionesSubmodulo(
-                    item
+                window.showToast(
+                    'success',
+                    data.mensaje
                 );
+
+                return actualizarSidebar();
+            })
+            .catch((error) => {
+                window.showToast(
+                    'error',
+                    error.message
+                );
+            });
+    }
+
+    function toggleAccion(item) {
+        const url = item.dataset.toggleUrl;
+
+        return peticion(url, 'PATCH')
+            .then((data) => {
+                item.dataset.activo =
+                    data.activo ? '1' : '0';
+
+                item.classList.toggle(
+                    'is-inactive',
+                    !data.activo
+                );
+
+                let badge =
+                    item.querySelector(
+                        '.tree-badge'
+                    );
+
+                if (!data.activo && !badge) {
+                    badge =
+                        document.createElement('span');
+
+                    badge.className =
+                        'tree-badge';
+
+                    badge.textContent =
+                        'Inactivo';
+
+                    item.querySelector('.tree-name')
+                        ?.insertAdjacentElement(
+                            'afterend',
+                            badge
+                        );
+                } else if (data.activo && badge) {
+                    badge.remove();
+                }
 
                 window.showToast(
                     'success',
@@ -456,12 +523,44 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    function moverAccion(item, direccion) {
+        const url = item.dataset.reorderUrl;
+
+        return peticion(
+            url,
+            'PATCH',
+            JSON.stringify({
+                direccion,
+            })
+            )
+            .then((data) => {
+                window.showToast(
+                    'success',
+                    data.mensaje
+                );
+
+                return actualizarTreeview();
+            })
+            .then(() => {
+                return actualizarSidebar();
+            })
+            .catch((error) => {
+                window.showToast(
+                    'error',
+                    error.message
+                );
+            });
+    }
+
     const modalNuevoModuloEl = document.getElementById('modalNuevoModulo');
     const modalEditarEl = document.getElementById('modalEditarModulo');
     const modalEliminarEl = document.getElementById('modalEliminarModulo');
     const modalNuevoSubmoduloEl = document.getElementById('modalNuevoSubmodulo');
     const modalEditarSubmoduloEl = document.getElementById('modalEditarSubmodulo');
     const modalEliminarSubmoduloEl = document.getElementById('modalEliminarSubmodulo');
+    const modalNuevoAccionEl = document.getElementById('modalNuevaAccion');
+    const modalEditarAccionEl = document.getElementById('modalEditarAccion');
+    const modalEliminarAccionEl = document.getElementById('modalEliminarAccion');
 
     const modalNuevoModulo =
         modalNuevoModuloEl
@@ -502,6 +601,27 @@ document.addEventListener('DOMContentLoaded', function () {
         modalEliminarSubmoduloEl
             ? new bootstrap.Modal(
                 modalEliminarSubmoduloEl
+            )
+            : null;
+
+    const modalNuevoAccion =
+        modalNuevoAccionEl
+            ? new bootstrap.Modal(
+                modalNuevoAccionEl
+            )
+            : null;
+
+    const modalEditarAccion =
+        modalEditarAccionEl
+            ? new bootstrap.Modal(
+                modalEditarAccionEl
+            )
+            : null;
+
+    const modalEliminarAccion =
+        modalEliminarAccionEl
+            ? new bootstrap.Modal(
+                modalEliminarAccionEl
             )
             : null;
 
@@ -684,6 +804,217 @@ document.addEventListener('DOMContentLoaded', function () {
         modalEliminarSubmodulo?.show();
     }
 
+    function abrirModalNuevaAccion(item) {
+        const submoduloId =
+            item.dataset.id;
+
+        const submoduloNombre =
+            item.dataset.nombre;
+
+        const form =
+            document.getElementById(
+                'formNuevaAccion'
+            );
+
+        if (form) {
+            form.setAttribute(
+                'action',
+                '/submodulos/' +
+                submoduloId +
+                '/acciones'
+            );
+        }
+
+        const submoduloIdInput =
+            document.getElementById(
+                'accion_submodulo_id'
+            );
+
+        const submoduloNombreInput =
+            document.getElementById(
+                'accion_submodulo_nombre'
+            );
+
+        if (submoduloIdInput) {
+            submoduloIdInput.value =
+                submoduloId;
+        }
+
+        if (submoduloNombreInput) {
+            submoduloNombreInput.value =
+                submoduloNombre;
+        }
+
+        const nombreInput =
+            document.getElementById(
+                'accion_nombre'
+            );
+
+        const slugInput =
+            document.getElementById(
+                'accion_slug'
+            );
+
+        const descripcionInput =
+            document.getElementById(
+                'accion_descripcion'
+            );
+
+        const iconoInput =
+            document.getElementById(
+                'accion_icono'
+            );
+
+        const ordenInput =
+            document.getElementById(
+                'accion_orden'
+            );
+
+        if (nombreInput) {
+            nombreInput.value = '';
+        }
+
+        if (slugInput) {
+            slugInput.value = '';
+        }
+
+        if (descripcionInput) {
+            descripcionInput.value = '';
+        }
+
+        if (iconoInput) {
+            iconoInput.value = '';
+        }
+
+        if (ordenInput) {
+            ordenInput.value = 0;
+        }
+
+        modalNuevoAccion?.show();
+    }
+
+    function abrirModalEditarAccion(item) {
+        const idInput =
+            document.getElementById(
+                'editar_accion_id'
+            );
+
+        if (idInput) {
+            idInput.value =
+                item.dataset.id;
+        }
+
+        const submoduloIdInput =
+            document.getElementById(
+                'editar_accion_submodulo_id'
+            );
+
+        if (submoduloIdInput) {
+            submoduloIdInput.value =
+                item.dataset.submoduloId || '';
+        }
+
+        const submoduloNombreInput =
+            document.getElementById(
+                'editar_accion_submodulo_nombre'
+            );
+
+        if (submoduloNombreInput) {
+            submoduloNombreInput.value =
+                item.dataset.submoduloNombre || '';
+        }
+
+        const nombreInput =
+            document.getElementById(
+                'editar_accion_nombre'
+            );
+
+        if (nombreInput) {
+            nombreInput.value =
+                item.dataset.nombre || '';
+        }
+
+        const slugInput =
+            document.getElementById(
+                'editar_accion_slug'
+            );
+
+        if (slugInput) {
+            slugInput.value =
+                item.dataset.slug || '';
+        }
+
+        const descripcionInput =
+            document.getElementById(
+                'editar_accion_descripcion'
+            );
+
+        if (descripcionInput) {
+            descripcionInput.value =
+                item.dataset.descripcion || '';
+        }
+
+        const iconoInput =
+            document.getElementById(
+                'editar_accion_icono'
+            );
+
+        if (iconoInput) {
+            iconoInput.value =
+                item.dataset.icono || '';
+        }
+
+        const ordenInput =
+            document.getElementById(
+                'editar_accion_orden'
+            );
+
+        if (ordenInput) {
+            ordenInput.value =
+                item.dataset.orden || 0;
+        }
+
+        const form =
+            document.getElementById(
+                'formEditarAccion'
+            );
+
+        if (form) {
+            form.setAttribute(
+                'action',
+                item.dataset.editUrl
+            );
+        }
+
+        modalEditarAccion?.show();
+    }
+
+    function abrirModalEliminarAccion(item) {
+        const nombreInput =
+            document.getElementById(
+                'eliminar_accion_nombre'
+            );
+
+        if (nombreInput) {
+            nombreInput.textContent =
+                item.dataset.nombre;
+        }
+
+        const form =
+            document.getElementById(
+                'formEliminarAccion'
+            );
+
+        if (form) {
+            form.setAttribute(
+                'action',
+                item.dataset.deleteUrl
+            );
+        }
+
+        modalEliminarAccion?.show();
+    }
+
     function cerrarModal(modal) {
         if (modal) {
             modal.hide();
@@ -780,6 +1111,21 @@ document.addEventListener('DOMContentLoaded', function () {
         const formEliminarSubmodulo =
             document.getElementById(
                 'formEliminarSubmodulo'
+            );
+
+        const formNuevaAccion =
+            document.getElementById(
+                'formNuevaAccion'
+            );
+
+        const formEditarAccion =
+            document.getElementById(
+                'formEditarAccion'
+            );
+
+        const formEliminarAccion =
+            document.getElementById(
+                'formEliminarAccion'
             );
 
         if (formNuevoModulo) {
@@ -879,6 +1225,55 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             );
         }
+
+        if (formNuevaAccion) {
+            formNuevaAccion.addEventListener(
+                'submit',
+                function (event) {
+                    event.preventDefault();
+
+                    enviarFormulario(
+                        formNuevaAccion,
+                        modalNuevoAccion,
+                        'Acción creada correctamente.'
+                    )
+                        .then(() => {
+                            formNuevaAccion.reset();
+                        })
+                        .catch(() => { });
+                }
+            );
+        }
+
+        if (formEditarAccion) {
+            formEditarAccion.addEventListener(
+                'submit',
+                function (event) {
+                    event.preventDefault();
+
+                    enviarFormulario(
+                        formEditarAccion,
+                        modalEditarAccion,
+                        'Acción actualizada correctamente.'
+                    ).catch(() => { });
+                }
+            );
+        }
+
+        if (formEliminarAccion) {
+            formEliminarAccion.addEventListener(
+                'submit',
+                function (event) {
+                    event.preventDefault();
+
+                    enviarFormulario(
+                        formEliminarAccion,
+                        modalEliminarAccion,
+                        'Acción eliminada correctamente.'
+                    ).catch(() => { });
+                }
+            );
+        }
     }
 
     const contextMenu =
@@ -891,6 +1286,11 @@ document.addEventListener('DOMContentLoaded', function () {
             'submoduloContextMenu'
         );
 
+    const accionContextMenu =
+        document.getElementById(
+            'accionContextMenu'
+        );
+
     const toggleLabel =
         contextMenu?.querySelector(
             '[data-role="toggle-label"]'
@@ -901,9 +1301,15 @@ document.addEventListener('DOMContentLoaded', function () {
             '[data-role="toggle-label"]'
         );
 
+    const accionToggleLabel =
+        accionContextMenu?.querySelector(
+            '[data-role="toggle-label"]'
+        );
+
     let itemActivo = null;
     let botonActivo = null;
     let submoduloActivo = null;
+    let accionActiva = null;
 
     function cerrarMenu() {
         contextMenu?.classList.remove(
@@ -914,6 +1320,10 @@ document.addEventListener('DOMContentLoaded', function () {
             'show'
         );
 
+        accionContextMenu?.classList.remove(
+            'show'
+        );
+
         botonActivo?.classList.remove(
             'menu-open'
         );
@@ -921,6 +1331,7 @@ document.addEventListener('DOMContentLoaded', function () {
         botonActivo = null;
         itemActivo = null;
         submoduloActivo = null;
+        accionActiva = null;
     }
 
     function actualizarEstadoAcciones(item) {
@@ -1025,6 +1436,58 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
+    function actualizarEstadoAccionesAccion(
+        item
+    ) {
+        const activo =
+            item.dataset.activo === '1';
+
+        const esPrimero =
+            item.dataset.first === '1';
+
+        const esUltimo =
+            item.dataset.last === '1';
+
+        if (accionToggleLabel) {
+            accionToggleLabel.textContent =
+                activo
+                    ? 'Desactivar'
+                    : 'Activar';
+        }
+
+        const btnToggle =
+            accionContextMenu?.querySelector(
+                '[data-action="toggle"] i'
+            );
+
+        if (btnToggle) {
+            btnToggle.className =
+                activo
+                    ? 'fa-solid fa-power-off'
+                    : 'fa-solid fa-play';
+        }
+
+        const btnSubir =
+            accionContextMenu?.querySelector(
+                '[data-action="subir"]'
+            );
+
+        const btnBajar =
+            accionContextMenu?.querySelector(
+                '[data-action="bajar"]'
+            );
+
+        btnSubir?.classList.toggle(
+            'disabled',
+            esPrimero
+        );
+
+        btnBajar?.classList.toggle(
+            'disabled',
+            esUltimo
+        );
+    }
+
     function posicionarMenu(menu, x, y) {
         menu.classList.add('show');
 
@@ -1068,8 +1531,13 @@ document.addEventListener('DOMContentLoaded', function () {
             'show'
         );
 
+        accionContextMenu?.classList.remove(
+            'show'
+        );
+
         itemActivo = item;
         submoduloActivo = null;
+        accionActiva = null;
         botonActivo = boton || null;
 
         botonActivo?.classList.add(
@@ -1098,12 +1566,17 @@ document.addEventListener('DOMContentLoaded', function () {
             'show'
         );
 
+        accionContextMenu?.classList.remove(
+            'show'
+        );
+
         botonActivo?.classList.remove(
             'menu-open'
         );
 
         itemActivo = null;
         submoduloActivo = item;
+        accionActiva = null;
         botonActivo = null;
 
         actualizarEstadoAccionesSubmodulo(
@@ -1117,6 +1590,48 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
+    function abrirMenuAccion(
+        item,
+        x,
+        y,
+        boton
+    ) {
+        if (!accionContextMenu) {
+            return;
+        }
+
+        contextMenu?.classList.remove(
+            'show'
+        );
+
+        submoduloContextMenu?.classList.remove(
+            'show'
+        );
+
+        botonActivo?.classList.remove(
+            'menu-open'
+        );
+
+        itemActivo = null;
+        submoduloActivo = null;
+        accionActiva = item;
+        botonActivo = boton || null;
+
+        botonActivo?.classList.add(
+            'menu-open'
+        );
+
+        actualizarEstadoAccionesAccion(
+            item
+        );
+
+        posicionarMenu(
+            accionContextMenu,
+            x,
+            y
+        );
+    }
+
     function inicializarTreeview() {
         items = document.querySelectorAll(
             '.modulo-tree-item'
@@ -1125,6 +1640,11 @@ document.addEventListener('DOMContentLoaded', function () {
         submoduloItems =
             document.querySelectorAll(
                 '.submodulo-tree-item'
+            );
+
+        accionItems =
+            document.querySelectorAll(
+                '.accion-tree-item'
             );
 
         items.forEach((item) => {
@@ -1188,6 +1708,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 function (event) {
                     event.preventDefault();
                     event.stopPropagation();
+
+                    seleccionar(item);
                 }
             );
 
@@ -1235,6 +1757,68 @@ document.addEventListener('DOMContentLoaded', function () {
                         item,
                         rect.left,
                         rect.bottom + 4
+                    );
+                }
+            );
+        });
+
+        accionItems.forEach((item) => {
+            item.addEventListener(
+                'click',
+                function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    seleccionar(item);
+                }
+            );
+
+            item.addEventListener(
+                'contextmenu',
+                function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    seleccionar(item);
+
+                    abrirMenuAccion(
+                        item,
+                        event.clientX,
+                        event.clientY,
+                        null
+                    );
+                }
+            );
+
+            const btnMas =
+                item.querySelector(
+                    '.accion-more-btn'
+                );
+
+            btnMas?.addEventListener(
+                'click',
+                function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    seleccionar(item);
+
+                    if (
+                        item ===
+                        accionActiva
+                    ) {
+                        cerrarMenu();
+                        return;
+                    }
+
+                    const rect =
+                        btnMas.getBoundingClientRect();
+
+                    abrirMenuAccion(
+                        item,
+                        rect.left,
+                        rect.bottom + 4,
+                        btnMas
                     );
                 }
             );
@@ -1339,6 +1923,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     );
                     break;
 
+                case 'nuevo-accion':
+                    abrirModalNuevaAccion(
+                        item
+                    );
+                    break;
+
                 case 'eliminar':
                     abrirModalEliminarSubmodulo(
                         item
@@ -1362,6 +1952,66 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     );
 
+    accionContextMenu?.addEventListener(
+        'click',
+        function (event) {
+            const opcion =
+                event.target.closest(
+                    '.context-menu-item'
+                );
+
+            if (
+                !opcion ||
+                opcion.classList.contains(
+                    'disabled'
+                ) ||
+                !accionActiva
+            ) {
+                return;
+            }
+
+            const item =
+                accionActiva;
+
+            const accion =
+                opcion.dataset.action;
+
+            cerrarMenu();
+
+            switch (accion) {
+                case 'toggle':
+                    toggleAccion(item);
+                    break;
+
+                case 'editar':
+                    abrirModalEditarAccion(
+                        item
+                    );
+                    break;
+
+                case 'eliminar':
+                    abrirModalEliminarAccion(
+                        item
+                    );
+                    break;
+
+                case 'subir':
+                    moverAccion(
+                        item,
+                        'arriba'
+                    );
+                    break;
+
+                case 'bajar':
+                    moverAccion(
+                        item,
+                        'abajo'
+                    );
+                    break;
+            }
+        }
+    );
+
     document.addEventListener(
         'click',
         function (event) {
@@ -1372,6 +2022,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 ) &&
                 submoduloContextMenu &&
                 !submoduloContextMenu.contains(
+                    event.target
+                ) &&
+                accionContextMenu &&
+                !accionContextMenu.contains(
                     event.target
                 )
             ) {

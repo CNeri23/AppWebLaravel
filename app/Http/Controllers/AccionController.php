@@ -32,9 +32,11 @@ class AccionController extends Controller
             $accion
         );
 
-        return redirect()
-            ->route('modulos.index', $submodulo)
-            ->with('success', 'Acción creada correctamente.');
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Acción creada correctamente.',
+            'accion' => $accion,
+        ]);
     }
 
     public function update(Request $request, Accion $accion)
@@ -81,9 +83,11 @@ class AccionController extends Controller
             );
         }
 
-        return redirect()
-            ->route('modulos.index', $accion->submodulo_id)
-            ->with('success', 'Acción actualizada correctamente.');
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Acción actualizada correctamente.',
+            'accion' => $accion,
+        ]);
     }
 
     public function toggle(Accion $accion)
@@ -189,7 +193,6 @@ class AccionController extends Controller
 
     public function destroy(Accion $accion)
     {
-        $submoduloId = $accion->submodulo_id;
         $submoduloNombre = $accion->submodulo?->nombre ?? 'Sin submódulo';
         $accionNombre = $accion->nombre;
 
@@ -206,8 +209,9 @@ class AccionController extends Controller
 
         $accion->delete();
 
-        return redirect()
-            ->route('modulos.index', $submoduloId)
-            ->with('success', 'Acción eliminada correctamente.');
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Acción eliminada correctamente.',
+        ]);
     }
 }
