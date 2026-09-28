@@ -8,6 +8,7 @@ use App\Http\Controllers\LogController;
 use App\Http\Controllers\ModuloController;
 use App\Http\Controllers\SubmoduloController;
 use App\Http\Controllers\AccionController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,7 +41,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])
         ->name('logout');
 
-
     Route::get('/usuarios', [UserController::class, 'index'])
         ->middleware('permiso:submodulo,usuarios')
         ->name('usuarios.index');
@@ -65,7 +65,6 @@ Route::middleware('auth')->group(function () {
         ->middleware('permiso:submodulo,usuarios')
         ->name('usuarios.destroy');
 
-
     Route::get('/roles', [RoleController::class, 'index'])
         ->middleware('permiso:submodulo,roles')
         ->name('roles.index');
@@ -89,7 +88,6 @@ Route::middleware('auth')->group(function () {
     Route::put('/roles/{rol}/permisos', [RoleController::class, 'actualizarPermisos'])
         ->middleware('permiso:submodulo,roles')
         ->name('roles.actualizarPermisos');
-
 
     Route::get('/logs', [LogController::class, 'index'])
         ->middleware('permiso:submodulo,logs')
@@ -162,4 +160,19 @@ Route::middleware('auth')->group(function () {
     Route::patch('/acciones/{accion}/reordenar', [AccionController::class, 'reorder'])
         ->middleware('permiso:submodulo,modulos')
         ->name('acciones.reordenar');
+
+    Route::get('/perfil', [ProfileController::class, 'index'])
+        ->name('perfil');
+
+    Route::put('/perfil', [ProfileController::class, 'update'])
+        ->name('perfil.update');
+
+    Route::put('/perfil/password', [ProfileController::class, 'updatePassword'])
+        ->name('perfil.password');
+
+    Route::post('/perfil/foto', [ProfileController::class, 'updatePhoto'])
+        ->name('perfil.foto');
+
+    Route::delete('/perfil/foto', [ProfileController::class, 'deletePhoto'])
+        ->name('perfil.foto.delete');
 });

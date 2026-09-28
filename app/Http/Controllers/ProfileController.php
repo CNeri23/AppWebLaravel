@@ -1,0 +1,214 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Services\AuditLogService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+
+class ProfileController extends Controller
+{
+    public function index()
+    {
+        $usuario = Auth::user()->load('roles');
+
+        $puedeVerLogs = $usuario->permissions()
+            ->contains(function ($permiso) {
+                return $permiso->slug === 'logs';
+            });
+
+        return view('perfil.index', compact(
+            'usuario',
+            'puedeVerLogs'
+        ));
+    }
+
+    public function update(Request $request)
+    {
+        $usuario = Auth::user();
+
+        $datos = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($usuario->id),
+            ],
+        ], [
+            'name.required' => 'El nombre es obligatorio.',
+            'name.string' => 'El nombre no es válido.',
+            'name.max' => 'El nombre no puede superar los 255 caracteres.',
+
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Ingresa un correo electrónico válido.',
+            'email.max' => 'El correo electrónico no puede superar los 255 caracteres.',
+            'email.unique' => 'El correo electrónico ya está registrado.',
+        ]);
+
+        $cambios = [];
+
+        if ($usuario->name !== $datos['name']) {
+            $cambios[] = 'nombre';
+        }
+
+        if ($usuario->email !== $datos['email']) {
+            $cambios[] = 'correo electrónico';
+        }
+
+        $usuario->update($datos);
+
+        AuditLogService::log(
+            module: 'perfil',
+            action: 'ACTUALIZAR_PERFIL',
+            description: 'El usuario actualizó su perfil' .
+                (!empty($cambios)
+                    ? ': ' . implode(', ', $cambios) . '.'
+                    : '.'),
+            entity: $usuario
+        );
+
+        $usuario->refresh();
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Perfil actualizado correctamente.',
+            'usuario' => [
+                'name' => $usuario->name,
+                'email' => $usuario->email,
+                'updated_at' => $usuario->updated_at?->toIso8601String(),
+            ],
+        ]);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $usuario = Auth::user();
+
+        $datos = $request->validate([
+            'current_password' => [
+                'required',
+                'current_password',
+            ],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+            ],
+        ], [
+            'current_password.required' => 'La contraseña actual es obligatoria.',
+            'current_password.current_password' => 'La contraseña actual no es correcta.',
+
+            'password.required' => 'La nueva contraseña es obligatoria.',
+            'password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
+        ]);
+
+        $usuario->update([
+            'password' => $datos['password'],
+        ]);
+
+        AuditLogService::log(
+            module: 'perfil',
+            action: 'CAMBIAR_PASSWORD',
+            description: 'El usuario cambió su contraseña desde su perfil.',
+            entity: $usuario
+        );
+
+        $usuario->refresh();
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Contraseña actualizada correctamente.',
+            'usuario' => [
+                'updated_at' => $usuario->updated_at?->toIso8601String(),
+            ],
+        ]);
+    }
+
+    public function updatePhoto(Request $request)
+    {
+        $usuario = Auth::user();
+
+        $datos = $request->validate([
+            'profile_image' => [
+                'required',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
+        ], [
+            'profile_image.required' => 'Selecciona una imagen.',
+            'profile_image.image' => 'El archivo seleccionado no es una imagen válida.',
+            'profile_image.mimes' => 'La imagen debe ser JPG, JPEG, PNG o WEBP.',
+            'profile_image.max' => 'La imagen no puede superar los 2 MB.',
+        ]);
+
+        if ($usuario->profile_image) {
+            Storage::disk('public')->delete($usuario->profile_image);
+        }
+
+        $ruta = $datos['profile_image']->store('profiles', 'public');
+
+        $usuario->update([
+            'profile_image' => $ruta,
+        ]);
+
+        AuditLogService::log(
+            module: 'perfil',
+            action: 'ACTUALIZAR_FOTO',
+            description: 'El usuario actualizó su foto de perfil.',
+            entity: $usuario
+        );
+
+        $usuario->refresh();
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Foto de perfil actualizada correctamente.',
+            'imagen' => asset('storage/' . $ruta),
+            'usuario' => [
+                'name' => $usuario->name,
+                'updated_at' => $usuario->updated_at?->toIso8601String(),
+            ],
+        ]);
+    }
+
+    public function deletePhoto()
+    {
+        $usuario = Auth::user();
+
+        if ($usuario->profile_image) {
+            Storage::disk('public')->delete($usuario->profile_image);
+
+            $usuario->update([
+                'profile_image' => null,
+            ]);
+        }
+
+        AuditLogService::log(
+            module: 'perfil',
+            action: 'ELIMINAR_FOTO',
+            description: 'El usuario eliminó su foto de perfil.',
+            entity: $usuario
+        );
+
+        $usuario->refresh();
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Foto de perfil eliminada correctamente.',
+            'usuario' => [
+                'name' => $usuario->name,
+                'updated_at' => $usuario->updated_at?->toIso8601String(),
+            ],
+        ]);
+    }
+}

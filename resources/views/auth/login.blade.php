@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
     <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/toast.css') }}">
+
+    @vite(['resources/js/toast.js'])
 </head>
 
 <body>

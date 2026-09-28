@@ -38,7 +38,6 @@
         ->filter(function ($modulo) {
             return $modulo->submodulos->isNotEmpty();
         });
-
 @endphp
 
 <!DOCTYPE html>
@@ -57,11 +56,11 @@
     <link rel="stylesheet" href="{{ asset('vendor/datatables/css/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/toast.css') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
-
 </head>
 
 <body>
@@ -127,12 +126,105 @@
 
             <span class="topbar-divider"></span>
 
+            @php
+                $notificaciones = collect([
+                    (object) [
+                        'icono' => 'fa-solid fa-user-plus',
+                        'color' => 'primary',
+                        'titulo' => 'Nuevo usuario registrado',
+                        'descripcion' => 'Se creó una cuenta nueva en el sistema.',
+                        'tiempo' => 'Hace 10 minutos',
+                        'leida' => false,
+                    ],
+                    (object) [
+                        'icono' => 'fa-solid fa-shield-halved',
+                        'color' => 'warning',
+                        'titulo' => 'Permisos actualizados',
+                        'descripcion' => 'Se modificaron los permisos de un rol.',
+                        'tiempo' => 'Hace 2 horas',
+                        'leida' => false,
+                    ],
+                    (object) [
+                        'icono' => 'fa-solid fa-circle-check',
+                        'color' => 'success',
+                        'titulo' => 'Respaldo completado',
+                        'descripcion' => 'El respaldo automático finalizó sin errores.',
+                        'tiempo' => 'Ayer',
+                        'leida' => true,
+                    ],
+                ]);
+
+                $notificacionesNoLeidas = $notificaciones->where('leida', false)->count();
+            @endphp
+
+            <div class="dropdown notification-dropdown">
+                <button class="dropdown-toggle topbar-icon-btn" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false" title="Notificaciones">
+                    <i class="fa-solid fa-bell"></i>
+
+                    @if ($notificacionesNoLeidas > 0)
+                        <span class="notification-badge">
+                            {{ $notificacionesNoLeidas > 9 ? '9+' : $notificacionesNoLeidas }}
+                        </span>
+                    @endif
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-end notification-menu">
+                    <div class="notification-menu-header">
+                        <strong>Notificaciones</strong>
+
+                        @if ($notificacionesNoLeidas > 0)
+                            <span class="text-secondary small">
+                                {{ $notificacionesNoLeidas }} sin leer
+                            </span>
+                        @endif
+                    </div>
+
+                    <div class="notification-list">
+                        @forelse ($notificaciones as $notificacion)
+                            <div class="notification-item {{ $notificacion->leida ? '' : 'is-unread' }}">
+                                <div
+                                    class="notification-icon bg-{{ $notificacion->color }}-subtle text-{{ $notificacion->color }}">
+                                    <i class="{{ $notificacion->icono }}"></i>
+                                </div>
+
+                                <div class="notification-body">
+                                    <div class="notification-title">
+                                        {{ $notificacion->titulo }}
+                                    </div>
+
+                                    <div class="notification-description">
+                                        {{ $notificacion->descripcion }}
+                                    </div>
+
+                                    <div class="notification-time">
+                                        {{ $notificacion->tiempo }}
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="notification-empty">
+                                <i class="fa-regular fa-bell-slash"></i>
+                                <p class="mb-0">No tienes notificaciones.</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+            <span class="topbar-divider"></span>
+
             <div class="dropdown user-dropdown">
                 <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
                     title="{{ auth()->user()->name }}">
-                    <div class="user-avatar">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                    </div>
+                    @if (auth()->user()->profile_image)
+                        <img src="{{ asset('storage/' . auth()->user()->profile_image) }}"
+                            alt="Foto de {{ auth()->user()->name }}" class="user-avatar" id="topbarUserAvatar">
+                    @else
+                        <div class="user-avatar" id="topbarUserAvatar">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        </div>
+                    @endif
                 </button>
 
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -142,7 +234,7 @@
                     </li>
 
                     <li>
-                        <a href="#" class="dropdown-item">
+                        <a href="{{ route('perfil') }}" class="dropdown-item">
                             <i class="fa-regular fa-user"></i>
                             Mi perfil
                         </a>
@@ -273,33 +365,6 @@
     <script src="{{ asset('js/layout.js') }}"></script>
 
     @stack('scripts')
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            @if (session('success'))
-                window.showToast('success', @json(session('success')));
-            @endif
-
-            @if (session('error'))
-                window.showToast('error', @json(session('error')));
-            @endif
-
-            @if (session('warning'))
-                window.showToast('warning', @json(session('warning')));
-            @endif
-
-            @if (session('info'))
-                window.showToast('info', @json(session('info')));
-            @endif
-
-            @if ($errors->any())
-                window.showToast('error', @json($errors->all()), {
-                    title: 'Hay algunos errores en el formulario',
-                });
-            @endif
-        });
-    </script>
-
 </body>
 
 </html>

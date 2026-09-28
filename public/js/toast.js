@@ -1,204 +1,40 @@
-/**
- * Sistema global de alertas flotantes (toasts).
- */
+window.showToast = function (tipo, mensaje) {
+    const temaOscuro = document.documentElement.getAttribute('data-bs-theme') === 'dark';
 
-(function () {
-    var STACK_ID = 'toastStack';
-    var DEFAULT_DURATION = 6000;
-
-    var ICONS = {
-        success: 'fa-solid fa-circle-check',
-        error: 'fa-solid fa-circle-exclamation',
-        warning: 'fa-solid fa-triangle-exclamation',
-        info: 'fa-solid fa-circle-info'
+    const colores = {
+        success: temaOscuro ? '#4ade80' : '#16a34a',
+        error: temaOscuro ? '#f87171' : '#dc3545',
+        warning: temaOscuro ? '#fbbf24' : '#d97706',
+        info: temaOscuro ? '#60a5fa' : '#2563eb'
     };
 
-    function getStack() {
-        return document.getElementById(STACK_ID);
-    }
+    Swal.fire({
+        toast: true,
+        position: 'bottom-end',
+        icon: tipo,
+        title: mensaje,
 
-    function buildBody(message) {
-        if (Array.isArray(message)) {
-            var ul = document.createElement('ul');
-            ul.className = 'toast-list';
-            message.forEach(function (line) {
-                var li = document.createElement('li');
-                li.textContent = line;
-                ul.appendChild(li);
-            });
-            return ul;
+        showConfirmButton: false,
+        showCloseButton: true,
+
+        timer: 4000,
+        timerProgressBar: true,
+        timerProgressBar: true,
+
+        background: temaOscuro ? '#111827' : '#ffffff',
+        color: temaOscuro ? '#f8fafc' : '#1f2937',
+
+        iconColor: colores[tipo] || colores.info,
+
+        customClass: {
+            popup: temaOscuro ? 'swal-toast-dark' : 'swal-toast-light',
+            closeButton: 'swal-toast-close',
+            timerProgressBar: 'swal-toast-progress'
+        },
+
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
         }
-        var div = document.createElement('div');
-        div.className = 'toast-message';
-        div.textContent = message;
-
-        return div;
-    }
-
-    function showToast(type, message, options) {
-        options = options || {};
-        var stack = getStack();
-        var isEmptyList =
-            Array.isArray(message) &&
-            message.length === 0;
-
-        if (!stack || !message || isEmptyList) {
-            return;
-        }
-
-        var toastType = ICONS[type] ? type : 'info';
-        var toast = document.createElement('div');
-        toast.className = 'toast-item toast-' + toastType;
-        toast.setAttribute('role', 'alert');
-        toast.setAttribute('aria-live', 'assertive');
-        var icon = document.createElement('div');
-        icon.className = 'toast-icon';
-        icon.innerHTML = '<i class="' + (ICONS[type] || ICONS.info) + '"></i>';
-        var content = document.createElement('div');
-        content.className = 'toast-content';
-
-        if (options.title) {
-            var title = document.createElement('div');
-            title.className = 'toast-title';
-            title.textContent = options.title;
-            content.appendChild(title);
-        }
-        content.appendChild(buildBody(message));
-
-        var closeBtn = document.createElement('button');
-        closeBtn.type = 'button';
-        closeBtn.className = 'toast-close';
-        closeBtn.setAttribute(
-            'aria-label',
-            'Cerrar'
-        );
-
-        closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-        var progress = document.createElement('div');
-
-        progress.className = 'toast-progress';
-        toast.appendChild(icon);
-        toast.appendChild(content);
-        toast.appendChild(closeBtn);
-        toast.appendChild(progress);
-        stack.appendChild(toast);
-        var duration = Number(options.duration) > 0 ? Number(options.duration) : DEFAULT_DURATION;
-        var dismissed = false;
-        var paused = false;
-        var elapsed = 0;
-        var lastTime = null;
-        var animationFrame = null;
-
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(24px)';
-        icon.style.opacity = '0';
-        icon.style.transform = 'scale(.65) rotate(-8deg)';
-
-        requestAnimationFrame(function () {
-            toast.style.transition = 'opacity .25s ease, transform .25s ease';
-            icon.style.transition = 'opacity .45s cubic-bezier(.34,1.56,.64,1), ' + 'transform .45s cubic-bezier(.34,1.56,.64,1)';
-            toast.style.opacity = '1';
-            toast.style.transform = 'translateX(0)';
-            icon.style.opacity = '1';
-            icon.style.transform = 'scale(1) rotate(0)';
-        });
-
-        progress.style.transform = 'scaleX(1)';
-        progress.style.transformOrigin = 'left center';
-
-        function updateProgress(timestamp) {
-            if (dismissed) {
-                return;
-            }
-
-            if (lastTime === null) {
-                lastTime = timestamp;
-            }
-            var delta = timestamp - lastTime;
-            lastTime = timestamp;
-
-            if (!paused) {
-                elapsed += delta;
-                var percentage =
-                    Math.max(
-                        0,
-                        1 - (elapsed / duration)
-                    );
-
-                progress.style.transform =
-                    'scaleX(' + percentage + ')';
-
-                if (elapsed >= duration) {
-                    progress.style.transform = 'scaleX(0)';
-                    dismiss();
-                    return;
-                }
-            }
-            animationFrame = requestAnimationFrame(updateProgress);
-        }
-        animationFrame = requestAnimationFrame(updateProgress);
-
-        function pauseToast() {
-            if (dismissed || paused) {
-                return;
-            }
-            paused = true;
-            lastTime = null;
-        }
-
-        function resumeToast() {
-            if (dismissed || !paused) {
-                return;
-            }
-            paused = false;
-            lastTime = null;
-        }
-
-        function dismiss() {
-            if (dismissed) {
-                return;
-            }
-            dismissed = true;
-
-            if (animationFrame !== null) {
-                cancelAnimationFrame(
-                    animationFrame
-                );
-                animationFrame = null;
-            }
-
-            toast.style.transition = 'opacity .25s ease, transform .25s ease';
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateX(24px)';
-            toast.addEventListener(
-                'transitionend',
-                function (event) {
-                    if (event.propertyName !== 'opacity') {
-                        return;
-                    }
-                    toast.remove();
-                },
-                { once: true }
-            );
-        }
-
-        toast.addEventListener(
-            'mouseenter',
-            pauseToast
-        );
-
-        toast.addEventListener(
-            'mouseleave',
-            resumeToast
-        );
-
-        closeBtn.addEventListener(
-            'click',
-            function () {
-
-                dismiss();
-            }
-        );
-    }
-    window.showToast = showToast;
-})();
+    });
+};
