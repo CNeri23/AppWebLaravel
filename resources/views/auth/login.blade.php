@@ -243,7 +243,7 @@
 
                             <button type="submit" class="btn btn-login w-100">
                                 <i class="fa-solid fa-paper-plane"></i>
-                                Enviar instrucciones
+                                Enviar
                             </button>
                         </form>
 

@@ -124,8 +124,8 @@
 }
 
 [data-bs-theme="dark"] .permisos-tree {
-    border-color: #334155;
-    background: #1e293b;
+    border-color: #202328;
+    background: #202328;
 }
 
 [data-bs-theme="dark"] .permisos-tree-row:hover {

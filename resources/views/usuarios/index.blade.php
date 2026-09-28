@@ -43,7 +43,7 @@
                             <th>Usuario</th>
                             <th>Correo electrónico</th>
                             <th>Fecha de registro</th>
-                            <th class="text-end px-4">Acciones</th>
+                            <th class="text-center px-4">Acciones</th>
                         </tr>
                     </thead>
 
