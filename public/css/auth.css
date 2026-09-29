@@ -1,27 +1,53 @@
+/* =====================================================================
+   AUTH — LIQUID GLASS
+   Usa los tokens de layout.css (--surface, --glass-*, --rim-*, --sheen*,
+   --g-*, --hue, --color-primary, --radius-*). layout.css se carga DESPUÉS
+   de este archivo, por eso todo lo que choca con él va bajo .login-page
+   (mayor especificidad) y no hace falta cambiar el orden de los <link>.
+   ===================================================================== */
+
 :root {
-    --bg: #f3f4f8;
-    --card-bg: #ffffff;
-    --card-border: rgba(15, 17, 26, 0.08);
-    --text-main: #1c1d24;
-    --text-muted: #6b7280;
-    --input-bg: #ffffff;
-    --input-icon-bg: #f3f4f8;
-    --input-border: #dcdfe6;
-    --accent: #3b82f6;
-    --accent-hover: #2563eb;
+    /* Compatibilidad con nombres anteriores (por si toast.css los usa) */
+    --bg: var(--content-bg);
+    --card-bg: var(--surface);
+    --card-border: var(--glass-border);
+    --input-bg: var(--g-fill);
+    --input-icon-bg: var(--g-chip-bg);
+    --input-border: var(--g-border);
+    --accent: var(--color-primary);
+    --accent-hover: var(--color-primary-dark);
+
+    /* Solo login */
+    --login-surface: rgba(255, 255, 255, 0.6);
+    --login-dot: rgba(20, 30, 60, 0.16);
+    --login-shadow:
+        0 12px 36px rgba(30, 45, 85, 0.16),
+        0 2px 6px rgba(30, 45, 85, 0.1),
+        inset 0 1px 0 #ffffff;
+    --field-inset: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+
+    /* Fondo alrededor de las cards: plano en claro */
+    --login-bg: var(--content-bg);
 }
 
 [data-bs-theme="dark"] {
-    --bg: #111315;
-    --card-bg: #181a1d;
-    --card-border: rgba(255, 255, 255, 0.06);
-    --text-main: #e7e9ec;
-    --text-muted: #92979f;
-    --input-bg: #151719;
-    --input-icon-bg: #1d2023;
-    --input-border: #2b2f34;
-    --accent: #2563eb;
-    --accent-hover: #153373;
+    --login-surface: rgba(30, 30, 32, 0.56);
+    --login-dot: rgba(255, 255, 255, 0.14);
+    --login-shadow:
+        0 14px 44px rgba(0, 0, 0, 0.55),
+        0 2px 8px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 var(--glass-highlight);
+    --field-inset: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+
+    /* Fondo alrededor de las cards: mismo tono y degradado que topbar/sidebar */
+    --login-bg:
+        linear-gradient(
+            180deg,
+            var(--sheen-dark) 0%,
+            transparent 45%,
+            var(--sheen-soft) 100%
+        ),
+        var(--surface);
 }
 
 * {
@@ -31,23 +57,26 @@
 body {
     margin: 0;
     min-height: 100vh;
-    background: var(--bg);
+    background: var(--content-bg);
     color: var(--text-main);
-    font-family:
-        "Segoe UI",
-        system-ui,
-        -apple-system,
-        Roboto,
-        sans-serif;
-    transition:
-        background 0.2s ease,
-        color 0.2s ease;
+    font-family: var(--font-sans);
 }
+
+
+/* =====================================================================
+   PÁGINA (claro: plano · oscuro: tono del sidebar/topbar)
+   ===================================================================== */
 
 .login-page {
     display: flex;
     min-height: 100vh;
+    background: var(--login-bg);
 }
+
+
+/* =====================================================================
+   PANEL VISUAL (derecha) — vidrio flotante, igual que topbar/sidebar
+   ===================================================================== */
 
 .login-visual {
     position: relative;
@@ -55,15 +84,25 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: var(--glass-gap) var(--glass-gap) var(--glass-gap) 0;
     padding: 48px;
     overflow: hidden;
-    background: linear-gradient(160deg, #1f2937 0%, #111827 48%, #0f172a 100%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    background:
+        linear-gradient(160deg,
+            hsl(var(--hue) 70% 62% / 0.26),
+            rgba(0, 122, 255, 0.1) 100%),
+        var(--login-surface);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    box-shadow: var(--login-shadow);
 }
 
 .visual-dots {
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.5px, transparent 1.5px);
+    background-image: radial-gradient(var(--login-dot) 1.5px, transparent 1.5px);
     background-size: 24px 24px;
     mask-image: radial-gradient(circle at 30% 30%, black 45%, transparent 85%);
 }
@@ -74,7 +113,7 @@ body {
     height: 520px;
     right: -140px;
     bottom: -160px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    border: 1px solid var(--glass-border);
     border-radius: 36px;
     transform: rotate(18deg);
 }
@@ -83,7 +122,7 @@ body {
     content: "";
     position: absolute;
     inset: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border-soft);
     border-radius: 28px;
 }
 
@@ -91,33 +130,36 @@ body {
     position: relative;
     z-index: 1;
     max-width: 380px;
-    color: #fff;
+    color: var(--text-strong);
 }
 
 .visual-brand {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 11px;
     margin-bottom: 40px;
 }
 
 .visual-brand-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 9px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid var(--glass-border);
+    border-radius: 11px;
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
     font-size: 14px;
-    flex-shrink: 0;
+    box-shadow: var(--glass-shadow-small);
 }
 
 .visual-brand-name {
-    font-weight: 700;
+    font-weight: 800;
     font-size: 1rem;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.2px;
+    color: var(--text-strong);
 }
 
 .visual-title {
@@ -126,12 +168,13 @@ body {
     line-height: 1.25;
     letter-spacing: -0.01em;
     margin-bottom: 16px;
+    color: var(--text-strong);
 }
 
 .visual-subtitle {
     font-size: 0.95rem;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--text-muted);
     margin-bottom: 0;
 }
 
@@ -140,6 +183,11 @@ body {
         display: none;
     }
 }
+
+
+/* =====================================================================
+   TARJETA DEL FORMULARIO (izquierda)
+   ===================================================================== */
 
 .login-form-side {
     flex: 1 1 54%;
@@ -150,8 +198,16 @@ body {
 }
 
 .login-form-wrap {
+    position: relative;
     width: 100%;
-    max-width: 360px;
+    max-width: 420px;
+    padding: 36px 32px 28px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    background: var(--login-surface);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    box-shadow: var(--login-shadow);
     opacity: 0;
     animation: subirYAparecer 0.45s ease-out forwards;
 }
@@ -168,20 +224,67 @@ body {
     }
 }
 
+/* Brillo suave arriba-izquierda (igual que 32.4 del layout) */
+.login-form-wrap::before,
+.login-visual::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+        radial-gradient(120% 90% at 0% 0%, var(--sheen), transparent 58%),
+        linear-gradient(180deg, var(--sheen-soft), transparent 38%);
+}
+
+/* Borde especular con degradado: el "filo" del cristal */
+.login-form-wrap::after,
+.login-visual::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    padding: 1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(135deg,
+            var(--rim-a) 0%,
+            var(--rim-b) 28%,
+            var(--rim-c) 62%,
+            var(--rim-b) 86%,
+            var(--rim-a) 100%);
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    mask-composite: exclude;
+}
+
 .login-title {
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: 800;
     margin-bottom: 4px;
     letter-spacing: -0.01em;
+    color: var(--text-strong);
 }
 
 .login-subtitle {
     color: var(--text-muted);
     font-size: 0.9rem;
-    margin-bottom: 30px;
+    text-align: center;
+    margin-bottom: 28px;
 }
 
-.form-label {
+
+/* =====================================================================
+   CAMPOS — cristal tintado con relieve hundido
+   ===================================================================== */
+
+.login-page .form-label {
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--text-main);
@@ -197,40 +300,126 @@ body {
     transform: translateY(-1px);
 }
 
-.input-group-text {
-    background: var(--input-icon-bg);
-    border-color: var(--input-border);
-    color: var(--text-muted);
-    transition: color 0.15s ease;
+.login-page .input-group-text {
+    background: var(--g-chip-bg);
+    border: 1px solid var(--g-border);
+    border-radius: 10px 0 0 10px;
+    color: var(--g-chip-fg);
+    box-shadow: inset 0 1px 0 var(--g-hi);
+    transition: color 0.15s ease, border-color 0.15s ease;
 }
 
-.input-group:focus-within .input-group-text {
-    border-color: var(--accent);
-    color: var(--accent);
+.login-page .input-group:focus-within .input-group-text {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
 }
 
-.form-control {
-    background: var(--input-bg);
-    border-color: var(--input-border);
+.login-page .form-control {
+    padding: 10px 12px;
+    background: var(--g-fill);
+    border: 1px solid var(--g-border);
+    border-radius: 0 10px 10px 0;
     color: var(--text-main);
-    padding-top: 10px;
-    padding-bottom: 10px;
+    box-shadow: var(--field-inset);
+    /* el blur ya lo aplica la tarjeta; anidarlo solo cuesta rendimiento */
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
 }
 
-.form-control:focus {
-    background: var(--input-bg);
+.login-page .form-control:focus {
+    background: var(--surface-strong);
     color: var(--text-main);
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    border-color: var(--color-primary);
+    box-shadow:
+        0 0 0 3px var(--color-primary-soft),
+        var(--field-inset);
 }
 
-.form-control::placeholder {
+.login-page .form-control::placeholder {
     color: var(--text-muted);
 }
 
-.form-check-input:checked {
-    background-color: var(--accent);
-    border-color: var(--accent);
+.login-page .form-control[readonly] {
+    opacity: 0.75;
+}
+
+.login-page .form-control:-webkit-autofill {
+    -webkit-text-fill-color: var(--text-main);
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+.login-page .form-control.is-valid,
+.login-page .form-control.is-invalid {
+    background-image: none;
+}
+
+/* Espacio para el ojito en TODOS los campos de contraseña */
+.login-page .form-control:has(+ .toggle-password) {
+    padding-right: 48px;
+}
+
+.login-page .form-control:invalid,
+.login-page .form-control:-moz-ui-invalid {
+    box-shadow: var(--field-inset);
+}
+
+.login-page .form-control.is-invalid:focus {
+    box-shadow:
+        0 0 0 3px rgba(255, 69, 58, 0.16),
+        var(--field-inset);
+}
+
+.invalid-feedback {
+    font-size: 0.8rem;
+}
+
+.login-page .input-group-text.toggle-password {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    padding: 0;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 9px 9px 0;
+    box-shadow: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.login-page .input-group-text.toggle-password:hover {
+    color: var(--color-primary);
+}
+
+.login-page .input-group-text.toggle-password:active {
+    transform: scale(0.9);
+}
+
+
+/* =====================================================================
+   CHECKBOX Y ENLACES
+   ===================================================================== */
+
+.login-page .form-check-input {
+    background-color: var(--g-fill);
+    border: 1px solid var(--g-border);
+    box-shadow: inset 0 1px 0 var(--g-hi);
+}
+
+.login-page .form-check-input:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.login-page .form-check-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-soft);
 }
 
 .form-check-label,
@@ -244,48 +433,77 @@ a.link-muted {
 }
 
 a.link-muted:hover {
-    color: var(--accent);
+    color: var(--color-primary);
 }
 
-.btn-login {
+
+/* =====================================================================
+   BOTÓN — cristal azul con brillo superior
+   ===================================================================== */
+
+.login-page .btn-login {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 9px;
-    background: var(--accent);
-    border: none;
+    padding: 11px;
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    border-radius: 12px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 52%),
+        var(--color-primary);
     color: #fff;
     font-weight: 600;
-    padding: 11px;
-    border-radius: 8px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+        0 8px 20px rgba(0, 122, 255, 0.3);
     transition:
         background 0.2s ease,
         transform 0.2s ease,
         box-shadow 0.2s ease;
 }
 
-.btn-login i {
+.login-page .btn-login i {
     display: inline-block;
-    transition:
-        transform 0.25s ease,
-        opacity 0.2s ease;
+    transition: transform 0.25s ease, opacity 0.2s ease;
 }
 
-.btn-login:hover {
-    background: var(--accent-hover);
+.login-page .btn-login:hover {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0) 52%),
+        var(--color-primary-dark);
     color: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 7px 16px rgba(59, 130, 246, 0.22);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+        0 12px 26px rgba(0, 122, 255, 0.38);
 }
 
-.btn-login:hover i {
+.login-page .btn-login:hover i {
     transform: translateX(4px);
 }
 
-.btn-login:active {
+.login-page .btn-login:active {
     transform: translateY(0);
-    box-shadow: none;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        0 3px 8px rgba(0, 122, 255, 0.25);
 }
+
+.login-page .btn-login:focus-visible {
+    outline: none;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        0 0 0 3px var(--color-primary-soft),
+        0 8px 20px rgba(0, 122, 255, 0.3);
+}
+
+
+/* =====================================================================
+   PIE
+   ===================================================================== */
 
 .login-footer {
     text-align: center;
@@ -295,61 +513,10 @@ a.link-muted:hover {
     margin-bottom: 0;
 }
 
-.invalid-feedback {
-    font-size: 0.8rem;
-}
 
-.form-control.is-valid,
-.form-control.is-invalid {
-    background-image: none;
-    padding-right: 0.75rem;
-}
-
-#password {
-    padding-right: 48px;
-}
-
-.toggle-password {
-    position: absolute;
-    top: 1px;
-    right: 1px;
-    bottom: 1px;
-    z-index: 5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    padding: 0;
-    background: transparent !important;
-    border: none !important;
-    border-radius: 0 7px 7px 0;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition:
-        color 0.15s ease,
-        transform 0.15s ease;
-}
-
-.toggle-password:hover {
-    background: transparent !important;
-    color: var(--accent);
-}
-
-.toggle-password:active {
-    transform: scale(0.9);
-}
-
-.form-control:invalid,
-.form-control:-moz-ui-invalid {
-    box-shadow: none;
-}
-
-.auth-form-stage {
-    position: relative;
-    width: 100%;
-    perspective: 1200px;
-    transform-style: preserve-3d;
-}
+/* =====================================================================
+   CAMBIO DE PANELES (login / registro / recuperar / restablecer)
+   ===================================================================== */
 
 .auth-form-stage {
     position: relative;
@@ -425,18 +592,16 @@ a.link-muted:hover {
     border: 0;
     padding: 0;
     background: transparent;
-    color: var(--accent);
+    color: var(--color-primary);
     font: inherit;
     font-weight: 600;
     text-decoration: none;
     cursor: pointer;
-    transition:
-        color 0.15s ease,
-        transform 0.15s ease;
+    transition: color 0.15s ease, transform 0.15s ease;
 }
 
 .auth-link:hover {
-    color: var(--accent-hover);
+    color: var(--color-primary-dark);
 }
 
 .auth-link:active {
@@ -449,11 +614,27 @@ button.auth-link.link-muted {
 }
 
 button.auth-link.link-muted:hover {
-    color: var(--accent);
+    color: var(--color-primary);
 }
 
 .auth-panel .login-footer {
     margin-top: 22px;
+}
+
+
+/* =====================================================================
+   RESPONSIVE / MOVIMIENTO REDUCIDO
+   ===================================================================== */
+
+@media (max-width: 575.98px) {
+    .login-form-side {
+        padding: 14px;
+    }
+
+    .login-form-wrap {
+        padding: 28px 20px 22px;
+        border-radius: var(--radius-lg);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {

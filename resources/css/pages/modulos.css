@@ -182,19 +182,60 @@
     position: fixed;
     z-index: 3000;
     min-width: 200px;
-    background: #ffffff;
-    border: 1px solid rgba(15, 23, 42, 0.08);
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.86);
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    border-radius: 14px;
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
     box-shadow:
         0 12px 28px rgba(15, 23, 42, 0.16),
-        0 2px 6px rgba(15, 23, 42, 0.08);
+        0 2px 6px rgba(15, 23, 42, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
     padding: 6px;
     display: none;
 }
 
+/* Brillo suave y borde especular (igual que 32.4 del layout) */
+.context-menu::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+        radial-gradient(120% 90% at 0% 0%, var(--sheen), transparent 58%),
+        linear-gradient(180deg, var(--sheen-soft), transparent 38%);
+}
+
+.context-menu::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    padding: 1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(135deg,
+            var(--rim-a) 0%,
+            var(--rim-b) 28%,
+            var(--rim-c) 62%,
+            var(--rim-b) 86%,
+            var(--rim-a) 100%);
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    mask-composite: exclude;
+}
+
 .context-menu.show {
     display: block;
-    animation: contextMenuIn 0.12s ease;
+    transform-origin: top left;
+    animation: contextMenuIn 0.14s cubic-bezier(0.2, 0.9, 0.3, 1);
 }
 
 @keyframes contextMenuIn {
@@ -213,12 +254,17 @@
     align-items: center;
     gap: 10px;
     padding: 8px 10px;
-    border-radius: 7px;
+    border: 1px solid transparent;
+    border-radius: 9px;
     font-size: 0.86rem;
     font-weight: 500;
     color: #1e293b;
     cursor: pointer;
     user-select: none;
+    transition:
+        background-color 0.12s ease,
+        border-color 0.12s ease,
+        box-shadow 0.12s ease;
 }
 
 .context-menu-item i {
@@ -230,6 +276,8 @@
 
 .context-menu-item:hover {
     background-color: rgba(47, 113, 170, 0.08);
+    border-color: rgba(47, 113, 170, 0.16);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .context-menu-item.danger {
@@ -242,6 +290,7 @@
 
 .context-menu-item.danger:hover {
     background-color: rgba(220, 38, 38, 0.08);
+    border-color: rgba(220, 38, 38, 0.2);
 }
 
 .context-menu-item.disabled {
@@ -253,7 +302,7 @@
 .context-menu-divider {
     height: 1px;
     margin: 5px 4px;
-    background-color: rgba(15, 23, 42, 0.08);
+    background-color: rgba(15, 23, 42, 0.1);
 }
 
 .tree-node.expanded > .tree-children {
@@ -473,11 +522,12 @@
 }
 
 [data-bs-theme="dark"] .context-menu {
-    background: #1a1c1f;
-    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(26, 28, 31, 0.82);
+    border-color: rgba(255, 255, 255, 0.1);
     box-shadow:
         0 12px 28px rgba(0, 0, 0, 0.4),
-        0 2px 6px rgba(0, 0, 0, 0.25);
+        0 2px 6px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 [data-bs-theme="dark"] .context-menu-item {
@@ -490,6 +540,8 @@
 
 [data-bs-theme="dark"] .context-menu-item:hover {
     background-color: rgba(255, 255, 255, 0.055);
+    border-color: rgba(255, 255, 255, 0.09);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 [data-bs-theme="dark"] .context-menu-item.danger {
@@ -502,6 +554,7 @@
 
 [data-bs-theme="dark"] .context-menu-item.danger:hover {
     background-color: rgba(248, 113, 113, 0.1);
+    border-color: rgba(248, 113, 113, 0.22);
 }
 
 [data-bs-theme="dark"] .context-menu-divider {
@@ -676,4 +729,22 @@
     border-radius: 8px;
     margin-right: 4px;
     font-size: 13px;
+}
+
+
+/* =====================================================================
+   FIX - ícono de la ficha seleccionada al hacer hover
+   Las reglas de hover pintaban el ícono del mismo color que el fondo
+   sólido de la ficha (azul sobre azul / ámbar sobre ámbar).
+   ===================================================================== */
+.tree-item.selected.tree-item:hover .tree-folder,
+.tree-item.selected.tree-item:hover .tree-subfolder,
+.tree-item.selected.tree-item:hover .tree-action-folder {
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .tree-item.selected.tree-item:hover .tree-folder,
+[data-bs-theme="dark"] .tree-item.selected.tree-item:hover .tree-subfolder,
+[data-bs-theme="dark"] .tree-item.selected.tree-item:hover .tree-action-folder {
+    color: #0f172a;
 }
