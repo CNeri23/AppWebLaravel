@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
+    /* =================================================================
+       TEMA CLARO / OSCURO (toggle)
+       ================================================================= */
+
     const html = document.documentElement;
-    const themeIcon = document.getElementById('themeIcon');
+    const themeSwitch = document.getElementById('themeSwitch');
 
     function getSystemTheme() {
         return window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -8,43 +12,101 @@ document.addEventListener('DOMContentLoaded', function () {
             : 'light';
     }
 
-    function applyTheme(theme) {
-        const finalTheme = theme === 'auto' ? getSystemTheme() : theme;
-        html.setAttribute('data-bs-theme', finalTheme);
+    function leerTema() {
+        let guardado = localStorage.getItem('admin-theme');
 
-        if (themeIcon) {
-            if (theme === 'auto') {
-                themeIcon.className = 'fa-solid fa-circle-half-stroke';
-            } else if (finalTheme === 'dark') {
-                themeIcon.className = 'fa-solid fa-moon';
-            } else {
-                themeIcon.className = 'fa-solid fa-sun';
-            }
+        // Migración: el modo "auto" ya no existe
+        if (guardado === 'auto') {
+            guardado = getSystemTheme();
+            localStorage.setItem('admin-theme', guardado);
+        }
+
+        return guardado === 'dark' ? 'dark' : 'light';
+    }
+
+    function applyTheme(theme) {
+        html.setAttribute('data-bs-theme', theme);
+
+        if (themeSwitch) {
+            themeSwitch.setAttribute(
+                'aria-checked',
+                theme === 'dark' ? 'true' : 'false'
+            );
+
+            themeSwitch.title =
+                theme === 'dark'
+                    ? 'Cambiar a modo claro'
+                    : 'Cambiar a modo oscuro';
         }
     }
 
-    const savedTheme = localStorage.getItem('admin-theme') || 'light';
+    applyTheme(leerTema());
 
-    applyTheme(savedTheme);
+    function guardarYAplicar(tema) {
+        localStorage.setItem('admin-theme', tema);
+        applyTheme(tema);
+    }
 
-    document.querySelectorAll('.theme-option').forEach(button => {
-        button.addEventListener('click', function () {
-            const theme = this.dataset.theme;
+    function cambiarTema(siguiente) {
+        const reducirMovimiento = window
+            .matchMedia('(prefers-reduced-motion: reduce)')
+            .matches;
 
-            localStorage.setItem('admin-theme', theme);
-            applyTheme(theme);
+        // Con View Transitions: el nuevo tema se expande como un círculo
+        // desde el toggle. Si no hay soporte, se hace un fundido de colores.
+        if (!document.startViewTransition || reducirMovimiento) {
+            html.classList.add('theme-switching');
+            guardarYAplicar(siguiente);
+
+            setTimeout(function () {
+                html.classList.remove('theme-switching');
+            }, 450);
+
+            return;
+        }
+
+        const caja = themeSwitch.getBoundingClientRect();
+        const x = caja.left + caja.width / 2;
+        const y = caja.top + caja.height / 2;
+
+        const radio = Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        );
+
+        const transicion = document.startViewTransition(function () {
+            guardarYAplicar(siguiente);
         });
+
+        transicion.ready.then(function () {
+            html.animate(
+                {
+                    clipPath: [
+                        `circle(0px at ${x}px ${y}px)`,
+                        `circle(${radio}px at ${x}px ${y}px)`,
+                    ],
+                },
+                {
+                    duration: 600,
+                    easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                    pseudoElement: '::view-transition-new(root)',
+                }
+            );
+        }).catch(function () { });
+    }
+
+    themeSwitch?.addEventListener('click', function () {
+        const actual = html.getAttribute('data-bs-theme');
+
+        cambiarTema(actual === 'dark' ? 'light' : 'dark');
     });
 
-    window
-        .matchMedia('(prefers-color-scheme: dark)')
-        .addEventListener('change', function () {
-            const saved = localStorage.getItem('admin-theme');
-
-            if (saved === 'auto') {
-                applyTheme('auto');
-            }
-        });
+    // Mantiene sincronizadas varias pestañas abiertas
+    window.addEventListener('storage', function (event) {
+        if (event.key === 'admin-theme') {
+            applyTheme(leerTema());
+        }
+    });
 
     const sidebar = document.getElementById('appSidebar');
     const overlay = document.getElementById('sidebarOverlay');
@@ -85,32 +147,129 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function cerrarSubmenu(button, submenu) {
-        if (!submenu) {
-            return;
-        }
+    const DURACION_SUBMENU = 380;
+    const CURVA_SUBMENU = 'cubic-bezier(0.32, 0.72, 0, 1)';
 
-        submenu.classList.remove('show');
-        submenu.classList.remove('collapsing');
-
-        submenu.style.height = '';
-        submenu.style.overflow = '';
-
-        button.setAttribute('aria-expanded', 'false');
+    function reducirMovimiento() {
+        return window
+            .matchMedia('(prefers-reduced-motion: reduce)')
+            .matches;
     }
 
-    function abrirSubmenu(button, submenu) {
+    function limpiarEstilosSubmenu(submenu) {
+        submenu.style.height = '';
+        submenu.style.overflow = '';
+        submenu.style.transition = '';
+        submenu.style.paddingTop = '';
+        submenu.style.paddingBottom = '';
+        submenu.style.marginTop = '';
+        submenu.style.marginBottom = '';
+    }
+
+    function cerrarSubmenu(button, submenu, animar = false) {
         if (!submenu) {
             return;
         }
 
-        submenu.classList.remove('collapsing');
-        submenu.classList.add('show');
+        clearTimeout(submenu._timer);
 
-        submenu.style.height = 'auto';
-        submenu.style.overflow = 'visible';
+        button.setAttribute('aria-expanded', 'false');
+
+        const visible = submenu.classList.contains('show');
+
+        if (!animar || !visible || reducirMovimiento()) {
+            submenu.classList.remove('show');
+            submenu.classList.remove('collapsing');
+
+            limpiarEstilosSubmenu(submenu);
+
+            return;
+        }
+
+        // Fija la altura actual y la lleva a 0
+        submenu.style.height = submenu.offsetHeight + 'px';
+        submenu.style.overflow = 'hidden';
+
+        submenu.getBoundingClientRect();
+
+        submenu.style.transition =
+            `height ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}, ` +
+            `padding ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}, ` +
+            `margin ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}`;
+
+        submenu.style.height = '0px';
+        submenu.style.paddingTop = '0px';
+        submenu.style.paddingBottom = '0px';
+        submenu.style.marginTop = '0px';
+        submenu.style.marginBottom = '0px';
+
+        submenu._timer = setTimeout(function () {
+            submenu.classList.remove('show');
+
+            limpiarEstilosSubmenu(submenu);
+        }, DURACION_SUBMENU + 30);
+    }
+
+    function abrirSubmenu(button, submenu, animar = false) {
+        if (!submenu) {
+            return;
+        }
+
+        clearTimeout(submenu._timer);
 
         button.setAttribute('aria-expanded', 'true');
+
+        const yaVisible = submenu.classList.contains('show');
+
+        if (!animar || yaVisible && !submenu.style.height || reducirMovimiento()) {
+            submenu.classList.remove('collapsing');
+            submenu.classList.add('show');
+
+            limpiarEstilosSubmenu(submenu);
+
+            submenu.style.height = 'auto';
+            submenu.style.overflow = 'visible';
+
+            return;
+        }
+
+        // Mide la altura final y la anima desde 0
+        const desdeAltura = yaVisible ? submenu.offsetHeight : 0;
+
+        submenu.classList.add('show');
+        limpiarEstilosSubmenu(submenu);
+
+        const alto = submenu.scrollHeight;
+
+        submenu.style.overflow = 'hidden';
+        submenu.style.height = desdeAltura + 'px';
+
+        if (!yaVisible) {
+            submenu.style.paddingTop = '0px';
+            submenu.style.paddingBottom = '0px';
+            submenu.style.marginTop = '0px';
+            submenu.style.marginBottom = '0px';
+        }
+
+        submenu.getBoundingClientRect();
+
+        submenu.style.transition =
+            `height ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}, ` +
+            `padding ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}, ` +
+            `margin ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}`;
+
+        submenu.style.height = alto + 'px';
+        submenu.style.paddingTop = '';
+        submenu.style.paddingBottom = '';
+        submenu.style.marginTop = '';
+        submenu.style.marginBottom = '';
+
+        submenu._timer = setTimeout(function () {
+            limpiarEstilosSubmenu(submenu);
+
+            submenu.style.height = 'auto';
+            submenu.style.overflow = 'visible';
+        }, DURACION_SUBMENU + 30);
     }
 
     function cerrarTodosLosSubmenus() {
@@ -132,22 +291,28 @@ document.addEventListener('DOMContentLoaded', function () {
             button.addEventListener('click', function (event) {
                 event.preventDefault();
 
-                if (sidebar.classList.contains('collapsed')) {
-                    return;
-                }
-
                 const submenu = obtenerSubmenu(button);
 
                 if (!submenu) {
                     return;
                 }
 
+                // Con el sidebar colapsado, primero se expande y se abre el módulo
+                if (
+                    sidebar.classList.contains('collapsed') &&
+                    !esMovil()
+                ) {
+                    setCollapsed(false);
+                    abrirSubmenu(button, submenu);
+                    return;
+                }
+
                 const abierto = submenu.classList.contains('show');
 
                 if (abierto) {
-                    cerrarSubmenu(button, submenu);
+                    cerrarSubmenu(button, submenu, true);
                 } else {
-                    abrirSubmenu(button, submenu);
+                    abrirSubmenu(button, submenu, true);
                 }
             });
         });
@@ -259,6 +424,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
             }
 
+            actualizarTitulos(estabaColapsado);
+
         } catch (error) {
             console.error(
                 'Error al actualizar el sidebar:',
@@ -269,6 +436,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
     inicializarGruposSidebar();
 
+    // Tooltips nativos con el nombre cuando solo se ven los iconos
+    function actualizarTitulos(collapsed) {
+        sidebar
+            .querySelectorAll(
+                '.sidebar-link[data-label], .sidebar-group-toggle[data-label]'
+            )
+            .forEach(elemento => {
+                if (collapsed) {
+                    elemento.title = elemento.dataset.label;
+                } else {
+                    elemento.removeAttribute('title');
+                }
+            });
+    }
+
+    // Al expandir, vuelve a abrir el módulo de la página actual
+    function abrirModuloActivo() {
+        const activo = sidebar.querySelector('.sidebar-sublink.active');
+
+        if (!activo) {
+            return;
+        }
+
+        const submenu = activo.closest('.sidebar-submenu');
+
+        if (!submenu) {
+            return;
+        }
+
+        const button = sidebar.querySelector(
+            `.sidebar-group-toggle[data-bs-target="#${submenu.id}"]`
+        );
+
+        if (button) {
+            abrirSubmenu(button, submenu);
+        }
+    }
+
     function setCollapsed(collapsed) {
         sidebar.classList.toggle('collapsed', collapsed);
 
@@ -277,13 +482,22 @@ document.addEventListener('DOMContentLoaded', function () {
             collapsed
         );
 
+        sidebarToggleBtn?.setAttribute(
+            'aria-expanded',
+            collapsed ? 'false' : 'true'
+        );
+
         localStorage.setItem(
             'sidebar-collapsed',
             collapsed ? '1' : '0'
         );
 
+        actualizarTitulos(collapsed);
+
         if (collapsed) {
             cerrarTodosLosSubmenus();
+        } else {
+            abrirModuloActivo();
         }
     }
 

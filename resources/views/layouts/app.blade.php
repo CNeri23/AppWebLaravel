@@ -51,6 +51,19 @@
 
     <title>@yield('title', 'Panel administrativo')</title>
 
+    {{-- Aplica el tema guardado antes de pintar para evitar parpadeos --}}
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('admin-theme');
+                if (t === 'auto') {
+                    t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                document.documentElement.setAttribute('data-bs-theme', t === 'dark' ? 'dark' : 'light');
+            } catch (e) { }
+        })();
+    </script>
+
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/datatables/css/datatables.min.css') }}">
@@ -94,35 +107,15 @@
                 <i class="fa-solid fa-house"></i>
             </a>
 
-            <div class="dropdown theme-dropdown">
-                <button class="dropdown-toggle topbar-icon-btn" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false" title="Cambiar tema">
-                    <i class="fa-solid fa-sun" id="themeIcon"></i>
-                </button>
-
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                        <button type="button" class="dropdown-item theme-option" data-theme="light">
-                            <i class="fa-solid fa-sun"></i>
-                            Claro
-                        </button>
-                    </li>
-
-                    <li>
-                        <button type="button" class="dropdown-item theme-option" data-theme="dark">
-                            <i class="fa-solid fa-moon"></i>
-                            Oscuro
-                        </button>
-                    </li>
-
-                    <li>
-                        <button type="button" class="dropdown-item theme-option" data-theme="auto">
-                            <i class="fa-solid fa-circle-half-stroke"></i>
-                            Automático
-                        </button>
-                    </li>
-                </ul>
-            </div>
+            <button type="button" class="theme-switch" id="themeSwitch" role="switch" aria-checked="false"
+                aria-label="Cambiar entre modo claro y oscuro" title="Cambiar tema">
+                <span class="theme-switch-track">
+                    <span class="theme-switch-thumb">
+                        <i class="fa-solid fa-sun theme-switch-sun"></i>
+                        <i class="fa-solid fa-moon theme-switch-moon"></i>
+                    </span>
+                </span>
+            </button>
 
             <span class="topbar-divider"></span>
 

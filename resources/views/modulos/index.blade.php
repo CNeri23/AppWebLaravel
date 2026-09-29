@@ -79,8 +79,6 @@
                                             data-delete-url="{{ route('submodulos.destroy', $submodulo) }}"
                                             data-reorder-url="{{ route('submodulos.reordenar', $submodulo) }}">
 
-                                            <span class="tree-child-connector"></span>
-
                                             <span class="tree-folder tree-subfolder">
                                                 <i class="fa-solid fa-folder"></i>
                                             </span>
@@ -128,8 +126,6 @@
                                                             data-edit-url="{{ route('acciones.update', $accion) }}"
                                                             data-delete-url="{{ route('acciones.destroy', $accion) }}"
                                                             data-reorder-url="{{ route('acciones.reordenar', $accion) }}">
-
-                                                            <span class="tree-action-connector"></span>
 
                                                             <span class="tree-folder tree-action-folder">
                                                                 <i class="fa-solid fa-file-lines"></i>

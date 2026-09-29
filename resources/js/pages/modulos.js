@@ -45,6 +45,137 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+
+    // ---------------------------------------------------------------
+    // Validación de formularios (nuevo / editar)
+    // ---------------------------------------------------------------
+    const REGEX_ICONO =
+        /^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/;
+
+    const MENSAJE_ICONO =
+        'El ícono no tiene el formato requerido. Ejemplo: ' +
+        '<i class="fa-solid fa-users"></i>';
+
+    const FORMULARIOS_SELECTOR =
+        'form[id^="formNuevo"], form[id^="formNueva"], form[id^="formEditar"]';
+
+    const CAMPOS_SELECTOR =
+        'input:not([type="hidden"]):not([readonly]):not([type="button"]):not([type="submit"]), textarea';
+
+    const instantaneasFormulario = new WeakMap();
+
+    function camposDelFormulario(form) {
+        return Array.from(form.querySelectorAll(CAMPOS_SELECTOR));
+    }
+
+    function esFormularioEdicion(form) {
+        return (form.getAttribute('id') || '').startsWith('formEditar');
+    }
+
+    function limpiarValidacionCampo(campo) {
+        campo.classList.remove('is-invalid');
+        campo.setCustomValidity('');
+
+        campo.parentElement
+            ?.querySelectorAll('.js-campo-feedback')
+            .forEach((el) => el.remove());
+    }
+
+    function mensajeDeCampo(campo) {
+        const valor = campo.value.trim();
+
+        if (valor === '') {
+            return 'Este campo es obligatorio.';
+        }
+
+        if (campo.name === 'icono' && !REGEX_ICONO.test(valor)) {
+            return MENSAJE_ICONO;
+        }
+
+        if (campo.type === 'number' && !/^\d+$/.test(valor)) {
+            return 'Ingresa un número entero mayor o igual a 0.';
+        }
+
+        return '';
+    }
+
+    function validarCampo(campo) {
+        limpiarValidacionCampo(campo);
+
+        const mensaje = mensajeDeCampo(campo);
+
+        if (!mensaje) {
+            return true;
+        }
+
+        campo.classList.add('is-invalid');
+        campo.setCustomValidity(mensaje);
+
+        const feedback = document.createElement('div');
+        feedback.className = 'invalid-feedback js-campo-feedback';
+        feedback.textContent = mensaje;
+        campo.insertAdjacentElement('afterend', feedback);
+
+        return false;
+    }
+
+    function validarFormulario(form) {
+        let primerInvalido = null;
+
+        camposDelFormulario(form).forEach((campo) => {
+            if (!validarCampo(campo) && !primerInvalido) {
+                primerInvalido = campo;
+            }
+        });
+
+        if (primerInvalido) {
+            primerInvalido.focus();
+            return false;
+        }
+
+        // Todo válido: se envían los valores sin espacios sobrantes.
+        camposDelFormulario(form).forEach((campo) => {
+            campo.value = campo.value.trim();
+        });
+
+        return true;
+    }
+
+    function valoresDelFormulario(form) {
+        const valores = {};
+
+        camposDelFormulario(form).forEach((campo) => {
+            valores[campo.name] = campo.value.trim();
+        });
+
+        return valores;
+    }
+
+    function hayCambios(form) {
+        const antes = instantaneasFormulario.get(form);
+
+        if (!antes) {
+            return true;
+        }
+
+        const ahora = valoresDelFormulario(form);
+
+        return Object.keys(ahora).some(
+            (clave) => ahora[clave] !== antes[clave]
+        );
+    }
+
+    function sincronizarCarpeta(item, expandido) {
+        const icono = item.querySelector(':scope > .tree-folder i');
+
+        if (!icono) {
+            return;
+        }
+
+        icono.classList.toggle('fa-folder-open', expandido);
+        icono.classList.toggle('fa-folder', !expandido);
+    }
+
     function actualizarSidebar() {
         if (typeof window.actualizarSidebar === 'function') {
             return window.actualizarSidebar();
@@ -212,6 +343,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
 
                     nodo.classList.add('expanded');
+                    sincronizarCarpeta(item, true);
                 });
 
                 if (moduloSeleccionado) {
@@ -320,7 +452,9 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        nodo.classList.toggle('expanded');
+        const expandido = nodo.classList.toggle('expanded');
+
+        sincronizarCarpeta(item, expandido);
     }
 
     function toggleModulo(item) {
@@ -413,22 +547,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     !data.activo
                 );
 
-                const folderIcon =
-                    item.querySelector(
-                        '.tree-subfolder i'
-                    );
+                const nodoSubmodulo =
+                    item.closest('.tree-child-node');
 
-                if (folderIcon) {
-                    folderIcon.classList.toggle(
-                        'fa-folder',
+                sincronizarCarpeta(
+                    item,
+                    Boolean(
+                        nodoSubmodulo?.classList.contains('expanded') &&
                         data.activo
-                    );
-
-                    folderIcon.classList.toggle(
-                        'fa-folder-closed',
-                        !data.activo
-                    );
-                }
+                    )
+                );
 
                 let badge =
                     item.querySelector(
@@ -1082,6 +1210,30 @@ document.addEventListener('DOMContentLoaded', function () {
         modal,
         mensajePorDefecto
     ) {
+        if (form.matches(FORMULARIOS_SELECTOR)) {
+            if (!validarFormulario(form)) {
+                window.showToast(
+                    'warning',
+                    'Completa correctamente los campos marcados.'
+                );
+
+                return Promise.reject(
+                    new Error('Formulario inválido.')
+                );
+            }
+
+            if (esFormularioEdicion(form) && !hayCambios(form)) {
+                window.showToast(
+                    'info',
+                    'No hubo cambios para actualizar.'
+                );
+
+                return Promise.reject(
+                    new Error('Sin cambios.')
+                );
+            }
+        }
+
         const botonSubmit =
             form.querySelector(
                 'button[type="submit"]'
@@ -1138,7 +1290,43 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    function inicializarValidacionFormularios() {
+        document
+            .querySelectorAll(FORMULARIOS_SELECTOR)
+            .forEach((form) => {
+                camposDelFormulario(form).forEach((campo) => {
+                    campo.required = true;
+
+                    campo.addEventListener('input', function () {
+                        validarCampo(campo);
+                    });
+                });
+            });
+
+        document
+            .querySelectorAll('.modal')
+            .forEach((modal) => {
+                modal.addEventListener('show.bs.modal', function () {
+                    modal
+                        .querySelectorAll(FORMULARIOS_SELECTOR)
+                        .forEach((form) => {
+                            camposDelFormulario(form)
+                                .forEach(limpiarValidacionCampo);
+
+                            if (esFormularioEdicion(form)) {
+                                instantaneasFormulario.set(
+                                    form,
+                                    valoresDelFormulario(form)
+                                );
+                            }
+                        });
+                });
+            });
+    }
+
     function inicializarFormularios() {
+        inicializarValidacionFormularios();
+
         const formNuevoModulo =
             document.getElementById(
                 'formNuevoModulo'
