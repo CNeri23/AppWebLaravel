@@ -2456,75 +2456,258 @@ select option:checked {
 
 
 /* =====================================================================
-   32.5 SIDEBAR — MÓDULOS Y SUBMÓDULOS EN LIQUID GLASS TINTADO
-   El contenedor queda neutro; las filas son cristal translúcido con un
-   tinte suave. Un solo número controla el color: --hue
-   (172 verde azulado · 215 azul · 265 violeta · 340 rosa · 35 ámbar).
-   Claro: violeta suave  ·  Oscuro: verde azulado
+   32.5 SIDEBAR — LIQUID GLASS
+   ---------------------------------------------------------------------
+   Estilo inspirado en interfaces Liquid Glass modernas:
+   - Sin tinte de color
+   - Transparencia
+   - Backdrop blur
+   - Reflejo superior
+   - Borde translúcido
+   - Profundidad muy sutil
+   - Mismos principios en claro y oscuro
+   ===================================================================== */
+
+
+/* =====================================================================
+   MODO CLARO
    ===================================================================== */
 
 :root {
-    --hue: 262;
 
-    --g-fill: hsl(var(--hue) 38% 52% / 0.09);
-    --g-fill-hover: hsl(var(--hue) 38% 52% / 0.15);
-    --g-fill-open: hsl(var(--hue) 40% 48% / 0.19);
+    /* Cristal */
+    --g-fill: rgba(255, 255, 255, 0.38);
+    --g-fill-hover: rgba(255, 255, 255, 0.52);
+    --g-fill-open: rgba(255, 255, 255, 0.62);
 
-    --g-border: hsl(var(--hue) 32% 46% / 0.24);
+    /* Borde */
+    --g-border: rgba(255, 255, 255, 0.58);
 
-    --g-hi: rgba(255, 255, 255, 0.6);
-    --g-lo: rgba(0, 0, 0, 0.04);
-    --g-drop: 0 2px 8px rgba(60, 40, 110, 0.10);
+    /* Reflejos */
+    --g-hi: rgba(255, 255, 255, 0.78);
+    --g-lo: rgba(0, 0, 0, 0.035);
 
-    --g-act-fill: hsl(var(--hue) 42% 46% / 0.26);
-    --g-act-border: hsl(var(--hue) 42% 42% / 0.46);
-    --g-act-text: hsl(var(--hue) 55% 22%);
+    /* Profundidad */
+    --g-drop:
+        0 2px 8px rgba(0, 0, 0, 0.055),
+        0 8px 22px rgba(0, 0, 0, 0.035);
 
-    --g-chip-bg: hsl(var(--hue) 38% 52% / 0.16);
-    --g-chip-fg: hsl(var(--hue) 40% 38%);
+    /* Activo */
+    --g-act-fill: rgba(255, 255, 255, 0.68);
+    --g-act-border: rgba(255, 255, 255, 0.72);
+    --g-act-text: #18181b;
 
-    --g-text: #2b2a33;
-    --g-text-strong: #0f0d16;
+    /* Chips */
+    --g-chip-bg: rgba(255, 255, 255, 0.45);
+    --g-chip-fg: #3f3f46;
+
+    /* Texto */
+    --g-text: #303038;
+    --g-text-strong: #111113;
+
+    /* Blur */
+    --g-blur: blur(18px) saturate(125%);
 }
+
+
+/* =====================================================================
+   MODO OSCURO
+   ===================================================================== */
 
 [data-bs-theme="dark"] {
-    --hue: 172;
 
-    --g-fill: hsl(var(--hue) 28% 62% / 0.08);
-    --g-fill-hover: hsl(var(--hue) 28% 62% / 0.135);
-    --g-fill-open: hsl(var(--hue) 30% 62% / 0.17);
+    /* Cristal */
+    --g-fill: rgba(255, 255, 255, 0.055);
+    --g-fill-hover: rgba(255, 255, 255, 0.085);
+    --g-fill-open: rgba(255, 255, 255, 0.115);
 
-    --g-border: hsl(var(--hue) 28% 72% / 0.16);
+    /* Borde */
+    --g-border: rgba(255, 255, 255, 0.13);
 
-    --g-hi: rgba(255, 255, 255, 0.08);
-    --g-lo: rgba(0, 0, 0, 0.3);
-    --g-drop: 0 3px 10px rgba(0, 0, 0, 0.35);
+    /* Reflejos */
+    --g-hi: rgba(255, 255, 255, 0.12);
+    --g-lo: rgba(0, 0, 0, 0.32);
 
-    --g-act-fill: hsl(var(--hue) 42% 55% / 0.25);
-    --g-act-border: hsl(var(--hue) 42% 66% / 0.40);
-    --g-act-text: hsl(var(--hue) 55% 82%);
+    /* Profundidad */
+    --g-drop:
+        0 2px 8px rgba(0, 0, 0, 0.30),
+        0 10px 25px rgba(0, 0, 0, 0.20);
 
-    --g-chip-bg: hsl(var(--hue) 32% 62% / 0.15);
-    --g-chip-fg: hsl(var(--hue) 45% 72%);
+    /* Activo */
+    --g-act-fill: rgba(255, 255, 255, 0.14);
+    --g-act-border: rgba(255, 255, 255, 0.20);
+    --g-act-text: #ffffff;
 
-    --g-text: #e4ebea;
+    /* Chips */
+    --g-chip-bg: rgba(255, 255, 255, 0.09);
+    --g-chip-fg: #e4e4e7;
+
+    /* Texto */
+    --g-text: #e7e7eb;
     --g-text-strong: #ffffff;
+
+    /* Blur */
+    --g-blur: blur(20px) saturate(120%);
 }
 
-/* --- Módulos y enlaces sueltos --- */
+
+/* =====================================================================
+   MÓDULOS Y ENLACES SUELTOS
+   ===================================================================== */
 
 [data-bs-theme] .sidebar-link,
 [data-bs-theme] .sidebar-group-toggle {
+
+    position: relative;
+
     background: var(--g-fill);
 
     border: 1px solid var(--g-border);
     border-radius: 15px;
 
+    color: var(--g-text);
+
+    backdrop-filter: var(--g-blur);
+    -webkit-backdrop-filter: var(--g-blur);
+
     box-shadow:
         inset 0 1px 0 var(--g-hi),
-        inset 0 -1px 0 var(--g-lo);
+        inset 0 -1px 0 var(--g-lo),
+        var(--g-drop);
 
-    color: var(--g-text);
+    transition:
+        background 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        color 180ms ease;
+}
+
+
+/* =====================================================================
+   REFLEJO SUPERIOR — EFECTO CRISTAL
+   ===================================================================== */
+
+[data-bs-theme] .sidebar-link::before,
+[data-bs-theme] .sidebar-group-toggle::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 10px;
+    right: 10px;
+
+    height: 1px;
+
+    background: var(--g-hi);
+
+    opacity: 0.75;
+
+    pointer-events: none;
+
+    border-radius: 999px;
+}
+
+
+/* =====================================================================
+   HOVER
+   ===================================================================== */
+
+[data-bs-theme] .sidebar-link:hover,
+[data-bs-theme] .sidebar-group-toggle:hover {
+
+    background: var(--g-fill-hover);
+
+    border-color: var(--g-border);
+
+    box-shadow:
+        inset 0 1px 0 var(--g-hi),
+        inset 0 -1px 0 var(--g-lo),
+        0 3px 12px rgba(0, 0, 0, 0.07);
+}
+
+
+/* =====================================================================
+   MÓDULO ABIERTO
+   ===================================================================== */
+
+[data-bs-theme] .sidebar-group-toggle[aria-expanded="true"] {
+
+    background: var(--g-fill-open);
+
+    box-shadow:
+        inset 0 1px 0 var(--g-hi),
+        inset 0 -1px 0 var(--g-lo),
+        var(--g-drop);
+}
+
+
+/* =====================================================================
+   ESTADO ACTIVO
+   ===================================================================== */
+
+[data-bs-theme] .sidebar-link.active,
+[data-bs-theme] .sidebar-group-toggle.active {
+
+    background: var(--g-act-fill);
+
+    border-color: var(--g-act-border);
+
+    color: var(--g-act-text);
+
+    box-shadow:
+        inset 0 1px 0 var(--g-hi),
+        inset 0 -1px 0 var(--g-lo),
+        0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =====================================================================
+   SUBMÓDULOS
+   ===================================================================== */
+
+[data-bs-theme] .sidebar-submenu .sidebar-link {
+
+    background: rgba(255, 255, 255, 0.20);
+
+    border-color: rgba(255, 255, 255, 0.35);
+
+    border-radius: 12px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.025);
+}
+
+
+[data-bs-theme="dark"] .sidebar-submenu .sidebar-link {
+
+    background: rgba(255, 255, 255, 0.035);
+
+    border-color: rgba(255, 255, 255, 0.09);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.075),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+
+/* =====================================================================
+   FALLBACK PARA NAVEGADORES SIN BACKDROP-FILTER
+   ===================================================================== */
+
+@supports not (backdrop-filter: blur(18px)) {
+
+    [data-bs-theme] .sidebar-link,
+    [data-bs-theme] .sidebar-group-toggle {
+        background: rgba(255, 255, 255, 0.72);
+    }
+
+    [data-bs-theme="dark"] .sidebar-link,
+    [data-bs-theme="dark"] .sidebar-group-toggle {
+        background: rgba(30, 30, 32, 0.82);
+    }
 }
 
 [data-bs-theme] .sidebar-link:hover,
@@ -2947,4 +3130,892 @@ select option:checked {
 
         animation-iteration-count: 1 !important;
     }
+}
+
+
+/* =====================================================================
+   33. SKIN "GYM ERP": SIDEBAR, TOPBAR, TARJETAS Y DATATABLES PLANOS
+   ---------------------------------------------------------------------
+   Este bloque va al final y reemplaza el aspecto glass por superficies
+   sólidas. No cambia HTML, clases, botones ni JS.
+   Para volver al diseño anterior, borra desde aquí hasta el final.
+
+   Ideas del gimnasio usadas como identidad:
+   - Borde moleteado (knurling) de la barra, en el canto del sidebar.
+   - Cinta métrica en los títulos de sección del sidebar.
+   - Marcas laterales turquesa en los ítems activos (como placas).
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   Paleta: MODO CLARO
+   --------------------------------------------------------------------- */
+
+:root {
+    /* Topbar y sidebar pegados a los bordes (antes flotaban con hueco) */
+    --glass-gap: 0px;
+
+    /* Acento: turquesa profundo */
+    --gym: #0f766e;
+    --gym-strong: #0b5d56;
+    --gym-soft: rgba(15, 118, 110, 0.12);
+
+    /* Superficies sólidas (antes translúcidas) */
+    --surface: #ffffff;
+    --surface-strong: #ffffff;
+    --surface-solid: #ffffff;
+
+    /* Línea de separación general */
+    --flat-line: #dbe1e8;
+
+    /* Sidebar: tono "magnesia" (blanco cálido) */
+    --nav-bg: #fbfaf7;
+    --nav-line: rgba(20, 22, 26, 0.09);
+    --nav-tick: rgba(20, 22, 26, 0.26);
+    --nav-knurl: rgba(20, 22, 26, 0.075);
+    --nav-scroll: rgba(20, 22, 26, 0.18);
+    --nav-text: #545a63;
+    --nav-text-strong: #15171b;
+    --nav-muted: #8b919b;
+    --nav-hover: rgba(20, 22, 26, 0.055);
+    --nav-chip: rgba(20, 22, 26, 0.055);
+    --nav-active: rgba(15, 118, 110, 0.12);
+
+    /* Topbar */
+    --topbar-bg: #ffffff;
+
+    --flat-dropdown-bg: #ffffff;
+    --flat-dropdown-shadow: 0 12px 32px rgba(15, 26, 29, 0.14);
+    --flat-card-shadow: 0 1px 2px rgba(20, 30, 60, 0.06);
+}
+
+
+/* ---------------------------------------------------------------------
+   Paleta: MODO OSCURO (grafito neutro, sin azul)
+   --------------------------------------------------------------------- */
+
+[data-bs-theme="dark"] {
+    --gym: #2dd4bf;
+    --gym-strong: #5eead4;
+    --gym-soft: rgba(45, 212, 191, 0.16);
+
+    /* Contenido más claro que antes (#000) y tarjetas elevadas */
+    --content-bg: #1a1a1c;
+
+    --surface: #242427;
+    --surface-strong: #2b2b2f;
+    --surface-solid: #242427;
+
+    --flat-line: rgba(255, 255, 255, 0.09);
+
+    --nav-bg: #111112;
+    --nav-line: rgba(255, 255, 255, 0.08);
+    --nav-tick: rgba(255, 255, 255, 0.28);
+    --nav-knurl: rgba(255, 255, 255, 0.06);
+    --nav-scroll: rgba(255, 255, 255, 0.14);
+    --nav-text: #a8a8ae;
+    --nav-text-strong: #ffffff;
+    --nav-muted: #75757c;
+    --nav-hover: rgba(255, 255, 255, 0.06);
+    --nav-chip: rgba(255, 255, 255, 0.06);
+    --nav-active: rgba(45, 212, 191, 0.16);
+
+    --topbar-bg: #111112;
+
+    --flat-dropdown-bg: #1e1e21;
+    --flat-dropdown-shadow: 0 18px 44px rgba(0, 0, 0, 0.6);
+    --flat-card-shadow: none;
+}
+
+
+/* ---------------------------------------------------------------------
+   Topbar
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] .app-topbar {
+    left: 0;
+    right: 0;
+
+    border: 0;
+    border-bottom: 1px solid var(--flat-line);
+    border-radius: 0;
+
+    background: var(--topbar-bg);
+
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+
+    box-shadow: none;
+}
+
+/* Quita reflejos y bordes especulares del glass */
+html[data-bs-theme] .app-topbar::before,
+html[data-bs-theme] .app-topbar::after,
+html[data-bs-theme] .app-sidebar::before,
+html[data-bs-theme] .app-sidebar::after,
+html[data-bs-theme] .dropdown-menu::before,
+html[data-bs-theme] .dropdown-menu::after,
+html[data-bs-theme] .card::before,
+html[data-bs-theme] .card::after,
+html[data-bs-theme] .dt-container .pagination::before,
+html[data-bs-theme] .dt-container .pagination::after,
+html[data-bs-theme] .dataTables_wrapper .pagination::before,
+html[data-bs-theme] .dataTables_wrapper .pagination::after {
+    display: none;
+}
+
+/* Logo: cuadro turquesa con esquina cortada, como una placa de peso */
+html[data-bs-theme] .sidebar-brand-icon {
+    width: 36px;
+    height: 36px;
+
+    border: 0;
+    border-radius: 9px 9px 0 9px;
+
+    background: var(--gym);
+    color: #ffffff;
+
+    font-size: 15px;
+
+    box-shadow: none;
+
+    clip-path: polygon(0 0, 100% 0, 100% 68%, 68% 100%, 0 100%);
+}
+
+/* Buscador: más cuadrado, con foco turquesa */
+html[data-bs-theme] .topbar-search input {
+    border-color: var(--flat-line);
+    border-radius: 10px;
+
+    background: var(--content-bg);
+
+    box-shadow: none;
+}
+
+html[data-bs-theme] .topbar-search input:hover {
+    background: var(--content-bg);
+
+    border-color: var(--nav-muted);
+}
+
+html[data-bs-theme] .topbar-search input:focus {
+    border-color: var(--gym);
+
+    background: var(--topbar-bg);
+
+    box-shadow: 0 0 0 3px var(--gym-soft);
+}
+
+html[data-bs-theme] .topbar-icon-btn,
+html[data-bs-theme] .sidebar-toggle-btn {
+    border-radius: 10px;
+}
+
+html[data-bs-theme] .topbar-icon-btn:hover,
+html[data-bs-theme] .sidebar-toggle-btn:hover {
+    box-shadow: none;
+}
+
+html[data-bs-theme] .app-topbar .user-avatar {
+    border: 0;
+    border-radius: 9px;
+
+    background: var(--gym-soft);
+    color: var(--gym-strong);
+}
+
+html[data-bs-theme] .app-topbar .notification-badge {
+    border-color: var(--topbar-bg);
+}
+
+
+/* ---------------------------------------------------------------------
+   Dropdowns (usuario y notificaciones): sólidos, sin blur
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] .dropdown-menu {
+    border: 1px solid var(--flat-line);
+    border-radius: 12px;
+
+    background: var(--flat-dropdown-bg);
+
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+
+    box-shadow: var(--flat-dropdown-shadow);
+}
+
+
+/* ---------------------------------------------------------------------
+   Tarjetas (donde va la tabla): sólidas, sin glass
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] .card {
+    border: 1px solid var(--flat-line);
+    border-radius: 14px;
+
+    background: var(--surface);
+
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+
+    box-shadow: var(--flat-card-shadow);
+}
+
+
+/* ---------------------------------------------------------------------
+   DataTables: sin glass
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] .dt-length select,
+html[data-bs-theme] .dataTables_length select,
+html[data-bs-theme] .dt-container select.dt-input,
+html[data-bs-theme] .dt-search input,
+html[data-bs-theme] .dataTables_filter input,
+html[data-bs-theme] .dt-container input.dt-input {
+    border: 1px solid var(--flat-line);
+    border-radius: 10px;
+
+    box-shadow: none;
+}
+
+html[data-bs-theme] .dt-length select:focus,
+html[data-bs-theme] .dataTables_length select:focus,
+html[data-bs-theme] .dt-container select.dt-input:focus,
+html[data-bs-theme] .dt-search input:focus,
+html[data-bs-theme] .dataTables_filter input:focus,
+html[data-bs-theme] .dt-container input.dt-input:focus {
+    border-color: var(--color-primary);
+
+    box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+/* Paginación: botones sueltos con borde fino, sin cápsula de vidrio */
+html[data-bs-theme] .dt-container .pagination,
+html[data-bs-theme] .dataTables_wrapper .pagination {
+    gap: 4px;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 0;
+
+    background: transparent;
+
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+
+    box-shadow: none;
+}
+
+html[data-bs-theme] .dt-container .pagination .page-link,
+html[data-bs-theme] .dataTables_wrapper .pagination .page-link {
+    border: 1px solid var(--flat-line);
+    border-radius: 8px !important;
+}
+
+html[data-bs-theme] .dt-container .pagination .page-item.active .page-link,
+html[data-bs-theme] .dataTables_wrapper .pagination .page-item.active .page-link {
+    border-color: var(--color-primary);
+
+    box-shadow: none;
+}
+
+html[data-bs-theme] .dt-container .pagination .page-item.disabled .page-link,
+html[data-bs-theme] .dataTables_wrapper .pagination .page-item.disabled .page-link {
+    border-color: transparent;
+}
+
+
+/* ---------------------------------------------------------------------
+   Sidebar: contenedor (con canto moleteado como el agarre de una barra)
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] .app-sidebar {
+    top: var(--topbar-offset);
+    left: 0;
+
+    height: calc(100vh - var(--topbar-offset));
+
+    border: 0;
+    border-right: 1px solid var(--nav-line);
+    border-radius: 0;
+
+    background-color: var(--nav-bg);
+    background-image:
+        repeating-linear-gradient(45deg, var(--nav-knurl) 0 1px, transparent 1px 4px),
+        repeating-linear-gradient(-45deg, var(--nav-knurl) 0 1px, transparent 1px 4px);
+    background-size: 7px 100%, 7px 100%;
+    background-position: right top, right top;
+    background-repeat: no-repeat;
+
+    color: var(--nav-text);
+
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+
+    box-shadow: none;
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-menu::-webkit-scrollbar-thumb,
+html[data-bs-theme] aside.app-sidebar .sidebar-menu::-webkit-scrollbar-thumb:hover {
+    background: var(--nav-scroll);
+}
+
+
+/* ---------------------------------------------------------------------
+   Sidebar: títulos de sección con cinta métrica
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] aside.app-sidebar .sidebar-section {
+    gap: 10px;
+
+    color: var(--nav-muted);
+
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-section::after {
+    content: "";
+
+    flex: 1 1 auto;
+    height: 9px;
+
+    background-image:
+        repeating-linear-gradient(90deg, var(--nav-tick) 0 1px, transparent 1px 30px),
+        repeating-linear-gradient(90deg, var(--nav-tick) 0 1px, transparent 1px 6px),
+        linear-gradient(var(--nav-tick), var(--nav-tick));
+    background-size: 100% 9px, 100% 4px, 100% 1px;
+    background-position: left bottom, left bottom, left bottom;
+    background-repeat: no-repeat;
+}
+
+/* Colapsado: la sección ya es una línea, no duplicarla */
+html[data-bs-theme] aside.app-sidebar.collapsed .sidebar-section {
+    background: var(--nav-line);
+}
+
+html[data-bs-theme] aside.app-sidebar.collapsed .sidebar-section::after {
+    display: none;
+}
+
+
+/* ---------------------------------------------------------------------
+   Sidebar: módulos y enlaces sueltos (planos)
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] aside.app-sidebar .sidebar-link,
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle {
+    border: 1px solid transparent;
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: var(--nav-text);
+
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+
+    box-shadow: none;
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-link:hover,
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle:hover,
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle[aria-expanded="true"] {
+    border-color: transparent;
+
+    background: var(--nav-hover);
+
+    color: var(--nav-text-strong);
+
+    box-shadow: none;
+}
+
+/* Módulo que contiene la página actual: fila neutra + marca turquesa */
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle.active,
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle.active:hover,
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle.active[aria-expanded="true"] {
+    border-color: transparent;
+
+    background: var(--nav-hover);
+
+    color: var(--nav-text-strong);
+
+    box-shadow: none;
+}
+
+/* Enlace suelto activo (Dashboard, Configuración...) */
+html[data-bs-theme] aside.app-sidebar .sidebar-link.active,
+html[data-bs-theme] aside.app-sidebar .sidebar-link.active:hover {
+    border-color: transparent;
+
+    background: var(--nav-active);
+
+    color: var(--nav-text-strong);
+
+    box-shadow: none;
+}
+
+/* Marca lateral del ítem activo (reemplaza el reflejo superior del glass) */
+html[data-bs-theme] aside.app-sidebar .sidebar-link::before,
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle::before {
+    content: "";
+
+    position: absolute;
+
+    top: 10px;
+    bottom: 10px;
+    left: -12px;
+    right: auto;
+
+    width: 3px;
+    height: auto;
+
+    border-radius: 0 3px 3px 0;
+
+    background: var(--gym);
+
+    opacity: 0;
+    transform: scaleY(0.4);
+
+    transition:
+        opacity 0.18s ease,
+        transform 0.18s ease;
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-link.active::before,
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle.active::before {
+    opacity: 1;
+    transform: none;
+}
+
+html[data-bs-theme] aside.app-sidebar.collapsed .sidebar-link::before,
+html[data-bs-theme] aside.app-sidebar.collapsed .sidebar-group-toggle::before {
+    left: -10px;
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-link:focus-visible,
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle:focus-visible,
+html[data-bs-theme] aside.app-sidebar .sidebar-sublink:focus-visible {
+    outline: 2px solid var(--gym);
+    outline-offset: 1px;
+}
+
+
+/* ---------------------------------------------------------------------
+   Sidebar: iconos (fichas planas)
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle > i:first-child,
+html[data-bs-theme] aside.app-sidebar .sidebar-link > i:first-child {
+    border: 0;
+    border-radius: 8px;
+
+    background: var(--nav-chip);
+
+    color: var(--nav-text);
+
+    box-shadow: none;
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle:hover > i:first-child,
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle[aria-expanded="true"] > i:first-child,
+html[data-bs-theme] aside.app-sidebar .sidebar-link:hover > i:first-child {
+    border: 0;
+
+    background: var(--nav-chip);
+
+    color: var(--nav-text-strong);
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle.active > i:first-child,
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle.active:hover > i:first-child,
+html[data-bs-theme] aside.app-sidebar .sidebar-link.active > i:first-child,
+html[data-bs-theme] aside.app-sidebar .sidebar-link.active:hover > i:first-child {
+    border: 0;
+
+    background: var(--gym);
+
+    color: #ffffff;
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-group-caret {
+    color: var(--nav-muted);
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle:hover .sidebar-group-caret,
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle[aria-expanded="true"] .sidebar-group-caret {
+    color: var(--nav-text-strong);
+}
+
+
+/* ---------------------------------------------------------------------
+   Sidebar: submódulos (con línea lateral turquesa en el activo)
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] aside.app-sidebar .sidebar-submenu {
+    border-left-color: var(--nav-line);
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-sublink {
+    border-color: transparent;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: var(--nav-text);
+
+    box-shadow: none;
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-sublink > i:first-child {
+    color: var(--nav-muted);
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-sublink:hover {
+    border-color: transparent;
+
+    background: var(--nav-hover);
+
+    color: var(--nav-text-strong);
+
+    box-shadow: none;
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-sublink:hover > i:first-child {
+    color: var(--nav-text-strong);
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-sublink.active,
+html[data-bs-theme] aside.app-sidebar .sidebar-sublink.active:hover {
+    border-color: transparent;
+
+    background: var(--nav-active);
+
+    color: var(--nav-text-strong);
+
+    box-shadow: none;
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-sublink.active > i:first-child,
+html[data-bs-theme] aside.app-sidebar .sidebar-sublink.active:hover > i:first-child {
+    color: var(--gym);
+}
+
+/* Línea lateral del submódulo activo, pegada a la guía del submenú */
+html[data-bs-theme] aside.app-sidebar .sidebar-sublink::before {
+    content: "";
+
+    position: absolute;
+
+    top: 6px;
+    bottom: 6px;
+    left: -9px;
+
+    width: 3px;
+
+    border-radius: 0 3px 3px 0;
+
+    background: var(--gym);
+
+    opacity: 0;
+    transform: scaleY(0.4);
+
+    transition:
+        opacity 0.18s ease,
+        transform 0.18s ease;
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-sublink.active::before {
+    opacity: 1;
+    transform: none;
+}
+
+
+/* ---------------------------------------------------------------------
+   Móvil
+   --------------------------------------------------------------------- */
+
+@media (max-width: 767.98px) {
+
+    html[data-bs-theme] .app-topbar {
+        left: 0;
+        right: 0;
+    }
+}
+
+
+/* =====================================================================
+   34. AJUSTES: TABLAS SIN GLASS Y SIN BORDE, DROPDOWNS Y MODALES NORMALES
+   ---------------------------------------------------------------------
+   Va después de la sección 33 y la complementa.
+   ===================================================================== */
+
+:root {
+    --table-head: #f3f5f9;
+    --table-hover: #f6f8fb;
+    --table-line: #e6eaf0;
+
+    --flat-card-shadow: 0 1px 3px rgba(20, 30, 60, 0.1);
+}
+
+[data-bs-theme="dark"] {
+    --table-head: #2d2d31;
+    --table-hover: #2a2a2e;
+    --table-line: rgba(255, 255, 255, 0.07);
+
+    --flat-card-shadow: none;
+}
+
+
+/* ---------------------------------------------------------------------
+   Tablas: th/td sólidos y sin borde exterior
+   --------------------------------------------------------------------- */
+
+/* La tarjeta que contiene una tabla no lleva borde */
+html[data-bs-theme] .card:has(.table),
+html[data-bs-theme] .card:has(.dt-container),
+html[data-bs-theme] .card:has(.dataTables_wrapper) {
+    border-color: transparent;
+}
+
+html[data-bs-theme] .table-responsive,
+html[data-bs-theme] .dt-container,
+html[data-bs-theme] .dataTables_wrapper,
+html[data-bs-theme] table.dataTable {
+    border: 0;
+}
+
+html[data-bs-theme] .table {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--text-main);
+    --bs-table-border-color: var(--table-line);
+    --bs-table-hover-bg: var(--table-hover);
+    --bs-table-hover-color: var(--text-main);
+
+    border-color: var(--table-line);
+}
+
+html[data-bs-theme] .table > :not(caption) > * > * {
+    border-bottom-color: var(--table-line);
+}
+
+html[data-bs-theme] .table thead th {
+    background: var(--table-head);
+
+    color: var(--text-strong);
+}
+
+html[data-bs-theme] .table tbody tr:hover {
+    background: var(--table-hover);
+}
+
+
+/* ---------------------------------------------------------------------
+   Dropdowns del topbar: separados de la barra (antes se encimaban)
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] .user-dropdown .dropdown-menu {
+    margin-top: 16px !important;
+}
+
+html[data-bs-theme] .notification-dropdown .dropdown-menu {
+    margin-top: 20px !important;
+}
+
+
+/* ---------------------------------------------------------------------
+   Modales: apariencia normal de Bootstrap (sin glass)
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] .modal-backdrop {
+    background-color: var(--bs-backdrop-bg, #000);
+
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+html[data-bs-theme] .modal-content {
+    --bs-modal-header-border-color: var(--bs-border-color);
+    --bs-modal-footer-border-color: var(--bs-border-color);
+
+    border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
+    border-radius: var(--bs-modal-border-radius);
+
+    background: var(--bs-modal-bg);
+    color: var(--bs-body-color);
+
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+
+    box-shadow: var(--bs-modal-box-shadow);
+}
+
+html[data-bs-theme] .modal-content::before,
+html[data-bs-theme] .modal-content::after {
+    display: none;
+}
+
+html[data-bs-theme] .modal-content .modal-header,
+html[data-bs-theme] .modal-content .modal-footer {
+    border-color: var(--bs-border-color);
+}
+
+/* Campos: como Bootstrap, sin blur ni fondos translúcidos */
+html[data-bs-theme] .form-control,
+html[data-bs-theme] .form-select {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+html[data-bs-theme] .modal-content .form-control,
+html[data-bs-theme] .modal-content .form-select {
+    border: 1px solid var(--bs-border-color);
+
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+
+    box-shadow: none;
+}
+
+html[data-bs-theme] .modal-content .form-control:focus,
+html[data-bs-theme] .modal-content .form-select:focus {
+    border-color: var(--color-primary);
+
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+
+    box-shadow: 0 0 0 0.25rem var(--color-primary-soft);
+}
+
+
+/* =====================================================================
+   35. ACENTO TURQUESA, MODALES GRAFITO Y ENCABEZADOS DE COLOR
+   ---------------------------------------------------------------------
+   Para cambiar el color de acento del sidebar/topbar edita, en la
+   sección 33, las variables --gym, --gym-strong, --gym-soft y
+   --nav-active (una vez para claro y otra para oscuro), y aquí
+   --gym-fill (encabezado de modales) y --on-gym (texto sobre el acento).
+   ===================================================================== */
+
+:root {
+    /* Texto/iconos sobre superficies del color de acento */
+    --on-gym: #ffffff;
+
+    /* Relleno de encabezados de modal (con texto blanco) */
+    --gym-fill: #0f766e;
+    --danger-fill: #dc3545;
+
+    /* Modales */
+    --modal-bg: #ffffff;
+    --modal-field-bg: #ffffff;
+    --modal-line: #dee2e6;
+}
+
+[data-bs-theme="dark"] {
+    --on-gym: #04211e;
+
+    --gym-fill: #0f766e;
+    --danger-fill: #c92f3f;
+
+    /* Modales en el mismo grafito que las tarjetas */
+    --modal-bg: var(--surface);
+    --modal-field-bg: var(--content-bg);
+    --modal-line: rgba(255, 255, 255, 0.12);
+}
+
+
+/* Iconos sobre el acento: el texto cambia según el modo para mantener contraste */
+html[data-bs-theme] .sidebar-brand-icon {
+    color: var(--on-gym);
+}
+
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle.active > i:first-child,
+html[data-bs-theme] aside.app-sidebar .sidebar-group-toggle.active:hover > i:first-child,
+html[data-bs-theme] aside.app-sidebar .sidebar-link.active > i:first-child,
+html[data-bs-theme] aside.app-sidebar .sidebar-link.active:hover > i:first-child {
+    color: var(--on-gym);
+}
+
+
+/* ---------------------------------------------------------------------
+   Modales: superficie grafito y encabezado de color
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] .modal-content {
+    --bs-modal-header-border-color: transparent;
+    --bs-modal-footer-border-color: var(--modal-line);
+
+    border-color: var(--modal-line);
+
+    background: var(--modal-bg);
+    color: var(--text-main);
+}
+
+html[data-bs-theme] .modal-content .modal-footer {
+    border-color: var(--modal-line);
+}
+
+/* Encabezado con el color de acento (rojo en los de eliminar) */
+html[data-bs-theme] .modal {
+    --modal-head-bg: var(--gym-fill);
+}
+
+html[data-bs-theme] .modal-content .modal-header {
+    border-bottom: 0;
+
+    background: var(--modal-head-bg);
+    color: #ffffff;
+}
+
+html[data-bs-theme] .modal-content .modal-header .modal-title,
+html[data-bs-theme] .modal-content .modal-header .modal-title * {
+    color: #ffffff !important;
+}
+
+html[data-bs-theme] .modal-content .modal-header .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+
+    opacity: 0.85;
+}
+
+html[data-bs-theme] .modal-content .modal-header .btn-close:hover {
+    opacity: 1;
+}
+
+/* Modales de eliminar: encabezado rojo.
+   Se detectan por id/clase (elimin, delete, borrar, remove, destroy)
+   o porque su footer tiene un botón .btn-danger. */
+html[data-bs-theme] .modal[id*="elimin" i],
+html[data-bs-theme] .modal[id*="delete" i],
+html[data-bs-theme] .modal[id*="borrar" i],
+html[data-bs-theme] .modal[id*="remove" i],
+html[data-bs-theme] .modal[id*="destroy" i],
+html[data-bs-theme] .modal.modal-danger,
+html[data-bs-theme] .modal[data-modal-type="delete"] {
+    --modal-head-bg: var(--danger-fill);
+}
+
+html[data-bs-theme] .modal:has(.modal-footer .btn-danger) {
+    --modal-head-bg: var(--danger-fill);
+}
+
+/* Campos del modal */
+html[data-bs-theme] .modal-content .form-control,
+html[data-bs-theme] .modal-content .form-select {
+    border-color: var(--modal-line);
+
+    background-color: var(--modal-field-bg);
+    color: var(--text-main);
+}
+
+html[data-bs-theme] .modal-content .form-control:focus,
+html[data-bs-theme] .modal-content .form-select:focus {
+    border-color: var(--gym);
+
+    background-color: var(--modal-field-bg);
+
+    box-shadow: 0 0 0 0.25rem var(--gym-soft);
 }
