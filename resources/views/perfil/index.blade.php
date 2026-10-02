@@ -22,7 +22,7 @@
                     </button>
                 </div>
 
-                <div class="flex-grow-1 text-center text-md-start">
+                <div class="grow text-center text-md-start">
                     <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-2 mb-1">
                         <h2 class="fw-bold mb-0" id="profileName">
                             {{ $usuario->name }}
@@ -105,7 +105,7 @@
                             <i class="fa-solid fa-envelope-circle-check"></i>
                         </div>
 
-                        <div class="flex-grow-1">
+                        <div class="grow">
                             <div class="fw-semibold">
                                 Correo electrónico
                             </div>
@@ -125,7 +125,7 @@
                             <i class="fa-solid fa-clock-rotate-left"></i>
                         </div>
 
-                        <div class="flex-grow-1">
+                        <div class="grow">
                             <div class="fw-semibold">
                                 Última actualización
                             </div>
@@ -174,7 +174,7 @@
                                 <i class="fa-solid fa-shield-halved"></i>
                             </div>
 
-                            <div class="flex-grow-1">
+                            <div class="grow">
                                 <div class="fw-semibold">
                                     {{ $rol->name }}
                                 </div>
