@@ -1,12 +1,3 @@
-/* =====================================================================
-   ROLES — acciones de la tabla y árbol de permisos
-   ===================================================================== */
-
-/* ---------------------------------------------------------------------
-   Acciones de la tabla: una sola fila, centradas, que nunca se parten
-   ni se aplastan (antes los botones se encogían al faltar ancho)
-   --------------------------------------------------------------------- */
-
 .rol-actions {
     display: flex;
     align-items: center;
@@ -35,7 +26,6 @@
     line-height: 1;
 }
 
-/* Icono sin márgenes heredados (p. ej. "me-2" guardado en la BD) */
 .btn.rol-action-btn > i,
 .btn.rol-action-btn > svg {
     margin: 0 !important;
@@ -51,16 +41,10 @@
     white-space: nowrap;
 }
 
-/* Scroll horizontal solo cuando la tabla realmente no cabe; nunca vertical */
 .roles-table-wrap {
     overflow-x: auto;
     overflow-y: hidden;
 }
-
-
-/* ---------------------------------------------------------------------
-   Árbol de permisos (colores del sistema: carbón + acento naranja)
-   --------------------------------------------------------------------- */
 
 .permisos-tree {
     border: 1px solid var(--modal-line, #dee2e6);
@@ -121,7 +105,7 @@
 }
 
 .permisos-tree-toggle:hover {
-    color: var(--gym-strong, #c2410c);
+    color: #0973ed;
 }
 
 .permisos-tree-toggle i {
@@ -140,7 +124,7 @@
 .permisos-tree-icon {
     width: 20px;
     text-align: center;
-    color: var(--gym-strong, #c2410c);
+    color: #0973ed;
     flex: 0 0 20px;
 }
 
@@ -187,12 +171,12 @@
 }
 
 .permisos-tree input[type="checkbox"]:checked {
-    background-color: var(--gym-fill, #c2410c);
-    border-color: var(--gym-fill, #c2410c);
+    background-color: #0973ed;
+    border-color: #0973ed;
 }
 
 .permisos-tree input[type="checkbox"]:focus {
-    border-color: var(--gym, #ea580c);
+    border-color: #0973ed;
     box-shadow: 0 0 0 0.2rem var(--gym-soft, rgba(234, 88, 12, 0.18));
 }
 
@@ -202,8 +186,8 @@
 }
 
 [data-bs-theme="dark"] .permisos-tree input[type="checkbox"]:checked {
-    background-color: var(--gym-fill, #c2410c);
-    border-color: var(--gym-fill, #c2410c);
+    background-color: #0973ed;
+    border-color: #0973ed;
 }
 
 /* Aviso superior y cargando: también en carbón y con el acento del sistema */
@@ -215,7 +199,7 @@
 
 #modalPermisosRol .alert .text-primary,
 #modalPermisosRol .permisos-tree-loading .text-primary {
-    color: var(--gym, #ea580c) !important;
+    color: #0973ed !important;
 }
 
 
