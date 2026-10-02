@@ -5,13 +5,6 @@ window.showToast = function (tipo, mensaje) {
         tipo = 'info';
     }
 
-    const iconos = {
-        success: 'fa-solid fa-check',
-        error: 'fa-solid fa-xmark',
-        warning: 'fa-solid fa-exclamation',
-        info: 'fa-solid fa-info'
-    };
-
     const temaOscuro =
         document.documentElement.getAttribute('data-bs-theme') === 'dark';
 
@@ -19,8 +12,10 @@ window.showToast = function (tipo, mensaje) {
         toast: true,
         position: 'bottom-end',
 
+        // Icono nativo de SweetAlert2 (con sus animaciones).
+        // OJO: no uses iconHtml; reemplaza el icono nativo por un <i> de
+        // Font Awesome y se pierden las animaciones.
         icon: tipo,
-        iconHtml: `<i class="${iconos[tipo]}"></i>`,
         title: mensaje,
 
         showConfirmButton: false,
@@ -37,8 +32,11 @@ window.showToast = function (tipo, mensaje) {
             timerProgressBar: 'swal-toast-progress'
         },
 
+        // Al personalizar showClass hay que conservar la clave "icon":
+        // sin ella SweetAlert no dispara la animación del icono.
         showClass: {
-            popup: 'glass-toast-show'
+            popup: 'glass-toast-show',
+            icon: 'swal2-icon-show'
         },
 
         hideClass: {

@@ -331,15 +331,8 @@ document.addEventListener('DOMContentLoaded', function () {
             'px-4'
         );
 
-        const acciones =
-            fila.querySelector(
-                '.usuario-actions'
-            );
-
-        if (acciones) {
-            acciones.style.width = '100%';
-            acciones.style.minWidth = '108px';
-        }
+        // El ancho y la alineación de los botones los controla usuarios.css
+        // (.usuario-actions), así las filas nuevas y las del servidor se ven igual
     }
 
     function ajustarTodasLasFilas() {
@@ -670,6 +663,12 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    // Valores con los que se abrió cada modal, para detectar si hubo cambios
+    let datosOriginalesEditar = null;
+    let rolesOriginales = null;
+
+    const MENSAJE_SIN_CAMBIOS = 'No hubo cambios para actualizar.';
+
     const modalEditar =
         document.getElementById(
             'modalEditarUsuario'
@@ -682,9 +681,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 const button =
                     event.relatedTarget;
 
+                datosOriginalesEditar = null;
+
                 if (!button) {
                     return;
                 }
+
+                datosOriginalesEditar = {
+                    name: (button.dataset.name || '').trim(),
+                    email: (button.dataset.email || '').trim(),
+                };
 
                 document.getElementById(
                     'editar_id'
@@ -767,6 +773,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const button =
                     event.relatedTarget;
 
+                rolesOriginales = null;
+
                 if (!button) {
                     return;
                 }
@@ -775,6 +783,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     button.dataset.roles
                         ? button.dataset.roles.split(',')
                         : [];
+
+                rolesOriginales =
+                    roles
+                        .filter(Boolean)
+                        .sort()
+                        .join(',');
 
                 document.getElementById(
                     'roles_usuario_id'
@@ -933,6 +947,29 @@ document.addEventListener('DOMContentLoaded', function () {
             function (event) {
                 event.preventDefault();
 
+                const nombreActual =
+                    document.getElementById(
+                        'editar_name'
+                    ).value.trim();
+
+                const correoActual =
+                    document.getElementById(
+                        'editar_email'
+                    ).value.trim();
+
+                if (
+                    datosOriginalesEditar &&
+                    nombreActual === datosOriginalesEditar.name &&
+                    correoActual === datosOriginalesEditar.email
+                ) {
+                    window.showToast(
+                        'info',
+                        MENSAJE_SIN_CAMBIOS
+                    );
+
+                    return;
+                }
+
                 enviarFormulario(
                     formEditarUsuario,
                     modalEditarUsuario,
@@ -979,6 +1016,30 @@ document.addEventListener('DOMContentLoaded', function () {
             'submit',
             function (event) {
                 event.preventDefault();
+
+                const rolesSeleccionados =
+                    Array.from(
+                        formRolesUsuario.querySelectorAll(
+                            '.rol-usuario-checkbox:checked'
+                        )
+                    )
+                        .map(function (checkbox) {
+                            return checkbox.value;
+                        })
+                        .sort()
+                        .join(',');
+
+                if (
+                    rolesOriginales !== null &&
+                    rolesSeleccionados === rolesOriginales
+                ) {
+                    window.showToast(
+                        'info',
+                        MENSAJE_SIN_CAMBIOS
+                    );
+
+                    return;
+                }
 
                 enviarFormulario(
                     formRolesUsuario,

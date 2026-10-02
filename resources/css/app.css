@@ -1,6 +1,7 @@
 @import './pages/perfil.css';
 @import './pages/modulos.css';
 @import './pages/roles.css';
+@import './pages/usuarios.css';
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';

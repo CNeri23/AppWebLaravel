@@ -124,9 +124,26 @@ document.addEventListener('DOMContentLoaded', function () {
             ? new bootstrap.Modal(modalEliminar)
             : null;
 
+    // Valores con los que se abrió cada modal, para detectar si hubo cambios
+    let datosOriginalesEditar = null;
+    let permisosOriginales = null;
+
+    const MENSAJE_SIN_CAMBIOS = 'No hubo cambios para actualizar.';
+
+    function serializarPermisos(lista) {
+        return lista
+            .map(function (permiso) {
+                return permiso.permission_type + ':' + permiso.permission_id;
+            })
+            .sort()
+            .join('|');
+    }
+
     if (modalEditar) {
         modalEditar.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
+
+            datosOriginalesEditar = null;
 
             if (!button) {
                 return;
@@ -136,6 +153,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const name = button.dataset.name;
             const description = button.dataset.description;
             const url = button.dataset.url;
+
+            datosOriginalesEditar = {
+                name: (name || '').trim(),
+                description: (description || '').trim(),
+            };
 
             document.getElementById('editar_id').value = id;
             document.getElementById('editar_name').value = name;
@@ -578,6 +600,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const button =
                     event.relatedTarget;
 
+                permisosOriginales = null;
+
                 if (!button) {
                     return;
                 }
@@ -624,6 +648,12 @@ document.addEventListener('DOMContentLoaded', function () {
                             data.modulos,
                             data.permisos
                         );
+
+                        // Lo que quedó marcado al cargar es la referencia para detectar cambios
+                        permisosOriginales =
+                            serializarPermisos(
+                                obtenerPermisosSeleccionados()
+                            );
 
                     })
                     .catch(function (error) {
@@ -684,6 +714,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 const permisos =
                     obtenerPermisosSeleccionados();
 
+                if (permisosOriginales === null) {
+                    window.showToast(
+                        'warning',
+                        'Espera a que terminen de cargar los permisos.'
+                    );
+
+                    return;
+                }
+
+                if (serializarPermisos(permisos) === permisosOriginales) {
+                    window.showToast(
+                        'info',
+                        MENSAJE_SIN_CAMBIOS
+                    );
+
+                    return;
+                }
+
                 if (botonSubmit) {
                     botonSubmit.disabled = true;
 
@@ -700,6 +748,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     })
                 )
                     .then(function (data) {
+
+                        permisosOriginales =
+                            serializarPermisos(permisos);
 
                         if (modalPermisosRol) {
                             modalPermisosRol.hide();
@@ -1045,7 +1096,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function crearAccionesRol(rol, urls) {
         let html =
-            '<div class="rol-actions text-end px-4">';
+            '<div class="rol-actions">';
 
         const acciones =
             window.accionesRoles || [];
@@ -1142,33 +1193,55 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const datos =
+        const celdas =
             fila.children;
 
-        if (datos.length < 4) {
+        if (celdas.length < 4) {
             return;
         }
 
-        datos[3].innerHTML =
-            crearAccionesRol(
-                rol,
-                urls
-            );
+        const botonDe = function (selector) {
+            return fila.querySelector(selector);
+        };
 
-        datos[3].classList.add(
-            'text-end',
+        // URLs que ya tenían los botones: respaldo por si la respuesta no las trae todas
+        const previas = {
+            update: botonDe('[data-bs-target="#modalEditarRol"]')?.dataset.url || '',
+            permisos: botonDe('[data-bs-target="#modalPermisosRol"]')?.dataset.url || '',
+            actualizarPermisos: botonDe('[data-bs-target="#modalPermisosRol"]')?.dataset.saveUrl || '',
+            delete: botonDe('[data-bs-target="#modalEliminarRol"]')?.dataset.url || '',
+        };
+
+        const urlsFinales = {
+            update: urls?.update || previas.update,
+            permisos: urls?.permisos || previas.permisos,
+            actualizarPermisos: urls?.actualizarPermisos || previas.actualizarPermisos,
+            delete: urls?.delete || previas.delete,
+        };
+
+        if ((window.accionesRoles || []).length > 0) {
+            celdas[3].innerHTML =
+                crearAccionesRol(
+                    rol,
+                    urlsFinales
+                );
+        } else {
+            // Sin la lista de acciones en memoria NO se reconstruyen los botones
+            // (antes quedaba la celda vacía): se conservan y se actualizan sus datos
+            celdas[3]
+                .querySelectorAll('.rol-action-btn')
+                .forEach(function (boton) {
+                    boton.dataset.name = rol.name;
+
+                    if (boton.dataset.description !== undefined) {
+                        boton.dataset.description = rol.description || '';
+                    }
+                });
+        }
+
+        celdas[3].classList.add(
             'px-4'
         );
-
-        const acciones =
-            datos[3].querySelector(
-                '.rol-actions'
-            );
-
-        if (acciones) {
-            acciones.style.width = '100%';
-            acciones.style.minWidth = '108px';
-        }
     }
 
 
@@ -1190,19 +1263,10 @@ document.addEventListener('DOMContentLoaded', function () {
         celdas[3].style.width = '20%';
 
         celdas[3].classList.add(
-            'text-end',
             'px-4'
         );
 
-        const acciones =
-            fila.querySelector(
-                '.rol-actions'
-            );
-
-        if (acciones) {
-            acciones.style.width = '100%';
-            acciones.style.minWidth = '108px';
-        }
+        // El ancho y la alineación de los botones los controla roles.css (.rol-actions)
     }
 
     function ajustarTodasLasFilas() {
@@ -1340,6 +1404,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 event.preventDefault();
 
+                const nombreActual =
+                    document.getElementById(
+                        'editar_name'
+                    ).value.trim();
+
+                const descripcionActual =
+                    document.getElementById(
+                        'editar_description'
+                    ).value.trim();
+
+                if (
+                    datosOriginalesEditar &&
+                    nombreActual === datosOriginalesEditar.name &&
+                    descripcionActual === datosOriginalesEditar.description
+                ) {
+                    window.showToast(
+                        'info',
+                        MENSAJE_SIN_CAMBIOS
+                    );
+
+                    return;
+                }
+
                 const id =
                     document.getElementById(
                         'editar_id'
@@ -1440,6 +1527,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             ajustarFila(
                                 filaDataTable.node()
                             );
+
+                            // Que DataTables conserve en memoria lo que hay en pantalla
+                            filaDataTable
+                                .invalidate('dom')
+                                .draw(false);
 
                             ajustarTodasLasFilas();
                         }

@@ -1,14 +1,72 @@
+/* =====================================================================
+   ROLES — acciones de la tabla y árbol de permisos
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   Acciones de la tabla: una sola fila, centradas, que nunca se parten
+   ni se aplastan (antes los botones se encogían al faltar ancho)
+   --------------------------------------------------------------------- */
+
 .rol-actions {
     display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+
     gap: 6px;
+
+    min-width: max-content;
+}
+
+.btn.rol-action-btn {
+    flex: 0 0 auto;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+
+    padding: 0;
+
+    border-radius: 10px;
+
+    line-height: 1;
+}
+
+/* Icono sin márgenes heredados (p. ej. "me-2" guardado en la BD) */
+.btn.rol-action-btn > i,
+.btn.rol-action-btn > svg {
+    margin: 0 !important;
+
+    font-size: 14px;
+    line-height: 1;
+
+    pointer-events: none;
+}
+
+#tablaRoles th:last-child,
+#tablaRoles td:last-child {
     white-space: nowrap;
 }
 
+/* Scroll horizontal solo cuando la tabla realmente no cabe; nunca vertical */
+.roles-table-wrap {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+
+/* ---------------------------------------------------------------------
+   Árbol de permisos (colores del sistema: carbón + acento naranja)
+   --------------------------------------------------------------------- */
+
 .permisos-tree {
-    border: 1px solid #dee2e6;
-    border-radius: 10px;
+    border: 1px solid var(--modal-line, #dee2e6);
+    border-radius: 12px;
     padding: 8px;
-    background: #fff;
+    background: var(--modal-field-bg, #ffffff);
     max-height: 430px;
     overflow-y: auto;
 }
@@ -23,14 +81,18 @@
     gap: 8px;
     min-height: 38px;
     padding: 6px 10px;
-    border-radius: 7px;
+    border-radius: 8px;
     transition:
         background-color 0.15s ease,
         box-shadow 0.15s ease;
 }
 
 .permisos-tree-row:hover {
-    background-color: #f5f8fc;
+    background-color: rgba(20, 22, 26, 0.05);
+}
+
+[data-bs-theme="dark"] .permisos-tree-row:hover {
+    background-color: rgba(255, 255, 255, 0.06);
 }
 
 .permisos-tree-row.modulo {
@@ -51,7 +113,7 @@
     padding: 0;
     border: 0;
     background: transparent;
-    color: #6c757d;
+    color: var(--text-muted, #6c757d);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -59,7 +121,7 @@
 }
 
 .permisos-tree-toggle:hover {
-    color: #2f71aa;
+    color: var(--gym-strong, #c2410c);
 }
 
 .permisos-tree-toggle i {
@@ -78,16 +140,16 @@
 .permisos-tree-icon {
     width: 20px;
     text-align: center;
-    color: #2f71aa;
+    color: var(--gym-strong, #c2410c);
     flex: 0 0 20px;
 }
 
 .permisos-tree-row.submodulo .permisos-tree-icon {
-    color: #6c757d;
+    color: var(--text-muted, #6c757d);
 }
 
 .permisos-tree-row.accion .permisos-tree-icon {
-    color: #8a94a6;
+    color: var(--text-soft, #8a94a6);
 }
 
 .permisos-tree-label {
@@ -99,7 +161,7 @@
 .permisos-tree-label small {
     display: block;
     font-weight: 400;
-    color: #6c757d;
+    color: var(--text-muted, #6c757d);
     margin-top: 1px;
 }
 
@@ -111,6 +173,11 @@
     display: none;
 }
 
+.permisos-tree-loading {
+    color: var(--text-muted, #6c757d);
+}
+
+/* Casillas */
 .permisos-tree input[type="checkbox"] {
     width: 17px;
     height: 17px;
@@ -119,55 +186,36 @@
     flex: 0 0 17px;
 }
 
-.permisos-tree-loading {
-    color: #6c757d;
+.permisos-tree input[type="checkbox"]:checked {
+    background-color: var(--gym-fill, #c2410c);
+    border-color: var(--gym-fill, #c2410c);
 }
 
-[data-bs-theme="dark"] .permisos-tree {
-    border-color: #202328;
-    background: #202328;
-}
-
-[data-bs-theme="dark"] .permisos-tree-row:hover {
-    background-color: #27364a;
-}
-
-[data-bs-theme="dark"] .permisos-tree-toggle {
-    color: #94a3b8;
-}
-
-[data-bs-theme="dark"] .permisos-tree-toggle:hover {
-    color: #6ea8fe;
-}
-
-[data-bs-theme="dark"] .permisos-tree-icon {
-    color: #6ea8fe;
-}
-
-[data-bs-theme="dark"] .permisos-tree-row.submodulo .permisos-tree-icon {
-    color: #aab4c3;
-}
-
-[data-bs-theme="dark"] .permisos-tree-row.accion .permisos-tree-icon {
-    color: #8895a7;
-}
-
-[data-bs-theme="dark"] .permisos-tree-label small {
-    color: #94a3b8;
-}
-
-[data-bs-theme="dark"] .permisos-tree-loading {
-    color: #94a3b8;
+.permisos-tree input[type="checkbox"]:focus {
+    border-color: var(--gym, #ea580c);
+    box-shadow: 0 0 0 0.2rem var(--gym-soft, rgba(234, 88, 12, 0.18));
 }
 
 [data-bs-theme="dark"] .permisos-tree input[type="checkbox"] {
-    background-color: #1e293b;
-    border-color: #64748b;
+    background-color: var(--surface, #242427);
+    border-color: rgba(255, 255, 255, 0.32);
 }
 
 [data-bs-theme="dark"] .permisos-tree input[type="checkbox"]:checked {
-    background-color: #2f71aa;
-    border-color: #2f71aa;
+    background-color: var(--gym-fill, #c2410c);
+    border-color: var(--gym-fill, #c2410c);
+}
+
+/* Aviso superior y cargando: también en carbón y con el acento del sistema */
+#modalPermisosRol .alert {
+    border-color: var(--modal-line, #dee2e6) !important;
+    background: var(--modal-field-bg, #ffffff);
+    color: var(--text-main, inherit);
+}
+
+#modalPermisosRol .alert .text-primary,
+#modalPermisosRol .permisos-tree-loading .text-primary {
+    color: var(--gym, #ea580c) !important;
 }
 
 

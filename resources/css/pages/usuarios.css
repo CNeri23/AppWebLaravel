@@ -1,0 +1,61 @@
+/* =====================================================================
+   USUARIOS — acciones de la tabla y scroll
+   ---------------------------------------------------------------------
+   Los botones de acción se generan de dos formas: en el servidor (Blade,
+   con espacios en el HTML) y en el navegador (usuarios.js, sin espacios).
+   Sin CSS propio, esa diferencia hacía que las filas editadas se vieran
+   distintas. Aquí se unifican con flexbox, sin depender de los espacios.
+   ===================================================================== */
+
+/* Contenedor de botones: una sola fila, centrada, que nunca se parte */
+.usuario-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+
+    gap: 6px;
+
+    min-width: max-content;
+}
+
+/* Botón cuadrado de tamaño fijo, con el icono centrado */
+.btn.usuario-action-btn {
+    flex: 0 0 auto;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+
+    padding: 0;
+
+    border-radius: 10px;
+
+    line-height: 1;
+}
+
+/* Icono: sin márgenes heredados (p. ej. "me-2" guardado en la BD) */
+.btn.usuario-action-btn > i,
+.btn.usuario-action-btn > svg {
+    margin: 0 !important;
+
+    font-size: 14px;
+    line-height: 1;
+
+    pointer-events: none;
+}
+
+/* La columna de acciones no se parte en dos líneas */
+#tablaUsuarios th:last-child,
+#tablaUsuarios td:last-child {
+    white-space: nowrap;
+}
+
+/* Scroll horizontal solo cuando la tabla realmente no cabe; nunca vertical */
+.usuarios-table-wrap {
+    overflow-x: auto;
+    overflow-y: hidden;
+}

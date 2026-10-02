@@ -19,16 +19,31 @@
         @endforeach
     </div>
 
+    @php
+        $accionesRolesJs = $accionesRoles->map(function ($accion) {
+            return [
+                'id' => $accion->id,
+                'nombre' => $accion->nombre,
+                'slug' => $accion->slug,
+                'icono' => $accion->icono,
+            ];
+        })->values();
+    @endphp
+
+    <script>
+        window.accionesRoles = @json($accionesRolesJs);
+    </script>
+
     <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
-            <div class="table-responsive">
+            <div class="table-responsive roles-table-wrap">
                 <table id="tablaRoles" class="table table-hover align-middle mb-0 w-100">
                     <thead>
                         <tr>
                             <th>Rol</th>
                             <th>Descripción</th>
                             <th>Fecha de registro</th>
-                            <th>Acciones</th>
+                            <th class="text-center px-4">Acciones</th>
                         </tr>
                     </thead>
 
@@ -53,8 +68,8 @@
                                     </span>
                                 </td>
 
-                                <td class="text-end px-4">
-                                    <div class="rol-actions text-end px-4">
+                                <td class="px-4">
+                                    <div class="rol-actions">
                                         @foreach ($accionesRoles as $accion)
                                             @switch($accion->slug)
                                                 @case('roles.editar')
@@ -68,8 +83,7 @@
                                                         data-name="{{ $rol->name }}"
                                                         data-description="{{ $rol->description }}"
                                                         data-url="{{ route('roles.update', $rol) }}">
-                                                        {!! $accion->icono !!}
-
+                                                        {!! $accion->icono ?: '<i class="fa-solid fa-pen"></i>' !!}
                                                     </button>
 
                                                     @break
@@ -85,7 +99,7 @@
                                                         data-name="{{ $rol->name }}"
                                                         data-url="{{ route('roles.permisos', $rol) }}"
                                                         data-save-url="{{ route('roles.actualizarPermisos', $rol) }}">
-                                                        {!! $accion->icono !!}
+                                                        {!! $accion->icono ?: '<i class="fa-solid fa-key"></i>' !!}
                                                     </button>
                                                     @break
 
@@ -99,7 +113,7 @@
                                                         data-id="{{ $rol->id }}"
                                                         data-name="{{ $rol->name }}"
                                                         data-url="{{ route('roles.destroy', $rol) }}">
-                                                        {!! $accion->icono !!}
+                                                        {!! $accion->icono ?: '<i class="fa-solid fa-trash"></i>' !!}
                                                     </button>
                                                     @break
                                             @endswitch

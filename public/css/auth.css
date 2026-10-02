@@ -643,3 +643,935 @@ button.auth-link.link-muted:hover {
         animation-duration: 0.01ms;
     }
 }
+
+/* =====================================================================
+   SKIN "GYM ERP" — el login usa los mismos colores y superficies planas
+   que el sistema (acento naranja, grafito en oscuro, sin glass).
+   Usa los tokens de layout.css: --gym, --gym-strong, --gym-soft,
+   --gym-fill, --on-gym, --flat-line, --nav-bg, --content-bg, --surface.
+   Para volver al diseño anterior, borra desde aquí hasta el final.
+   ===================================================================== */
+
+:root {
+    --accent: var(--gym);
+    --accent-hover: var(--gym-strong);
+
+    /* Tarjeta y panel: sólidos, igual que .card del sistema */
+    --login-surface: #ffffff;
+    --login-shadow: 0 8px 28px rgba(30, 45, 85, 0.1), 0 1px 3px rgba(30, 45, 85, 0.08);
+    --login-bg: var(--content-bg);
+
+    /* Botón principal (rojo-naranja profundo para que el texto blanco contraste) */
+    --login-btn: var(--gym-fill);
+    --login-btn-hover: #9a3412;
+}
+
+[data-bs-theme="dark"] {
+    --login-surface: var(--surface);
+    --login-shadow: 0 18px 44px rgba(0, 0, 0, 0.6);
+    --login-bg: var(--content-bg);
+
+    --login-btn: var(--gym);
+    --login-btn-hover: var(--gym-strong);
+}
+
+/* Todo lo que en el login usaba el azul pasa al acento del sistema */
+.login-page {
+    --color-primary: var(--gym);
+    --color-primary-dark: var(--gym-strong);
+    --color-primary-soft: var(--gym-soft);
+
+    background: var(--login-bg);
+}
+
+
+/* ---------------------------------------------------------------------
+   Tarjeta y panel visual: planos, sin blur ni borde especular
+   --------------------------------------------------------------------- */
+
+.login-page .login-form-wrap,
+.login-page .login-visual {
+    border: 1px solid var(--flat-line);
+    border-radius: var(--radius-md);
+
+    background: var(--login-surface);
+
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+
+    box-shadow: var(--login-shadow);
+}
+
+.login-page .login-form-wrap::before,
+.login-page .login-form-wrap::after,
+.login-page .login-visual::before,
+.login-page .login-visual::after {
+    display: none;
+}
+
+.login-page .login-visual {
+    margin: 16px 16px 16px 0;
+
+    /* Tono "magnesia" / grafito del sidebar con un resplandor naranja */
+    background:
+        radial-gradient(120% 90% at 0% 0%, var(--gym-soft), transparent 60%),
+        var(--nav-bg);
+}
+
+.login-page .visual-frame {
+    border-color: color-mix(in srgb, var(--gym) 30%, transparent);
+}
+
+.login-page .visual-frame::after {
+    border-color: color-mix(in srgb, var(--gym) 16%, transparent);
+}
+
+/* Logo: cuadro naranja con esquina cortada, como en el topbar */
+.login-page .visual-brand-icon {
+    width: 36px;
+    height: 36px;
+
+    border: 0;
+    border-radius: 9px 9px 0 9px;
+
+    background: var(--gym);
+    color: var(--on-gym);
+
+    box-shadow: none;
+
+    clip-path: polygon(0 0, 100% 0, 100% 68%, 68% 100%, 0 100%);
+}
+
+
+/* ---------------------------------------------------------------------
+   Campos: mismo estilo que el buscador del topbar
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] .login-page .form-control,
+html[data-bs-theme] .login-page .input-group-text {
+    border-color: var(--flat-line);
+
+    background: var(--content-bg);
+
+    box-shadow: none;
+}
+
+html[data-bs-theme] .login-page .input-group-text {
+    color: var(--text-muted);
+}
+
+html[data-bs-theme] .login-page .form-control:hover {
+    border-color: var(--nav-muted);
+}
+
+html[data-bs-theme] .login-page .form-control:focus {
+    border-color: var(--gym);
+
+    background: var(--surface);
+
+    box-shadow: 0 0 0 3px var(--gym-soft);
+}
+
+html[data-bs-theme] .login-page .input-group:focus-within .input-group-text {
+    border-color: var(--gym);
+
+    color: var(--gym);
+}
+
+html[data-bs-theme] .login-page .form-control.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(255, 69, 58, 0.16);
+}
+
+html[data-bs-theme] .login-page .input-group-text.toggle-password {
+    background: transparent !important;
+    border: none !important;
+}
+
+html[data-bs-theme] .login-page .input-group-text.toggle-password:hover {
+    color: var(--gym-strong);
+}
+
+html[data-bs-theme] .login-page .form-check-input {
+    border-color: var(--flat-line);
+
+    background-color: var(--content-bg);
+
+    box-shadow: none;
+}
+
+html[data-bs-theme] .login-page .form-check-input:checked {
+    border-color: var(--gym);
+
+    background-color: var(--gym);
+}
+
+html[data-bs-theme] .login-page .form-check-input:focus {
+    border-color: var(--gym);
+
+    box-shadow: 0 0 0 3px var(--gym-soft);
+}
+
+
+/* ---------------------------------------------------------------------
+   Enlaces (texto naranja oscuro para que se lea bien sobre blanco)
+   --------------------------------------------------------------------- */
+
+.login-page .auth-link {
+    color: var(--gym-strong);
+}
+
+.login-page .auth-link:hover {
+    color: var(--gym);
+}
+
+.login-page a.link-muted:hover,
+.login-page button.auth-link.link-muted:hover {
+    color: var(--gym-strong);
+}
+
+
+/* ---------------------------------------------------------------------
+   Botón principal: plano, naranja
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme] .login-page .btn-login {
+    border: 0;
+
+    background: var(--login-btn);
+    color: var(--on-gym);
+
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--login-btn) 30%, transparent);
+}
+
+html[data-bs-theme] .login-page .btn-login:hover {
+    background: var(--login-btn-hover);
+    color: var(--on-gym);
+
+    box-shadow: 0 10px 22px color-mix(in srgb, var(--login-btn) 38%, transparent);
+}
+
+html[data-bs-theme] .login-page .btn-login:active {
+    box-shadow: 0 3px 8px color-mix(in srgb, var(--login-btn) 28%, transparent);
+}
+
+html[data-bs-theme] .login-page .btn-login:focus-visible {
+    box-shadow:
+        0 0 0 3px var(--gym-soft),
+        0 6px 16px color-mix(in srgb, var(--login-btn) 30%, transparent);
+}
+
+
+/* =====================================================================
+   LOGIN "GYM PRO": escena animada del panel visual + detalles del form
+   ---------------------------------------------------------------------
+   Todo es CSS/SVG (sin imágenes). Animaciones: barra que sube y baja,
+   pulso cardíaco, tarjetas flotantes, contadores y entrada escalonada.
+   Respeta prefers-reduced-motion.
+   ===================================================================== */
+
+:root {
+    --gs-plate-accent: var(--gym);
+    --gs-plate-dark: #2b2e35;
+    --gs-plate-mid: #4a4f59;
+    --gs-steel: #aab0b9;
+    --gs-steel-dark: #7d848f;
+    --gs-shine: rgba(255, 255, 255, 0.3);
+    --gs-shadow: rgba(20, 30, 60, 0.22);
+
+    --chip-shadow:
+        0 8px 22px rgba(30, 45, 85, 0.1),
+        0 1px 3px rgba(30, 45, 85, 0.08);
+}
+
+[data-bs-theme="dark"] {
+    --gs-plate-accent: #ea6a1a;
+    --gs-plate-dark: #3d3d44;
+    --gs-plate-mid: #56565e;
+    --gs-steel: #8f8f98;
+    --gs-steel-dark: #6a6a72;
+    --gs-shine: rgba(255, 255, 255, 0.22);
+    --gs-shadow: rgba(0, 0, 0, 0.55);
+
+    --chip-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+}
+
+
+/* ---------------------------------------------------------------------
+   Panel visual: contenido más ancho y entrada escalonada
+   --------------------------------------------------------------------- */
+
+.login-page .visual-content {
+    width: 100%;
+    max-width: 470px;
+}
+
+.login-page .visual-content > * {
+    animation: vc-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.login-page .visual-content > :nth-child(1) { animation-delay: 0.05s; }
+.login-page .visual-content > :nth-child(2) { animation-delay: 0.15s; }
+.login-page .visual-content > :nth-child(3) { animation-delay: 0.25s; }
+.login-page .visual-content > :nth-child(4) { animation-delay: 0.35s; }
+.login-page .visual-content > :nth-child(5) { animation-delay: 0.45s; }
+
+@keyframes vc-in {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Marco decorativo con deriva lenta */
+.login-page .visual-frame {
+    animation: frame-drift 16s ease-in-out infinite alternate;
+}
+
+@keyframes frame-drift {
+    from {
+        transform: rotate(18deg);
+    }
+
+    to {
+        transform: rotate(25deg) translate(-14px, -10px);
+    }
+}
+
+/* Palabra clave del título */
+.login-page .visual-accent {
+    position: relative;
+
+    color: var(--gym);
+
+    white-space: nowrap;
+}
+
+.login-page .visual-accent::after {
+    content: "";
+
+    position: absolute;
+    right: 0;
+    bottom: -3px;
+    left: 0;
+
+    height: 4px;
+
+    border-radius: 4px;
+
+    background: var(--gym);
+
+    transform: scaleX(0);
+    transform-origin: left;
+
+    animation: accent-draw 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.95s forwards;
+}
+
+@keyframes accent-draw {
+    to {
+        transform: scaleX(1);
+    }
+}
+
+/* Cinta métrica (misma del sidebar) que se "dibuja" al cargar */
+.login-page .visual-ruler {
+    display: block;
+
+    width: 150px;
+    height: 9px;
+
+    margin: 24px 0 6px;
+
+    background-image:
+        repeating-linear-gradient(90deg, var(--nav-tick) 0 1px, transparent 1px 30px),
+        repeating-linear-gradient(90deg, var(--nav-tick) 0 1px, transparent 1px 6px),
+        linear-gradient(var(--nav-tick), var(--nav-tick));
+    background-size: 100% 9px, 100% 4px, 100% 1px;
+    background-position: left bottom, left bottom, left bottom;
+    background-repeat: no-repeat;
+}
+
+
+/* ---------------------------------------------------------------------
+   Tarjetas de estadísticas (flotan suave)
+   --------------------------------------------------------------------- */
+
+.gym-scene {
+    margin-top: 6px;
+}
+
+.gym-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.gym-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    min-width: 0;
+
+    padding: 10px 12px;
+
+    border: 1px solid var(--flat-line);
+    border-radius: 12px;
+
+    background: var(--surface);
+
+    box-shadow: var(--chip-shadow);
+
+    animation:
+        chip-in 0.6s cubic-bezier(0.2, 1, 0.3, 1) both,
+        chip-float 5s ease-in-out 1.6s infinite alternate;
+}
+
+.gym-chip:nth-child(1) { animation-delay: 0.7s, 1.6s; }
+.gym-chip:nth-child(2) { animation-delay: 0.85s, 2.4s; }
+.gym-chip:nth-child(3) { animation-delay: 1s, 3.2s; }
+
+@keyframes chip-in {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.94);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes chip-float {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-5px);
+    }
+}
+
+.gym-chip-icon {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 32px;
+
+    border-radius: 9px;
+
+    background: var(--gym-soft);
+    color: var(--gym-strong);
+
+    font-size: 13px;
+}
+
+.gym-chip-text {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+}
+
+.gym-chip-label {
+    overflow: hidden;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.gym-chip-value {
+    display: block;
+
+    margin-top: 2px;
+
+    color: var(--text-strong);
+
+    font-size: 19px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.gym-chip-value small {
+    margin-left: 1px;
+
+    color: var(--text-soft);
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.gym-chip-value.is-tick {
+    animation: chip-tick 0.55s ease;
+}
+
+@keyframes chip-tick {
+    0% {
+        color: var(--text-strong);
+        transform: scale(1);
+    }
+
+    40% {
+        color: var(--gym);
+        transform: scale(1.14);
+    }
+
+    100% {
+        color: var(--text-strong);
+        transform: scale(1);
+    }
+}
+
+
+/* ---------------------------------------------------------------------
+   Escenario: barra olímpica + pulso cardíaco
+   --------------------------------------------------------------------- */
+
+.gym-stage {
+    position: relative;
+
+    margin-top: 14px;
+}
+
+.gym-svg {
+    position: relative;
+
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    overflow: visible;
+}
+
+.gym-glow {
+    position: absolute;
+    inset: 0 8% 10%;
+
+    border-radius: 50%;
+
+    background: radial-gradient(closest-side, var(--gym-soft), transparent 72%);
+
+    animation: gs-glow 4.2s ease-in-out 1.5s infinite;
+}
+
+@keyframes gs-glow {
+    0%,
+    100% {
+        opacity: 0.55;
+        transform: scale(0.92);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.08);
+    }
+}
+
+/* Piezas de la barra */
+.gs-bar { fill: var(--gs-steel); }
+.gs-bar-shine { fill: rgba(255, 255, 255, 0.55); }
+.gs-knurl { fill: url(#gsKnurl); }
+.gs-knurl-line { stroke: rgba(0, 0, 0, 0.3); stroke-width: 1; }
+.gs-collar { fill: var(--gs-steel-dark); }
+.gs-cap { fill: var(--gs-steel-dark); }
+.gs-plate-shine { fill: var(--gs-shine); }
+
+.gs-plate-main,
+.gs-plate-mid,
+.gs-plate-small {
+    stroke: rgba(0, 0, 0, 0.18);
+    stroke-width: 1;
+}
+
+.gs-plate-main { fill: var(--gs-plate-accent); }
+.gs-plate-mid { fill: var(--gs-plate-dark); }
+.gs-plate-small { fill: var(--gs-plate-mid); }
+
+.gs-shadow {
+    fill: var(--gs-shadow);
+
+    transform-box: fill-box;
+    transform-origin: center;
+
+    animation: gs-shadow 4.2s ease-in-out 1.5s infinite;
+}
+
+/* La barra cae al cargar y después hace repeticiones */
+.gs-drop {
+    animation: gs-drop-in 0.9s cubic-bezier(0.22, 1.3, 0.36, 1) 0.5s both;
+}
+
+.gs-lift {
+    animation: gs-lift 4.2s ease-in-out 1.5s infinite;
+}
+
+@keyframes gs-drop-in {
+    from {
+        opacity: 0;
+        transform: translateY(-46px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes gs-lift {
+    0%,
+    8% {
+        transform: translateY(0);
+    }
+
+    42%,
+    56% {
+        transform: translateY(-28px);
+    }
+
+    92%,
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes gs-shadow {
+    0%,
+    8% {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+
+    42%,
+    56% {
+        opacity: 0.5;
+        transform: scaleX(0.86);
+    }
+
+    92%,
+    100% {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+/* Pulso cardíaco: se traza en cada repetición */
+.gs-ecg-track,
+.gs-ecg {
+    fill: none;
+
+    stroke: var(--gym);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.5;
+}
+
+.gs-ecg-track {
+    stroke-opacity: 0.18;
+}
+
+.gs-ecg {
+    stroke-dasharray: 100 100;
+    stroke-dashoffset: 0;
+
+    animation: gs-ecg-draw 4.2s linear 1.5s infinite;
+}
+
+.gs-pulse-dot {
+    fill: var(--gym);
+
+    offset-path: path("M0 212H168L176 206L184 218L196 180L208 232L218 210L224 212H460");
+    offset-rotate: 0deg;
+
+    filter: drop-shadow(0 0 5px var(--gym));
+
+    opacity: 0;
+
+    animation: gs-dot 4.2s linear 1.5s infinite;
+}
+
+@keyframes gs-ecg-draw {
+    0% {
+        opacity: 1;
+        stroke-dashoffset: 100;
+    }
+
+    55% {
+        opacity: 1;
+        stroke-dashoffset: 0;
+    }
+
+    88% {
+        opacity: 1;
+        stroke-dashoffset: 0;
+    }
+
+    100% {
+        opacity: 0;
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes gs-dot {
+    0% {
+        offset-distance: 0%;
+        opacity: 1;
+    }
+
+    55% {
+        offset-distance: 100%;
+        opacity: 1;
+    }
+
+    58%,
+    100% {
+        offset-distance: 100%;
+        opacity: 0;
+    }
+}
+
+
+/* ---------------------------------------------------------------------
+   Formulario: insignia, franja superior y brillo del botón
+   --------------------------------------------------------------------- */
+
+/* Franja naranja arriba de la tarjeta */
+.login-page .login-form-wrap::before {
+    content: "";
+
+    display: block;
+
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 1;
+
+    height: 4px;
+
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+
+    background: linear-gradient(90deg, var(--gym), var(--gym-strong));
+
+    pointer-events: none;
+}
+
+/* Destello que cruza el botón al pasar el mouse */
+html[data-bs-theme] .login-page .btn-login {
+    position: relative;
+
+    overflow: hidden;
+}
+
+.login-page .btn-login::after {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+
+    width: 40%;
+
+    background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+
+    transform: skewX(-18deg);
+
+    transition: left 0.65s ease;
+
+    pointer-events: none;
+}
+
+.login-page .btn-login:hover::after {
+    left: 130%;
+}
+
+
+/* ---------------------------------------------------------------------
+   Pantallas bajitas / angostas
+   --------------------------------------------------------------------- */
+
+@media (max-width: 1200px) {
+    .gym-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .gym-chip:nth-child(3) {
+        display: none;
+    }
+}
+
+@media (max-height: 760px) {
+    .gym-stats {
+        display: none;
+    }
+
+    .gym-stage {
+        margin-top: 0;
+    }
+}
+
+@media (max-height: 620px) {
+    .gym-scene,
+    .login-page .visual-ruler {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .login-page .visual-content > *,
+    .login-page .visual-frame,
+    .login-page .visual-accent::after,
+    .gym-chip,
+    .gym-glow,
+    .gs-drop,
+    .gs-lift,
+    .gs-shadow,
+    .gs-ecg,
+    .gs-pulse-dot {
+        animation: none !important;
+    }
+
+    .login-page .visual-accent::after {
+        transform: scaleX(1);
+    }
+
+    .gs-pulse-dot {
+        display: none;
+    }
+}
+
+
+/* =====================================================================
+   MARCA "IRONPULSE", LEMA EN UNA LÍNEA E INTERRUPTOR DE TEMA
+   ===================================================================== */
+
+/* Todo el contenido del panel, centrado */
+.login-page .visual-content {
+    text-align: center;
+}
+
+/* Marca: logo grande + nombre */
+.login-page .visual-brand {
+    justify-content: center;
+
+    gap: 16px;
+
+    margin-bottom: 20px;
+}
+
+.login-page .visual-brand-icon {
+    width: 60px;
+    height: 60px;
+
+    border-radius: 15px 15px 0 15px;
+
+    font-size: 26px;
+
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+}
+
+.login-page .visual-brand-icon i {
+    animation: brand-beat 1.8s ease-in-out infinite;
+}
+
+/* Latido doble, como un pulso real */
+@keyframes brand-beat {
+    0%,
+    70%,
+    100% {
+        transform: scale(1);
+    }
+
+    14% {
+        transform: scale(1.2);
+    }
+
+    28% {
+        transform: scale(1);
+    }
+
+    42% {
+        transform: scale(1.14);
+    }
+}
+
+.login-page .visual-brand-name {
+    color: var(--text-strong);
+
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.login-page .visual-brand-name span {
+    color: var(--gym);
+}
+
+/* Lema: una sola línea y más pequeño */
+.login-page .visual-title {
+    margin-bottom: 12px;
+
+    font-size: clamp(0.95rem, 0.5vw + 0.75rem, 1.2rem);
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.3;
+
+    white-space: nowrap;
+}
+
+.login-page .visual-subtitle {
+    max-width: 400px;
+
+    margin: 0 auto;
+
+    font-size: 0.9rem;
+}
+
+.login-page .visual-ruler {
+    margin: 24px auto 6px;
+}
+
+
+/* ---------------------------------------------------------------------
+   Interruptor de tema: usa el mismo diseño (cielo de día / de noche) del
+   topbar, definido en layout.css (.theme-switch). Aquí solo se posiciona.
+   --------------------------------------------------------------------- */
+
+.login-page .theme-switch.login-theme-switch {
+    position: fixed;
+    top: 22px;
+    right: 30px;
+    z-index: 30;
+
+    animation: vc-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.9s both;
+}
+
+@media (max-width: 575.98px) {
+    .login-page .theme-switch.login-theme-switch {
+        top: 12px;
+        right: 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .login-page .visual-brand-icon i,
+    .login-page .theme-switch.login-theme-switch {
+        animation: none !important;
+    }
+}

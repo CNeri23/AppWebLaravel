@@ -36,7 +36,7 @@
 
     <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
-            <div class="table-responsive">
+            <div class="table-responsive usuarios-table-wrap">
                 <table id="tablaUsuarios" class="table table-hover align-middle mb-0 w-100">
                     <thead>
                         <tr>

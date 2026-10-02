@@ -3154,10 +3154,10 @@ select option:checked {
     /* Topbar y sidebar pegados a los bordes (antes flotaban con hueco) */
     --glass-gap: 0px;
 
-    /* Acento: turquesa profundo */
-    --gym: #0f766e;
-    --gym-strong: #0b5d56;
-    --gym-soft: rgba(15, 118, 110, 0.12);
+    /* Acento: naranja energía */
+    --gym: #ea580c;
+    --gym-strong: #c2410c;
+    --gym-soft: rgba(234, 88, 12, 0.12);
 
     /* Superficies sólidas (antes translúcidas) */
     --surface: #ffffff;
@@ -3178,7 +3178,7 @@ select option:checked {
     --nav-muted: #8b919b;
     --nav-hover: rgba(20, 22, 26, 0.055);
     --nav-chip: rgba(20, 22, 26, 0.055);
-    --nav-active: rgba(15, 118, 110, 0.12);
+    --nav-active: rgba(234, 88, 12, 0.12);
 
     /* Topbar */
     --topbar-bg: #ffffff;
@@ -3194,9 +3194,9 @@ select option:checked {
    --------------------------------------------------------------------- */
 
 [data-bs-theme="dark"] {
-    --gym: #2dd4bf;
-    --gym-strong: #5eead4;
-    --gym-soft: rgba(45, 212, 191, 0.16);
+    --gym: #fb923c;
+    --gym-strong: #fdba74;
+    --gym-soft: rgba(251, 146, 60, 0.16);
 
     /* Contenido más claro que antes (#000) y tarjetas elevadas */
     --content-bg: #1a1a1c;
@@ -3217,7 +3217,7 @@ select option:checked {
     --nav-muted: #75757c;
     --nav-hover: rgba(255, 255, 255, 0.06);
     --nav-chip: rgba(255, 255, 255, 0.06);
-    --nav-active: rgba(45, 212, 191, 0.16);
+    --nav-active: rgba(251, 146, 60, 0.16);
 
     --topbar-bg: #111112;
 
@@ -3905,7 +3905,7 @@ html[data-bs-theme] .modal-content .form-select:focus {
     --on-gym: #ffffff;
 
     /* Relleno de encabezados de modal (con texto blanco) */
-    --gym-fill: #0f766e;
+    --gym-fill: #c2410c;
     --danger-fill: #dc3545;
 
     /* Modales */
@@ -3915,9 +3915,9 @@ html[data-bs-theme] .modal-content .form-select:focus {
 }
 
 [data-bs-theme="dark"] {
-    --on-gym: #04211e;
+    --on-gym: #2a1203;
 
-    --gym-fill: #0f766e;
+    --gym-fill: #c2410c;
     --danger-fill: #c92f3f;
 
     /* Modales en el mismo grafito que las tarjetas */
@@ -4018,4 +4018,27 @@ html[data-bs-theme] .modal-content .form-select:focus {
     background-color: var(--modal-field-bg);
 
     box-shadow: 0 0 0 0.25rem var(--gym-soft);
+}
+
+/* ---------------------------------------------------------------------
+   Modales en modo claro: sin borde blanco alrededor del encabezado
+   (el modo oscuro conserva su borde sutil)
+   --------------------------------------------------------------------- */
+
+html[data-bs-theme="light"] .modal-content {
+    border-color: transparent;
+}
+
+
+
+/* =====================================================================
+   SCROLL DE PÁGINA: solo cuando el contenido lo necesite
+   ---------------------------------------------------------------------
+   .app-main usa margin-top para librar el topbar fijo. Ese margen se
+   "escapaba" del body (colapso de márgenes) y desplazaba todo hacia
+   abajo, dejando siempre ~68 px de scroll. flow-root lo contiene.
+   ===================================================================== */
+
+body {
+    display: flow-root;
 }

@@ -1,17 +1,82 @@
-.glass-toast {
-    --tc-rgb: 37, 99, 235;
+/* =====================================================================
+   ALERTAS (SweetAlert2) — SKIN PLANO "GYM ERP"
+   Superficies sólidas, sin blur ni bordes de cristal. Mismas clases que
+   antes, así que no hay que tocar HTML ni JS.
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   Tokens (claro / oscuro)
+   --------------------------------------------------------------------- */
+
+:root {
+    --toast-bg: #ffffff;
+    --toast-line: #dbe1e8;
+    --toast-text: #1c1c1e;
+    --toast-muted: #5f5f66;
+    --toast-shadow:
+        0 12px 32px rgba(15, 26, 29, 0.16),
+        0 2px 6px rgba(15, 26, 29, 0.08);
+
+    --toast-backdrop: rgba(15, 23, 42, 0.45);
+
+    /* Cuánto color del tipo se mezcla en el fondo del toast */
+    --toast-tint: 26%;
+
+    /* Botones de la alerta de confirmación */
+    --confirm-bg: #dc3545;
+    --confirm-bg-hover: #bb2d3b;
+    --confirm-fg: #ffffff;
+    --cancel-bg: #eef1f5;
+    --cancel-bg-hover: #e1e6ec;
+    --cancel-fg: #374151;
 }
 
-.glass-toast-success { --tc-rgb: 22, 163, 74; }
-.glass-toast-error   { --tc-rgb: 220, 53, 69; }
-.glass-toast-warning { --tc-rgb: 217, 119, 6; }
-.glass-toast-info    { --tc-rgb: 37, 99, 235; }
+[data-bs-theme="dark"] {
+    --toast-bg: #242427;
+    --toast-line: rgba(255, 255, 255, 0.12);
+    --toast-text: #f2f2f7;
+    --toast-muted: #b1b1b8;
+    --toast-shadow:
+        0 18px 44px rgba(0, 0, 0, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.4);
 
-[data-bs-theme="dark"] .glass-toast-success { --tc-rgb: 74, 222, 128; }
-[data-bs-theme="dark"] .glass-toast-error   { --tc-rgb: 248, 113, 113; }
-[data-bs-theme="dark"] .glass-toast-warning { --tc-rgb: 251, 191, 36; }
-[data-bs-theme="dark"] .glass-toast-info    { --tc-rgb: 96, 165, 250; }
+    --toast-backdrop: rgba(0, 0, 0, 0.6);
 
+    --toast-tint: 34%;
+
+    --confirm-bg: #dc3545;
+    --confirm-bg-hover: #e4505e;
+    --confirm-fg: #ffffff;
+    --cancel-bg: rgba(255, 255, 255, 0.1);
+    --cancel-bg-hover: rgba(255, 255, 255, 0.17);
+    --cancel-fg: #f2f2f7;
+}
+
+
+/* ---------------------------------------------------------------------
+   Color por tipo de toast
+   --------------------------------------------------------------------- */
+
+.glass-toast {
+    --tc-rgb: 37, 99, 235;
+    --ti-rgb: 29, 78, 216;
+}
+
+.glass-toast-success { --tc-rgb: 22, 163, 74;  --ti-rgb: 21, 128, 61; }
+.glass-toast-error   { --tc-rgb: 220, 53, 69;  --ti-rgb: 185, 28, 28; }
+.glass-toast-warning { --tc-rgb: 217, 119, 6;  --ti-rgb: 180, 83, 9; }
+.glass-toast-info    { --tc-rgb: 37, 99, 235;  --ti-rgb: 29, 78, 216; }
+
+/* Oscuro: --ts es el fondo del toast (tono profundo y sobrio del tipo) */
+[data-bs-theme="dark"] .glass-toast-success { --tc-rgb: 102, 204, 143; --ti-rgb: 102, 204, 143; --ts: #1d4a35; }
+[data-bs-theme="dark"] .glass-toast-error   { --tc-rgb: 240, 128, 134; --ti-rgb: 240, 128, 134; --ts: #5e2229; }
+[data-bs-theme="dark"] .glass-toast-warning { --tc-rgb: 232, 176, 72;  --ti-rgb: 232, 176, 72;  --ts: #5a3d17; }
+[data-bs-theme="dark"] .glass-toast-info    { --tc-rgb: 128, 180, 235; --ti-rgb: 128, 180, 235; --ts: #1f3a5c; }
+
+
+/* ---------------------------------------------------------------------
+   Contenedor
+   --------------------------------------------------------------------- */
 
 .swal2-container {
     z-index: 99999 !important;
@@ -41,363 +106,290 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
     padding: 22px 26px !important;
 }
 
+
+/* ---------------------------------------------------------------------
+   Toast: tarjeta sólida con tinte del tipo, borde de color y sombra
+   con halo para que se despegue del fondo en claro y en oscuro
+   --------------------------------------------------------------------- */
+
 .swal2-popup.glass-toast {
+    /* Claro: mezcla del color del tipo con blanco · Oscuro: --ts por tipo */
+    --toast-surface: var(--ts, color-mix(in srgb, rgb(var(--tc-rgb)) var(--toast-tint), var(--toast-bg)));
+
     position: relative;
 
-    width: auto !important;
-    min-width: 400px;
-    max-width: min(520px, calc(100vw - 32px));
+    /* Icono, texto y cerrar en una fila, todo centrado verticalmente */
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
 
-    padding: 15px 18px 18px !important;
+    gap: 16px;
 
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 20px;
+    width: 430px !important;
+    min-width: 0;
+    max-width: calc(100vw - 32px);
 
-    background:
-        linear-gradient(
-            135deg,
-            rgba(var(--tc-rgb), 0.16) 0%,
-            rgba(var(--tc-rgb), 0.04) 55%,
-            transparent 100%
-        ),
-        rgba(255, 255, 255, 0.78) !important;
+    padding: 20px 56px 24px 22px !important;
 
-    color: #111827 !important;
+    border: 0;
+    border-radius: 16px;
 
-    -webkit-backdrop-filter: blur(28px) saturate(190%);
-    backdrop-filter: blur(28px) saturate(190%);
+    background: var(--toast-surface) !important;
+
+    color: var(--toast-text) !important;
+
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
 
     box-shadow:
-        0 22px 56px rgba(15, 23, 42, 0.26),
-        0 4px 14px rgba(15, 23, 42, 0.12),
-        0 0 0 1px rgba(var(--tc-rgb), 0.22),
-        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+        0 18px 44px rgba(0, 0, 0, 0.32),
+        0 4px 12px rgba(0, 0, 0, 0.16),
+        0 8px 30px rgba(var(--tc-rgb), 0.28) !important;
 
     overflow: hidden;
 }
 
-[data-bs-theme="dark"] .swal2-popup.glass-toast {
-    border-color: rgba(255, 255, 255, 0.14);
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(var(--tc-rgb), 0.20) 0%,
-            rgba(var(--tc-rgb), 0.05) 55%,
-            transparent 100%
-        ),
-        rgba(28, 28, 32, 0.74) !important;
-
-    color: #f8fafc !important;
-
-    box-shadow:
-        0 24px 60px rgba(0, 0, 0, 0.7),
-        0 4px 14px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(var(--tc-rgb), 0.30),
-        inset 0 1px 0 rgba(255, 255, 255, 0.18);
-}
-
+.swal2-popup.glass-toast::before,
 .swal2-popup.glass-toast::after {
-    content: "";
-
-    position: absolute;
-    inset: 0;
-
-    padding: 1px;
-
-    border-radius: inherit;
-
-    pointer-events: none;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.95) 0%,
-            rgba(255, 255, 255, 0.2) 30%,
-            rgba(var(--tc-rgb), 0.35) 65%,
-            rgba(255, 255, 255, 0.6) 100%
-        );
-
-    -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-
-    mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-    mask-composite: exclude;
+    display: none;
 }
 
-[data-bs-theme="dark"] .swal2-popup.glass-toast::after {
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.4) 0%,
-            rgba(255, 255, 255, 0.06) 30%,
-            rgba(var(--tc-rgb), 0.4) 65%,
-            rgba(255, 255, 255, 0.18) 100%
-        );
+
+/* Oscuro: sombra sobria, sin halo de color */
+[data-bs-theme="dark"] .swal2-popup.glass-toast {
+    box-shadow:
+        0 18px 44px rgba(0, 0, 0, 0.55),
+        0 4px 12px rgba(0, 0, 0, 0.35) !important;
 }
 
-.swal2-popup.glass-toast .swal2-icon.glass-toast-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+/* ---------------------------------------------------------------------
+   Icono: el nativo de SweetAlert (misma forma y animaciones), solo con
+   el color del tipo más intenso para que se lea sobre el fondo tintado.
+   --------------------------------------------------------------------- */
+
+.swal2-popup.glass-toast .swal2-icon {
+    order: 1;
 
     flex: 0 0 auto;
 
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
-
-    margin: 0 4px 0 0 !important;
-
-    border: 1px solid rgba(var(--tc-rgb), 0.35) !important;
-    border-radius: 13px !important;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(var(--tc-rgb), 0.30),
-            rgba(var(--tc-rgb), 0.12)
-        ) !important;
-
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
-
-    color: rgb(var(--tc-rgb)) !important;
-
-    animation: glass-icon-pop 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.12s both !important;
+    margin: 0 !important;
 }
 
-.swal2-popup.glass-toast .glass-toast-icon .swal2-icon-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Success */
+.swal2-popup.glass-toast .swal2-icon.swal2-success {
+    border-color: rgb(var(--ti-rgb));
 
-    font-size: 17px !important;
-    line-height: 1;
-
-    color: inherit !important;
-
-    animation: none !important;
+    color: rgb(var(--ti-rgb));
 }
 
-.swal2-popup.glass-toast .glass-toast-icon [class^="swal2-success"] {
-    display: none !important;
+.swal2-popup.glass-toast .swal2-icon.swal2-success .swal2-success-ring {
+    border-color: rgb(var(--ti-rgb));
 }
 
-@keyframes glass-icon-pop {
-    0% {
-        opacity: 0;
-        transform: scale(0.3) rotate(-25deg);
-    }
-
-    100% {
-        opacity: 1;
-        transform: scale(1) rotate(0deg);
-    }
+.swal2-popup.glass-toast .swal2-icon.swal2-success [class^="swal2-success-line"] {
+    background-color: rgb(var(--ti-rgb));
 }
+
+/* Las piezas que "tapan" el anillo durante la animación van del color del fondo */
+.swal2-popup.glass-toast .swal2-icon.swal2-success [class^="swal2-success-circular-line"],
+.swal2-popup.glass-toast .swal2-icon.swal2-success .swal2-success-fix {
+    background: var(--toast-surface) !important;
+}
+
+/* Error */
+.swal2-popup.glass-toast .swal2-icon.swal2-error {
+    border-color: rgb(var(--ti-rgb));
+
+    color: rgb(var(--ti-rgb));
+}
+
+.swal2-popup.glass-toast .swal2-icon.swal2-error [class^="swal2-x-mark-line"] {
+    background-color: rgb(var(--ti-rgb));
+}
+
+/* Warning / Info / Question */
+.swal2-popup.glass-toast .swal2-icon.swal2-warning,
+.swal2-popup.glass-toast .swal2-icon.swal2-info,
+.swal2-popup.glass-toast .swal2-icon.swal2-question {
+    border-color: rgb(var(--ti-rgb));
+
+    color: rgb(var(--ti-rgb));
+}
+
+
+/* ---------------------------------------------------------------------
+   Título y botón de cerrar
+   --------------------------------------------------------------------- */
 
 .swal2-popup.glass-toast .swal2-title.glass-toast-title {
-    margin: 0 12px 0 10px !important;
+    order: 2;
+
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    margin: 0 !important;
     padding: 0 !important;
 
-    color: inherit !important;
+    color: var(--toast-text) !important;
 
-    font-size: 14.5px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     line-height: 1.4;
 
     text-align: left;
 }
 
 .swal-toast-close {
-    width: 28px !important;
-    height: 28px !important;
+    position: absolute !important;
+
+    top: 9px;
+    right: 9px;
+
+    order: 3;
+
+    width: 38px !important;
+    height: 38px !important;
 
     margin: 0 !important;
     padding: 0 !important;
 
-    border-radius: 50% !important;
+    border-radius: 10px !important;
 
-    color: inherit !important;
+    color: var(--toast-text) !important;
 
-    font-size: 19px !important;
+    font-size: 28px !important;
     font-weight: 400 !important;
-    line-height: 28px !important;
+    line-height: 38px !important;
 
-    opacity: 0.6;
+    opacity: 0.75;
 
     transition:
-        opacity 0.15s ease,
         background 0.15s ease,
-        transform 0.2s ease;
+        opacity 0.15s ease;
 }
 
 .swal-toast-close:hover {
-    background: rgba(var(--tc-rgb, 128, 128, 128), 0.16) !important;
+    background: rgba(var(--tc-rgb, 128, 128, 128), 0.22) !important;
 
     opacity: 1;
-
-    transform: rotate(90deg);
 }
 
+
+/* ---------------------------------------------------------------------
+   Barra de tiempo (pegada al borde inferior)
+   --------------------------------------------------------------------- */
+
 .swal2-popup.glass-toast .swal2-timer-progress-bar-container {
-    right: 18px;
-    bottom: 7px;
-    left: 18px;
+    right: 0;
+    bottom: 0;
+    left: 0;
 
-    height: 3px !important;
+    height: 4px !important;
 
-    border-radius: 999px;
+    border-radius: 0;
 
-    background: rgba(var(--tc-rgb), 0.16);
+    background: rgba(var(--tc-rgb), 0.25);
 }
 
 .swal2-popup.glass-toast .swal-toast-progress {
     height: 100% !important;
 
-    border-radius: 999px;
+    border-radius: 0;
 
-    background:
-        linear-gradient(
-            90deg,
-            rgba(var(--tc-rgb), 0.55),
-            rgb(var(--tc-rgb))
-        ) !important;
+    background: rgb(var(--tc-rgb)) !important;
 
     opacity: 1 !important;
 }
 
+
+/* ---------------------------------------------------------------------
+   Animaciones de entrada y salida (sin blur)
+   --------------------------------------------------------------------- */
+
 .glass-toast-show {
-    animation: glass-toast-in 0.65s cubic-bezier(0.22, 1.25, 0.36, 1) both;
+    animation: glass-toast-in 0.45s cubic-bezier(0.22, 1.1, 0.36, 1) both;
 }
 
 .glass-toast-hide {
-    animation: glass-toast-out 0.32s cubic-bezier(0.4, 0, 1, 1) both;
+    animation: glass-toast-out 0.28s cubic-bezier(0.4, 0, 1, 1) both;
 }
 
 @keyframes glass-toast-in {
     0% {
         opacity: 0;
-        transform: translateX(70px) scale(0.9);
-        filter: blur(10px);
-    }
-
-    55% {
-        opacity: 1;
-        filter: blur(0);
+        transform: translateX(60px);
     }
 
     100% {
         opacity: 1;
-        transform: translateX(0) scale(1);
-        filter: blur(0);
+        transform: translateX(0);
     }
 }
 
 @keyframes glass-toast-out {
     0% {
         opacity: 1;
-        transform: translateX(0) scale(1);
-        filter: blur(0);
+        transform: translateX(0);
     }
 
     100% {
         opacity: 0;
-        transform: translateX(50px) scale(0.94);
-        filter: blur(8px);
+        transform: translateX(40px);
     }
 }
 
 @media (max-width: 575.98px) {
     .swal2-popup.glass-toast {
-        min-width: 0;
         width: calc(100vw - 32px) !important;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .glass-toast-show,
-    .glass-toast-hide,
-    .swal2-popup.glass-toast .swal2-icon.glass-toast-icon {
+    .glass-toast-hide {
         animation-duration: 0.01ms !important;
     }
 }
 
+
+/* ---------------------------------------------------------------------
+   Fondo oscurecido de las alertas de confirmación (sin blur)
+   --------------------------------------------------------------------- */
+
 .swal2-container.swal2-backdrop-show:has(> .swal2-popup:not(.swal2-toast)) {
-    background: rgba(38, 55, 105, 0.32) !important;
+    background: var(--toast-backdrop) !important;
 
-    -webkit-backdrop-filter: blur(4px);
-    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
 }
 
-[data-bs-theme="dark"] .swal2-container.swal2-backdrop-show:has(> .swal2-popup:not(.swal2-toast)) {
-    background: rgba(0, 0, 0, 0.5) !important;
-}
 
-.swal-confirmacion {
+/* ---------------------------------------------------------------------
+   Alerta de confirmación
+   --------------------------------------------------------------------- */
+
+.swal-confirmacion,
+.swal-confirmacion-light,
+.swal-confirmacion-dark {
     position: relative;
 
-    border-radius: 22px !important;
+    border: 1px solid var(--toast-line) !important;
+    border-radius: 16px !important;
 
-    -webkit-backdrop-filter: blur(28px) saturate(190%);
-    backdrop-filter: blur(28px) saturate(190%);
+    background: var(--toast-bg) !important;
+
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+
+    box-shadow: var(--toast-shadow) !important;
 }
 
 .swal-confirmacion::after {
-    content: "";
-
-    position: absolute;
-    inset: 0;
-
-    padding: 1px;
-
-    border-radius: inherit;
-
-    pointer-events: none;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.9) 0%,
-            rgba(255, 255, 255, 0.15) 32%,
-            rgba(255, 255, 255, 0.05) 68%,
-            rgba(255, 255, 255, 0.55) 100%
-        );
-
-    -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-
-    mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-    mask-composite: exclude;
-}
-
-.swal-confirmacion-light {
-    border: 1px solid rgba(255, 255, 255, 0.75) !important;
-
-    background: rgba(255, 255, 255, 0.86) !important;
-
-    box-shadow:
-        0 28px 70px rgba(15, 23, 42, 0.3),
-        0 4px 14px rgba(15, 23, 42, 0.12),
-        inset 0 1px 0 #ffffff !important;
-}
-
-.swal-confirmacion-dark {
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
-
-    background: rgba(28, 28, 32, 0.78) !important;
-
-    box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.75),
-        0 4px 14px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+    display: none;
 }
 
 .swal-confirmacion .swal2-icon {
@@ -413,6 +405,8 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
 .swal-confirmacion-titulo {
     margin: 0 0 6px !important;
 
+    color: var(--toast-text) !important;
+
     font-size: 20px !important;
     font-weight: 700 !important;
 }
@@ -420,22 +414,27 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
 .swal-confirmacion-texto {
     margin: 0 !important;
 
+    color: var(--toast-muted) !important;
+
     font-size: 14px !important;
 }
 
 .swal-confirmacion .swal2-actions {
-    margin-top: 16px !important;
+    margin-top: 18px !important;
     gap: 8px !important;
 }
 
 .swal-confirmacion-confirmar,
 .swal-confirmacion-cancelar {
-    padding: 9px 16px !important;
+    padding: 9px 18px !important;
 
-    border-radius: 11px !important;
+    border: 0 !important;
+    border-radius: 10px !important;
 
     font-size: 13px !important;
     font-weight: 600 !important;
+
+    box-shadow: none !important;
 
     transition:
         transform 0.15s ease,
@@ -447,35 +446,26 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
     transform: translateY(-1px);
 }
 
-.swal-confirmacion-light .swal-confirmacion-titulo {
-    color: #111827 !important;
+.swal-confirmacion-confirmar {
+    background: var(--confirm-bg) !important;
+    color: var(--confirm-fg) !important;
 }
 
-.swal-confirmacion-dark .swal-confirmacion-titulo {
-    color: #f8fafc !important;
+.swal-confirmacion-confirmar:hover {
+    background: var(--confirm-bg-hover) !important;
 }
 
-.swal-confirmacion-light .swal-confirmacion-texto {
-    color: #374151 !important;
+.swal-confirmacion-cancelar {
+    background: var(--cancel-bg) !important;
+    color: var(--cancel-fg) !important;
 }
 
-.swal-confirmacion-dark .swal-confirmacion-texto {
-    color: #cbd5e1 !important;
+.swal-confirmacion-cancelar:hover {
+    background: var(--cancel-bg-hover) !important;
 }
 
-.swal-confirmacion-dark .swal-confirmacion-cancelar {
-    background: rgba(255, 255, 255, 0.12) !important;
-    color: #f8fafc !important;
-}
-
-.swal-confirmacion-dark .swal-confirmacion-cancelar:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
-}
-
-.swal-confirmacion-dark .swal-confirmacion-confirmar {
-    background: #dc3545 !important;
-}
-
-.swal-confirmacion-dark .swal-confirmacion-confirmar:hover {
-    background: #bb2d3b !important;
+.swal-confirmacion-confirmar:focus-visible,
+.swal-confirmacion-cancelar:focus-visible {
+    outline: 2px solid var(--toast-text);
+    outline-offset: 2px;
 }

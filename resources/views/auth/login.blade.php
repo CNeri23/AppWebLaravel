@@ -8,6 +8,16 @@
 
     <title>Iniciar sesión</title>
 
+    <script>
+        try {
+            var temaGuardado = localStorage.getItem('admin-theme');
+
+            if (temaGuardado === 'dark' || temaGuardado === 'light') {
+                document.documentElement.setAttribute('data-bs-theme', temaGuardado);
+            }
+        } catch (e) {}
+    </script>
+
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
@@ -21,6 +31,16 @@
 <body>
     <div id="toastStack" class="toast-stack"></div>
     <div class="login-page">
+        <button type="button" class="theme-switch login-theme-switch" id="loginThemeToggle"
+            aria-label="Cambiar tema" title="Cambiar tema">
+            <span class="theme-switch-track">
+                <span class="theme-switch-thumb">
+                    <i class="fa-solid fa-sun theme-switch-sun"></i>
+                    <i class="fa-solid fa-moon theme-switch-moon"></i>
+                </span>
+            </span>
+        </button>
+
         <div class="login-form-side">
             <div class="login-form-wrap">
                 <div class="auth-form-stage" id="authFormStage" data-initial-panel="{{ $authPanel ?? 'login' }}">
@@ -364,21 +384,96 @@
             <div class="visual-content">
                 <div class="visual-brand">
                     <span class="visual-brand-icon">
-                        <i class="fa-solid fa-layer-group"></i>
+                        <i class="fa-solid fa-heart-pulse"></i>
                     </span>
 
-                    <span class="visual-brand-name">
-                        Admin Panel
-                    </span>
+                    <span class="visual-brand-name">Iron<span>Pulse</span></span>
                 </div>
 
                 <h2 class="visual-title">
-                    Todo tu sistema,<br>en un solo lugar.
+                    Todo tu <span class="visual-accent">gimnasio</span>, en un solo lugar.
                 </h2>
 
                 <p class="visual-subtitle">
-                    Usuarios, roles, permisos y auditoría, administrados desde un mismo panel.
+                    Membresías, accesos, clases y pagos, administrados desde un mismo panel.
                 </p>
+
+                <span class="visual-ruler" aria-hidden="true"></span>
+
+                <div class="gym-scene" aria-hidden="true">
+                    <div class="gym-stats">
+                        <div class="gym-chip">
+                            <span class="gym-chip-icon"><i class="fa-solid fa-users"></i></span>
+                            <span class="gym-chip-text">
+                                <span class="gym-chip-label">Miembros</span>
+                                <span class="gym-chip-value" data-countup="1248">1,248</span>
+                            </span>
+                        </div>
+
+                        <div class="gym-chip">
+                            <span class="gym-chip-icon"><i class="fa-solid fa-calendar-check"></i></span>
+                            <span class="gym-chip-text">
+                                <span class="gym-chip-label">Check-ins hoy</span>
+                                <span class="gym-chip-value" data-countup="86" data-live>86</span>
+                            </span>
+                        </div>
+
+                        <div class="gym-chip">
+                            <span class="gym-chip-icon"><i class="fa-solid fa-dumbbell"></i></span>
+                            <span class="gym-chip-text">
+                                <span class="gym-chip-label">Repeticiones</span>
+                                <span class="gym-chip-value"><span data-reps>00</span><small>/12</small></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="gym-stage">
+                        <div class="gym-glow"></div>
+
+                        <svg class="gym-svg" viewBox="0 0 460 236" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false">
+                            <defs>
+                                <pattern id="gsKnurl" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                                    <path class="gs-knurl-line" d="M0 0V4" />
+                                </pattern>
+                            </defs>
+
+                            <!-- Pulso cardíaco en el piso -->
+                            <path class="gs-ecg-track" d="M0 212H168L176 206L184 218L196 180L208 232L218 210L224 212H460" />
+                            <path class="gs-ecg" pathLength="100" d="M0 212H168L176 206L184 218L196 180L208 232L218 210L224 212H460" />
+                            <circle class="gs-pulse-dot" cx="0" cy="0" r="4" />
+
+                            <!-- Sombra en el piso -->
+                            <ellipse class="gs-shadow" cx="230" cy="196" rx="150" ry="7" />
+
+                            <!-- Barra con discos -->
+                            <g class="gs-drop">
+                                <g class="gs-lift">
+                                    <rect class="gs-bar" x="20" y="96" width="420" height="8" rx="4" />
+                                    <rect class="gs-knurl" x="180" y="95.5" width="100" height="9" />
+                                    <rect class="gs-bar-shine" x="20" y="97" width="420" height="2" rx="1" />
+
+                                    <!-- Lado izquierdo -->
+                                    <rect class="gs-collar" x="150" y="88" width="8" height="24" rx="2" />
+                                    <rect class="gs-plate-main" x="118" y="30" width="28" height="140" rx="7" />
+                                    <rect class="gs-plate-shine" x="123" y="38" width="4" height="124" rx="2" />
+                                    <rect class="gs-plate-mid" x="92" y="48" width="22" height="104" rx="6" />
+                                    <rect class="gs-plate-shine" x="96" y="55" width="3" height="90" rx="1.5" />
+                                    <rect class="gs-plate-small" x="70" y="64" width="18" height="72" rx="5" />
+                                    <rect class="gs-cap" x="50" y="90" width="16" height="20" rx="3" />
+
+                                    <!-- Lado derecho -->
+                                    <rect class="gs-collar" x="302" y="88" width="8" height="24" rx="2" />
+                                    <rect class="gs-plate-main" x="314" y="30" width="28" height="140" rx="7" />
+                                    <rect class="gs-plate-shine" x="333" y="38" width="4" height="124" rx="2" />
+                                    <rect class="gs-plate-mid" x="346" y="48" width="22" height="104" rx="6" />
+                                    <rect class="gs-plate-shine" x="361" y="55" width="3" height="90" rx="1.5" />
+                                    <rect class="gs-plate-small" x="372" y="64" width="18" height="72" rx="5" />
+                                    <rect class="gs-cap" x="394" y="90" width="16" height="20" rx="3" />
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

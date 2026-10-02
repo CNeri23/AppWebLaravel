@@ -84,10 +84,10 @@
             </button>
 
             <div class="sidebar-brand-icon">
-                <i class="fa-solid fa-layer-group"></i>
+                <i class="fa-solid fa-heart-pulse"></i>
             </div>
 
-            <span class="sidebar-brand-text">Admin Panel</span>
+            <span class="sidebar-brand-text">IronPulse</span>
         </div>
 
         <div class="topbar-search">

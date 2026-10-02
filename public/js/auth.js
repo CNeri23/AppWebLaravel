@@ -2,6 +2,190 @@ document.addEventListener('DOMContentLoaded', function () {
     const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfTokenElement ? csrfTokenElement.content : '';
 
+    // ---------------------------------------------------------------
+    // Interruptor de tema claro / oscuro (comparte 'admin-theme' con el panel)
+    // ---------------------------------------------------------------
+    (function iniciarTema() {
+        const boton = document.getElementById('loginThemeToggle');
+
+        if (!boton) {
+            return;
+        }
+
+        const CLAVE_TEMA = 'admin-theme';
+        const raiz = document.documentElement;
+        const sinMovimiento = window.matchMedia(
+            '(prefers-reduced-motion: reduce)'
+        ).matches;
+
+        function temaActual() {
+            return raiz.getAttribute('data-bs-theme') === 'dark'
+                ? 'dark'
+                : 'light';
+        }
+
+        function marcarEstado() {
+            boton.setAttribute(
+                'aria-pressed',
+                temaActual() === 'dark' ? 'true' : 'false'
+            );
+        }
+
+        function aplicar(tema) {
+            raiz.setAttribute('data-bs-theme', tema);
+
+            try {
+                localStorage.setItem(CLAVE_TEMA, tema);
+            } catch (e) {}
+
+            marcarEstado();
+        }
+
+        function alternar() {
+            const nuevo = temaActual() === 'dark' ? 'light' : 'dark';
+
+            if (sinMovimiento) {
+                aplicar(nuevo);
+                return;
+            }
+
+            // Sin View Transitions: fundido suave de colores
+            if (!document.startViewTransition) {
+                raiz.classList.add('theme-switching');
+                aplicar(nuevo);
+
+                setTimeout(function () {
+                    raiz.classList.remove('theme-switching');
+                }, 450);
+
+                return;
+            }
+
+            // Con View Transitions: el nuevo tema se expande como un círculo
+            // desde el interruptor
+            const caja = boton.getBoundingClientRect();
+            const x = caja.left + caja.width / 2;
+            const y = caja.top + caja.height / 2;
+            const radio = Math.hypot(
+                Math.max(x, window.innerWidth - x),
+                Math.max(y, window.innerHeight - y)
+            );
+
+            const transicion = document.startViewTransition(function () {
+                aplicar(nuevo);
+            });
+
+            transicion.ready.then(function () {
+                raiz.animate(
+                    {
+                        clipPath: [
+                            'circle(0px at ' + x + 'px ' + y + 'px)',
+                            'circle(' + radio + 'px at ' + x + 'px ' + y + 'px)'
+                        ]
+                    },
+                    {
+                        duration: 550,
+                        easing: 'ease-in-out',
+                        pseudoElement: '::view-transition-new(root)'
+                    }
+                );
+            });
+        }
+
+        marcarEstado();
+
+        // Captura en document: este manejador es el único que actúa sobre el
+        // botón, aunque layout.js también tenga listeners para .theme-switch
+        document.addEventListener(
+            'click',
+            function (evento) {
+                if (!evento.target.closest('#loginThemeToggle')) {
+                    return;
+                }
+
+                evento.stopImmediatePropagation();
+                alternar();
+            },
+            true
+        );
+    })();
+
+    // ---------------------------------------------------------------
+    // Escena del gimnasio (panel visual): contadores y repeticiones
+    // ---------------------------------------------------------------
+    (function iniciarEscenaGym() {
+        const sinMovimiento = window.matchMedia(
+            '(prefers-reduced-motion: reduce)'
+        ).matches;
+
+        const formato = function (n) {
+            return n.toLocaleString('es-MX');
+        };
+
+        const destacar = function (el) {
+            el.classList.remove('is-tick');
+            void el.offsetWidth;
+            el.classList.add('is-tick');
+        };
+
+        // Contadores: suben desde 0; los marcados con data-live siguen sumando
+        document.querySelectorAll('[data-countup]').forEach(function (el, i) {
+            const destino = parseInt(el.dataset.countup, 10) || 0;
+
+            if (sinMovimiento) {
+                el.textContent = formato(destino);
+                return;
+            }
+
+            el.textContent = '0';
+
+            setTimeout(function () {
+                const duracion = 1500;
+                const inicio = performance.now();
+
+                function paso(ahora) {
+                    const t = Math.min((ahora - inicio) / duracion, 1);
+                    const suave = 1 - Math.pow(1 - t, 3);
+
+                    el.textContent = formato(Math.round(destino * suave));
+
+                    if (t < 1) {
+                        requestAnimationFrame(paso);
+                    }
+                }
+
+                requestAnimationFrame(paso);
+
+                if (el.hasAttribute('data-live')) {
+                    let actual = destino;
+
+                    (function siguiente() {
+                        setTimeout(function () {
+                            actual += 1;
+                            el.textContent = formato(actual);
+                            destacar(el);
+                            siguiente();
+                        }, 3500 + Math.random() * 3500);
+                    })();
+                }
+            }, 700 + i * 150);
+        });
+
+        // Repeticiones: una por cada vez que la barra sube y baja
+        const reps = document.querySelector('[data-reps]');
+        const barra = document.querySelector('.gs-lift');
+
+        if (reps && barra && !sinMovimiento) {
+            let total = 0;
+
+            barra.addEventListener('animationiteration', function () {
+                total = total >= 12 ? 1 : total + 1;
+                reps.textContent = String(total).padStart(2, '0');
+                destacar(reps.parentElement);
+            });
+        }
+    })();
+
     const authFormStage = document.getElementById('authFormStage');
     const formLogin = document.getElementById('formLogin');
     const formRegister = document.getElementById('formRegister');
@@ -158,6 +342,23 @@ document.addEventListener('DOMContentLoaded', function () {
     if (emailGuardado && rememberInput && emailInput) {
         emailInput.value = emailGuardado;
         rememberInput.checked = true;
+    }
+
+    // Foco inicial en el login: correo; si el correo viene recordado,
+    // directo a la contraseña
+    if (panelActual === 'login' && emailInput) {
+        setTimeout(function () {
+            const correoRecordado =
+                rememberInput &&
+                rememberInput.checked &&
+                emailInput.value.trim() !== '';
+
+            if (correoRecordado && passwordInput) {
+                passwordInput.focus();
+            } else {
+                emailInput.focus();
+            }
+        }, 80);
     }
 
     function limpiarErroresLogin() {
