@@ -218,6 +218,8 @@ class SystemSettingsController extends Controller
                 ->store('settings', 'public');
         }
 
+        $claveActualizada = array_key_first($datos);
+
         $settings->update($datos);
 
         if (
@@ -230,24 +232,43 @@ class SystemSettingsController extends Controller
 
         $usuario = $request->user();
 
-        $tocaSeguridad = array_intersect_key($datos, array_flip(self::CLAVES_SEGURIDAD)) !== [];
-        $tocaNegocio = array_intersect_key($datos, array_flip(self::CLAVES_NEGOCIO)) !== [];
-        $tocaGeneral = array_diff_key(
-            $datos,
-            array_flip(array_merge(self::CLAVES_SEGURIDAD, self::CLAVES_NEGOCIO))
-        ) !== [];
-
         $partes = [];
 
-        if ($tocaSeguridad) {
+        if (in_array($claveActualizada, [
+            'theme_mode',
+            'light_theme_style',
+            'dark_theme_style',
+            'accent_color',
+        ], true)) {
+            $partes[] = 'la configuración de apariencia';
+        }
+
+        if (in_array($claveActualizada, [
+            'currency',
+            'timezone',
+            'date_format',
+            'time_format',
+        ], true)) {
+            $partes[] = 'la configuración regional';
+        }
+
+        if (in_array($claveActualizada, self::CLAVES_SEGURIDAD, true)) {
             $partes[] = 'la configuración de seguridad';
         }
 
-        if ($tocaNegocio) {
+        if (in_array($claveActualizada, self::CLAVES_NEGOCIO, true)) {
             $partes[] = 'los datos del negocio';
         }
 
-        if ($tocaGeneral || $partes === []) {
+        if ($claveActualizada === 'system_name') {
+            $partes[] = 'la configuración general';
+        }
+
+        if ($claveActualizada === 'logo_path') {
+            $partes[] = 'el logotipo';
+        }
+
+        if ($partes === []) {
             $partes[] = 'la configuración general';
         }
 
@@ -261,11 +282,37 @@ class SystemSettingsController extends Controller
             entity: $usuario
         );
 
-        $mensaje = match (true) {
-            $tocaSeguridad && ! $tocaNegocio && ! $tocaGeneral => 'La configuración de seguridad se guardó correctamente.',
-            $tocaNegocio && ! $tocaSeguridad && ! $tocaGeneral => 'Los datos del negocio se guardaron correctamente.',
-            default => 'La configuración se guardó correctamente.',
-        };
+        $mensajes = [
+            'theme_mode' => 'El tema se actualizó correctamente.',
+            'light_theme_style' => 'El estilo del tema claro se actualizó correctamente.',
+            'dark_theme_style' => 'El estilo del tema oscuro se actualizó correctamente.',
+            'accent_color' => 'El color de acento se actualizó correctamente.',
+
+            'system_name' => 'El nombre del sistema se actualizó correctamente.',
+            'logo_path' => 'El logotipo se actualizó correctamente.',
+
+            'currency' => 'La moneda se actualizó correctamente.',
+            'timezone' => 'La zona horaria se actualizó correctamente.',
+            'date_format' => 'El formato de fecha se actualizó correctamente.',
+            'time_format' => 'El formato de hora se actualizó correctamente.',
+
+            'business_name' => 'La razón social se actualizó correctamente.',
+            'business_rfc' => 'El RFC se actualizó correctamente.',
+            'business_address' => 'La dirección se actualizó correctamente.',
+            'business_phone' => 'El teléfono se actualizó correctamente.',
+            'business_email' => 'El correo electrónico se actualizó correctamente.',
+            'business_website' => 'El sitio web se actualizó correctamente.',
+            'business_schedule' => 'El horario se actualizó correctamente.',
+
+            'session_timeout' => 'El tiempo de sesión se actualizó correctamente.',
+            'password_min_length' => 'La longitud mínima de contraseña se actualizó correctamente.',
+            'password_complexity' => 'La configuración de complejidad de contraseña se actualizó correctamente.',
+            'max_login_attempts' => 'El número máximo de intentos se actualizó correctamente.',
+            'lockout_minutes' => 'El tiempo de bloqueo se actualizó correctamente.',
+            'registration_enabled' => 'La configuración de registro se actualizó correctamente.',
+        ];
+
+        $mensaje = $mensajes[$claveActualizada] ?? 'La configuración se actualizó correctamente.';
 
         return response()->json([
             'success' => true,

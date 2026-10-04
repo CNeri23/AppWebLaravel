@@ -90,12 +90,52 @@ document.addEventListener('DOMContentLoaded', function () {
             : 'light';
     }
 
-    function obtenerDatosFormulario() {
-        const datos = new FormData(formulario);
+    function obtenerDatosFormulario(nombreCampo = null) {
+        const datos = new FormData();
 
         datos.append('_method', 'PUT');
 
-        return datos;
+        if (nombreCampo) {
+            const campo =
+                formulario.querySelector(
+                    `[name="${nombreCampo}"]:checked`
+                ) ||
+                formulario.querySelector(
+                    `[name="${nombreCampo}"]`
+                );
+
+            if (campo) {
+                if (
+                    campo.type === 'radio' ||
+                    campo.type === 'checkbox'
+                ) {
+                    if (campo.checked) {
+                        datos.append(
+                            campo.name,
+                            campo.type === 'checkbox'
+                                ? (campo.checked ? '1' : '0')
+                                : campo.value
+                        );
+                    }
+                } else if (campo.type === 'file') {
+                    if (campo.files[0]) {
+                        datos.append(
+                            campo.name,
+                            campo.files[0]
+                        );
+                    }
+                } else {
+                    datos.append(
+                        campo.name,
+                        campo.value
+                    );
+                }
+            }
+
+            return datos;
+        }
+
+        return new FormData(formulario);
     }
 
     function aplicarTemaInmediatamente(estilo) {
@@ -153,9 +193,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function guardarConfiguracion() {
+    function guardarConfiguracion(nombreCampo = null) {
         if (guardando) {
-            guardadoPendiente = true;
+            guardadoPendiente = nombreCampo;
 
             return;
         }
@@ -166,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
             formulario.action ||
             window.location.href,
             'POST',
-            obtenerDatosFormulario()
+            obtenerDatosFormulario(nombreCampo)
         )
             .then((data) => {
                 if (
@@ -193,9 +233,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 guardando = false;
 
                 if (guardadoPendiente) {
+                    const campoPendiente =
+                        guardadoPendiente;
+
                     guardadoPendiente = false;
 
-                    guardarConfiguracion();
+                    guardarConfiguracion(
+                        campoPendiente
+                    );
                 }
             });
     }
@@ -263,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             actualizarVistaLogo(archivo);
 
-            guardarConfiguracion();
+            guardarConfiguracion('logo');
         });
     }
 
@@ -283,7 +328,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.value
             );
 
-            guardarConfiguracion();
+            guardarConfiguracion(
+                this.name
+            );
         });
     });
 
@@ -318,7 +365,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     window.cambiarTemaManual(this.value);
                 }
 
-                guardarConfiguracion();
+                guardarConfiguracion(
+                    this.name
+                );
             });
         });
 
@@ -333,7 +382,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     camposAutomaticos.forEach(function (campo) {
         campo.addEventListener('change', function () {
-            guardarConfiguracion();
+            guardarConfiguracion(
+                this.name
+            );
         });
     });
 
@@ -346,7 +397,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            guardarConfiguracion();
+            guardarConfiguracion(
+                this.name
+            );
         });
     }
 });
