@@ -6,28 +6,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Plan extends Model
+class Caja extends Model
 {
     use HasFactory;
 
-    protected $table = 'planes';
+    protected $table = 'cajas';
 
     protected $fillable = [
         'nombre',
         'descripcion',
-        'duracion_dias',
-        'precio',
         'activo',
     ];
 
     protected $casts = [
-        'duracion_dias' => 'integer',
-        'precio' => 'decimal:2',
         'activo' => 'boolean',
     ];
 
-    public function membresias(): HasMany
+    public function sesiones(): HasMany
     {
-        return $this->hasMany(Membresia::class);
+        return $this->hasMany(SesionCaja::class);
     }
 }

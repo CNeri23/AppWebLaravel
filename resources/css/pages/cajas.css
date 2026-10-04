@@ -1,4 +1,4 @@
-.usuario-actions {
+.caja-actions {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -7,7 +7,7 @@
     min-width: max-content;
 }
 
-.btn.usuario-action-btn {
+.btn.caja-action-btn {
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
@@ -19,20 +19,20 @@
     line-height: 1;
 }
 
-.btn.usuario-action-btn > i,
-.btn.usuario-action-btn > svg {
+.btn.caja-action-btn > i,
+.btn.caja-action-btn > svg {
     margin: 0 !important;
     font-size: 14px;
     line-height: 1;
     pointer-events: none;
 }
 
-#tablaUsuarios th:last-child,
-#tablaUsuarios td:last-child {
+#tablaCajas th:last-child,
+#tablaCajas td:last-child {
     white-space: nowrap;
 }
 
-.usuarios-table-wrap {
+.cajas-table-wrap {
     overflow-x: auto;
     overflow-y: hidden;
 }

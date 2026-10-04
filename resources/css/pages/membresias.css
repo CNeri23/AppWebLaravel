@@ -1,4 +1,4 @@
-.usuario-actions {
+.membresia-actions {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -7,7 +7,7 @@
     min-width: max-content;
 }
 
-.btn.usuario-action-btn {
+.btn.membresia-action-btn {
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
@@ -19,20 +19,36 @@
     line-height: 1;
 }
 
-.btn.usuario-action-btn > i,
-.btn.usuario-action-btn > svg {
+.btn.membresia-action-btn > i,
+.btn.membresia-action-btn > svg {
     margin: 0 !important;
     font-size: 14px;
     line-height: 1;
     pointer-events: none;
 }
 
-#tablaUsuarios th:last-child,
-#tablaUsuarios td:last-child {
+#tablaMembresias th:last-child,
+#tablaMembresias td:last-child {
     white-space: nowrap;
 }
 
-.usuarios-table-wrap {
+.membresias-table-wrap {
     overflow-x: auto;
     overflow-y: hidden;
+}
+
+.membresia-price-display {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    background-color: var(--bs-tertiary-bg);
+}
+
+#modalNuevaMembresia .form-text {
+    font-size: 0.8rem;
+}
+
+#modalCancelarMembresia .modal-body {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
 }

@@ -6,6 +6,9 @@
 @import './pages/miembros.css';
 @import './pages/direcciones.css';
 @import './pages/planes.css';
+@import './pages/membresias.css';
+@import './pages/cajas.css';
+@import './pages/sesiones.css';
 
 @import 'tailwindcss';
 

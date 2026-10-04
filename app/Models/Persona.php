@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Persona extends Model
 {
@@ -28,5 +29,10 @@ class Persona extends Model
     public function tipos(): BelongsToMany
     {
         return $this->belongsToMany(Tipo::class);
+    }
+
+    public function membresias(): HasMany
+    {
+        return $this->hasMany(Membresia::class);
     }
 }
