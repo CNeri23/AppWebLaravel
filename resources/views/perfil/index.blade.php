@@ -1,6 +1,10 @@
 @extends('layouts.app')
 @section('content')
 
+    <script>
+        window.politicaPassword = @json($politicaPassword);
+    </script>
+
     <div class="profile-header-card card border-0 shadow-sm mb-4">
         <div class="card-body">
             <div class="d-flex flex-column flex-md-row align-items-center gap-4">
@@ -21,7 +25,7 @@
                     </button>
                 </div>
 
-                <div class="grow text-center text-md-start">
+                <div class="grow flex-grow-1 text-center text-md-start">
                     <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-2 mb-1">
                         <h2 class="fw-bold mb-0" id="profileName">
                             {{ $usuario->name }}
@@ -52,19 +56,19 @@
 
                         <span class="text-secondary small d-flex align-items-center">
                             <i class="fa-regular fa-calendar me-1"></i>
-                            Miembro desde {{ $usuario->created_at?->format('d/m/Y') }}
+                            Miembro desde {{ $usuario->created_at?->timezone($zonaHoraria)->format($formatoFecha) }}
                         </span>
                     </div>
                 </div>
 
-                <div class="d-flex flex-wrap justify-content-center gap-2">
-                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                <div class="profile-actions">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#modalEditarPerfil">
                         <i class="fa-solid fa-user-pen me-2"></i>
                         Editar perfil
                     </button>
 
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
                         data-bs-target="#modalCambiarPassword">
                         <i class="fa-solid fa-key me-2"></i>
                         Cambiar contraseña
@@ -135,7 +139,7 @@
                         </div>
 
                         <small class="text-secondary" data-profile-updated="{{ $usuario->updated_at?->toIso8601String() }}"
-                            title="{{ $usuario->updated_at?->format('d/m/Y H:i') }}">
+                            title="{{ $usuario->updated_at?->timezone($zonaHoraria)->format($formatoFecha . ' ' . $formatoHora) }}">
                             {{ $usuario->updated_at?->diffForHumans() }}
                         </small>
                     </div>
@@ -310,12 +314,16 @@
 
                             <div class="input-group">
                                 <input type="password" class="form-control" id="profile_password" name="password"
-                                    autocomplete="new-password" minlength="8" required>
+                                    autocomplete="new-password" minlength="{{ $politicaPassword['min'] }}" required>
 
                                 <button type="button" class="input-group-text toggle-password"
                                     data-password-target="profile_password" tabindex="-1" aria-label="Mostrar contraseña">
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
+                            </div>
+
+                            <div class="form-text" id="profile-password-hint">
+                                {{ $politicaPassword['descripcion'] }}
                             </div>
 
                             <div class="invalid-feedback d-block" id="profile-password-error"></div>

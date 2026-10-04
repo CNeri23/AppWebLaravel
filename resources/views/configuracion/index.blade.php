@@ -342,6 +342,127 @@
             </section>
         </div>
     </form>
+
+    <div class="configuracion-extra">
+        <div id="formNegocio" class="config-card config-card-flex" data-autosave>
+            <div class="config-card-header">
+                <div class="config-card-icon">
+                    <i class="fa-solid fa-building"></i>
+                </div>
+
+                <div>
+                    <h2>Datos del negocio</h2>
+                    <p>Información fiscal y de contacto.</p>
+                </div>
+            </div>
+
+            <div class="config-card-body">
+                <div class="config-form-grid">
+                    <div class="config-field config-field-full">
+                        <label for="business_name">Razón social o nombre comercial</label>
+                        <div class="config-input"><input type="text" id="business_name" name="business_name" class="form-control" value="{{ $settings['business_name'] }}" maxlength="150"><button type="button" class="config-input-save" hidden aria-label="Guardar cambio" title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
+                    </div>
+
+                    <div class="config-field">
+                        <label for="business_rfc">RFC</label>
+                        <div class="config-input"><input type="text" id="business_rfc" name="business_rfc" class="form-control" value="{{ $settings['business_rfc'] }}" maxlength="13" placeholder="XAXX010101000"><button type="button" class="config-input-save" hidden aria-label="Guardar cambio" title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
+                    </div>
+
+                    <div class="config-field">
+                        <label for="business_phone">Teléfono</label>
+                        <div class="config-input"><input type="tel" id="business_phone" name="business_phone" class="form-control" value="{{ $settings['business_phone'] }}" maxlength="30" placeholder="55 1234 5678"><button type="button" class="config-input-save" hidden aria-label="Guardar cambio" title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
+                    </div>
+
+                    <div class="config-field">
+                        <label for="business_email">Correo de contacto</label>
+                        <div class="config-input"><input type="email" id="business_email" name="business_email" class="form-control" value="{{ $settings['business_email'] }}" maxlength="255" placeholder="contacto@tunegocio.com"><button type="button" class="config-input-save" hidden aria-label="Guardar cambio" title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
+                    </div>
+
+                    <div class="config-field">
+                        <label for="business_website">Sitio web</label>
+                        <div class="config-input"><input type="url" id="business_website" name="business_website" class="form-control" value="{{ $settings['business_website'] }}" maxlength="255" placeholder="https://tunegocio.com"><button type="button" class="config-input-save" hidden aria-label="Guardar cambio" title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
+                    </div>
+
+                    <div class="config-field config-field-full">
+                        <label for="business_address">Dirección</label>
+                        <div class="config-input"><input type="text" id="business_address" name="business_address" class="form-control" value="{{ $settings['business_address'] }}" maxlength="255"><button type="button" class="config-input-save" hidden aria-label="Guardar cambio" title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
+                    </div>
+
+                    <div class="config-field config-field-full">
+                        <label for="business_schedule">Horario de atención</label>
+                        <div class="config-input config-input-area"><textarea id="business_schedule" name="business_schedule" class="form-control" rows="3" maxlength="500" placeholder="Lun a Vie 6:00 – 22:00 · Sáb 8:00 – 14:00">{{ $settings['business_schedule'] }}</textarea><button type="button" class="config-input-save" hidden aria-label="Guardar cambio" title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="formSeguridad" class="config-card config-card-flex" data-autosave>
+            <div class="config-card-header">
+                <div class="config-card-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <div>
+                    <h2>Seguridad</h2>
+                    <p>Acceso, sesiones y contraseñas para todos los usuarios.</p>
+                </div>
+            </div>
+
+            <div class="config-card-body">
+                <div class="config-form-grid">
+                    <div class="config-field">
+                        <label for="session_timeout">Cierre de sesión por inactividad (minutos)</label>
+                        <div class="config-input"><input type="number" id="session_timeout" name="session_timeout" class="form-control" value="{{ $settings['session_timeout'] }}" min="0" max="1440" step="1" inputmode="numeric"><button type="button" class="config-input-save" hidden aria-label="Guardar cambio" title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
+                        <small>0 = desactivado. Mínimo 5 minutos.</small>
+                    </div>
+
+                    <div class="config-field">
+                        <label for="password_min_length">Longitud mínima de contraseña</label>
+                        <div class="config-input"><input type="number" id="password_min_length" name="password_min_length" class="form-control" value="{{ $settings['password_min_length'] }}" min="8" max="32" step="1" inputmode="numeric"><button type="button" class="config-input-save" hidden aria-label="Guardar cambio" title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
+                        <small>Entre 8 y 32 caracteres.</small>
+                    </div>
+
+                    <div class="config-field">
+                        <label for="max_login_attempts">Intentos fallidos permitidos</label>
+                        <div class="config-input"><input type="number" id="max_login_attempts" name="max_login_attempts" class="form-control" value="{{ $settings['max_login_attempts'] }}" min="3" max="10" step="1" inputmode="numeric"><button type="button" class="config-input-save" hidden aria-label="Guardar cambio" title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
+                        <small>Entre 3 y 10 antes de bloquear el acceso.</small>
+                    </div>
+
+                    <div class="config-field">
+                        <label for="lockout_minutes">Minutos de bloqueo</label>
+                        <div class="config-input"><input type="number" id="lockout_minutes" name="lockout_minutes" class="form-control" value="{{ $settings['lockout_minutes'] }}" min="1" max="60" step="1" inputmode="numeric"><button type="button" class="config-input-save" hidden aria-label="Guardar cambio" title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
+                        <small>Tiempo de espera tras superar los intentos.</small>
+                    </div>
+
+                    <div class="config-field config-field-full config-switch">
+                        <div class="config-switch-text">
+                            <label for="password_complexity">Exigir contraseñas robustas</label>
+                            <small>Debe incluir mayúsculas, minúsculas y números.</small>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <input type="hidden" name="password_complexity" value="0">
+                            <input class="form-check-input" type="checkbox" role="switch" id="password_complexity" name="password_complexity" value="1" {{ $settings['password_complexity'] ? 'checked' : '' }}>
+                        </div>
+                    </div>
+
+                    <div class="config-field config-field-full config-switch">
+                        <div class="config-switch-text">
+                            <label for="registration_enabled">Permitir registro público</label>
+                            <small>Si se desactiva, nadie podrá crear una cuenta desde la pantalla de inicio de sesión.</small>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <input type="hidden" name="registration_enabled" value="0">
+                            <input class="form-check-input" type="checkbox" role="switch" id="registration_enabled" name="registration_enabled" value="1" {{ $settings['registration_enabled'] ? 'checked' : '' }}>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 @endsection

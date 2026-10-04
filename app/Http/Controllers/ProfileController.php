@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Services\AuditLogService;
+use App\Services\PasswordPolicy;
+use App\Services\SystemSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -10,7 +12,7 @@ use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
-    public function index()
+    public function index(SystemSettings $settings, PasswordPolicy $politica)
     {
         $usuario = Auth::user()->load('roles');
 
@@ -19,9 +21,26 @@ class ProfileController extends Controller
                 return $permiso->slug === 'logs';
             });
 
+        $ajustes = $settings->all();
+
+        // Formato de fecha/hora y zona horaria definidos en Configuración
+        $formatoFecha = $ajustes['date_format'];
+        $formatoHora = $ajustes['time_format'];
+        $zonaHoraria = $ajustes['timezone'];
+
+        $politicaPassword = [
+            'min' => $politica->minLength(),
+            'complex' => $politica->requiresComplexity(),
+            'descripcion' => $politica->description(),
+        ];
+
         return view('perfil.index', compact(
             'usuario',
-            'puedeVerLogs'
+            'puedeVerLogs',
+            'formatoFecha',
+            'formatoHora',
+            'zonaHoraria',
+            'politicaPassword'
         ));
     }
 
@@ -87,7 +106,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function updatePassword(Request $request)
+    public function updatePassword(Request $request, PasswordPolicy $politica)
     {
         $usuario = Auth::user();
 
@@ -96,18 +115,16 @@ class ProfileController extends Controller
                 'required',
                 'current_password',
             ],
-            'password' => [
-                'required',
-                'string',
-                'min:8',
-                'confirmed',
-            ],
+            'password' => $politica->rules(),
         ], [
+            ...$politica->messages(),
+
             'current_password.required' => 'La contraseña actual es obligatoria.',
             'current_password.current_password' => 'La contraseña actual no es correcta.',
 
             'password.required' => 'La nueva contraseña es obligatoria.',
-            'password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
+            'password.min' => 'La nueva contraseña debe tener al menos ' .
+                $politica->minLength() . ' caracteres.',
             'password.confirmed' => 'Las contraseñas no coinciden.',
         ]);
 

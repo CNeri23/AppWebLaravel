@@ -687,8 +687,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 return 'La nueva contraseña es obligatoria.';
             }
 
-            if (valor.length < 8) {
-                return 'La nueva contraseña debe tener al menos 8 caracteres.';
+            // Política de Configuración > Seguridad (la imprime index.blade.php)
+            const politica = window.politicaPassword || {};
+            const minimo = parseInt(politica.min, 10) || 8;
+
+            if (valor.length < minimo) {
+                return 'La nueva contraseña debe tener al menos ' +
+                    minimo + ' caracteres.';
+            }
+
+            if (
+                politica.complex &&
+                !(
+                    /\p{Ll}/u.test(valor) &&
+                    /\p{Lu}/u.test(valor) &&
+                    /\d/.test(valor)
+                )
+            ) {
+                return 'La contraseña debe incluir al menos una mayúscula, una minúscula y un número.';
             }
 
             return '';

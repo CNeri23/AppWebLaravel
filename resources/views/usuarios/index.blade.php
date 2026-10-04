@@ -8,29 +8,30 @@
     </div>
 
     @foreach ($accionesUsuarios as $accion)
-    @if ($accion->slug === 'usuarios.crear')
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-        data-bs-target="#modalNuevoUsuario" title="{{ $accion->nombre }}">
-        {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
-        {{ $accion->nombre }}
-    </button>
-    @endif
+        @if ($accion->slug === 'usuarios.crear')
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#modalNuevoUsuario" title="{{ $accion->nombre }}">
+                {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
+                {{ $accion->nombre }}
+            </button>
+        @endif
     @endforeach
 </div>
 
 @php
-$accionesUsuariosJs = $accionesUsuarios->map(function ($accion) {
-return [
-'id' => $accion->id,
-'nombre' => $accion->nombre,
-'slug' => $accion->slug,
-'icono' => $accion->icono,
-];
-})->values();
+    $accionesUsuariosJs = $accionesUsuarios->map(function ($accion) {
+        return [
+        'id' => $accion->id,
+        'nombre' => $accion->nombre,
+        'slug' => $accion->slug,
+        'icono' => $accion->icono,
+        ];
+    })->values();
 @endphp
 
 <script>
     window.accionesUsuarios = @json($accionesUsuariosJs);
+    window.politicaPassword = @json($politicaPassword);
 </script>
 
 <div class="card border-0 shadow-sm">
@@ -177,15 +178,15 @@ return [
                         <label for="password" class="form-label">Contraseña</label>
                         <input type="password" class="form-control @error('password') is-invalid @enderror"
                             id="password" name="password" required>
-                        @error('password')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <div class="invalid-feedback" id="password-error">@error('password'){{ $message }}@enderror</div>
+                        <div class="form-text" id="password-hint">{{ $politicaPassword['descripcion'] }}</div>
                     </div>
 
                     <div>
                         <label for="password_confirmation" class="form-label">Confirmar contraseña</label>
                         <input type="password" class="form-control" id="password_confirmation"
                             name="password_confirmation" required>
+                        <div class="invalid-feedback" id="password-confirmation-error"></div>
                     </div>
 
                 </div>
@@ -299,9 +300,8 @@ return [
                         <input type="password" class="form-control @error('password') is-invalid @enderror"
                             id="password_nueva" name="password" required>
 
-                        @error('password')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <div class="invalid-feedback" id="password-nueva-error">@error('password'){{ $message }}@enderror</div>
+                        <div class="form-text" id="password-nueva-hint">{{ $politicaPassword['descripcion'] }}</div>
                     </div>
 
                     <div>
@@ -311,6 +311,8 @@ return [
 
                         <input type="password" class="form-control" id="password_nueva_confirmation"
                             name="password_confirmation" required>
+
+                        <div class="invalid-feedback" id="password-nueva-confirmation-error"></div>
                     </div>
 
                 </div>

@@ -220,6 +220,11 @@ class SystemSettingsController extends Controller
 
         $claveActualizada = array_key_first($datos);
 
+        // Las tarjetas de Negocio y Seguridad envían varios campos a la vez.
+        $esNegocio = array_diff(array_keys($datos), self::CLAVES_NEGOCIO) === [];
+        $esSeguridad = array_diff(array_keys($datos), self::CLAVES_SEGURIDAD) === [];
+        $esSeccion = count($datos) > 1 && ($esNegocio || $esSeguridad);
+
         $settings->update($datos);
 
         if (
@@ -313,6 +318,12 @@ class SystemSettingsController extends Controller
         ];
 
         $mensaje = $mensajes[$claveActualizada] ?? 'La configuración se actualizó correctamente.';
+
+        if ($esSeccion) {
+            $mensaje = $esSeguridad
+                ? 'La configuración de seguridad se guardó correctamente.'
+                : 'Los datos del negocio se guardaron correctamente.';
+        }
 
         return response()->json([
             'success' => true,

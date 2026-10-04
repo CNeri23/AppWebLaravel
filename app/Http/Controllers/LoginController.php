@@ -5,25 +5,45 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\AuditLogService;
+use App\Services\PasswordPolicy;
+use App\Services\SystemSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class LoginController extends Controller
 {
+    /** Ventana (en segundos) en la que se cuentan los intentos fallidos. */
+    private const VENTANA_INTENTOS = 900;
+
+    /** Datos que comparten las vistas del login y del restablecimiento. */
+    private function datosAuth(): array
+    {
+        $politica = app(PasswordPolicy::class);
+
+        return [
+            'registroHabilitado' => (bool) app(SystemSettings::class)
+                ->get('registration_enabled', true),
+            'passwordMinimo' => $politica->minLength(),
+            'passwordComplejo' => $politica->requiresComplexity(),
+            'passwordDescripcion' => $politica->description(),
+        ];
+    }
+
     public function showLogin(): View
     {
-        return view('auth.login', [
+        return view('auth.login', array_merge([
             'token' => null,
             'email' => null,
             'authPanel' => 'login',
-        ]);
+        ], $this->datosAuth()));
     }
 
-    public function login(Request $request)
+    public function login(Request $request, SystemSettings $settings)
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -34,7 +54,19 @@ class LoginController extends Controller
             'password.required' => 'La contraseña es obligatoria.',
         ]);
 
+        $maxIntentos = max(1, (int) $settings->get('max_login_attempts', 5));
+        $minutosBloqueo = max(1, (int) $settings->get('lockout_minutes', 5));
+
+        $claveIntentos = 'login:' . Str::lower($credentials['email']) . '|' . $request->ip();
+        $claveBloqueo = $claveIntentos . ':bloqueo';
+
+        if (RateLimiter::tooManyAttempts($claveBloqueo, 1)) {
+            return $this->respuestaBloqueo(RateLimiter::availableIn($claveBloqueo));
+        }
+
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
+
+            RateLimiter::clear($claveIntentos);
 
             $request->session()->regenerate();
 
@@ -63,10 +95,45 @@ class LoginController extends Controller
             $request->email . '", pero las credenciales no fueron correctas.'
         );
 
+        RateLimiter::hit($claveIntentos, self::VENTANA_INTENTOS);
+
+        $intentos = RateLimiter::attempts($claveIntentos);
+
+        if ($intentos >= $maxIntentos) {
+            RateLimiter::hit($claveBloqueo, $minutosBloqueo * 60);
+            RateLimiter::clear($claveIntentos);
+
+            AuditLogService::log(
+                module: 'autenticacion',
+                action: 'LOGIN_BLOQUEADO',
+                description: 'Se bloqueó temporalmente el acceso del correo "' .
+                $request->email . '" durante ' . $minutosBloqueo .
+                ' min por superar los intentos fallidos permitidos.'
+            );
+
+            return $this->respuestaBloqueo(RateLimiter::availableIn($claveBloqueo));
+        }
+
+        $restantes = $maxIntentos - $intentos;
+
         return response()->json([
             'success' => false,
-            'mensaje' => 'Las credenciales no son correctas.',
+            'mensaje' => 'Las credenciales no son correctas. ' .
+                ($restantes === 1
+                    ? 'Te queda 1 intento.'
+                    : 'Te quedan ' . $restantes . ' intentos.'),
         ], 401);
+    }
+
+    private function respuestaBloqueo(int $segundos)
+    {
+        $minutos = max(1, (int) ceil($segundos / 60));
+
+        return response()->json([
+            'success' => false,
+            'mensaje' => 'Demasiados intentos fallidos. Intenta de nuevo en ' .
+                $minutos . ($minutos === 1 ? ' minuto.' : ' minutos.'),
+        ], 429);
     }
 
     public function logout(Request $request)
@@ -92,12 +159,22 @@ class LoginController extends Controller
         return redirect()->route('login');
     }
 
-    public function register(Request $request)
-    {
+    public function register(
+        Request $request,
+        SystemSettings $settings,
+        PasswordPolicy $politica
+    ) {
+        if (! $settings->get('registration_enabled', true)) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'El registro de nuevos usuarios está deshabilitado.',
+            ], 403);
+        }
+
         $datos = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => $politica->rules(),
         ], [
             'name.required' => 'El nombre es obligatorio.',
             'name.string' => 'El nombre no es válido.',
@@ -109,9 +186,7 @@ class LoginController extends Controller
             'email.max' => 'El correo electrónico no puede superar los 255 caracteres.',
             'email.unique' => 'Este correo electrónico ya está registrado.',
 
-            'password.required' => 'La contraseña es obligatoria.',
-            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-            'password.confirmed' => 'Las contraseñas no coinciden.',
+            ...$politica->messages(),
         ]);
 
         $usuario = User::create([
@@ -178,28 +253,26 @@ class LoginController extends Controller
 
     public function showResetPassword(Request $request, string $token): View
     {
-        return view('auth.login', [
+        return view('auth.login', array_merge([
             'token' => $token,
             'email' => $request->query('email'),
             'authPanel' => 'reset',
-        ]);
+        ], $this->datosAuth()));
     }
 
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request, PasswordPolicy $politica)
     {
         $datos = $request->validate([
             'token' => ['required'],
             'email' => ['required', 'email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => $politica->rules(),
         ], [
             'token.required' => 'El enlace para restablecer la contraseña no es válido.',
 
             'email.required' => 'El correo electrónico es obligatorio.',
             'email.email' => 'Ingresa un correo electrónico válido.',
 
-            'password.required' => 'La contraseña es obligatoria.',
-            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-            'password.confirmed' => 'Las contraseñas no coinciden.',
+            ...$politica->messages(),
         ]);
 
         $estado = Password::reset(

@@ -1,0 +1,184 @@
+.plan-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 6px;
+    min-width: max-content;
+}
+
+.btn.plan-action-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 10px;
+    line-height: 1;
+}
+
+.btn.plan-action-btn > i,
+.btn.plan-action-btn > svg {
+    margin: 0 !important;
+    font-size: 14px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.plan-toggle-btn {
+    position: relative;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 36px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.plan-toggle-btn:hover {
+    background: rgba(0, 122, 255, 0.08);
+}
+
+.plan-toggle-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.18);
+}
+
+.plan-toggle-btn:disabled {
+    cursor: wait;
+}
+
+.plan-toggle-track {
+    position: relative;
+    display: block;
+    width: 34px;
+    height: 20px;
+    border-radius: 999px;
+    background: var(--bs-secondary-bg);
+    border: 1px solid var(--bs-border-color);
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.plan-toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.plan-toggle-btn.activo .plan-toggle-track {
+    background: var(--bs-success);
+    border-color: var(--bs-success);
+}
+
+.plan-toggle-btn.activo .plan-toggle-thumb {
+    transform: translateX(14px);
+}
+
+.plan-toggle-btn.inactivo .plan-toggle-track {
+    background: var(--bs-secondary-bg);
+    border-color: var(--bs-border-color);
+}
+
+.plan-toggle-btn.inactivo .plan-toggle-thumb {
+    transform: translateX(0);
+}
+
+.plan-toggle-btn.procesando {
+    pointer-events: none;
+}
+
+.plan-toggle-btn.procesando .plan-toggle-track {
+    opacity: 0.6;
+}
+
+.plan-toggle-btn.procesando .plan-toggle-thumb {
+    opacity: 0.8;
+}
+
+#tablaPlanes th:last-child,
+#tablaPlanes td:last-child {
+    white-space: nowrap;
+}
+
+.planes-table-wrap {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#tablaPlanes td {
+    vertical-align: middle;
+}
+
+#tablaPlanes td:nth-child(3),
+#tablaPlanes td:nth-child(4),
+#tablaPlanes td:nth-child(5),
+#tablaPlanes td:nth-child(6) {
+    text-align: center;
+}
+
+.plan-descripcion {
+    display: inline-block;
+    max-width: 320px;
+}
+
+.plan-estado-text {
+    min-width: 58px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: left;
+}
+
+.plan-estado-text.activo {
+    color: var(--bs-success);
+}
+
+.plan-estado-text.inactivo {
+    color: var(--bs-secondary-color);
+}
+
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 1rem;
+}
+
+.dataTables_wrapper .dataTables_length {
+    margin-bottom: 1rem;
+}
+
+.dataTables_wrapper .dataTables_info {
+    padding-top: 1rem;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    padding-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .plan-descripcion {
+        max-width: 220px;
+    }
+
+    #tablaPlanes {
+        min-width: 850px;
+    }
+}

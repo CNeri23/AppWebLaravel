@@ -1,4 +1,3 @@
-
 (function aplicarTemaInicial() {
     try {
         var raiz = document.documentElement;
@@ -29,7 +28,11 @@
 
 document.addEventListener('DOMContentLoaded', function () {
     const html = document.documentElement;
-    const themeSwitch = document.getElementById('themeSwitch');
+    // Mismo interruptor en el panel (#themeSwitch) y en el login (#loginThemeToggle):
+    // ambos comparten esta lógica, la animación y la clave de localStorage.
+    const themeSwitch =
+        document.getElementById('themeSwitch') ||
+        document.getElementById('loginThemeToggle');
     const SYSTEM_THEME_STORAGE_KEY = 'ironpulse-system-theme';
     let themeMode = html.dataset.themeMode || 'system';
     let lightThemeStyle = html.dataset.lightThemeStyle || 'white';
@@ -287,6 +290,182 @@ document.addEventListener('DOMContentLoaded', function () {
             '<i class="fa-solid fa-heart-pulse"></i>';
     }
 
+    // ---------------------------------------------------------------
+    // Cierre por inactividad (Configuración > Seguridad)
+    // Lee data-session-timeout (minutos, 0 = desactivado). Al cumplirse el
+    // tiempo sin actividad manda directo al login; el servidor cierra la
+    // sesión al recibir esa petición.
+    // ---------------------------------------------------------------
+    const CLAVE_ACTIVIDAD = 'ironpulse-last-activity';
+    let minutosSesion = 0;
+    let temporizadorSesion = null;
+    let ultimaActividad = Date.now();
+    let ultimaEscritura = 0;
+    let ultimoPing = Date.now();
+    let redirigiendoSesion = false;
+
+    function irAlLogin() {
+        if (redirigiendoSesion) {
+            return;
+        }
+
+        redirigiendoSesion = true;
+
+        const base = html.dataset.loginUrl || '/login';
+
+        window.location.href =
+            base + (base.includes('?') ? '&' : '?') + 'expirada=1';
+    }
+
+    function actividadCompartida() {
+        let ultima = ultimaActividad;
+
+        try {
+            const guardada = parseInt(
+                localStorage.getItem(CLAVE_ACTIVIDAD),
+                10
+            );
+
+            if (guardada > ultima) {
+                ultima = guardada;
+            }
+        } catch (e) { }
+
+        return ultima;
+    }
+
+    function revisarSesion() {
+        if (!minutosSesion) {
+            return;
+        }
+
+        // 1,5 s de margen para que el servidor ya considere vencida la sesión
+        if (Date.now() - actividadCompartida() >= minutosSesion * 60000 + 1500) {
+            irAlLogin();
+        }
+    }
+
+    // Mientras la persona sigue trabajando se renueva la sesión del servidor
+    // (aunque no haga peticiones), para que ambos relojes coincidan.
+    function mantenerSesion() {
+        ultimoPing = Date.now();
+
+        fetch(window.location.href, {
+            method: 'HEAD',
+            credentials: 'same-origin',
+            cache: 'no-store',
+            redirect: 'manual',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        }).then(function (respuesta) {
+            if (respuesta.status === 401) {
+                irAlLogin();
+            }
+        }).catch(function () { });
+    }
+
+    function registrarActividad() {
+        if (!minutosSesion) {
+            return;
+        }
+
+        const ahora = Date.now();
+
+        ultimaActividad = ahora;
+
+        if (ahora - ultimaEscritura > 5000) {
+            ultimaEscritura = ahora;
+
+            try {
+                localStorage.setItem(CLAVE_ACTIVIDAD, String(ahora));
+            } catch (e) { }
+        }
+
+        if (ahora - ultimoPing > (minutosSesion * 60000) / 2) {
+            mantenerSesion();
+        }
+    }
+
+    function configurarSesion(minutos) {
+        minutosSesion = Math.max(0, parseInt(minutos, 10) || 0);
+
+        html.dataset.sessionTimeout = String(minutosSesion);
+
+        clearInterval(temporizadorSesion);
+        temporizadorSesion = null;
+
+        if (!minutosSesion) {
+            return;
+        }
+
+        ultimaActividad = Date.now();
+        ultimoPing = ultimaActividad;
+        ultimaEscritura = 0;
+
+        registrarActividad();
+
+        temporizadorSesion = setInterval(revisarSesion, 5000);
+    }
+
+    [
+        'mousemove',
+        'mousedown',
+        'keydown',
+        'scroll',
+        'wheel',
+        'touchstart',
+    ].forEach(function (evento) {
+        window.addEventListener(evento, registrarActividad, {
+            passive: true,
+            capture: true,
+        });
+    });
+
+    // Los navegadores frenan los temporizadores en pestañas ocultas
+    document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) {
+            revisarSesion();
+        }
+    });
+
+    window.addEventListener('pageshow', revisarSesion);
+
+    // ---------------------------------------------------------------
+    // Saludo de la barra superior según la zona horaria del sistema
+    // ---------------------------------------------------------------
+    function actualizarSaludo(zona) {
+        const texto = document.getElementById('topbarGreetingText');
+
+        if (!texto) {
+            return;
+        }
+
+        if (zona) {
+            html.dataset.timezone = zona;
+        }
+
+        let hora;
+
+        try {
+            hora = parseInt(
+                new Intl.DateTimeFormat('en-US', {
+                    hour: 'numeric',
+                    hourCycle: 'h23',
+                    timeZone: html.dataset.timezone || undefined,
+                }).format(new Date()),
+                10
+            );
+        } catch (e) {
+            hora = new Date().getHours();
+        }
+
+        texto.textContent =
+            hora < 12
+                ? 'Buenos días'
+                : hora < 19
+                    ? 'Buenas tardes'
+                    : 'Buenas noches';
+    }
+
     window.aplicarConfiguracionGlobal = function (settings) {
         if (!settings) {
             return;
@@ -318,6 +497,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 settings.theme_mode,
                 true
             );
+        }
+
+        if (
+            Object.prototype.hasOwnProperty.call(
+                settings,
+                'timezone'
+            )
+        ) {
+            actualizarSaludo(settings.timezone);
+        }
+
+        if (
+            Object.prototype.hasOwnProperty.call(
+                settings,
+                'session_timeout'
+            )
+        ) {
+            configurarSesion(settings.session_timeout);
         }
 
         if (
@@ -374,6 +571,13 @@ document.addEventListener('DOMContentLoaded', function () {
     applyThemeMode(themeMode);
 
     applyAccentColor(html.dataset.accentColor);
+
+    configurarSesion(html.dataset.sessionTimeout);
+
+    actualizarSaludo();
+
+    // Cambia solo al cruzar las 12:00 o las 19:00, sin recargar
+    setInterval(actualizarSaludo, 60000);
 
     const systemThemeMedia =
         window.matchMedia(

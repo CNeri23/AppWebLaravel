@@ -49,7 +49,9 @@
     data-theme-mode="{{ $settings['theme_mode'] }}" data-light-theme-style="{{ $settings['light_theme_style'] }}"
     data-dark-theme-style="{{ $settings['dark_theme_style'] }}"
     data-theme-style="{{ $settings['theme_mode'] === 'dark' ? $settings['dark_theme_style'] : $settings['light_theme_style'] }}"
-    data-accent-color="{{ $settings['accent_color'] }}">
+    data-accent-color="{{ $settings['accent_color'] }}" data-session-timeout="{{ (int) $settings['session_timeout'] }}"
+    data-login-url="{{ route('login') }}"
+    data-timezone="{{ $settings['timezone'] }}">
 
 <head>
     <meta charset="UTF-8">
@@ -98,7 +100,7 @@
 
         <div class="topbar-actions">
             <span class="topbar-greeting">
-                {{ $greeting }},
+                <span id="topbarGreetingText">{{ $greeting }}</span>,
                 <strong>{{ auth()->user()->name }}</strong>
             </span>
 

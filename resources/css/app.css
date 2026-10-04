@@ -5,6 +5,7 @@
 @import './pages/configuracion.css';
 @import './pages/miembros.css';
 @import './pages/direcciones.css';
+@import './pages/planes.css';
 
 @import 'tailwindcss';
 

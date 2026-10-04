@@ -3,112 +3,39 @@ document.addEventListener('DOMContentLoaded', function () {
     const csrfToken = csrfTokenElement ? csrfTokenElement.content : '';
 
     // ---------------------------------------------------------------
-    // Interruptor de tema claro / oscuro (comparte 'admin-theme' con el panel)
+    // Aviso cuando el servidor cerró la sesión por inactividad (?expirada=1)
     // ---------------------------------------------------------------
-    (function iniciarTema() {
-        const boton = document.getElementById('loginThemeToggle');
+    (function avisarSesionExpirada() {
+        const params = new URLSearchParams(window.location.search);
 
-        if (!boton) {
+        if (params.get('expirada') !== '1') {
             return;
         }
 
-        const CLAVE_TEMA = 'admin-theme';
-        const raiz = document.documentElement;
-        const sinMovimiento = window.matchMedia(
-            '(prefers-reduced-motion: reduce)'
-        ).matches;
+        params.delete('expirada');
 
-        function temaActual() {
-            return raiz.getAttribute('data-bs-theme') === 'dark'
-                ? 'dark'
-                : 'light';
-        }
+        const resto = params.toString();
 
-        function marcarEstado() {
-            boton.setAttribute(
-                'aria-pressed',
-                temaActual() === 'dark' ? 'true' : 'false'
-            );
-        }
-
-        function aplicar(tema) {
-            raiz.setAttribute('data-bs-theme', tema);
-
-            try {
-                localStorage.setItem(CLAVE_TEMA, tema);
-            } catch (e) {}
-
-            marcarEstado();
-        }
-
-        function alternar() {
-            const nuevo = temaActual() === 'dark' ? 'light' : 'dark';
-
-            if (sinMovimiento) {
-                aplicar(nuevo);
-                return;
-            }
-
-            // Sin View Transitions: fundido suave de colores
-            if (!document.startViewTransition) {
-                raiz.classList.add('theme-switching');
-                aplicar(nuevo);
-
-                setTimeout(function () {
-                    raiz.classList.remove('theme-switching');
-                }, 450);
-
-                return;
-            }
-
-            // Con View Transitions: el nuevo tema se expande como un círculo
-            // desde el interruptor
-            const caja = boton.getBoundingClientRect();
-            const x = caja.left + caja.width / 2;
-            const y = caja.top + caja.height / 2;
-            const radio = Math.hypot(
-                Math.max(x, window.innerWidth - x),
-                Math.max(y, window.innerHeight - y)
-            );
-
-            const transicion = document.startViewTransition(function () {
-                aplicar(nuevo);
-            });
-
-            transicion.ready.then(function () {
-                raiz.animate(
-                    {
-                        clipPath: [
-                            'circle(0px at ' + x + 'px ' + y + 'px)',
-                            'circle(' + radio + 'px at ' + x + 'px ' + y + 'px)'
-                        ]
-                    },
-                    {
-                        duration: 550,
-                        easing: 'ease-in-out',
-                        pseudoElement: '::view-transition-new(root)'
-                    }
-                );
-            });
-        }
-
-        marcarEstado();
-
-        // Captura en document: este manejador es el único que actúa sobre el
-        // botón, aunque layout.js también tenga listeners para .theme-switch
-        document.addEventListener(
-            'click',
-            function (evento) {
-                if (!evento.target.closest('#loginThemeToggle')) {
-                    return;
-                }
-
-                evento.stopImmediatePropagation();
-                alternar();
-            },
-            true
+        window.history.replaceState(
+            {},
+            '',
+            window.location.pathname +
+            (resto ? '?' + resto : '') +
+            window.location.hash
         );
+
+        setTimeout(function () {
+            if (typeof window.showToast === 'function') {
+                window.showToast(
+                    'error',
+                    'Tu sesión expiró por inactividad. Inicia sesión de nuevo.'
+                );
+            }
+        }, 300);
     })();
+
+    // El interruptor de tema del login (#loginThemeToggle) lo maneja layout.js,
+    // igual que el del panel: misma animación y misma clave de localStorage.
 
     // ---------------------------------------------------------------
     // Escena del gimnasio (panel visual): contadores y repeticiones
@@ -210,6 +137,84 @@ document.addEventListener('DOMContentLoaded', function () {
             : localStorage.getItem(PANEL_KEY) || 'login';
 
     let cambiandoPanel = false;
+
+    // Política de contraseña de Configuración > Seguridad (la imprime login.blade.php)
+    const passwordMinimo =
+        parseInt(authFormStage.dataset.passwordMin, 10) || 8;
+
+    const passwordComplejo =
+        authFormStage.dataset.passwordComplex === '1';
+
+    function mensajePassword(valor) {
+        if (valor.length < passwordMinimo) {
+            return 'La contraseña debe tener al menos ' +
+                passwordMinimo + ' caracteres.';
+        }
+
+        if (
+            passwordComplejo &&
+            !(
+                /\p{Ll}/u.test(valor) &&
+                /\p{Lu}/u.test(valor) &&
+                /\d/.test(valor)
+            )
+        ) {
+            return 'La contraseña debe incluir al menos una mayúscula, una minúscula y un número.';
+        }
+
+        return '';
+    }
+
+    function validarPasswordEnVivo(input, errorDiv, alSalir = false) {
+        if (!input || !errorDiv) {
+            return;
+        }
+
+        if (input.value === '') {
+            input.classList.remove('is-valid', 'is-invalid');
+            errorDiv.textContent = '';
+            return;
+        }
+
+        const mensaje = mensajePassword(input.value);
+
+        if (!mensaje) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+            errorDiv.textContent = '';
+            return;
+        }
+
+        input.classList.remove('is-valid');
+
+        if (alSalir || input.classList.contains('is-invalid')) {
+            input.classList.add('is-invalid');
+            errorDiv.textContent = mensaje;
+        }
+    }
+
+    // Registro público desactivado en Configuración > Seguridad: oculta los
+    // accesos al registro. (El servidor también lo rechaza.) Requiere
+    // data-registration-enabled="1|0" en #authFormStage; sin él no hace nada.
+    if (authFormStage.dataset.registrationEnabled === '0') {
+        document
+            .querySelectorAll('[data-auth-target="register"], [data-register-only]')
+            .forEach(function (elemento) {
+                elemento.hidden = true;
+                elemento.style.display = 'none';
+            });
+
+        const panelRegistro = obtenerPanel('register');
+
+        if (panelRegistro) {
+            panelRegistro.hidden = true;
+            panelRegistro.style.display = 'none';
+        }
+
+        if (panelActual === 'register') {
+            panelActual = 'login';
+        }
+    }
 
     function obtenerPanel(nombre) {
         return document.querySelector(`[data-panel="${nombre}"]`);
@@ -563,8 +568,40 @@ document.addEventListener('DOMContentLoaded', function () {
                 'registerPasswordConfirmation'
             );
 
+        const registerPasswordError =
+            document.getElementById('register-password-error');
+
+        const registerPasswordConfirmationError =
+            document.getElementById('register-password-confirmation-error');
+
         formRegister.addEventListener('submit', function (event) {
             event.preventDefault();
+
+            limpiarErroresPanel(obtenerPanel('register'));
+
+            const mensajeClave = registerPassword
+                ? mensajePassword(registerPassword.value)
+                : '';
+
+            if (mensajeClave) {
+                registerPassword.classList.add('is-invalid');
+                registerPasswordError.textContent = mensajeClave;
+                registerPassword.focus();
+
+                return;
+            }
+
+            if (
+                registerPasswordConfirmation &&
+                registerPassword.value !== registerPasswordConfirmation.value
+            ) {
+                registerPasswordConfirmation.classList.add('is-invalid');
+                registerPasswordConfirmationError.textContent =
+                    'Las contraseñas no coinciden.';
+                registerPasswordConfirmation.focus();
+
+                return;
+            }
 
             const botonSubmit =
                 formRegister.querySelector(
@@ -725,7 +762,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 )
             ]
         ].forEach(function (campo) {
-            if (campo[0]) {
+            if (campo[0] && campo[0] !== registerPassword) {
                 campo[0].addEventListener(
                     'input',
                     function () {
@@ -737,6 +774,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
             }
         });
+
+        if (registerPassword) {
+            registerPassword.addEventListener('input', function () {
+                validarPasswordEnVivo(
+                    registerPassword,
+                    registerPasswordError
+                );
+            });
+
+            registerPassword.addEventListener('blur', function () {
+                validarPasswordEnVivo(
+                    registerPassword,
+                    registerPasswordError,
+                    true
+                );
+            });
+        }
     }
 
     if (formForgot) {
@@ -984,12 +1038,25 @@ document.addEventListener('DOMContentLoaded', function () {
             resetPassword.addEventListener(
                 'input',
                 function () {
-                    validarEnVivo(
+                    validarPasswordEnVivo(
                         resetPassword,
                         resetPasswordError
                     );
 
                     validarConfirmacionPassword();
+                }
+            );
+        }
+
+        if (resetPassword) {
+            resetPassword.addEventListener(
+                'blur',
+                function () {
+                    validarPasswordEnVivo(
+                        resetPassword,
+                        resetPasswordError,
+                        true
+                    );
                 }
             );
         }
@@ -1031,16 +1098,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                if (
-                    !resetPassword.value.trim() ||
-                    resetPassword.value.length < 8
-                ) {
+                const mensajeClave =
+                    resetPassword.value.trim() === ''
+                        ? 'La contraseña es obligatoria.'
+                        : mensajePassword(resetPassword.value);
+
+                if (mensajeClave) {
                     resetPassword.classList.add(
                         'is-invalid'
                     );
 
                     resetPasswordError.textContent =
-                        'La contraseña debe tener al menos 8 caracteres.';
+                        mensajeClave;
 
                     resetPassword.focus();
 

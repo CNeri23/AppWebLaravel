@@ -142,7 +142,7 @@ window.accionesMiembros = @json($accionesMiembrosJs);
     </div>
 </div>
 
-{{-- MODAL NUEVO MIEMBRO --}}
+{{-- MODAL NUEVO --}}
 <div class="modal fade" id="modalNuevoMiembro" tabindex="-1" aria-labelledby="modalNuevoMiembroLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -253,7 +253,7 @@ window.accionesMiembros = @json($accionesMiembrosJs);
     </div>
 </div>
 
-{{-- MODAL EDITAR MIEMBRO --}}
+{{-- MODAL EDITAR --}}
 <div class="modal fade" id="modalEditarMiembro" tabindex="-1" aria-labelledby="modalEditarMiembroLabel"
     aria-hidden="true" data-bs-backdrop="static">
 
@@ -373,13 +373,10 @@ window.accionesMiembros = @json($accionesMiembrosJs);
     </div>
 </div>
 
-{{-- MODAL ELIMINAR MIEMBRO --}}
-<div class="modal fade" id="modalEliminarMiembro" tabindex="-1" aria-labelledby="modalEliminarMiembroLabel"
-    aria-hidden="true">
-
+{{-- MODAL ELIMINAR --}}
+<div class="modal fade" id="modalEliminarMiembro" tabindex="-1" aria-labelledby="modalEliminarMiembroLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="modalEliminarMiembroLabel">
                     <i class="fa-solid fa-trash text-danger me-2"></i>
@@ -390,7 +387,6 @@ window.accionesMiembros = @json($accionesMiembrosJs);
             </div>
 
             <form method="POST" id="formEliminarMiembro">
-
                 @csrf
                 @method('DELETE')
 

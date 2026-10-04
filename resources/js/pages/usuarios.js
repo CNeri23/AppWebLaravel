@@ -86,6 +86,177 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
+    // Política de contraseña de Configuración > Seguridad (la imprime index.blade.php)
+    const politicaPassword = window.politicaPassword || {};
+    const passwordMinimo = parseInt(politicaPassword.min, 10) || 8;
+    const passwordComplejo = !!politicaPassword.complex;
+
+    function mensajePassword(valor) {
+        if (valor.length < passwordMinimo) {
+            return 'La contraseña debe tener al menos ' +
+                passwordMinimo + ' caracteres.';
+        }
+
+        if (
+            passwordComplejo &&
+            !(
+                /\p{Ll}/u.test(valor) &&
+                /\p{Lu}/u.test(valor) &&
+                /\d/.test(valor)
+            )
+        ) {
+            return 'La contraseña debe incluir al menos una mayúscula, una minúscula y un número.';
+        }
+
+        return '';
+    }
+
+    function errorCampo(input, errorDiv, texto) {
+        if (!input) {
+            return;
+        }
+
+        input.classList.remove('is-valid');
+        input.classList.toggle('is-invalid', !!texto);
+
+        if (errorDiv) {
+            errorDiv.textContent = texto || '';
+        }
+    }
+
+    function limpiarCampo(input, errorDiv) {
+        if (input) {
+            input.classList.remove('is-invalid', 'is-valid');
+        }
+
+        if (errorDiv) {
+            errorDiv.textContent = '';
+        }
+    }
+
+    // Enlaza un par contraseña / confirmación con la política
+    function enlazarPassword(idPassword, idConfirmacion, idErrorPassword, idErrorConfirmacion) {
+        const password = document.getElementById(idPassword);
+        const confirmacion = document.getElementById(idConfirmacion);
+        const errorPassword = document.getElementById(idErrorPassword);
+        const errorConfirmacion = document.getElementById(idErrorConfirmacion);
+
+        if (!password) {
+            return null;
+        }
+
+        function validarConfirmacion() {
+            if (!confirmacion || confirmacion.value === '') {
+                limpiarCampo(confirmacion, errorConfirmacion);
+                return;
+            }
+
+            if (confirmacion.value === password.value) {
+                limpiarCampo(confirmacion, errorConfirmacion);
+                confirmacion.classList.add('is-valid');
+            } else {
+                errorCampo(
+                    confirmacion,
+                    errorConfirmacion,
+                    'Las contraseñas no coinciden.'
+                );
+            }
+        }
+
+        function validarPassword(alSalir) {
+            if (password.value === '') {
+                limpiarCampo(password, errorPassword);
+                return;
+            }
+
+            const mensaje = mensajePassword(password.value);
+
+            if (!mensaje) {
+                limpiarCampo(password, errorPassword);
+                password.classList.add('is-valid');
+            } else if (alSalir || password.classList.contains('is-invalid')) {
+                errorCampo(password, errorPassword, mensaje);
+            } else {
+                password.classList.remove('is-valid');
+            }
+        }
+
+        password.addEventListener('input', function () {
+            validarPassword(false);
+            validarConfirmacion();
+        });
+
+        password.addEventListener('blur', function () {
+            validarPassword(true);
+        });
+
+        if (confirmacion) {
+            confirmacion.addEventListener('input', validarConfirmacion);
+        }
+
+        return {
+            // true si todo está bien; si no, marca el error y enfoca el campo
+            validar: function () {
+                const mensaje = password.value === ''
+                    ? 'La contraseña es obligatoria.'
+                    : mensajePassword(password.value);
+
+                if (mensaje) {
+                    errorCampo(password, errorPassword, mensaje);
+                    password.focus();
+
+                    return false;
+                }
+
+                if (confirmacion && confirmacion.value !== password.value) {
+                    errorCampo(
+                        confirmacion,
+                        errorConfirmacion,
+                        'Las contraseñas no coinciden.'
+                    );
+                    confirmacion.focus();
+
+                    return false;
+                }
+
+                return true;
+            },
+
+            limpiar: function () {
+                limpiarCampo(password, errorPassword);
+                limpiarCampo(confirmacion, errorConfirmacion);
+            },
+        };
+    }
+
+    const politicaNuevo = enlazarPassword(
+        'password',
+        'password_confirmation',
+        'password-error',
+        'password-confirmation-error'
+    );
+
+    const politicaCambio = enlazarPassword(
+        'password_nueva',
+        'password_nueva_confirmation',
+        'password-nueva-error',
+        'password-nueva-confirmation-error'
+    );
+
+    if (modalNuevoUsuarioEl && politicaNuevo) {
+        modalNuevoUsuarioEl.addEventListener(
+            'hidden.bs.modal',
+            politicaNuevo.limpiar
+        );
+    }
+
+    if (modalPasswordUsuarioEl && politicaCambio) {
+        modalPasswordUsuarioEl.addEventListener(
+            'show.bs.modal',
+            politicaCambio.limpiar
+        );
+    }
+
     function escapeHtml(valor) {
         const div =
             document.createElement('div');
@@ -915,6 +1086,10 @@ document.addEventListener('DOMContentLoaded', function () {
             function (event) {
                 event.preventDefault();
 
+                if (politicaNuevo && !politicaNuevo.validar()) {
+                    return;
+                }
+
                 enviarFormulario(
                     formNuevoUsuario,
                     modalNuevoUsuario,
@@ -993,6 +1168,10 @@ document.addEventListener('DOMContentLoaded', function () {
             'submit',
             function (event) {
                 event.preventDefault();
+
+                if (politicaCambio && !politicaCambio.validar()) {
+                    return;
+                }
 
                 enviarFormulario(
                     formPasswordUsuario,

@@ -402,4 +402,229 @@ document.addEventListener('DOMContentLoaded', function () {
             );
         });
     }
+
+
+    // ---------------------------------------------------------------
+    // Datos del negocio y Seguridad: cada campo se guarda solo, con Enter o
+    // con la palomita dentro del input; los interruptores, al cambiarlos.
+    // Cada guardado muestra su propio mensaje.
+    // ---------------------------------------------------------------
+    function inicializarCampos(tarjeta) {
+        if (!tarjeta) {
+            return;
+        }
+
+        function limpiarError(campo) {
+            campo.classList.remove('is-invalid');
+
+            const contenedor = campo.closest('.config-field');
+            const mensaje = contenedor
+                ? contenedor.querySelector('.invalid-feedback')
+                : null;
+
+            if (mensaje) {
+                mensaje.remove();
+            }
+        }
+
+        function mostrarError(campo, texto) {
+            limpiarError(campo);
+
+            campo.classList.add('is-invalid');
+
+            const mensaje = document.createElement('div');
+
+            mensaje.className = 'invalid-feedback d-block';
+            mensaje.textContent = texto;
+
+            const referencia = campo.closest('.config-input') || campo;
+
+            referencia.insertAdjacentElement('afterend', mensaje);
+        }
+
+        async function enviar(nombre, valor) {
+            const datos = new FormData();
+
+            datos.append('_method', 'PUT');
+            datos.append(nombre, valor);
+
+            const response = await fetch(window.location.href, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                },
+                body: datos,
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (response.status === 422 && data.errors) {
+                const error = new Error(
+                    (data.errors[nombre] || Object.values(data.errors).flat())[0]
+                );
+
+                error.validacion = true;
+
+                throw error;
+            }
+
+            if (!response.ok || data.success === false) {
+                throw new Error(
+                    data.mensaje ||
+                    data.message ||
+                    'Ocurrió un error al guardar el cambio.'
+                );
+            }
+
+            return data;
+        }
+
+        function mensajeDeError(error) {
+            return error instanceof TypeError
+                ? 'No se pudo conectar con el servidor. Intenta de nuevo.'
+                : error.message;
+        }
+
+        function aplicarGlobal(nombre, settings) {
+            if (
+                nombre === 'session_timeout' &&
+                settings &&
+                typeof window.aplicarConfiguracionGlobal === 'function'
+            ) {
+                window.aplicarConfiguracionGlobal({
+                    session_timeout: settings.session_timeout,
+                });
+            }
+        }
+
+        // ---- Campos de texto y número (Enter o palomita) ----
+        tarjeta.querySelectorAll('.config-input').forEach(function (envoltura) {
+            const campo = envoltura.querySelector('.form-control');
+            const boton = envoltura.querySelector('.config-input-save');
+
+            if (!campo || !boton) {
+                return;
+            }
+
+            let guardado = campo.value;
+            let enCurso = false;
+
+            function esperado() {
+                return campo.value.trim();
+            }
+
+            function refrescar() {
+                boton.hidden = enCurso ? false : esperado() === guardado.trim();
+            }
+
+            async function guardar() {
+                if (enCurso || esperado() === guardado.trim()) {
+                    return;
+                }
+
+                enCurso = true;
+
+                const icono = boton.innerHTML;
+
+                boton.disabled = true;
+                boton.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+                limpiarError(campo);
+
+                try {
+                    const data = await enviar(campo.name, esperado());
+
+                    if (
+                        data.settings &&
+                        Object.prototype.hasOwnProperty.call(data.settings, campo.name)
+                    ) {
+                        campo.value = data.settings[campo.name] ?? '';
+                    }
+
+                    guardado = campo.value;
+
+                    campo.classList.add('is-saved');
+
+                    setTimeout(function () {
+                        campo.classList.remove('is-saved');
+                    }, 1400);
+
+                    aplicarGlobal(campo.name, data.settings);
+
+                    window.showToast('success', data.mensaje);
+                } catch (error) {
+                    if (error.validacion) {
+                        mostrarError(campo, error.message);
+                    }
+
+                    window.showToast('error', mensajeDeError(error));
+                } finally {
+                    enCurso = false;
+                    boton.disabled = false;
+                    boton.innerHTML = icono;
+                    refrescar();
+                }
+            }
+
+            campo.addEventListener('input', function () {
+                limpiarError(campo);
+                refrescar();
+            });
+
+            campo.addEventListener('keydown', function (evento) {
+                if (evento.isComposing) {
+                    return;
+                }
+
+                const esArea = campo.tagName === 'TEXTAREA';
+
+                if (
+                    evento.key === 'Enter' &&
+                    (!esArea || !evento.shiftKey)
+                ) {
+                    evento.preventDefault();
+                    guardar();
+
+                    return;
+                }
+
+                if (evento.key === 'Escape') {
+                    campo.value = guardado;
+                    limpiarError(campo);
+                    refrescar();
+                }
+            });
+
+            boton.addEventListener('click', guardar);
+
+            refrescar();
+        });
+
+        // ---- Interruptores: se guardan al cambiar ----
+        tarjeta.querySelectorAll('.form-switch input[type="checkbox"]').forEach(function (interruptor) {
+            interruptor.addEventListener('change', async function () {
+                const nuevo = interruptor.checked;
+
+                interruptor.disabled = true;
+
+                try {
+                    const data = await enviar(interruptor.name, nuevo ? '1' : '0');
+
+                    aplicarGlobal(interruptor.name, data.settings);
+
+                    window.showToast('success', data.mensaje);
+                } catch (error) {
+                    interruptor.checked = !nuevo;
+
+                    window.showToast('error', mensajeDeError(error));
+                } finally {
+                    interruptor.disabled = false;
+                }
+            });
+        });
+    }
+
+    inicializarCampos(document.getElementById('formNegocio'));
+    inicializarCampos(document.getElementById('formSeguridad'));
 });

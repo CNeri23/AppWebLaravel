@@ -1031,3 +1031,10 @@ button.auth-link.link-muted {
         display: none;
     }
 }
+
+.login-page .auth-password-hint {
+    margin-top: 6px;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    line-height: 1.4;
+}

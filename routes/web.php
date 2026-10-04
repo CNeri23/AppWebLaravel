@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SystemSettingsController;
 use App\Http\Controllers\MiembroController;
 use App\Http\Controllers\DireccionController;
+use App\Http\Controllers\PlanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -107,6 +108,26 @@ Route::middleware('auth')->group(function () {
     Route::delete('/direcciones/{direccion}', [DireccionController::class, 'destroy'])
         ->middleware('permiso:accion,direcciones.eliminar')
         ->name('direcciones.destroy');
+
+    Route::get('/planes', [PlanController::class, 'index'])
+        ->middleware('permiso:submodulo,planes')
+        ->name('planes.index');
+
+    Route::post('/planes', [PlanController::class, 'store'])
+        ->middleware('permiso:accion,planes.crear')
+        ->name('planes.store');
+
+    Route::put('/planes/{plan}', [PlanController::class, 'update'])
+        ->middleware('permiso:accion,planes.editar')
+        ->name('planes.update');
+
+    Route::delete('/planes/{plan}', [PlanController::class, 'destroy'])
+        ->middleware('permiso:accion,planes.eliminar')
+        ->name('planes.destroy');
+
+    Route::post('/planes/{plan}/toggle', [PlanController::class, 'toggleActivo'])
+        ->middleware('permiso:accion,planes.estado')
+        ->name('planes.toggle');
 
     Route::get('/roles', [RoleController::class, 'index'])
         ->middleware('permiso:submodulo,roles')

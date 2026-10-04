@@ -6,6 +6,7 @@ import './pages/perfil.js';
 import './pages/configuracion.js';
 import './pages/miembros.js';
 import './pages/direcciones.js';
+import './pages/planes.js';
 
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';

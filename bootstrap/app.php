@@ -17,6 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'permiso' => \App\Http\Middleware\CheckPermission::class,
         ]);
 
+        $middleware->appendToGroup('web', \App\Http\Middleware\EnforceSessionTimeout::class);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

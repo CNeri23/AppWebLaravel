@@ -6,6 +6,7 @@ use App\Models\Accion;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\AuditLogService;
+use App\Services\PasswordPolicy;
 use App\Services\PermissionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -48,20 +49,29 @@ class UserController extends Controller
                 ->values();
         }
 
+        $politica = app(PasswordPolicy::class);
+
+        $politicaPassword = [
+            'min' => $politica->minLength(),
+            'complex' => $politica->requiresComplexity(),
+            'descripcion' => $politica->description(),
+        ];
+
         return view('usuarios.index', compact(
             'usuarios',
             'roles',
-            'accionesUsuarios'
+            'accionesUsuarios',
+            'politicaPassword'
         ));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, PasswordPolicy $politica)
     {
         $datos = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+            'password' => $politica->rules(),
+        ], $politica->messages());
 
         $usuario = User::create([
             'name' => $datos['name'],
@@ -146,11 +156,15 @@ class UserController extends Controller
         ]);
     }
 
-    public function updatePassword(Request $request, User $usuario)
+    public function updatePassword(
+        Request $request,
+        User $usuario,
+        PasswordPolicy $politica
+    )
     {
         $datos = $request->validate([
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+            'password' => $politica->rules(),
+        ], $politica->messages());
 
         $usuario->password = Hash::make($datos['password']);
 

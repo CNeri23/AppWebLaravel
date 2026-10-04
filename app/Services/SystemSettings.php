@@ -13,19 +13,23 @@ class SystemSettings
     private const THEME_MODES = ['light', 'dark'];
 
     private const DEFAULTS = [
+        // General
         'system_name' => 'IronPulse',
         'logo_path' => null,
 
+        // Apariencia
         'theme_mode' => 'light',
         'light_theme_style' => 'white',
         'dark_theme_style' => 'graphite',
         'accent_color' => 'orange',
 
+        // Regional
         'currency' => 'MXN',
         'timezone' => 'America/Mexico_City',
         'date_format' => 'd/m/Y',
         'time_format' => 'H:i',
 
+        // Datos del negocio
         'business_name' => '',
         'business_rfc' => '',
         'business_address' => '',
@@ -34,9 +38,10 @@ class SystemSettings
         'business_website' => '',
         'business_schedule' => '',
 
-        'session_timeout' => 0,
+        // Seguridad
+        'session_timeout' => 0,          // minutos de inactividad; 0 = desactivado
         'password_min_length' => 8,
-        'password_complexity' => false,
+        'password_complexity' => false,  // mayúsculas, minúsculas y números
         'max_login_attempts' => 5,
         'lockout_minutes' => 5,
         'registration_enabled' => true,
@@ -65,6 +70,7 @@ class SystemSettings
         ],
     ];
 
+    // En la base de datos todo se guarda como texto; aquí se devuelve con su tipo.
     private const BOOLEANS = ['password_complexity', 'registration_enabled'];
 
     private const INTEGERS = [
@@ -132,8 +138,13 @@ class SystemSettings
         return 'general';
     }
 
+    /**
+     * Devuelve los valores con su tipo correcto y corrige datos heredados
+     * sin tocar la base de datos ni depender de limpiar la caché.
+     */
     private function normalizar(array $settings): array
     {
+        // El modo "system" ya no existe: solo hay claro y oscuro.
         if (! in_array($settings['theme_mode'] ?? null, self::THEME_MODES, true)) {
             $settings['theme_mode'] = self::DEFAULTS['theme_mode'];
         }

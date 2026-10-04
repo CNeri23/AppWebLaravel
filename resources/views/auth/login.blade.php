@@ -1,11 +1,19 @@
 @php
     $systemSettings = app(\App\Services\SystemSettings::class)->all();
 
-    $themeMode = $systemSettings['theme_mode'] ?? 'system';
+    $themeMode = $systemSettings['theme_mode'] ?? 'light';
     $lightThemeStyle = $systemSettings['light_theme_style'] ?? 'white';
     $darkThemeStyle = $systemSettings['dark_theme_style'] ?? 'graphite';
     $accentColor = $systemSettings['accent_color'] ?? 'orange';
     $systemName = $systemSettings['system_name'] ?? 'IronPulse';
+
+    $registroHabilitado = $registroHabilitado
+        ?? (bool) ($systemSettings['registration_enabled'] ?? true);
+    $passwordMinimo = $passwordMinimo ?? (int) ($systemSettings['password_min_length'] ?? 8);
+    $passwordComplejo = $passwordComplejo ?? (bool) ($systemSettings['password_complexity'] ?? false);
+    $passwordDescripcion = $passwordDescripcion
+        ?? ('Mínimo ' . $passwordMinimo . ' caracteres'
+            . ($passwordComplejo ? ', con mayúsculas, minúsculas y números' : '') . '.');
 
     $themeStyles = [
         'white',
@@ -56,29 +64,9 @@
 
     <title>{{ $systemName }}</title>
 
-    <script>
-        try {
-            var themeMode = document.documentElement.getAttribute('data-theme-mode');
-            var lightThemeStyle = document.documentElement.getAttribute('data-light-theme-style');
-            var darkThemeStyle = document.documentElement.getAttribute('data-dark-theme-style');
-
-            var temaActual = themeMode;
-
-            if (themeMode === 'system') {
-                temaActual = window.matchMedia('(prefers-color-scheme: dark)').matches
-                    ? 'dark'
-                    : 'light';
-            }
-
-            if (temaActual === 'dark') {
-                document.documentElement.setAttribute('data-bs-theme', 'dark');
-                document.documentElement.setAttribute('data-theme-style', darkThemeStyle);
-            } else {
-                document.documentElement.setAttribute('data-bs-theme', 'light');
-                document.documentElement.setAttribute('data-theme-style', lightThemeStyle);
-            }
-        } catch (e) {}
-    </script>
+    {{-- layout.js va aquí y sin defer: aplica el tema (incluida la elección manual
+         del interruptor) antes de pintar y comparte la lógica con el panel --}}
+    <script src="{{ asset('js/layout.js') }}"></script>
 
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
@@ -105,7 +93,10 @@
 
         <div class="login-form-side">
             <div class="login-form-wrap">
-                <div class="auth-form-stage" id="authFormStage" data-initial-panel="{{ $authPanel ?? 'login' }}">
+                <div class="auth-form-stage" id="authFormStage" data-initial-panel="{{ $authPanel ?? 'login' }}"
+                    data-registration-enabled="{{ $registroHabilitado ? '1' : '0' }}"
+                    data-password-min="{{ $passwordMinimo }}"
+                    data-password-complex="{{ $passwordComplejo ? '1' : '0' }}">
                     <div class="auth-panel auth-panel-login" data-panel="login">
                         <h1 class="login-title text-center">Iniciar sesión</h1>
 
@@ -173,6 +164,7 @@
                             </button>
                         </form>
 
+                        @if ($registroHabilitado)
                         <div class="auth-switch">
                             <span>¿No tienes una cuenta?</span>
 
@@ -180,12 +172,14 @@
                                 Regístrate
                             </button>
                         </div>
+                        @endif
 
                         <p class="login-footer">
                             © {{ date('Y') }} Todos los derechos reservados.
                         </p>
                     </div>
 
+                    @if ($registroHabilitado)
                     <div class="auth-panel auth-panel-register" data-panel="register">
 
                         <h1 class="login-title text-center">
@@ -250,6 +244,8 @@
                                     </button>
                                 </div>
 
+                                <div class="auth-password-hint" id="register-password-hint">{{ $passwordDescripcion }}</div>
+
                                 <div class="invalid-feedback d-block" id="register-password-error"></div>
                             </div>
 
@@ -293,6 +289,7 @@
                             © {{ date('Y') }} Todos los derechos reservados.
                         </p>
                     </div>
+                    @endif
 
                     <div class="auth-panel auth-panel-forgot" data-panel="forgot">
 
@@ -391,6 +388,8 @@
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
                                 </div>
+
+                                <div class="auth-password-hint" id="reset-password-hint">{{ $passwordDescripcion }}</div>
 
                                 <div class="invalid-feedback d-block" id="reset-password-error"></div>
                             </div>
@@ -542,7 +541,6 @@
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('js/toast.js') }}"></script>
     <script src="{{ asset('js/auth.js') }}"></script>
-    <script src="{{ asset('js/layout.js') }}"></script>
 </body>
 
 </html>
