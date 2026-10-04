@@ -10,6 +10,8 @@ use App\Http\Controllers\SubmoduloController;
 use App\Http\Controllers\AccionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SystemSettingsController;
+use App\Http\Controllers\MiembroController;
+use App\Http\Controllers\DireccionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -73,6 +75,38 @@ Route::middleware('auth')->group(function () {
     Route::delete('/usuarios/{usuario}', [UserController::class, 'destroy'])
         ->middleware('permiso:submodulo,usuarios')
         ->name('usuarios.destroy');
+
+    Route::get('/miembros', [MiembroController::class, 'index'])
+        ->middleware('permiso:submodulo,miembros')
+        ->name('miembros.index');
+
+    Route::post('/miembros', [MiembroController::class, 'store'])
+        ->middleware('permiso:accion,miembros.crear')
+        ->name('miembros.store');
+
+    Route::put('/miembros/{miembro}', [MiembroController::class, 'update'])
+        ->middleware('permiso:submodulo,miembros')
+        ->name('miembros.update');
+
+    Route::delete('/miembros/{miembro}', [MiembroController::class, 'destroy'])
+        ->middleware('permiso:submodulo,miembros')
+        ->name('miembros.destroy');
+
+    Route::get('/direcciones', [DireccionController::class, 'index'])
+        ->middleware('permiso:submodulo,direcciones')
+        ->name('direcciones.index');
+
+    Route::post('/direcciones', [DireccionController::class, 'store'])
+        ->middleware('permiso:accion,direcciones.crear')
+        ->name('direcciones.store');
+
+    Route::put('/direcciones/{direccion}', [DireccionController::class, 'update'])
+        ->middleware('permiso:accion,direcciones.editar')
+        ->name('direcciones.update');
+
+    Route::delete('/direcciones/{direccion}', [DireccionController::class, 'destroy'])
+        ->middleware('permiso:accion,direcciones.eliminar')
+        ->name('direcciones.destroy');
 
     Route::get('/roles', [RoleController::class, 'index'])
         ->middleware('permiso:submodulo,roles')

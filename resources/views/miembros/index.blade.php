@@ -1,0 +1,435 @@
+@extends('layouts.app')
+@section('content')
+
+@php
+$accionesMiembros = $accionesMiembros ?? collect();
+
+$accionesMiembrosJs = $accionesMiembros->map(function ($accion) {
+return [
+    'id' => $accion->id,
+    'nombre' => $accion->nombre,
+    'slug' => $accion->slug,
+    'icono' => $accion->icono,
+    ];
+})->values();
+@endphp
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="fw-bold mb-1">Miembros</h1>
+        <p class="text-secondary mb-0">Administración de miembros del gimnasio.</p>
+    </div>
+
+    @foreach ($accionesMiembros as $accion)
+    @if ($accion->slug === 'miembros.crear')
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoMiembro"
+        title="{{ $accion->nombre }}">
+        {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
+        {{ $accion->nombre }}
+    </button>
+    @endif
+    @endforeach
+</div>
+
+<script>
+window.accionesMiembros = @json($accionesMiembrosJs);
+</script>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive miembros-table-wrap">
+            <table id="tablaMiembros" class="table table-hover align-middle mb-0 w-100">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Teléfono</th>
+                        <th>Correo electrónico</th>
+                        <th>Dirección</th>
+                        <th class="text-center px-4">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse ($miembros as $miembro)
+                    <tr>
+                        <td>
+                            {{ trim(
+                                $miembro->nombre . ' ' .
+                                $miembro->apellido_paterno . ' ' .
+                                ($miembro->apellido_materno ?? '')
+                            ) }}
+                        </td>
+
+                        <td>
+                            {{ $miembro->telefono ?: '—' }}
+                        </td>
+
+                        <td>
+                            {{ $miembro->email ?: '—' }}
+                        </td>
+
+                        <td>
+                            @if ($miembro->direccion)
+                            <span>
+                                {{ $miembro->direccion->calle }}
+                                {{ $miembro->direccion->numero_exterior }}
+
+                                @if ($miembro->direccion->numero_interior)
+                                Int. {{ $miembro->direccion->numero_interior }}
+                                @endif
+
+                                <span class="text-secondary">
+                                    — {{ $miembro->direccion->colonia }},
+                                    {{ $miembro->direccion->codigo_postal }}
+                                </span>
+                            </span>
+                            @else
+                            <span class="text-secondary">
+                                Sin dirección
+                            </span>
+                            @endif
+                        </td>
+
+                        <td class="text-end px-4">
+                            <div class="miembro-actions">
+
+                                @foreach ($accionesMiembros as $accion)
+
+                                @if ($accion->slug === 'miembros.editar')
+                                <button type="button" class="btn btn-sm btn-outline-primary miembro-action-btn"
+                                    title="{{ $accion->nombre }}" data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarMiembro" data-id="{{ $miembro->id }}"
+                                    data-nombre="{{ $miembro->nombre }}"
+                                    data-apellido-paterno="{{ $miembro->apellido_paterno }}"
+                                    data-apellido-materno="{{ $miembro->apellido_materno }}"
+                                    data-telefono="{{ $miembro->telefono }}" data-email="{{ $miembro->email }}"
+                                    data-direccion-id="{{ $miembro->direccion_id }}"
+                                    data-url="{{ route('miembros.update', $miembro) }}">
+                                    {!! $accion->icono ?: '<i class="fa-solid fa-pen"></i>' !!}
+                                </button>
+
+                                @elseif ($accion->slug === 'miembros.eliminar')
+                                <button type="button" class="btn btn-sm btn-outline-danger miembro-action-btn"
+                                    title="{{ $accion->nombre }}" data-bs-toggle="modal" data-bs-target="#modalEliminarMiembro" data-id="{{ $miembro->id }}" 
+                                    data-name="
+                                    {{ trim(
+                                        $miembro->nombre . ' ' .
+                                        $miembro->apellido_paterno . ' ' .
+                                        ($miembro->apellido_materno ?? '')
+                                    ) }}"
+                                    data-url="{{ route('miembros.destroy', $miembro) }}">
+                                    {!! $accion->icono ?: '<i class="fa-solid fa-trash"></i>' !!}
+                                </button>
+                                @endif
+
+                                @endforeach
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="text-secondary">
+                                <i class="fa-solid fa-users-slash fa-2x mb-3"></i>
+                                <p class="mb-0">No hay miembros registrados.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{{-- MODAL NUEVO MIEMBRO --}}
+<div class="modal fade" id="modalNuevoMiembro" tabindex="-1" aria-labelledby="modalNuevoMiembroLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalNuevoMiembroLabel">
+                    <i class="fa-solid fa-user-plus me-2"></i>
+                    Nuevo miembro
+                </h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <form method="POST" id="formNuevoMiembro" action="{{ route('miembros.store') }}" novalidate autocomplete="off">
+                @csrf
+
+                <div class="modal-body">
+                    <h6 class="fw-semibold mb-3">
+                        <i class="fa-solid fa-user me-2"></i>
+                        Datos personales
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label for="nombre" class="form-label">
+                                Nombre
+                            </label>
+
+                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="apellido_paterno" class="form-label">
+                                Apellido paterno
+                            </label>
+
+                            <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno"
+                                required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="apellido_materno" class="form-label">
+                                Apellido materno
+                            </label>
+
+                            <input type="text" class="form-control" id="apellido_materno" name="apellido_materno">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="telefono" class="form-label">
+                                Teléfono
+                            </label>
+
+                            <input type="text" class="form-control" id="telefono" name="telefono">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">
+                                Correo electrónico
+                            </label>
+
+                            <input type="email" class="form-control" id="email" name="email">
+                        </div>
+
+                        <div class="col-12">
+                            <label for="direccion_id" class="form-label">
+                                Dirección
+                            </label>
+
+                            <select class="form-select" id="direccion_id" name="direccion_id" required>
+                                <option value="">Selecciona una dirección</option>
+
+                                @foreach ($direcciones as $direccion)
+                                <option value="{{ $direccion->id }}">
+                                    {{ $direccion->calle }}
+                                    {{ $direccion->numero_exterior }}
+
+                                    @if ($direccion->numero_interior)
+                                    Int. {{ $direccion->numero_interior }}
+                                    @endif
+
+                                    — {{ $direccion->colonia }},
+                                    {{ $direccion->codigo_postal }},
+                                    {{ $direccion->municipio }},
+                                    {{ $direccion->estado }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk me-2"></i>
+                        Guardar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- MODAL EDITAR MIEMBRO --}}
+<div class="modal fade" id="modalEditarMiembro" tabindex="-1" aria-labelledby="modalEditarMiembroLabel"
+    aria-hidden="true" data-bs-backdrop="static">
+
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarMiembroLabel">
+                    <i class="fa-solid fa-user-pen me-2"></i>
+                    Editar miembro
+                </h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <form method="POST" id="formEditarMiembro" novalidate autocomplete="off">
+
+                @csrf
+                @method('PUT')
+
+                <div class="modal-body">
+
+                    <input type="hidden" id="editar_id" name="id">
+
+                    <h6 class="fw-semibold mb-3">
+                        <i class="fa-solid fa-user me-2"></i>
+                        Datos personales
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label for="editar_nombre" class="form-label">
+                                Nombre
+                            </label>
+
+                            <input type="text" class="form-control" id="editar_nombre" name="nombre" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="editar_apellido_paterno" class="form-label">
+                                Apellido paterno
+                            </label>
+
+                            <input type="text" class="form-control" id="editar_apellido_paterno" name="apellido_paterno"
+                                required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="editar_apellido_materno" class="form-label">
+                                Apellido materno
+                            </label>
+
+                            <input type="text" class="form-control" id="editar_apellido_materno"
+                                name="apellido_materno">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="editar_telefono" class="form-label">
+                                Teléfono
+                            </label>
+
+                            <input type="text" class="form-control" id="editar_telefono" name="telefono">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="editar_email" class="form-label">
+                                Correo electrónico
+                            </label>
+
+                            <input type="email" class="form-control" id="editar_email" name="email">
+                        </div>
+
+                        <div class="col-12">
+                            <label for="editar_direccion_id" class="form-label">
+                                Dirección
+                            </label>
+
+                            <select class="form-select" id="editar_direccion_id" name="direccion_id" required>
+                                <option value="">Selecciona una dirección</option>
+
+                                @foreach ($direcciones as $direccion)
+                                <option value="{{ $direccion->id }}">
+                                    {{ $direccion->calle }}
+                                    {{ $direccion->numero_exterior }}
+
+                                    @if ($direccion->numero_interior)
+                                    Int. {{ $direccion->numero_interior }}
+                                    @endif
+
+                                    — {{ $direccion->colonia }},
+                                    {{ $direccion->codigo_postal }},
+                                    {{ $direccion->municipio }},
+                                    {{ $direccion->estado }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk me-2"></i>
+                        Guardar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- MODAL ELIMINAR MIEMBRO --}}
+<div class="modal fade" id="modalEliminarMiembro" tabindex="-1" aria-labelledby="modalEliminarMiembroLabel"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEliminarMiembroLabel">
+                    <i class="fa-solid fa-trash text-danger me-2"></i>
+                    Eliminar miembro
+                </h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <form method="POST" id="formEliminarMiembro">
+
+                @csrf
+                @method('DELETE')
+
+                <input type="hidden" id="eliminar_id" name="id">
+
+                <div class="modal-body text-center">
+
+                    <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center"
+                        style="width: 58px; height: 58px;">
+                        <i class="fa-solid fa-trash fa-lg"></i>
+                    </div>
+
+                    <h6 class="fw-bold mb-2">
+                        ¿Eliminar miembro?
+                    </h6>
+
+                    <p class="text-secondary mb-0">
+                        Estás a punto de eliminar a
+                        <strong id="eliminar_nombre">
+                            este miembro
+                        </strong>.
+                        Esta acción no se puede deshacer.
+                    </p>
+
+                </div>
+
+                <div class="modal-footer justify-content-center">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa-solid fa-trash me-2"></i>
+                        Eliminar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection

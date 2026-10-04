@@ -1,0 +1,38 @@
+.miembro-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 6px;
+    min-width: max-content;
+}
+
+.btn.miembro-action-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 10px;
+    line-height: 1;
+}
+
+.btn.miembro-action-btn > i,
+.btn.miembro-action-btn > svg {
+    margin: 0 !important;
+    font-size: 14px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+#tablaMiembros th:last-child,
+#tablaMiembros td:last-child {
+    white-space: nowrap;
+}
+
+.miembros-table-wrap {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
