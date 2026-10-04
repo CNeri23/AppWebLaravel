@@ -1,10 +1,39 @@
-document.addEventListener('DOMContentLoaded', function () {
-    /* =================================================================
-       TEMA CLARO / OSCURO (toggle)
-       ================================================================= */
 
+(function aplicarTemaInicial() {
+    try {
+        var raiz = document.documentElement;
+        var modo = raiz.dataset.themeMode || 'system';
+        var manual = localStorage.getItem('ironpulse-system-theme');
+        var tema;
+
+        if (manual === 'light' || manual === 'dark') {
+            tema = manual;
+        } else if (modo === 'dark' || modo === 'light') {
+            tema = modo;
+        } else {
+            tema = window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+        }
+
+        raiz.setAttribute('data-bs-theme', tema);
+
+        raiz.setAttribute(
+            'data-theme-style',
+            tema === 'dark'
+                ? (raiz.dataset.darkThemeStyle || 'graphite')
+                : (raiz.dataset.lightThemeStyle || 'white')
+        );
+    } catch (e) { }
+})();
+
+document.addEventListener('DOMContentLoaded', function () {
     const html = document.documentElement;
     const themeSwitch = document.getElementById('themeSwitch');
+    const SYSTEM_THEME_STORAGE_KEY = 'ironpulse-system-theme';
+    let themeMode = html.dataset.themeMode || 'system';
+    let lightThemeStyle = html.dataset.lightThemeStyle || 'white';
+    let darkThemeStyle = html.dataset.darkThemeStyle || 'graphite';
 
     function getSystemTheme() {
         return window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -12,20 +41,104 @@ document.addEventListener('DOMContentLoaded', function () {
             : 'light';
     }
 
-    function leerTema() {
-        let guardado = localStorage.getItem('admin-theme');
+    function leerTemaManual() {
+        try {
+            const guardado =
+                localStorage.getItem(
+                    SYSTEM_THEME_STORAGE_KEY
+                );
 
-        // Migración: el modo "auto" ya no existe
-        if (guardado === 'auto') {
-            guardado = getSystemTheme();
-            localStorage.setItem('admin-theme', guardado);
+            return guardado === 'light' || guardado === 'dark'
+                ? guardado
+                : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function guardarTemaManual(tema) {
+        try {
+            localStorage.setItem(
+                SYSTEM_THEME_STORAGE_KEY,
+                tema
+            );
+        } catch (e) { }
+    }
+
+    function borrarTemaManual() {
+        try {
+            localStorage.removeItem(
+                SYSTEM_THEME_STORAGE_KEY
+            );
+        } catch (e) { }
+    }
+
+    function leerTema() {
+        const manual = leerTemaManual();
+
+        if (manual) {
+            return manual;
         }
 
-        return guardado === 'dark' ? 'dark' : 'light';
+        if (themeMode === 'dark') {
+            return 'dark';
+        }
+
+        if (themeMode === 'light') {
+            return 'light';
+        }
+
+        return getSystemTheme();
+    }
+
+    function obtenerEstiloPredeterminado(theme) {
+        return theme === 'dark'
+            ? 'graphite'
+            : 'white';
+    }
+
+    function esEstiloClaro(style) {
+        return [
+            'white',
+            'mist',
+            'sky',
+        ].includes(style);
+    }
+
+    function esEstiloOscuro(style) {
+        return [
+            'graphite',
+            'charcoal',
+            'black',
+        ].includes(style);
+    }
+
+    function obtenerEstiloParaTema(theme) {
+        if (theme === 'dark') {
+            if (esEstiloOscuro(darkThemeStyle)) {
+                return darkThemeStyle;
+            }
+
+            return 'graphite';
+        }
+
+        if (esEstiloClaro(lightThemeStyle)) {
+            return lightThemeStyle;
+        }
+
+        return 'white';
     }
 
     function applyTheme(theme) {
         html.setAttribute('data-bs-theme', theme);
+
+        const estiloActual =
+            obtenerEstiloParaTema(theme);
+
+        html.setAttribute(
+            'data-theme-style',
+            estiloActual
+        );
 
         if (themeSwitch) {
             themeSwitch.setAttribute(
@@ -38,12 +151,252 @@ document.addEventListener('DOMContentLoaded', function () {
                     ? 'Cambiar a modo claro'
                     : 'Cambiar a modo oscuro';
         }
+
+        document.dispatchEvent(
+            new CustomEvent('ironpulse:theme-changed', {
+                detail: { theme },
+            })
+        );
     }
 
-    applyTheme(leerTema());
+    function applyThemeMode(mode, limpiarManual = false) {
+        const modoAnterior = themeMode;
+
+        themeMode = mode || 'system';
+
+        html.setAttribute(
+            'data-theme-mode',
+            themeMode
+        );
+
+        if (limpiarManual && modoAnterior !== themeMode) {
+            borrarTemaManual();
+        }
+
+        applyTheme(leerTema());
+    }
+
+    function applyThemeStyle(style) {
+        if (!style) {
+            applyTheme(leerTema());
+
+            return;
+        }
+
+        if (esEstiloClaro(style)) {
+            lightThemeStyle = style;
+
+            html.setAttribute(
+                'data-light-theme-style',
+                lightThemeStyle
+            );
+        }
+
+        if (esEstiloOscuro(style)) {
+            darkThemeStyle = style;
+
+            html.setAttribute(
+                'data-dark-theme-style',
+                darkThemeStyle
+            );
+        }
+
+        applyTheme(leerTema());
+    }
+
+    function applyThemeStyles(lightStyle, darkStyle) {
+        if (esEstiloClaro(lightStyle)) {
+            lightThemeStyle = lightStyle;
+
+            html.setAttribute(
+                'data-light-theme-style',
+                lightThemeStyle
+            );
+        }
+
+        if (esEstiloOscuro(darkStyle)) {
+            darkThemeStyle = darkStyle;
+
+            html.setAttribute(
+                'data-dark-theme-style',
+                darkThemeStyle
+            );
+        }
+
+        applyTheme(leerTema());
+    }
+
+    function applyAccentColor(color) {
+        if (!color) {
+            return;
+        }
+
+        html.setAttribute(
+            'data-accent-color',
+            color
+        );
+    }
+
+    function applySystemName(systemName) {
+        if (!systemName) {
+            return;
+        }
+
+        document
+            .querySelectorAll('.sidebar-brand-text')
+            .forEach(elemento => {
+                elemento.textContent = systemName;
+            });
+
+        const titulo = document.querySelector('title');
+
+        if (
+            titulo &&
+            !titulo.dataset.customTitle
+        ) {
+            titulo.textContent = systemName;
+        }
+    }
+
+    function applyLogo(logoPath, systemName) {
+        const brandIcon =
+            document.querySelector('.sidebar-brand-icon');
+
+        if (!brandIcon) {
+            return;
+        }
+
+        if (logoPath) {
+            brandIcon.innerHTML = '';
+
+            const imagen =
+                document.createElement('img');
+
+            imagen.src =
+                '/storage/' + logoPath;
+
+            imagen.alt =
+                systemName || 'Logotipo';
+
+            brandIcon.appendChild(imagen);
+
+            return;
+        }
+
+        brandIcon.innerHTML =
+            '<i class="fa-solid fa-heart-pulse"></i>';
+    }
+
+    window.aplicarConfiguracionGlobal = function (settings) {
+        if (!settings) {
+            return;
+        }
+
+        if (
+            Object.prototype.hasOwnProperty.call(
+                settings,
+                'light_theme_style'
+            ) ||
+            Object.prototype.hasOwnProperty.call(
+                settings,
+                'dark_theme_style'
+            )
+        ) {
+            applyThemeStyles(
+                settings.light_theme_style,
+                settings.dark_theme_style
+            );
+        }
+
+        if (
+            Object.prototype.hasOwnProperty.call(
+                settings,
+                'theme_mode'
+            )
+        ) {
+            applyThemeMode(
+                settings.theme_mode,
+                true
+            );
+        }
+
+        if (
+            Object.prototype.hasOwnProperty.call(
+                settings,
+                'accent_color'
+            )
+        ) {
+            applyAccentColor(
+                settings.accent_color
+            );
+        }
+
+        if (
+            Object.prototype.hasOwnProperty.call(
+                settings,
+                'system_name'
+            )
+        ) {
+            applySystemName(
+                settings.system_name
+            );
+        }
+
+        if (
+            Object.prototype.hasOwnProperty.call(
+                settings,
+                'logo_path'
+            )
+        ) {
+            applyLogo(
+                settings.logo_path,
+                settings.system_name ||
+                html.dataset.systemName
+            );
+        }
+    };
+
+    if (!esEstiloClaro(lightThemeStyle)) {
+        lightThemeStyle =
+            obtenerEstiloPredeterminado('light');
+    }
+
+    if (!esEstiloOscuro(darkThemeStyle)) {
+        darkThemeStyle =
+            obtenerEstiloPredeterminado('dark');
+    }
+
+    applyThemeStyles(
+        lightThemeStyle,
+        darkThemeStyle
+    );
+
+    applyThemeMode(themeMode);
+
+    applyAccentColor(html.dataset.accentColor);
+
+    const systemThemeMedia =
+        window.matchMedia(
+            '(prefers-color-scheme: dark)'
+        );
+
+    systemThemeMedia.addEventListener(
+        'change',
+        function () {
+            if (
+                themeMode === 'system' &&
+                !leerTemaManual()
+            ) {
+                applyTheme(
+                    getSystemTheme()
+                );
+            }
+        }
+    );
 
     function guardarYAplicar(tema) {
-        localStorage.setItem('admin-theme', tema);
+        guardarTemaManual(tema);
+
         applyTheme(tema);
     }
 
@@ -52,8 +405,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .matchMedia('(prefers-reduced-motion: reduce)')
             .matches;
 
-        // Con View Transitions: el nuevo tema se expande como un círculo
-        // desde el toggle. Si no hay soporte, se hace un fundido de colores.
         if (!document.startViewTransition || reducirMovimiento) {
             html.classList.add('theme-switching');
             guardarYAplicar(siguiente);
@@ -61,6 +412,12 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(function () {
                 html.classList.remove('theme-switching');
             }, 450);
+
+            return;
+        }
+
+        if (!themeSwitch) {
+            guardarYAplicar(siguiente);
 
             return;
         }
@@ -95,17 +452,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }).catch(function () { });
     }
 
+    window.cambiarTemaManual = cambiarTema;
+
     themeSwitch?.addEventListener('click', function () {
-        const actual = html.getAttribute('data-bs-theme');
+        const actual =
+            html.getAttribute('data-bs-theme');
 
-        cambiarTema(actual === 'dark' ? 'light' : 'dark');
-    });
-
-    // Mantiene sincronizadas varias pestañas abiertas
-    window.addEventListener('storage', function (event) {
-        if (event.key === 'admin-theme') {
-            applyTheme(leerTema());
-        }
+        cambiarTema(
+            actual === 'dark'
+                ? 'light'
+                : 'dark'
+        );
     });
 
     const sidebar = document.getElementById('appSidebar');
@@ -186,7 +543,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Fija la altura actual y la lleva a 0
         submenu.style.height = submenu.offsetHeight + 'px';
         submenu.style.overflow = 'hidden';
 
@@ -233,7 +589,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Mide la altura final y la anima desde 0
         const desdeAltura = yaVisible ? submenu.offsetHeight : 0;
 
         submenu.classList.add('show');
@@ -297,7 +652,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                // Con el sidebar colapsado, primero se expande y se abre el módulo
                 if (
                     sidebar.classList.contains('collapsed') &&
                     !esMovil()
@@ -436,7 +790,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     inicializarGruposSidebar();
 
-    // Tooltips nativos con el nombre cuando solo se ven los iconos
     function actualizarTitulos(collapsed) {
         sidebar
             .querySelectorAll(
@@ -451,7 +804,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // Al expandir, vuelve a abrir el módulo de la página actual
     function abrirModuloActivo() {
         const activo = sidebar.querySelector('.sidebar-sublink.active');
 

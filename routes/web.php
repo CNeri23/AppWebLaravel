@@ -9,6 +9,7 @@ use App\Http\Controllers\ModuloController;
 use App\Http\Controllers\SubmoduloController;
 use App\Http\Controllers\AccionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SystemSettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -37,6 +38,14 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+
+    Route::get('/configuracion', [SystemSettingsController::class, 'index'])
+        ->middleware('permiso:submodulo,sistema')
+        ->name('configuracion.index');
+
+    Route::put('/configuracion', [SystemSettingsController::class, 'update'])
+        ->middleware('permiso:submodulo,sistema')
+        ->name('configuracion.update');
 
     Route::post('/logout', [LoginController::class, 'logout'])
         ->name('logout');

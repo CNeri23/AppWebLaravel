@@ -2,6 +2,7 @@
 @import './pages/modulos.css';
 @import './pages/roles.css';
 @import './pages/usuarios.css';
+@import './pages/configuracion.css';
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';

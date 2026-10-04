@@ -1,5 +1,53 @@
+@php
+    $systemSettings = app(\App\Services\SystemSettings::class)->all();
+
+    $themeMode = $systemSettings['theme_mode'] ?? 'system';
+    $lightThemeStyle = $systemSettings['light_theme_style'] ?? 'white';
+    $darkThemeStyle = $systemSettings['dark_theme_style'] ?? 'graphite';
+    $accentColor = $systemSettings['accent_color'] ?? 'orange';
+    $systemName = $systemSettings['system_name'] ?? 'IronPulse';
+
+    $themeStyles = [
+        'white',
+        'mist',
+        'sky',
+        'graphite',
+        'charcoal',
+        'black',
+    ];
+
+    if (!in_array($lightThemeStyle, ['white', 'mist', 'sky'])) {
+        $lightThemeStyle = 'white';
+    }
+
+    if (!in_array($darkThemeStyle, ['graphite', 'charcoal', 'black'])) {
+        $darkThemeStyle = 'graphite';
+    }
+
+    if (!in_array($accentColor, [
+        'blue',
+        'green',
+        'orange',
+        'purple',
+        'red',
+        'cyan',
+        'neutral',
+    ])) {
+        $accentColor = 'orange';
+    }
+@endphp
+
 <!DOCTYPE html>
-<html lang="es" data-bs-theme="light">
+<html
+    lang="es"
+    data-bs-theme="{{ $themeMode === 'dark' ? 'dark' : 'light' }}"
+    data-theme-mode="{{ $themeMode }}"
+    data-light-theme-style="{{ $lightThemeStyle }}"
+    data-dark-theme-style="{{ $darkThemeStyle }}"
+    data-theme-style="{{ $themeMode === 'dark' ? $darkThemeStyle : $lightThemeStyle }}"
+    data-accent-color="{{ $accentColor }}"
+    data-system-name="{{ $systemName }}"
+>
 
 <head>
     <meta charset="UTF-8">
@@ -10,10 +58,24 @@
 
     <script>
         try {
-            var temaGuardado = localStorage.getItem('admin-theme');
+            var themeMode = document.documentElement.getAttribute('data-theme-mode');
+            var lightThemeStyle = document.documentElement.getAttribute('data-light-theme-style');
+            var darkThemeStyle = document.documentElement.getAttribute('data-dark-theme-style');
 
-            if (temaGuardado === 'dark' || temaGuardado === 'light') {
-                document.documentElement.setAttribute('data-bs-theme', temaGuardado);
+            var temaActual = themeMode;
+
+            if (themeMode === 'system') {
+                temaActual = window.matchMedia('(prefers-color-scheme: dark)').matches
+                    ? 'dark'
+                    : 'light';
+            }
+
+            if (temaActual === 'dark') {
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+                document.documentElement.setAttribute('data-theme-style', darkThemeStyle);
+            } else {
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+                document.documentElement.setAttribute('data-theme-style', lightThemeStyle);
             }
         } catch (e) {}
     </script>
@@ -372,7 +434,6 @@
                             © {{ date('Y') }} Todos los derechos reservados.
                         </p>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -387,7 +448,7 @@
                         <i class="fa-solid fa-heart-pulse"></i>
                     </span>
 
-                    <span class="visual-brand-name">Iron<span>Pulse</span></span>
+                    <span class="visual-brand-name">{{ $systemName }}</span>
                 </div>
 
                 <h2 class="visual-title">

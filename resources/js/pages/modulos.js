@@ -45,10 +45,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-
-    // ---------------------------------------------------------------
-    // Validación de formularios (nuevo / editar)
-    // ---------------------------------------------------------------
     const REGEX_ICONO =
         /^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/;
 
@@ -133,7 +129,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return false;
         }
 
-        // Todo válido: se envían los valores sin espacios sobrantes.
         camposDelFormulario(form).forEach((campo) => {
             campo.value = campo.value.trim();
         });

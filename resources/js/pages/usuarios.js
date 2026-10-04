@@ -330,9 +330,6 @@ document.addEventListener('DOMContentLoaded', function () {
             'text-end',
             'px-4'
         );
-
-        // El ancho y la alineación de los botones los controla usuarios.css
-        // (.usuario-actions), así las filas nuevas y las del servidor se ven igual
     }
 
     function ajustarTodasLasFilas() {

@@ -1,0 +1,276 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Services\AuditLogService;
+use App\Services\SystemSettings;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
+
+class SystemSettingsController extends Controller
+{
+    private const CLAVES_NEGOCIO = [
+        'business_name',
+        'business_rfc',
+        'business_address',
+        'business_phone',
+        'business_email',
+        'business_website',
+        'business_schedule',
+    ];
+
+    private const CLAVES_SEGURIDAD = [
+        'session_timeout',
+        'password_min_length',
+        'password_complexity',
+        'max_login_attempts',
+        'lockout_minutes',
+        'registration_enabled',
+    ];
+
+    private const CLAVES_BOOLEANAS = [
+        'password_complexity',
+        'registration_enabled',
+    ];
+
+    public function index(SystemSettings $settings): View
+    {
+        return view('configuracion.index', [
+            'settings' => $settings->all(),
+        ]);
+    }
+
+    public function update(
+        Request $request,
+        SystemSettings $settings
+    ): JsonResponse {
+        $datos = $request->validate([
+            // General
+            'system_name' => ['sometimes', 'required', 'string', 'max:100'],
+
+            'logo' => [
+                'nullable',
+                'image',
+                'mimes:png,jpg,jpeg,webp',
+                'max:2048',
+            ],
+
+            // Apariencia
+            'theme_mode' => [
+                'sometimes',
+                'required',
+                Rule::in(['light', 'dark']),
+            ],
+
+            'light_theme_style' => [
+                'sometimes',
+                Rule::in(['white', 'mist', 'sky']),
+            ],
+
+            'dark_theme_style' => [
+                'sometimes',
+                Rule::in(['graphite', 'charcoal', 'black']),
+            ],
+
+            'accent_color' => [
+                'sometimes',
+                'required',
+                Rule::in([
+                    'blue',
+                    'green',
+                    'orange',
+                    'purple',
+                    'red',
+                    'cyan',
+                    'neutral',
+                ]),
+            ],
+
+            // Regional
+            'currency' => ['sometimes', 'required', Rule::in(['MXN', 'USD', 'EUR'])],
+            'timezone' => ['sometimes', 'required', 'timezone'],
+            'date_format' => ['sometimes', 'required', Rule::in(['d/m/Y', 'm/d/Y', 'Y-m-d'])],
+            'time_format' => ['sometimes', 'required', Rule::in(['H:i', 'h:i A'])],
+
+            // Datos del negocio
+            'business_name' => ['sometimes', 'nullable', 'string', 'max:150'],
+            'business_rfc' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'regex:/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/iu',
+            ],
+            'business_address' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'business_phone' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'regex:/^[0-9+()\-\s]{7,30}$/',
+            ],
+            'business_email' => ['sometimes', 'nullable', 'email', 'max:255'],
+            'business_website' => ['sometimes', 'nullable', 'url', 'max:255'],
+            'business_schedule' => ['sometimes', 'nullable', 'string', 'max:500'],
+
+            // Seguridad
+            'session_timeout' => [
+                'sometimes',
+                'required',
+                'integer',
+                'between:0,1440',
+                function (string $attribute, mixed $value, \Closure $fail) {
+                    if ((int) $value > 0 && (int) $value < 5) {
+                        $fail('El tiempo mínimo de inactividad es de 5 minutos (usa 0 para desactivarlo).');
+                    }
+                },
+            ],
+            'password_min_length' => ['sometimes', 'required', 'integer', 'between:8,32'],
+            'password_complexity' => ['sometimes', 'required', 'boolean'],
+            'max_login_attempts' => ['sometimes', 'required', 'integer', 'between:3,10'],
+            'lockout_minutes' => ['sometimes', 'required', 'integer', 'between:1,60'],
+            'registration_enabled' => ['sometimes', 'required', 'boolean'],
+        ], [
+            'system_name.required' => 'El nombre del sistema es obligatorio.',
+            'system_name.string' => 'El nombre del sistema no es válido.',
+            'system_name.max' => 'El nombre del sistema no puede superar los 100 caracteres.',
+
+            'logo.image' => 'El logotipo debe ser una imagen válida.',
+            'logo.mimes' => 'El logotipo debe estar en formato PNG, JPG, JPEG o WEBP.',
+            'logo.max' => 'El logotipo no puede superar los 2 MB.',
+
+            'theme_mode.required' => 'El modo del tema es obligatorio.',
+            'theme_mode.in' => 'El modo del tema seleccionado no es válido.',
+
+            'light_theme_style.in' => 'La variante clara del tema seleccionada no es válida.',
+
+            'dark_theme_style.in' => 'La variante oscura del tema seleccionada no es válida.',
+
+            'accent_color.required' => 'El color de acento es obligatorio.',
+            'accent_color.in' => 'El color de acento seleccionado no es válido.',
+
+            'currency.required' => 'La moneda es obligatoria.',
+            'currency.in' => 'La moneda seleccionada no es válida.',
+
+            'timezone.required' => 'La zona horaria es obligatoria.',
+            'timezone.timezone' => 'La zona horaria seleccionada no es válida.',
+
+            'date_format.required' => 'El formato de fecha es obligatorio.',
+            'date_format.in' => 'El formato de fecha seleccionado no es válido.',
+
+            'time_format.required' => 'El formato de hora es obligatorio.',
+            'time_format.in' => 'El formato de hora seleccionado no es válido.',
+
+            'business_name.max' => 'La razón social no puede superar los 150 caracteres.',
+            'business_rfc.regex' => 'El RFC no tiene un formato válido (12 o 13 caracteres, por ejemplo XAXX010101000).',
+            'business_address.max' => 'La dirección no puede superar los 255 caracteres.',
+            'business_phone.regex' => 'Ingresa un teléfono válido (solo números, espacios, + , - y paréntesis).',
+            'business_email.email' => 'Ingresa un correo electrónico válido.',
+            'business_email.max' => 'El correo no puede superar los 255 caracteres.',
+            'business_website.url' => 'Ingresa una dirección web válida, por ejemplo https://tusitio.com.',
+            'business_website.max' => 'La dirección web no puede superar los 255 caracteres.',
+            'business_schedule.max' => 'El horario no puede superar los 500 caracteres.',
+
+            'session_timeout.required' => 'Indica los minutos de inactividad (0 para desactivar).',
+            'session_timeout.integer' => 'Los minutos de inactividad deben ser un número entero.',
+            'session_timeout.between' => 'Los minutos de inactividad deben estar entre 0 y 1440.',
+
+            'password_min_length.required' => 'La longitud mínima de contraseña es obligatoria.',
+            'password_min_length.integer' => 'La longitud mínima debe ser un número entero.',
+            'password_min_length.between' => 'La longitud mínima debe estar entre 8 y 32 caracteres.',
+
+            'password_complexity.boolean' => 'La opción de complejidad de contraseña no es válida.',
+            'registration_enabled.boolean' => 'La opción de registro público no es válida.',
+
+            'max_login_attempts.required' => 'El número de intentos permitidos es obligatorio.',
+            'max_login_attempts.integer' => 'Los intentos permitidos deben ser un número entero.',
+            'max_login_attempts.between' => 'Los intentos permitidos deben estar entre 3 y 10.',
+
+            'lockout_minutes.required' => 'Los minutos de bloqueo son obligatorios.',
+            'lockout_minutes.integer' => 'Los minutos de bloqueo deben ser un número entero.',
+            'lockout_minutes.between' => 'Los minutos de bloqueo deben estar entre 1 y 60.',
+        ]);
+
+        foreach (self::CLAVES_NEGOCIO as $clave) {
+            if (array_key_exists($clave, $datos)) {
+                $datos[$clave] = trim((string) ($datos[$clave] ?? ''));
+            }
+        }
+
+        if (array_key_exists('business_rfc', $datos)) {
+            $datos['business_rfc'] = Str::upper($datos['business_rfc']);
+        }
+
+        foreach (self::CLAVES_BOOLEANAS as $clave) {
+            if (array_key_exists($clave, $datos)) {
+                $datos[$clave] = $request->boolean($clave) ? '1' : '0';
+            }
+        }
+
+        $logoAnterior = $settings->get('logo_path');
+
+        unset($datos['logo']);
+
+        if ($request->hasFile('logo')) {
+            $datos['logo_path'] = $request->file('logo')
+                ->store('settings', 'public');
+        }
+
+        $settings->update($datos);
+
+        if (
+            isset($datos['logo_path']) &&
+            $logoAnterior &&
+            $logoAnterior !== $datos['logo_path']
+        ) {
+            Storage::disk('public')->delete($logoAnterior);
+        }
+
+        $usuario = $request->user();
+
+        $tocaSeguridad = array_intersect_key($datos, array_flip(self::CLAVES_SEGURIDAD)) !== [];
+        $tocaNegocio = array_intersect_key($datos, array_flip(self::CLAVES_NEGOCIO)) !== [];
+        $tocaGeneral = array_diff_key(
+            $datos,
+            array_flip(array_merge(self::CLAVES_SEGURIDAD, self::CLAVES_NEGOCIO))
+        ) !== [];
+
+        $partes = [];
+
+        if ($tocaSeguridad) {
+            $partes[] = 'la configuración de seguridad';
+        }
+
+        if ($tocaNegocio) {
+            $partes[] = 'los datos del negocio';
+        }
+
+        if ($tocaGeneral || $partes === []) {
+            $partes[] = 'la configuración general';
+        }
+
+        AuditLogService::log(
+            module: 'configuracion',
+            action: 'ACTUALIZAR',
+            description: 'El usuario "' .
+            $usuario->name .
+            '" actualizó ' . implode(' y ', $partes) .
+            ' del sistema IronPulse.',
+            entity: $usuario
+        );
+
+        $mensaje = match (true) {
+            $tocaSeguridad && ! $tocaNegocio && ! $tocaGeneral => 'La configuración de seguridad se guardó correctamente.',
+            $tocaNegocio && ! $tocaSeguridad && ! $tocaGeneral => 'Los datos del negocio se guardaron correctamente.',
+            default => 'La configuración se guardó correctamente.',
+        };
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => $mensaje,
+            'settings' => $settings->all(),
+        ]);
+    }
+}

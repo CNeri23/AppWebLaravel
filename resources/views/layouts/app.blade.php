@@ -1,5 +1,8 @@
 @php
-    $horaActual = now('America/Mexico_City')->hour;
+    $systemSettings = app(\App\Services\SystemSettings::class);
+    $settings = $systemSettings->all();
+
+    $horaActual = now($settings['timezone'])->hour;
 
     if ($horaActual < 12) {
         $greeting = 'Buenos días';
@@ -42,27 +45,21 @@
 
 <!DOCTYPE html>
 
-<html lang="es" data-bs-theme="light">
+<html lang="es" data-bs-theme="{{ $settings['theme_mode'] === 'dark' ? 'dark' : 'light' }}"
+    data-theme-mode="{{ $settings['theme_mode'] }}" data-light-theme-style="{{ $settings['light_theme_style'] }}"
+    data-dark-theme-style="{{ $settings['dark_theme_style'] }}"
+    data-theme-style="{{ $settings['theme_mode'] === 'dark' ? $settings['dark_theme_style'] : $settings['light_theme_style'] }}"
+    data-accent-color="{{ $settings['accent_color'] }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Panel administrativo')</title>
+    <title>@yield('title', $settings['system_name'])</title>
 
-    {{-- Aplica el tema guardado antes de pintar para evitar parpadeos --}}
-    <script>
-        (function () {
-            try {
-                var t = localStorage.getItem('admin-theme');
-                if (t === 'auto') {
-                    t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                }
-                document.documentElement.setAttribute('data-bs-theme', t === 'dark' ? 'dark' : 'light');
-            } catch (e) { }
-        })();
-    </script>
+    {{-- layout.js va aquí y sin defer: aplica el tema antes de pintar (evita parpadeos) --}}
+    <script src="{{ asset('js/layout.js') }}"></script>
 
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
@@ -84,10 +81,14 @@
             </button>
 
             <div class="sidebar-brand-icon">
-                <i class="fa-solid fa-heart-pulse"></i>
+                @if (!empty($settings['logo_path']))
+                    <img src="{{ asset('storage/' . $settings['logo_path']) }}" alt="{{ $settings['system_name'] }}">
+                @else
+                    <i class="fa-solid fa-heart-pulse"></i>
+                @endif
             </div>
 
-            <span class="sidebar-brand-text">IronPulse</span>
+            <span class="sidebar-brand-text">{{ $settings['system_name'] }}</span>
         </div>
 
         <div class="topbar-search">
@@ -329,15 +330,6 @@
                     </div>
                 </div>
             @endforeach
-
-            <div class="sidebar-section">
-                <span>Sistema</span>
-            </div>
-
-            <a href="#" data-label="Configuración" class="sidebar-link">
-                <i class="fa-solid fa-gear"></i>
-                <span>Configuración</span>
-            </a>
         </nav>
     </aside>
 
@@ -355,7 +347,6 @@
     <script src="{{ asset('vendor/datatables/js/datatables.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('js/toast.js') }}"></script>
-    <script src="{{ asset('js/layout.js') }}"></script>
 
     @stack('scripts')
 </body>
