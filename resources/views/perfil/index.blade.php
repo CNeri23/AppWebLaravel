@@ -1,5 +1,4 @@
 @extends('layouts.app')
-@section('title', 'Mi perfil')
 @section('content')
 
     <div class="profile-header-card card border-0 shadow-sm mb-4">
