@@ -16,6 +16,7 @@ use App\Http\Controllers\PlanController;
 use App\Http\Controllers\MembresiaController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\SesionCajaController;
+use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -169,6 +170,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/membresias/{membresia}/cancelar', [MembresiaController::class, 'cancelar'])
         ->middleware('permiso:accion,membresias.cancelar')
         ->name('membresias.cancelar');
+
+    // Rutas tickets
+
+    Route::get('/tickets/{ticket}', [TicketController::class, 'show'])
+        ->middleware('permiso:accion,membresias.ver')
+        ->name('tickets.show');
+
+    Route::get('/tickets/{ticket}/imprimir', [TicketController::class, 'print'])
+        ->middleware('permiso:accion,membresias.ver')
+        ->name('tickets.print');
 
     // Rutas caja
 

@@ -1,0 +1,224 @@
+.ticket-card {
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.ticket-logo {
+    display: block;
+    max-width: 120px;
+    max-height: 70px;
+    width: auto;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    object-fit: contain;
+}
+
+.ticket-concepto {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.ticket-concepto > div:first-child {
+    min-width: 0;
+}
+
+.ticket-concepto > div:last-child {
+    flex-shrink: 0;
+}
+
+.ticket-observaciones {
+    padding: 12px 14px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 10px;
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
+    white-space: pre-line;
+}
+
+[data-bs-theme="dark"] .ticket-card {
+    background-color: var(--bs-body-bg);
+}
+
+@media (max-width: 575.98px) {
+    .ticket-card .card-body {
+        padding: 1.25rem !important;
+    }
+
+    .ticket-concepto {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .ticket-concepto > div:last-child {
+        width: 100%;
+        text-align: left !important;
+    }
+}
+
+@media print {
+    @page {
+        size: 80mm auto;
+        margin: 0;
+    }
+
+    html,
+    body {
+        width: 80mm;
+        margin: 0;
+        padding: 0;
+        background: #ffffff !important;
+    }
+
+    body {
+        color: #000000 !important;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    .ticket-card,
+    .ticket-card * {
+        visibility: visible;
+    }
+
+    .ticket-card {
+        width: 80mm;
+        max-width: 80mm;
+        margin: 0;
+        padding: 0;
+        border: 0 !important;
+        border-radius: 0;
+        box-shadow: none !important;
+        background: #ffffff !important;
+    }
+
+    .ticket-card .card-body {
+        width: 80mm;
+        padding: 5mm !important;
+    }
+
+    .ticket-logo {
+        max-width: 35mm;
+        max-height: 20mm;
+        margin-bottom: 3mm !important;
+    }
+
+    .ticket-card h2 {
+        font-size: 18px;
+    }
+
+    .ticket-card h6 {
+        font-size: 12px;
+    }
+
+    .ticket-card .text-secondary {
+        color: #555555 !important;
+    }
+
+    .ticket-card .border-bottom,
+    .ticket-card .border-top {
+        border-color: #000000 !important;
+    }
+
+    .ticket-concepto {
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .ticket-concepto > div:last-child {
+        text-align: right !important;
+    }
+
+    .ticket-observaciones {
+        border-color: #999999 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+
+    .ticket-card .row {
+        --bs-gutter-x: 0;
+    }
+
+    .ticket-card [class*="col-"] {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .ticket-card .py-4 {
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
+    }
+
+    .ticket-card .pt-4 {
+        padding-top: 12px !important;
+    }
+
+    .ticket-card .mt-4 {
+        margin-top: 12px !important;
+    }
+
+    .ticket-card .mb-3 {
+        margin-bottom: 8px !important;
+    }
+
+    .ticket-card .mb-1 {
+        margin-bottom: 3px !important;
+    }
+
+    .ticket-card .mt-1 {
+        margin-top: 3px !important;
+    }
+
+    .ticket-card .fs-4 {
+        font-size: 18px !important;
+    }
+
+    .ticket-card .fs-5 {
+        font-size: 15px !important;
+    }
+
+    .ticket-card .small {
+        font-size: 10px !important;
+    }
+
+    .ticket-card .fw-bold {
+        font-weight: 700 !important;
+    }
+
+    .ticket-card .fw-semibold {
+        font-weight: 600 !important;
+    }
+
+    .ticket-card a,
+    .ticket-card button {
+        color: inherit !important;
+        text-decoration: none !important;
+    }
+
+    body > *:not(.row) {
+        display: none !important;
+    }
+
+    .row.justify-content-center {
+        display: block !important;
+        margin: 0 !important;
+    }
+
+    .row.justify-content-center > .col-12 {
+        width: 80mm !important;
+        max-width: 80mm !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .ticket-card {
+        display: block !important;
+    }
+}

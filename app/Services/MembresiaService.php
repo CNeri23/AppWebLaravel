@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Models\Membresia;
+use App\Models\MovimientoCaja;
 use App\Models\Pago;
 use App\Models\Persona;
 use App\Models\Plan;
+use App\Models\SesionCaja;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -137,6 +139,14 @@ class MembresiaService
                 'fecha_pago' => $ahora,
                 'observaciones' => 'Pago inicial de la membresía.',
             ]);
+
+            $this->registrarMovimientoCaja(
+                $pago,
+                $metodoPago,
+                $plan->precio,
+                $referencia,
+                'Pago inicial de la membresía.'
+            );
 
             $membresia->load([
                 'persona',
@@ -305,6 +315,14 @@ class MembresiaService
                 'observaciones' => 'Pago de renovación de la membresía.',
             ]);
 
+            $this->registrarMovimientoCaja(
+                $pago,
+                $metodoPago,
+                $plan->precio,
+                $referencia,
+                'Pago de renovación de la membresía.'
+            );
+
             $membresia->load([
                 'persona',
                 'plan',
@@ -359,5 +377,41 @@ class MembresiaService
 
             return $membresia;
         });
+    }
+
+    private function registrarMovimientoCaja(
+        Pago $pago,
+        string $metodoPago,
+        float|string $monto,
+        ?string $referencia,
+        string $observaciones
+    ): void {
+        if ($metodoPago !== 'efectivo') {
+            return;
+        }
+
+        $sesion = SesionCaja::query()
+            ->where('usuario_apertura_id', auth()->id())
+            ->where('estado', SesionCaja::ESTADO_ABIERTA)
+            ->lockForUpdate()
+            ->first();
+
+        if (!$sesion) {
+            throw ValidationException::withMessages([
+                'metodo_pago' => 'No tienes una sesión de caja abierta para registrar el pago en efectivo.',
+            ]);
+        }
+
+        MovimientoCaja::create([
+            'sesion_caja_id' => $sesion->id,
+            'pago_id' => $pago->id,
+            'usuario_id' => auth()->id(),
+            'tipo' => MovimientoCaja::TIPO_ENTRADA,
+            'concepto' => MovimientoCaja::CONCEPTO_PAGO_MEMBRESIA,
+            'monto' => $monto,
+            'fecha_movimiento' => Carbon::now(),
+            'referencia' => $referencia,
+            'observaciones' => $observaciones,
+        ]);
     }
 }

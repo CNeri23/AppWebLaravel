@@ -6,10 +6,12 @@ use App\Models\Membresia;
 use App\Models\Persona;
 use App\Models\Plan;
 use App\Models\Submodulo;
+use App\Models\Ticket;
 use App\Services\AuditLogService;
 use App\Services\CurrencyConverter;
 use App\Services\MembresiaService;
 use App\Services\PermissionService;
+use App\Services\TicketService;
 use App\Services\SystemSettings;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -63,6 +65,31 @@ class MembresiaController extends Controller
                 ->values();
         }
 
+        $submoduloTickets = Submodulo::with([
+            'acciones' => function ($query) {
+                $query
+                    ->where('activo', true)
+                    ->orderBy('orden')
+                    ->orderBy('nombre');
+            }
+        ])
+            ->where('slug', 'tickets')
+            ->where('activo', true)
+            ->first();
+
+        $accionesTickets = collect();
+
+        if ($submoduloTickets) {
+            $accionesTickets = $submoduloTickets->acciones
+                ->filter(function ($accion) use ($permissionService) {
+                    return $permissionService->tieneAccion(
+                        auth()->user(),
+                        $accion->id
+                    );
+                })
+                ->values();
+        }
+
         $moneda = [
             'codigo' => $codigoMoneda,
             'simbolo' => match ($codigoMoneda) {
@@ -84,6 +111,23 @@ class MembresiaController extends Controller
             ->orderByDesc('fecha_inicio')
             ->get();
 
+        $pagosIds = $membresias
+            ->flatMap(function ($membresia) {
+                return $membresia->pagos->pluck('id');
+            })
+            ->filter()
+            ->unique()
+            ->values();
+
+        $ticketsPorPago = collect();
+
+        if ($pagosIds->isNotEmpty()) {
+            $ticketsPorPago = Ticket::query()
+                ->whereIn('pago_id', $pagosIds)
+                ->get()
+                ->keyBy('pago_id');
+        }
+
         $miembros = Persona::query()
             ->whereHas('tipos', function ($query) {
                 $query->where('nombre', 'Miembro');
@@ -98,10 +142,7 @@ class MembresiaController extends Controller
             ->orderBy('nombre')
             ->get();
 
-        $planes->each(function ($plan) use (
-            $currencyConverter,
-            $codigoMoneda
-        ) {
+        $planes->each(function ($plan) use ($currencyConverter, $codigoMoneda) {
             $plan->precio_mostrado =
                 $currencyConverter->fromBase(
                     (float) $plan->precio,
@@ -112,7 +153,8 @@ class MembresiaController extends Controller
         $membresias->each(function ($membresia) use (
             $currencyConverter,
             $codigoMoneda,
-            $dateFormat
+            $dateFormat,
+            $ticketsPorPago
         ) {
             $nombreMiembro = trim(
                 $membresia->persona->nombre . ' ' .
@@ -158,6 +200,23 @@ class MembresiaController extends Controller
             $membresia->moneda =
                 $codigoMoneda;
 
+            $ultimoPago = $membresia->pagos
+                ->sortByDesc('fecha_pago')
+                ->first();
+
+            $membresia->ticket =
+                $ultimoPago
+                    ? $ticketsPorPago->get($ultimoPago->id)
+                    : null;
+
+            $membresia->ticket_url =
+                $membresia->ticket
+                    ? route(
+                        'tickets.show',
+                        $membresia->ticket
+                    )
+                    : null;
+
             $membresia->urls = [
                 'show' => route(
                     'membresias.show',
@@ -175,6 +234,13 @@ class MembresiaController extends Controller
                     'membresias.cancelar',
                     $membresia
                 ),
+                'ticket' => $membresia->ticket_url,
+                'ticket_imprimir' => $membresia->ticket
+                    ? route(
+                        'tickets.print',
+                        $membresia->ticket
+                    )
+                    : null,
             ];
         });
 
@@ -183,6 +249,7 @@ class MembresiaController extends Controller
             'miembros',
             'planes',
             'accionesMembresias',
+            'accionesTickets',
             'zonaHoraria',
             'moneda',
             'dateFormat'
@@ -192,6 +259,7 @@ class MembresiaController extends Controller
     public function store(
         Request $request,
         MembresiaService $membresiaService,
+        TicketService $ticketService,
         CurrencyConverter $currencyConverter,
         SystemSettings $settings
     ) {
@@ -279,6 +347,11 @@ class MembresiaController extends Controller
         $membresia = $resultado['membresia'];
         $pago = $resultado['pago'];
 
+        $ticket = $ticketService->crear(
+            pago: $pago,
+            observaciones: 'Ticket generado por contratación de membresía.'
+        );
+
         $membresia->load([
             'persona',
             'plan',
@@ -305,13 +378,13 @@ class MembresiaController extends Controller
             module: 'membresias',
             action: 'CREAR',
             description: 'Se contrató la membresía #' .
-                $membresia->id .
-                ' para "' . $nombrePersona .
-                '" con el plan "' . $membresia->plan->nombre .
-                '" por ' . number_format($monto, 2) .
-                ' ' . $codigoMoneda .
-                '. Se registró el pago inicial mediante "' .
-                $pago->metodo_pago . '".',
+            $membresia->id .
+            ' para "' . $nombrePersona .
+            '" con el plan "' . $membresia->plan->nombre .
+            '" por ' . number_format($monto, 2) .
+            ' ' . $codigoMoneda .
+            '. Se registró el pago inicial mediante "' .
+            $pago->metodo_pago . '".',
             entity: $membresia
         );
 
@@ -353,6 +426,12 @@ class MembresiaController extends Controller
         $membresia->moneda =
             $codigoMoneda;
 
+        $membresia->ticket_url =
+            route(
+                'tickets.show',
+                $ticket
+            );
+
         $membresia->urls = [
             'show' => route(
                 'membresias.show',
@@ -370,6 +449,11 @@ class MembresiaController extends Controller
                 'membresias.cancelar',
                 $membresia
             ),
+            'ticket' => $membresia->ticket_url,
+            'ticket_imprimir' => route(
+                'tickets.print',
+                $ticket
+            ),
         ];
 
         return response()->json([
@@ -377,6 +461,7 @@ class MembresiaController extends Controller
             'mensaje' => 'Membresía contratada correctamente.',
             'membresia' => $membresia,
             'pago' => $pago,
+            'ticket' => $ticket,
             'urls' => $membresia->urls,
         ]);
     }
@@ -430,8 +515,8 @@ class MembresiaController extends Controller
             module: 'membresias',
             action: 'EDITAR',
             description: 'Se actualizaron los datos administrativos de la membresía #' .
-                $membresia->id .
-                ' de "' . $nombrePersona . '".',
+            $membresia->id .
+            ' de "' . $nombrePersona . '".',
             entity: $membresia
         );
 
@@ -484,6 +569,7 @@ class MembresiaController extends Controller
         Request $request,
         Membresia $membresia,
         MembresiaService $membresiaService,
+        TicketService $ticketService,
         CurrencyConverter $currencyConverter,
         SystemSettings $settings
     ) {
@@ -562,6 +648,11 @@ class MembresiaController extends Controller
         $membresia = $resultado['membresia'];
         $pago = $resultado['pago'];
 
+        $ticket = $ticketService->crear(
+            pago: $pago,
+            observaciones: 'Ticket generado por renovación de membresía.'
+        );
+
         $membresia->load([
             'persona',
             'plan',
@@ -588,13 +679,13 @@ class MembresiaController extends Controller
             module: 'membresias',
             action: 'RENOVAR',
             description: 'Se renovó la membresía #' .
-                $membresia->id .
-                ' de "' . $nombrePersona .
-                '" con el plan "' . $membresia->plan->nombre .
-                '" por ' . number_format($monto, 2) .
-                ' ' . $codigoMoneda .
-                '. Se registró el pago de renovación mediante "' .
-                $pago->metodo_pago . '".',
+            $membresia->id .
+            ' de "' . $nombrePersona .
+            '" con el plan "' . $membresia->plan->nombre .
+            '" por ' . number_format($monto, 2) .
+            ' ' . $codigoMoneda .
+            '. Se registró el pago de renovación mediante "' .
+            $pago->metodo_pago . '".',
             entity: $membresia
         );
 
@@ -636,11 +727,43 @@ class MembresiaController extends Controller
         $membresia->moneda =
             $codigoMoneda;
 
+        $membresia->ticket_url =
+            route(
+                'tickets.show',
+                $ticket
+            );
+
+        $membresia->urls = [
+            'show' => route(
+                'membresias.show',
+                $membresia
+            ),
+            'editar' => route(
+                'membresias.update',
+                $membresia
+            ),
+            'renovar' => route(
+                'membresias.renovar',
+                $membresia
+            ),
+            'cancelar' => route(
+                'membresias.cancelar',
+                $membresia
+            ),
+            'ticket' => $membresia->ticket_url,
+            'ticket_imprimir' => route(
+                'tickets.print',
+                $ticket
+            ),
+        ];
+
         return response()->json([
             'success' => true,
             'mensaje' => 'Membresía renovada correctamente.',
             'membresia' => $membresia,
             'pago' => $pago,
+            'ticket' => $ticket,
+            'urls' => $membresia->urls,
         ]);
     }
 
@@ -697,6 +820,46 @@ class MembresiaController extends Controller
                 ->values();
         }
 
+        $submoduloTickets = Submodulo::with([
+            'acciones' => function ($query) {
+                $query
+                    ->where('activo', true)
+                    ->orderBy('orden')
+                    ->orderBy('nombre');
+            }
+        ])
+            ->where('slug', 'tickets')
+            ->where('activo', true)
+            ->first();
+
+        $accionesTickets = collect();
+
+        if ($submoduloTickets) {
+            $accionesTickets = $submoduloTickets->acciones
+                ->filter(function ($accion) use ($permissionService) {
+                    return $permissionService->tieneAccion(
+                        auth()->user(),
+                        $accion->id
+                    );
+                })
+                ->values();
+        }
+
+        $pagosIds = $membresia->pagos
+            ->pluck('id')
+            ->filter()
+            ->unique()
+            ->values();
+
+        $ticketsPorPago = collect();
+
+        if ($pagosIds->isNotEmpty()) {
+            $ticketsPorPago = Ticket::query()
+                ->whereIn('pago_id', $pagosIds)
+                ->get()
+                ->keyBy('pago_id');
+        }
+
         $fechaInicio = Carbon::parse(
             $membresia->fecha_inicio
         );
@@ -734,7 +897,8 @@ class MembresiaController extends Controller
                 $currencyConverter,
                 $codigoMoneda,
                 $dateFormat,
-                $timeFormat
+                $timeFormat,
+                $ticketsPorPago
             ) {
                 $fechaPago = Carbon::parse(
                     $pago->fecha_pago
@@ -753,15 +917,39 @@ class MembresiaController extends Controller
 
                 $pago->moneda =
                     $codigoMoneda;
+
+                $pago->ticket =
+                    $ticketsPorPago->get(
+                        $pago->id
+                    );
+
+                $pago->ticket_url =
+                    $pago->ticket
+                        ? route(
+                            'tickets.show',
+                            $pago->ticket
+                        )
+                        : null;
             }
         );
+
+        $ultimoPago = $membresia->pagos
+            ->sortByDesc('fecha_pago')
+            ->first();
+
+        $membresia->ticket =
+            $ultimoPago?->ticket;
+
+        $membresia->ticket_url =
+            $ultimoPago?->ticket_url;
 
         return view('membresias.show', compact(
             'membresia',
             'codigoMoneda',
             'dateFormat',
             'timeFormat',
-            'accionesMembresias'
+            'accionesMembresias',
+            'accionesTickets'
         ));
     }
 
@@ -814,11 +1002,11 @@ class MembresiaController extends Controller
             module: 'membresias',
             action: 'CANCELAR',
             description: 'Se canceló la membresía #' .
-                $membresia->id .
-                ' de "' . $nombrePersona .
-                '" con el plan "' . $membresia->plan->nombre .
-                '" por ' . number_format($monto, 2) .
-                ' ' . $codigoMoneda . '.',
+            $membresia->id .
+            ' de "' . $nombrePersona .
+            '" con el plan "' . $membresia->plan->nombre .
+            '" por ' . number_format($monto, 2) .
+            ' ' . $codigoMoneda . '.',
             entity: $membresia
         );
 

@@ -201,6 +201,7 @@
                                 <th> Método</th>
                                 <th> Referencia</th>
                                 <th> Monto</th>
+                                <th class="text-center px-4"> Ticket</th>
                             </tr>
                         </thead>
 
@@ -233,11 +234,24 @@
                                         {{ $pago->moneda }}
                                     </span>
                                 </td>
+
+                                <td class="text-center px-4">
+                                    @if ($pago->ticket_url)
+                                        <button type="button"
+                                            class="btn btn-sm btn-outline-secondary membresia-action-btn btn-ver-ticket"
+                                            style="--bs-btn-color: var(--bs-body-color); --bs-btn-border-color: var(--bs-body-color); --bs-btn-hover-color: var(--bs-body-bg); --bs-btn-hover-bg: var(--bs-body-color); --bs-btn-hover-border-color: var(--bs-body-color); --bs-btn-active-color: var(--bs-body-bg); --bs-btn-active-bg: var(--bs-body-color); --bs-btn-active-border-color: var(--bs-body-color);"
+                                            data-url="{{ $pago->ticket_url }}" data-tooltip="Ver ticket" title="Ver ticket">
+                                            <i class="fa-solid fa-receipt"></i>
+                                        </button>
+                                    @else
+                                        <span class="text-secondary">—</span>
+                                    @endif
+                                </td>
                             </tr>
 
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center py-5">
+                                <td colspan="5" class="text-center py-5">
                                     <div class="text-secondary">
                                         <i class="fa-solid fa-receipt fa-2x mb-3"></i>
 
@@ -358,6 +372,191 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalVerTicket" tabindex="-1" aria-labelledby="modalVerTicketLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalVerTicketLabel">
+                    <i class="fa-solid fa-receipt me-2"></i>
+                    Ticket
+                </h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body" id="ticketContenido"></div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+
+                <button type="button" class="btn btn-primary" id="btnImprimirTicket" disabled>
+                    <i class="fa-solid fa-print me-2"></i>
+                    Imprimir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalTicket = document.getElementById('modalVerTicket');
+        const contenido = document.getElementById('ticketContenido');
+        const btnImprimir = document.getElementById('btnImprimirTicket');
+        let tarjetaActual = '';
+
+        function avisar(tipo, mensaje) {
+            if (window.showToast) {
+                window.showToast(tipo, mensaje);
+            } else {
+                alert(mensaje);
+            }
+        }
+
+        function escapar(texto) {
+            const div = document.createElement('div');
+            div.textContent = texto || '';
+            return div.innerHTML;
+        }
+
+        // Descarga la vista del ticket y se queda solo con la tarjeta del comprobante
+        function obtenerTarjeta(url) {
+            return fetch(url, {
+                credentials: 'same-origin',
+                headers: {
+                    'Accept': 'text/html',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error(
+                            response.status === 403
+                                ? 'No tienes permiso para ver el ticket.'
+                                : 'No se pudo cargar el ticket.'
+                        );
+                    }
+
+                    return response.text();
+                })
+                .then(function (html) {
+                    const doc = new DOMParser().parseFromString(html, 'text/html');
+                    const tarjeta = doc.querySelector('.ticket-card');
+
+                    if (!tarjeta) {
+                        throw new Error('No se encontró el contenido del ticket.');
+                    }
+
+                    return tarjeta.outerHTML;
+                });
+        }
+
+        // Imprime sin cambiar de página: iframe oculto con el estilo de la app en claro
+        function imprimir(tarjetaHtml) {
+            document.querySelectorAll('iframe.ticket-print-frame').forEach(function (frame) {
+                frame.remove();
+            });
+
+            const iframe = document.createElement('iframe');
+            iframe.className = 'ticket-print-frame';
+            iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
+            document.body.appendChild(iframe);
+
+            const estilos = Array.from(
+                document.querySelectorAll('link[rel="stylesheet"], style')
+            ).map(function (nodo) {
+                return nodo.outerHTML;
+            }).join('');
+
+            const doc = iframe.contentWindow.document;
+
+            doc.open();
+            doc.write(
+                '<!doctype html><html lang="es" data-bs-theme="light"><head>' +
+                '<meta charset="utf-8"><title>Ticket</title>' +
+                estilos +
+                '<style>' +
+                'html,body{background:#fff!important;color:#000!important}' +
+                '.ticket-card{box-shadow:none!important;border:0!important;background:#fff!important;color:#000!important}' +
+                '.text-secondary{color:#555!important}' +
+                '</style></head><body class="p-3">' +
+                tarjetaHtml +
+                '</body></html>'
+            );
+            doc.close();
+
+            const hojas = Array.from(
+                doc.querySelectorAll('link[rel="stylesheet"]')
+            ).map(function (hoja) {
+                return new Promise(function (resolver) {
+                    hoja.addEventListener('load', resolver);
+                    hoja.addEventListener('error', resolver);
+                });
+            });
+
+            Promise.race([
+                Promise.all(hojas),
+                new Promise(function (resolver) {
+                    setTimeout(resolver, 800);
+                })
+            ]).then(function () {
+                iframe.contentWindow.onafterprint = function () {
+                    iframe.remove();
+                };
+
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+            });
+        }
+
+        function abrirTicket(url) {
+            tarjetaActual = '';
+            btnImprimir.disabled = true;
+
+            contenido.innerHTML =
+                '<div class="text-center py-5">' +
+                '<div class="spinner-border" role="status"></div>' +
+                '</div>';
+
+            bootstrap.Modal.getOrCreateInstance(modalTicket).show();
+
+            obtenerTarjeta(url)
+                .then(function (tarjetaHtml) {
+                    tarjetaActual = tarjetaHtml;
+                    contenido.innerHTML = tarjetaHtml;
+                    btnImprimir.disabled = false;
+                })
+                .catch(function (error) {
+                    contenido.innerHTML =
+                        '<div class="alert alert-danger mb-0">' +
+                        escapar(error.message) +
+                        '</div>';
+                });
+        }
+
+        document.addEventListener('click', function (evento) {
+            const boton = evento.target.closest('.btn-ver-ticket');
+
+            if (boton) {
+                abrirTicket(boton.dataset.url || '');
+            }
+        });
+
+        btnImprimir.addEventListener('click', function () {
+            if (tarjetaActual) {
+                imprimir(tarjetaActual);
+            }
+        });
+
+        modalTicket.addEventListener('hidden.bs.modal', function () {
+            tarjetaActual = '';
+            contenido.innerHTML = '';
+        });
+    });
+</script>
 
 @if ($membresia->estado === 'activa')
     <div class="modal fade" id="modalCancelarMembresia" tabindex="-1" aria-labelledby="modalCancelarMembresiaLabel" aria-hidden="true">

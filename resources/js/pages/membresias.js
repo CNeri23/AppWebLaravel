@@ -36,6 +36,195 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Colores de las alertas según el tema (claro/oscuro) actual de la app
+    function temaSwal() {
+        const cuerpo = getComputedStyle(document.body);
+        const referencia = document.querySelector('.modal-content');
+
+        let fondo = referencia
+            ? getComputedStyle(referencia).backgroundColor
+            : cuerpo.backgroundColor;
+
+        if (!fondo || fondo === 'transparent' || fondo === 'rgba(0, 0, 0, 0)') {
+            fondo = cuerpo.backgroundColor;
+        }
+
+        return { background: fondo, color: cuerpo.color };
+    }
+
+    // Confirmación con SweetAlert, mismo estilo que "¿Eliminar foto?" del perfil
+    function confirmarAccion(opciones) {
+        const titulo = opciones.titulo;
+        const texto = opciones.texto;
+        const textoConfirmar = opciones.textoConfirmar;
+        const claseConfirmar = opciones.claseConfirmar || 'btn btn-primary';
+
+        if (!window.Swal) {
+            return Promise.resolve(window.confirm(titulo));
+        }
+
+        return Swal.fire({
+            ...temaSwal(),
+            icon: 'warning',
+            title: titulo,
+            text: texto,
+            showCancelButton: true,
+            reverseButtons: true,
+            confirmButtonText: textoConfirmar,
+            cancelButtonText: 'Cancelar',
+            buttonsStyling: false,
+            heightAuto: false,
+            customClass: {
+                confirmButton: claseConfirmar + ' mx-1',
+                cancelButton: 'btn btn-secondary mx-1'
+            }
+        }).then(function (resultado) {
+            return resultado.isConfirmed;
+        });
+    }
+
+    // ---------- Ticket dentro de la misma página (modal + impresión) ----------
+    // Descarga la vista del ticket y se queda solo con la tarjeta del comprobante
+    function obtenerHtmlTicket(url) {
+        return fetch(url, {
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'text/html',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error(
+                        response.status === 403
+                            ? 'No tienes permiso para ver el ticket.'
+                            : 'No se pudo cargar el ticket.'
+                    );
+                }
+
+                return response.text();
+            })
+            .then(function (html) {
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const tarjeta = doc.querySelector('.ticket-card');
+
+                if (!tarjeta) {
+                    throw new Error('No se encontró el contenido del ticket.');
+                }
+
+                return tarjeta.outerHTML;
+            });
+    }
+
+    // Imprime sin cambiar de página: usa un iframe oculto con el estilo de la app
+    function imprimirHtmlTicket(tarjetaHtml) {
+        document
+            .querySelectorAll('iframe.ticket-print-frame')
+            .forEach(function (frame) {
+                frame.remove();
+            });
+
+        const iframe = document.createElement('iframe');
+        iframe.className = 'ticket-print-frame';
+        iframe.style.cssText =
+            'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
+
+        document.body.appendChild(iframe);
+
+        const estilos = Array.from(
+            document.querySelectorAll('link[rel="stylesheet"], style')
+        )
+            .map(function (nodo) {
+                return nodo.outerHTML;
+            })
+            .join('');
+
+        const doc = iframe.contentWindow.document;
+
+        doc.open();
+        doc.write(
+            '<!doctype html><html lang="es" data-bs-theme="light"><head>' +
+            '<meta charset="utf-8"><title>Ticket</title>' +
+            estilos +
+            '<style>' +
+            'html,body{background:#fff!important;color:#000!important}' +
+            '.ticket-card{box-shadow:none!important;border:0!important;background:#fff!important;color:#000!important}' +
+            '.text-secondary{color:#555!important}' +
+            '</style></head><body class="p-3">' +
+            tarjetaHtml +
+            '</body></html>'
+        );
+        doc.close();
+
+        const hojas = Array.from(
+            doc.querySelectorAll('link[rel="stylesheet"]')
+        ).map(function (hoja) {
+            return new Promise(function (resolver) {
+                hoja.addEventListener('load', resolver);
+                hoja.addEventListener('error', resolver);
+            });
+        });
+
+        Promise.race([
+            Promise.all(hojas),
+            new Promise(function (resolver) {
+                setTimeout(resolver, 800);
+            })
+        ]).then(function () {
+            iframe.contentWindow.onafterprint = function () {
+                iframe.remove();
+            };
+
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+        });
+    }
+
+    function imprimirTicketPorUrl(url) {
+        obtenerHtmlTicket(url)
+            .then(imprimirHtmlTicket)
+            .catch(function (error) {
+                window.showToast('error', error.message);
+            });
+    }
+
+    // Alerta de éxito: pregunta si se desea imprimir el ticket recién generado
+    function mostrarTicketGenerado(data, mensaje) {
+        const urls = (data && data.urls) || {};
+
+        if (!window.Swal || !urls.ticket) {
+            mostrarExito(mensaje);
+            return;
+        }
+
+        const folio = data.ticket && data.ticket.folio
+            ? '<div class="mt-2">Folio: <strong>' +
+            escapeHtml(data.ticket.folio) +
+            '</strong></div>'
+            : '';
+
+        Swal.fire({
+            ...temaSwal(),
+            icon: 'question',
+            title: mensaje,
+            html: '¿Deseas imprimir el ticket?' + folio,
+            showCancelButton: true,
+            reverseButtons: true,
+            confirmButtonText: 'Imprimir',
+            cancelButtonText: 'Cancelar',
+            buttonsStyling: false,
+            heightAuto: false,
+            customClass: {
+                confirmButton: 'btn btn-primary mx-1',
+                cancelButton: 'btn btn-secondary mx-1'
+            }
+        }).then(function (resultado) {
+            if (resultado.isConfirmed) {
+                imprimirTicketPorUrl(urls.ticket);
+            }
+        });
+    }
+
     // Rutas de una membresía. Se usan cuando el servidor no las devuelve,
     // para que la fila actualizada no pierda sus botones.
     function urlsPorDefecto(id) {
@@ -595,7 +784,9 @@ document.addEventListener('DOMContentLoaded', function () {
             show: urlsOrigen.show || urlsBase.show,
             update: urlsOrigen.update || urlsBase.update,
             renovar: urlsOrigen.renovar || urlsBase.renovar,
-            cancelar: urlsOrigen.cancelar || urlsBase.cancelar
+            cancelar: urlsOrigen.cancelar || urlsBase.cancelar,
+            ticket: urlsOrigen.ticket || membresia.ticket_url || '',
+            ticket_imprimir: urlsOrigen.ticket_imprimir || ''
         };
 
         return membresiaNormalizada;
@@ -653,6 +844,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         fila.dataset.urlCancelar =
             datos.urls?.cancelar || '';
+
+        fila.dataset.urlTicket =
+            datos.urls?.ticket || '';
+
+        fila.dataset.urlTicketImprimir =
+            datos.urls?.ticket_imprimir || '';
 
         fila.innerHTML = `
             <td>
@@ -771,7 +968,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     fila.dataset.urlRenovar || '',
 
                 cancelar:
-                    fila.dataset.urlCancelar || ''
+                    fila.dataset.urlCancelar || '',
+
+                ticket:
+                    fila.dataset.urlTicket || '',
+
+                ticket_imprimir:
+                    fila.dataset.urlTicketImprimir || ''
             }
         };
     }
@@ -806,6 +1009,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     String(datos.id)
                 ) {
                     return;
+                }
+
+                // Editar o cancelar no devuelven la URL del ticket:
+                // se conserva la que ya tenía la fila.
+                if (
+                    !datos.urls.ticket &&
+                    fila.dataset.urlTicket
+                ) {
+                    datos.urls.ticket =
+                        fila.dataset.urlTicket;
+
+                    datos.urls.ticket_imprimir =
+                        fila.dataset.urlTicketImprimir || '';
                 }
 
                 const datosTabla =
@@ -923,6 +1139,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 fila.dataset.urlCancelar =
                     datos.urls?.cancelar || '';
+
+                fila.dataset.urlTicket =
+                    datos.urls?.ticket || '';
+
+                fila.dataset.urlTicketImprimir =
+                    datos.urls?.ticket_imprimir || '';
             });
 
         dataTable.draw(false);
@@ -1782,7 +2004,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     formNuevo?.addEventListener(
         'submit',
-        function (evento) {
+        async function (evento) {
 
             evento.preventDefault();
 
@@ -1813,6 +2035,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     return;
                 }
+            }
+
+            const confirmado =
+                await confirmarAccion({
+                    titulo: '¿Contratar membresía?',
+                    texto: 'Se registrará el pago y se generará el ticket.',
+                    textoConfirmar: 'Contratar'
+                });
+
+            if (!confirmado) {
+                return;
             }
 
             const boton =
@@ -1848,11 +2081,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         modalNuevo
                     );
 
-                    mostrarExito(
-                        data.mensaje ||
-                        'Membresía contratada correctamente.'
-                    );
-
                     agregarMembresiaATabla(
                         data.membresia,
                         data.urls
@@ -1864,6 +2092,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     actualizarPrecioPlan();
                     actualizarMetodoPagoNuevo();
+
+                    mostrarTicketGenerado(
+                        data,
+                        data.mensaje ||
+                        'Membresía contratada correctamente.'
+                    );
                 })
                 .catch(
                     mostrarError
@@ -1951,7 +2185,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     formRenovar?.addEventListener(
         'submit',
-        function (evento) {
+        async function (evento) {
 
             evento.preventDefault();
 
@@ -1982,6 +2216,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     return;
                 }
+            }
+
+            const confirmado =
+                await confirmarAccion({
+                    titulo: '¿Renovar membresía?',
+                    texto: 'Se registrará el pago y se generará el ticket.',
+                    textoConfirmar: 'Renovar',
+                    claseConfirmar: 'btn btn-success'
+                });
+
+            if (!confirmado) {
+                return;
             }
 
             const boton =
@@ -2025,7 +2271,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         modalRenovar
                     );
 
-                    mostrarExito(
+                    mostrarTicketGenerado(
+                        data,
                         data.mensaje ||
                         'Membresía renovada correctamente.'
                     );
