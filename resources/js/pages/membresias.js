@@ -1,4 +1,193 @@
+function avisarTicket(tipo, mensaje) {
+    if (window.showToast) {
+        window.showToast(tipo, mensaje);
+    }
+}
+
+function escaparHtmlTicket(texto) {
+    const div = document.createElement('div');
+    div.textContent = texto || '';
+
+    return div.innerHTML;
+}
+
+function obtenerHtmlTicket(url) {
+    return fetch(url, {
+        credentials: 'same-origin',
+        headers: {
+            'Accept': 'text/html',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error(
+                    response.status === 403
+                        ? 'No tienes permiso para ver el ticket.'
+                        : 'No se pudo cargar el ticket.'
+                );
+            }
+
+            return response.text();
+        })
+        .then(function (html) {
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const tarjeta = doc.querySelector('.ticket-card');
+
+            if (!tarjeta) {
+                throw new Error('No se encontró el contenido del ticket.');
+            }
+
+            return tarjeta.outerHTML;
+        });
+}
+
+function imprimirTicket(urlImprimir) {
+    fetch(urlImprimir, {
+        credentials: 'same-origin',
+        headers: {
+            'Accept': 'text/html',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error(
+                    response.status === 403
+                        ? 'No tienes permiso para imprimir el ticket.'
+                        : 'No se pudo cargar el ticket para imprimir.'
+                );
+            }
+
+            return response.text();
+        })
+        .then(function (html) {
+            document.querySelectorAll('iframe.ticket-print-frame').forEach(function (frame) {
+                frame.remove();
+            });
+
+            const iframe = document.createElement('iframe');
+            iframe.className = 'ticket-print-frame';
+            iframe.setAttribute('aria-hidden', 'true');
+            iframe.style.cssText =
+                'position:fixed;left:-10000px;top:0;width:900px;height:1200px;border:0;';
+            document.body.appendChild(iframe);
+
+            const ventana = iframe.contentWindow;
+            const imprimirNativo = ventana.print.bind(ventana);
+
+            const base = new URL(urlImprimir, window.location.href).href;
+            const preparar =
+                '<base href="' + base + '">' +
+                '<script>window.print = function () {};<\/script>';
+
+            const contenido = /<head[^>]*>/i.test(html)
+                ? html.replace(/<head[^>]*>/i, function (etiqueta) {
+                    return etiqueta + preparar;
+                })
+                : preparar + html;
+
+            const doc = ventana.document;
+            doc.open();
+            doc.write(contenido);
+            doc.close();
+
+            const recursos = Array.from(
+                doc.querySelectorAll('link[rel="stylesheet"], img')
+            ).map(function (elemento) {
+                if (
+                    (elemento.tagName === 'IMG' && elemento.complete) ||
+                    (elemento.tagName === 'LINK' && elemento.sheet)
+                ) {
+                    return Promise.resolve();
+                }
+
+                return new Promise(function (resolver) {
+                    elemento.addEventListener('load', resolver);
+                    elemento.addEventListener('error', resolver);
+                });
+            });
+
+            return Promise.race([
+                Promise.all(recursos),
+                new Promise(function (resolver) {
+                    setTimeout(resolver, 1500);
+                })
+            ]).then(function () {
+                setTimeout(function () {
+                    ventana.onafterprint = function () {
+                        iframe.remove();
+                    };
+
+                    ventana.focus();
+                    imprimirNativo();
+                }, 150);
+            });
+        })
+        .catch(function (error) {
+            avisarTicket('error', error.message);
+        });
+}
+
+// Modal "Ver ticket": se abre con cualquier botón .btn-ver-ticket[data-url]
+function inicializarModalTicket() {
+    const modalTicket = document.getElementById('modalVerTicket');
+    const contenido = document.getElementById('ticketContenido');
+    const btnImprimir = document.getElementById('btnImprimirTicket');
+
+    if (!modalTicket || !contenido || !btnImprimir) {
+        return;
+    }
+
+    let urlActual = '';
+
+    function abrirTicket(url) {
+        urlActual = url;
+        btnImprimir.disabled = true;
+
+        contenido.innerHTML =
+            '<div class="text-center py-5">' +
+            '<div class="spinner-border" role="status"></div>' +
+            '</div>';
+
+        bootstrap.Modal.getOrCreateInstance(modalTicket).show();
+
+        obtenerHtmlTicket(url)
+            .then(function (tarjetaHtml) {
+                contenido.innerHTML = tarjetaHtml;
+                btnImprimir.disabled = false;
+            })
+            .catch(function (error) {
+                contenido.innerHTML =
+                    '<div class="alert alert-danger mb-0">' +
+                    escaparHtmlTicket(error.message) +
+                    '</div>';
+            });
+    }
+
+    document.addEventListener('click', function (evento) {
+        const boton = evento.target.closest('.btn-ver-ticket');
+
+        if (boton) {
+            abrirTicket(boton.dataset.url || '');
+        }
+    });
+
+    btnImprimir.addEventListener('click', function () {
+        if (urlActual) {
+            imprimirTicket(urlActual.replace(/\/+$/, '') + '/imprimir');
+        }
+    });
+
+    modalTicket.addEventListener('hidden.bs.modal', function () {
+        urlActual = '';
+        contenido.innerHTML = '';
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+    inicializarModalTicket();
+
     const tabla = document.getElementById('tablaMembresias');
 
     if (!tabla) {
@@ -36,7 +225,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Colores de las alertas según el tema (claro/oscuro) actual de la app
     function temaSwal() {
         const cuerpo = getComputedStyle(document.body);
         const referencia = document.querySelector('.modal-content');
@@ -52,7 +240,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return { background: fondo, color: cuerpo.color };
     }
 
-    // Confirmación con SweetAlert, mismo estilo que "¿Eliminar foto?" del perfil
     function confirmarAccion(opciones) {
         const titulo = opciones.titulo;
         const texto = opciones.texto;
@@ -83,116 +270,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ---------- Ticket dentro de la misma página (modal + impresión) ----------
-    // Descarga la vista del ticket y se queda solo con la tarjeta del comprobante
-    function obtenerHtmlTicket(url) {
-        return fetch(url, {
-            credentials: 'same-origin',
-            headers: {
-                'Accept': 'text/html',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-            .then(function (response) {
-                if (!response.ok) {
-                    throw new Error(
-                        response.status === 403
-                            ? 'No tienes permiso para ver el ticket.'
-                            : 'No se pudo cargar el ticket.'
-                    );
-                }
-
-                return response.text();
-            })
-            .then(function (html) {
-                const doc = new DOMParser().parseFromString(html, 'text/html');
-                const tarjeta = doc.querySelector('.ticket-card');
-
-                if (!tarjeta) {
-                    throw new Error('No se encontró el contenido del ticket.');
-                }
-
-                return tarjeta.outerHTML;
-            });
-    }
-
-    // Imprime sin cambiar de página: usa un iframe oculto con el estilo de la app
-    function imprimirHtmlTicket(tarjetaHtml) {
-        document
-            .querySelectorAll('iframe.ticket-print-frame')
-            .forEach(function (frame) {
-                frame.remove();
-            });
-
-        const iframe = document.createElement('iframe');
-        iframe.className = 'ticket-print-frame';
-        iframe.style.cssText =
-            'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
-
-        document.body.appendChild(iframe);
-
-        const estilos = Array.from(
-            document.querySelectorAll('link[rel="stylesheet"], style')
-        )
-            .map(function (nodo) {
-                return nodo.outerHTML;
-            })
-            .join('');
-
-        const doc = iframe.contentWindow.document;
-
-        doc.open();
-        doc.write(
-            '<!doctype html><html lang="es" data-bs-theme="light"><head>' +
-            '<meta charset="utf-8"><title>Ticket</title>' +
-            estilos +
-            '<style>' +
-            'html,body{background:#fff!important;color:#000!important}' +
-            '.ticket-card{box-shadow:none!important;border:0!important;background:#fff!important;color:#000!important}' +
-            '.text-secondary{color:#555!important}' +
-            '</style></head><body class="p-3">' +
-            tarjetaHtml +
-            '</body></html>'
-        );
-        doc.close();
-
-        const hojas = Array.from(
-            doc.querySelectorAll('link[rel="stylesheet"]')
-        ).map(function (hoja) {
-            return new Promise(function (resolver) {
-                hoja.addEventListener('load', resolver);
-                hoja.addEventListener('error', resolver);
-            });
-        });
-
-        Promise.race([
-            Promise.all(hojas),
-            new Promise(function (resolver) {
-                setTimeout(resolver, 800);
-            })
-        ]).then(function () {
-            iframe.contentWindow.onafterprint = function () {
-                iframe.remove();
-            };
-
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
-        });
-    }
-
-    function imprimirTicketPorUrl(url) {
-        obtenerHtmlTicket(url)
-            .then(imprimirHtmlTicket)
-            .catch(function (error) {
-                window.showToast('error', error.message);
-            });
-    }
-
-    // Alerta de éxito: pregunta si se desea imprimir el ticket recién generado
     function mostrarTicketGenerado(data, mensaje) {
         const urls = (data && data.urls) || {};
 
-        if (!window.Swal || !urls.ticket) {
+        if (!window.Swal || !urls.ticket_imprimir) {
             mostrarExito(mensaje);
             return;
         }
@@ -220,13 +301,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }).then(function (resultado) {
             if (resultado.isConfirmed) {
-                imprimirTicketPorUrl(urls.ticket);
+                imprimirTicket(urls.ticket_imprimir);
             }
         });
     }
 
-    // Rutas de una membresía. Se usan cuando el servidor no las devuelve,
-    // para que la fila actualizada no pierda sus botones.
     function urlsPorDefecto(id) {
         return {
             show: `/membresias/${id}`,
@@ -291,7 +370,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // Igual que la vista: símbolo + importe + código de moneda
     function formatearPrecioTabla(precio) {
         const texto = formatearPrecio(precio);
 
@@ -775,8 +853,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 moneda
         };
 
-        // Si el servidor no manda las URLs (o vienen incompletas) se completan,
-        // de lo contrario crearBotonesAcciones() no dibuja ningún botón.
         const urlsBase = urlsPorDefecto(membresia.id);
         const urlsOrigen = urls || membresia.urls || {};
 
@@ -1011,8 +1087,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                // Editar o cancelar no devuelven la URL del ticket:
-                // se conserva la que ya tenía la fila.
                 if (
                     !datos.urls.ticket &&
                     fila.dataset.urlTicket
