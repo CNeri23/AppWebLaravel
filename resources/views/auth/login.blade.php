@@ -63,9 +63,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $systemName }}</title>
-
-    {{-- layout.js va aquí y sin defer: aplica el tema (incluida la elección manual
-         del interruptor) antes de pintar y comparte la lógica con el panel --}}
     <script src="{{ asset('js/layout.js') }}"></script>
 
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
