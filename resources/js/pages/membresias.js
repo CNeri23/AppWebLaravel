@@ -129,7 +129,6 @@ function imprimirTicket(urlImprimir) {
         });
 }
 
-// Modal "Ver ticket": se abre con cualquier botón .btn-ver-ticket[data-url]
 function inicializarModalTicket() {
     const modalTicket = document.getElementById('modalVerTicket');
     const contenido = document.getElementById('ticketContenido');
@@ -931,63 +930,61 @@ document.addEventListener('DOMContentLoaded', function () {
             <td>
                 <div class="fw-semibold">
                     ${escapeHtml(
-                        datos.nombre_miembro
-                    )}
+            datos.nombre_miembro
+        )}
                 </div>
 
-                ${
-                    datos.persona &&
-                    datos.persona.email
-                        ? `
+                ${datos.persona &&
+                datos.persona.email
+                ? `
                             <div class="small text-secondary">
                                 ${escapeHtml(
-                                    datos.persona.email
-                                )}
+                    datos.persona.email
+                )}
                             </div>
                         `
-                        : ''
-                }
+                : ''
+            }
             </td>
 
             <td>
                 <span class="fw-medium">
                     ${escapeHtml(
-                        datos.plan_nombre
-                    )}
+                datos.plan_nombre
+            )}
                 </span>
             </td>
 
             <td>
                 <div>
                     ${escapeHtml(
-                        datos.fecha_inicio_mostrada
-                    )}
+                datos.fecha_inicio_mostrada
+            )}
                     —
                     ${escapeHtml(
-                        datos.fecha_fin_mostrada
-                    )}
+                datos.fecha_fin_mostrada
+            )}
                 </div>
 
-                ${
-                    datos.duracion_dias
-                        ? `
+                ${datos.duracion_dias
+                ? `
                             <div class="small text-secondary">
                                 ${escapeHtml(
-                                    formatearDuracion(
-                                        datos.duracion_dias
-                                    )
-                                )}
+                    formatearDuracion(
+                        datos.duracion_dias
+                    )
+                )}
                             </div>
                         `
-                        : ''
-                }
+                : ''
+            }
             </td>
 
             <td>
                 <span class="fw-semibold">
                     ${escapeHtml(
-                        formatearPrecioTabla(datos.precio_mostrado)
-                    )}
+                formatearPrecioTabla(datos.precio_mostrado)
+            )}
                 </span>
             </td>
 
@@ -1104,63 +1101,61 @@ document.addEventListener('DOMContentLoaded', function () {
                 datosTabla[0] = `
                     <div class="fw-semibold">
                         ${escapeHtml(
-                            datos.nombre_miembro
-                        )}
+                    datos.nombre_miembro
+                )}
                     </div>
 
-                    ${
-                        datos.persona &&
+                    ${datos.persona &&
                         datos.persona.email
-                            ? `
+                        ? `
                                 <div class="small text-secondary">
                                     ${escapeHtml(
-                                        datos.persona.email
-                                    )}
+                            datos.persona.email
+                        )}
                                 </div>
                             `
-                            : ''
+                        : ''
                     }
                 `;
 
                 datosTabla[1] = `
                     <span class="fw-medium">
                         ${escapeHtml(
-                            datos.plan_nombre
-                        )}
+                    datos.plan_nombre
+                )}
                     </span>
                 `;
 
                 datosTabla[2] = `
                     <div>
                         ${escapeHtml(
-                            datos.fecha_inicio_mostrada
-                        )}
+                    datos.fecha_inicio_mostrada
+                )}
                         —
                         ${escapeHtml(
-                            datos.fecha_fin_mostrada
-                        )}
+                    datos.fecha_fin_mostrada
+                )}
                     </div>
 
-                    ${
-                        datos.duracion_dias
-                            ? `
+                    ${datos.duracion_dias
+                        ? `
                                 <div class="small text-secondary">
                                     ${escapeHtml(
-                                        formatearDuracion(
-                                            datos.duracion_dias
-                                        )
-                                    )}
+                            formatearDuracion(
+                                datos.duracion_dias
+                            )
+                        )}
                                 </div>
                             `
-                            : ''
+                        : ''
                     }
                 `;
 
                 datosTabla[3] = `
                     <span class="fw-semibold">
                         ${escapeHtml(
-                            formatearPrecioTabla(datos.precio_mostrado)
-                        )}
+                    formatearPrecioTabla(datos.precio_mostrado)
+                )}
                     </span>
                 `;
 
@@ -1484,7 +1479,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const opcion =
             select.options[
-                select.selectedIndex
+            select.selectedIndex
             ];
 
         if (
@@ -1609,7 +1604,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const opcion =
             planSelect.options[
-                planSelect.selectedIndex
+            planSelect.selectedIndex
             ];
 
         if (

@@ -116,8 +116,7 @@
                                         <i class="fa-solid fa-envelope"></i>
                                     </span>
 
-                                    <input type="email" class="form-control" id="email" name="email"
-                                        value="{{ old('email') }}" required autofocus>
+                                    <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required autofocus placeholder="example@domain.com">
                                 </div>
 
                                 <div class="invalid-feedback d-block" id="email-error"></div>
@@ -133,10 +132,9 @@
                                         <i class="fa-solid fa-lock"></i>
                                     </span>
 
-                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <input type="password" class="form-control" id="password" name="password" required placeholder="Ingresa tu contraseña">
 
-                                    <button class="input-group-text toggle-password" type="button"
-                                        data-password-target="password" tabindex="-1" aria-label="Mostrar contraseña">
+                                    <button class="input-group-text toggle-password" type="button" data-password-target="password" tabindex="-1" aria-label="Mostrar contraseña">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
                                 </div>
@@ -203,7 +201,7 @@
                                         <i class="fa-solid fa-user"></i>
                                     </span>
 
-                                    <input type="text" class="form-control" id="registerName" name="name" required>
+                                    <input type="text" class="form-control" id="registerName" name="name" required placeholder="Ingresa tu nombre completo">
                                 </div>
 
                                 <div class="invalid-feedback d-block" id="register-name-error"></div>
@@ -219,7 +217,7 @@
                                         <i class="fa-solid fa-envelope"></i>
                                     </span>
 
-                                    <input type="email" class="form-control" id="registerEmail" name="email" required>
+                                    <input type="email" class="form-control" id="registerEmail" name="email" required placeholder="example@domain.com">
                                 </div>
 
                                 <div class="invalid-feedback d-block" id="register-email-error"></div>
@@ -235,7 +233,7 @@
                                         <i class="fa-solid fa-lock"></i>
                                     </span>
 
-                                    <input type="password" class="form-control" id="registerPassword" name="password" required>
+                                    <input type="password" class="form-control" id="registerPassword" name="password" required placeholder="Ingresa tu contraseña">
 
                                     <button class="input-group-text toggle-password" type="button"
                                         data-password-target="registerPassword" tabindex="-1"
@@ -259,7 +257,7 @@
                                         <i class="fa-solid fa-lock"></i>
                                     </span>
 
-                                    <input type="password" class="form-control" id="registerPasswordConfirmation" name="password_confirmation"  required>
+                                    <input type="password" class="form-control" id="registerPasswordConfirmation" name="password_confirmation" required placeholder="Confirma tu contraseña">
 
                                     <button class="input-group-text toggle-password" type="button"
                                         data-password-target="registerPasswordConfirmation" tabindex="-1"
@@ -314,7 +312,7 @@
                                         <i class="fa-solid fa-envelope"></i>
                                     </span>
 
-                                    <input type="email" class="form-control" id="forgotEmail" name="email" required>
+                                    <input type="email" class="form-control" id="forgotEmail" name="email" required placeholder="example@domain.com">
                                 </div>
 
                                 <div class="invalid-feedback d-block" id="forgot-email-error"></div>
@@ -380,7 +378,7 @@
                                         <i class="fa-solid fa-lock"></i>
                                     </span>
 
-                                    <input type="password" class="form-control" id="resetPassword" name="password" required>
+                                    <input type="password" class="form-control" id="resetPassword" name="password" required placeholder="Ingresa tu nueva contraseña">
 
                                     <button class="input-group-text toggle-password" type="button"
                                         data-password-target="resetPassword" tabindex="-1"
@@ -404,7 +402,7 @@
                                         <i class="fa-solid fa-lock"></i>
                                     </span>
 
-                                    <input type="password" class="form-control" id="resetPasswordConfirmation" name="password_confirmation" required>
+                                    <input type="password" class="form-control" id="resetPasswordConfirmation" name="password_confirmation" required placeholder="Confirma tu nueva contraseña">
 
                                     <button class="input-group-text toggle-password" type="button"
                                         data-password-target="resetPasswordConfirmation" tabindex="-1"
