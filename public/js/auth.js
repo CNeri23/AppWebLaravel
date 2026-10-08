@@ -2,9 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfTokenElement ? csrfTokenElement.content : '';
 
-    // ---------------------------------------------------------------
-    // Aviso cuando el servidor cerró la sesión por inactividad (?expirada=1)
-    // ---------------------------------------------------------------
     (function avisarSesionExpirada() {
         const params = new URLSearchParams(window.location.search);
 
@@ -34,12 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 300);
     })();
 
-    // El interruptor de tema del login (#loginThemeToggle) lo maneja layout.js,
-    // igual que el del panel: misma animación y misma clave de localStorage.
-
-    // ---------------------------------------------------------------
-    // Escena del gimnasio (panel visual): contadores y repeticiones
-    // ---------------------------------------------------------------
     (function iniciarEscenaGym() {
         const sinMovimiento = window.matchMedia(
             '(prefers-reduced-motion: reduce)'
@@ -55,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
             el.classList.add('is-tick');
         };
 
-        // Contadores: suben desde 0; los marcados con data-live siguen sumando
         document.querySelectorAll('[data-countup]').forEach(function (el, i) {
             const destino = parseInt(el.dataset.countup, 10) || 0;
 
@@ -98,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 700 + i * 150);
         });
 
-        // Repeticiones: una por cada vez que la barra sube y baja
         const reps = document.querySelector('[data-reps]');
         const barra = document.querySelector('.gs-lift');
 
@@ -138,7 +127,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let cambiandoPanel = false;
 
-    // Política de contraseña de Configuración > Seguridad (la imprime login.blade.php)
     const passwordMinimo =
         parseInt(authFormStage.dataset.passwordMin, 10) || 8;
 
@@ -193,9 +181,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Registro público desactivado en Configuración > Seguridad: oculta los
-    // accesos al registro. (El servidor también lo rechaza.) Requiere
-    // data-registration-enabled="1|0" en #authFormStage; sin él no hace nada.
     if (authFormStage.dataset.registrationEnabled === '0') {
         document
             .querySelectorAll('[data-auth-target="register"], [data-register-only]')
@@ -349,8 +334,6 @@ document.addEventListener('DOMContentLoaded', function () {
         rememberInput.checked = true;
     }
 
-    // Foco inicial en el login: correo; si el correo viene recordado,
-    // directo a la contraseña
     if (panelActual === 'login' && emailInput) {
         setTimeout(function () {
             const correoRecordado =

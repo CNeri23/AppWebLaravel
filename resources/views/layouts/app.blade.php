@@ -65,7 +65,6 @@
 
     <title>@yield('title', $settings['system_name'])</title>
 
-    {{-- layout.js va aquí y sin defer: aplica el tema antes de pintar (evita parpadeos) --}}
     <script src="{{ asset('js/layout.js') }}"></script>
 
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
