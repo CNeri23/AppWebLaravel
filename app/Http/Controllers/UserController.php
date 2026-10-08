@@ -91,6 +91,7 @@ class UserController extends Controller
             ...$politica->messages(),
         ]);
 
+        // Primero se inserta el usuario y luego la persona con su usuario_id.
         $usuario = $servicio->crear(
             [
                 'username' => $datos['username'],
@@ -162,9 +163,7 @@ class UserController extends Controller
             $usuario->activo = $activo;
             $usuario->save();
 
-            $persona = $usuario->persona ?? new \App\Models\Persona([
-                'usuario_id' => $usuario->id
-            ]);
+            $persona = $usuario->persona ?? new \App\Models\Persona(['usuario_id' => $usuario->id]);
 
             foreach (UsuarioService::CAMPOS_PERSONA as $campo) {
                 $nuevo = $datos[$campo] ?? null;
@@ -204,11 +203,8 @@ class UserController extends Controller
     /**
      * Activa o desactiva el acceso al sistema de un usuario.
      */
-    public function toggleEstado(
-        Request $request,
-        User $usuario,
-        UsuarioService $servicio
-    ) {
+    public function toggleEstado(Request $request, User $usuario, UsuarioService $servicio)
+    {
         $datos = $request->validate([
             'activo' => ['required', 'boolean'],
         ]);
@@ -249,7 +245,8 @@ class UserController extends Controller
         Request $request,
         User $usuario,
         PasswordPolicy $politica
-    ) {
+    )
+    {
         $datos = $request->validate([
             'password' => $politica->rules(),
         ], $politica->messages());
