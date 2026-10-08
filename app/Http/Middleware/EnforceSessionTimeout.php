@@ -23,6 +23,33 @@ class EnforceSessionTimeout
             return $next($request);
         }
 
+        // Si el administrador desactivó la cuenta, la sesión abierta se cierra de inmediato.
+        if (! Auth::user()->activo) {
+            $usuario = Auth::user();
+
+            AuditLogService::log(
+                module: 'autenticacion',
+                action: 'SESION_CERRADA_INACTIVO',
+                description: 'Se cerró la sesión del usuario "' . $usuario->username .
+                '" porque su cuenta está desactivada.',
+                entity: $usuario
+            );
+
+            Auth::logout();
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'mensaje' => 'Tu cuenta está desactivada. Contacta al administrador.',
+                ], 401);
+            }
+
+            return redirect()->route('login', ['desactivada' => 1]);
+        }
+
         $minutos = (int) $this->settings->get('session_timeout', 0);
 
         if ($minutos <= 0) {
@@ -38,7 +65,7 @@ class EnforceSessionTimeout
             AuditLogService::log(
                 module: 'autenticacion',
                 action: 'SESION_EXPIRADA',
-                description: 'La sesión del usuario "' . $usuario->name .
+                description: 'La sesión del usuario "' . $usuario->username .
                 '" se cerró por inactividad (' . $minutos . ' min).',
                 entity: $usuario
             );

@@ -85,6 +85,10 @@ Route::middleware('auth')->group(function () {
         ->middleware('permiso:accion,usuarios.editar')
         ->name('usuarios.update');
 
+    Route::put('/usuarios/{usuario}/estado', [UserController::class, 'toggleEstado'])
+        ->middleware('permiso:accion,usuarios.editar')
+        ->name('usuarios.estado');
+
     Route::put('/usuarios/{usuario}/password', [UserController::class, 'updatePassword'])
         ->middleware('permiso:accion,usuarios.password')
         ->name('usuarios.password');
@@ -110,6 +114,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/miembros/{miembro}', [MiembroController::class, 'update'])
         ->middleware('permiso:accion,miembros.editar')
         ->name('miembros.update');
+
+    Route::post('/miembros/{miembro}/usuario', [MiembroController::class, 'asignarUsuario'])
+        ->middleware('permiso:accion,miembros.usuario')
+        ->name('miembros.usuario');
 
     Route::delete('/miembros/{miembro}', [MiembroController::class, 'destroy'])
         ->middleware('permiso:accion,miembros.eliminar')

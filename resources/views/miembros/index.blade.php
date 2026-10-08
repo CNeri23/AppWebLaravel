@@ -33,6 +33,7 @@ return [
 
 <script>
 window.accionesMiembros = @json($accionesMiembrosJs);
+window.politicaPassword = @json($politicaPassword ?? []);
 </script>
 
 <div class="card border-0 shadow-sm">
@@ -107,6 +108,22 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                                     data-url="{{ route('miembros.update', $miembro) }}">
                                     {!! $accion->icono ?: '<i class="fa-solid fa-pen"></i>' !!}
                                 </button>
+
+                                @elseif ($accion->slug === 'miembros.usuario')
+                                @if ($miembro->usuario_id)
+                                <button type="button" class="btn btn-sm btn-success miembro-action-btn miembro-usuario-btn"
+                                    title="Ya tiene usuario" data-id="{{ $miembro->id }}" data-tiene-usuario="1" disabled>
+                                    <i class="fa-solid fa-user-check"></i>
+                                </button>
+                                @else
+                                <button type="button" class="btn btn-sm btn-outline-success miembro-action-btn miembro-usuario-btn"
+                                    title="{{ $accion->nombre }}" data-bs-toggle="modal"
+                                    data-bs-target="#modalUsuarioMiembro" data-id="{{ $miembro->id }}"
+                                    data-name="{{ trim($miembro->nombre . ' ' . $miembro->apellido_paterno . ' ' . ($miembro->apellido_materno ?? '')) }}"
+                                    data-url="{{ route('miembros.usuario', $miembro) }}">
+                                    <i class="fa-solid fa-user-lock"></i>
+                                </button>
+                                @endif
 
                                 @elseif ($accion->slug === 'miembros.eliminar')
                                 <button type="button" class="btn btn-sm btn-outline-danger miembro-action-btn"
@@ -400,4 +417,100 @@ window.accionesMiembros = @json($accionesMiembrosJs);
         </div>
     </div>
 </div>
+
+{{-- MODAL CREAR / ASIGNAR USUARIO --}}
+<div class="modal fade" id="modalUsuarioMiembro" tabindex="-1" aria-labelledby="modalUsuarioMiembroLabel"
+    aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalUsuarioMiembroLabel">
+                    <i class="fa-solid fa-user-lock me-2"></i>
+                    Usuario de acceso
+                </h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <form method="POST" id="formUsuarioMiembro" novalidate autocomplete="off">
+                @csrf
+
+                <div class="modal-body">
+                    <p class="text-secondary mb-3">
+                        Usuario para que
+                        <strong id="usuario_miembro_nombre">este miembro</strong>
+                        pueda entrar al sistema. Se le asigna el rol "usuario"; puedes cambiarlo en Usuarios.
+                    </p>
+
+                    @if (($usuariosLibres ?? collect())->isNotEmpty())
+                    <div class="btn-group w-100 mb-3" role="group" aria-label="Modo">
+                        <input type="radio" class="btn-check" name="modo" id="usuario_modo_crear" value="crear" checked>
+                        <label class="btn btn-outline-primary" for="usuario_modo_crear">Crear usuario nuevo</label>
+
+                        <input type="radio" class="btn-check" name="modo" id="usuario_modo_vincular" value="vincular">
+                        <label class="btn btn-outline-primary" for="usuario_modo_vincular">Vincular existente</label>
+                    </div>
+                    @else
+                    <input type="hidden" name="modo" value="crear">
+                    @endif
+
+                    <div id="usuario_bloque_crear">
+                        <div class="mb-3">
+                            <label for="usuario_miembro_username" class="form-label">Usuario</label>
+                            <input type="text" class="form-control" id="usuario_miembro_username" name="username"
+                                maxlength="50" placeholder="Ej. juan.perez" autocomplete="off">
+                            <div class="invalid-feedback" id="usuario-miembro-username-error"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="usuario_miembro_password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="usuario_miembro_password" name="password"
+                                placeholder="Ingresa la contraseña" autocomplete="new-password">
+                            <div class="invalid-feedback" id="usuario-miembro-password-error"></div>
+                            <div class="form-text">{{ $politicaPassword['descripcion'] ?? '' }}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="usuario_miembro_password_confirmation" class="form-label">Confirmar contraseña</label>
+                            <input type="password" class="form-control" id="usuario_miembro_password_confirmation"
+                                name="password_confirmation" placeholder="Confirma la contraseña" autocomplete="new-password">
+                            <div class="invalid-feedback" id="usuario-miembro-password-confirmation-error"></div>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="usuario_miembro_activo"
+                                name="activo" value="1" checked>
+                            <label class="form-check-label" for="usuario_miembro_activo">Usuario activo</label>
+                        </div>
+                    </div>
+
+                    @if (($usuariosLibres ?? collect())->isNotEmpty())
+                    <div id="usuario_bloque_vincular" class="d-none">
+                        <label for="usuario_miembro_existente" class="form-label">Usuario sin persona asignada</label>
+                        <select class="form-select" id="usuario_miembro_existente" name="usuario_id">
+                            <option value="">Selecciona un usuario</option>
+                            @foreach ($usuariosLibres as $libre)
+                            <option value="{{ $libre->id }}">{{ $libre->username }}</option>
+                            @endforeach
+                        </select>
+                        <div class="invalid-feedback" id="usuario-miembro-existente-error"></div>
+                    </div>
+                    @endif
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk me-2"></i>
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection

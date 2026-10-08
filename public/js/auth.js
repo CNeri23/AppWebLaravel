@@ -31,6 +31,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 300);
     })();
 
+    (function avisarCuentaDesactivada() {
+        const params = new URLSearchParams(window.location.search);
+
+        if (params.get('desactivada') !== '1') {
+            return;
+        }
+
+        params.delete('desactivada');
+
+        const resto = params.toString();
+
+        window.history.replaceState(
+            {},
+            '',
+            window.location.pathname +
+            (resto ? '?' + resto : '') +
+            window.location.hash
+        );
+
+        setTimeout(function () {
+            if (typeof window.showToast === 'function') {
+                window.showToast(
+                    'error',
+                    'Tu cuenta está desactivada. Contacta al administrador.'
+                );
+            }
+        }, 300);
+    })();
+
     (function iniciarEscenaGym() {
         const sinMovimiento = window.matchMedia(
             '(prefers-reduced-motion: reduce)'
@@ -319,13 +348,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    const emailInput = document.getElementById('email');
+    // Campo de usuario del login (se conservan los nombres de variable originales)
+    const emailInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
-    const emailError = document.getElementById('email-error');
+    const emailError = document.getElementById('username-error');
     const passwordError = document.getElementById('password-error');
     const rememberInput = document.getElementById('remember');
 
-    const REMEMBER_KEY = 'loginRememberedEmail';
+    const REMEMBER_KEY = 'loginRememberedUsername';
 
     const emailGuardado = localStorage.getItem(REMEMBER_KEY);
 
@@ -370,10 +400,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function mostrarErroresDeCampos(errors) {
         let primerCampoInvalido = null;
 
-        if (errors.email && emailInput && emailError) {
+        if (errors.username && emailInput && emailError) {
             emailInput.classList.remove('is-valid');
             emailInput.classList.add('is-invalid');
-            emailError.textContent = errors.email[0];
+            emailError.textContent = errors.username[0];
 
             primerCampoInvalido =
                 primerCampoInvalido || emailInput;
@@ -537,11 +567,36 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     if (formRegister) {
-        const registerName =
-            document.getElementById('registerName');
+        const registerUsername =
+            document.getElementById('registerUsername');
 
         const registerEmail =
             document.getElementById('registerEmail');
+
+        // [campo del servidor, input, div de error]
+        const camposPersona = [
+            ['username', registerUsername],
+            ['nombre', document.getElementById('registerNombre')],
+            ['apellido_paterno', document.getElementById('registerApellidoPaterno')],
+            ['apellido_materno', document.getElementById('registerApellidoMaterno')],
+            ['telefono', document.getElementById('registerTelefono')],
+            ['email', registerEmail],
+        ].map(function (campo) {
+            return {
+                key: campo[0],
+                input: campo[1],
+                error: document.getElementById(
+                    'register-' + campo[0].replace('_', '-') + '-error'
+                ),
+            };
+        });
+
+        const OBLIGATORIOS = {
+            username: 'El usuario es obligatorio.',
+            nombre: 'El nombre es obligatorio.',
+            apellido_paterno: 'El apellido paterno es obligatorio.',
+            email: 'El correo electrónico es obligatorio.',
+        };
 
         const registerPassword =
             document.getElementById('registerPassword');
@@ -561,6 +616,39 @@ document.addEventListener('DOMContentLoaded', function () {
             event.preventDefault();
 
             limpiarErroresPanel(obtenerPanel('register'));
+
+            let primeroInvalido = null;
+
+            camposPersona.forEach(function (campo) {
+                const valor = campo.input ? campo.input.value.trim() : '';
+                let mensaje = '';
+
+                if (!valor && OBLIGATORIOS[campo.key]) {
+                    mensaje = OBLIGATORIOS[campo.key];
+                } else if (
+                    campo.key === 'username' &&
+                    valor &&
+                    (valor.length < 3 || !/^[A-Za-z0-9._-]+$/.test(valor))
+                ) {
+                    mensaje = valor.length < 3
+                        ? 'El usuario debe tener al menos 3 caracteres.'
+                        : 'Solo letras, números, punto, guion y guion bajo (sin espacios).';
+                } else if (campo.key === 'email' && valor && !campo.input.checkValidity()) {
+                    mensaje = 'Ingresa un correo electrónico válido.';
+                }
+
+                if (mensaje && campo.input) {
+                    campo.input.classList.add('is-invalid');
+                    campo.error.textContent = mensaje;
+                    primeroInvalido = primeroInvalido || campo.input;
+                }
+            });
+
+            if (primeroInvalido) {
+                primeroInvalido.focus();
+
+                return;
+            }
 
             const mensajeClave = registerPassword
                 ? mensajePassword(registerPassword.value)
@@ -637,19 +725,20 @@ document.addEventListener('DOMContentLoaded', function () {
                         'Cuenta creada correctamente.'
                     );
 
-                    const correoRegistrado =
-                        registerEmail
-                            ? registerEmail.value.trim()
-                            : '';
+                    const usuarioRegistrado =
+                        data.username ||
+                        (registerUsername
+                            ? registerUsername.value.trim().toLowerCase()
+                            : '');
 
                     formRegister.reset();
 
                     setTimeout(function () {
                         cambiarPanel('login');
 
-                        if (emailInput && correoRegistrado) {
+                        if (emailInput && usuarioRegistrado) {
                             emailInput.value =
-                                correoRegistrado;
+                                usuarioRegistrado;
                         }
                     }, 700);
                 })
@@ -668,21 +757,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function mostrarErroresRegistro(errors) {
             let primerCampoInvalido = null;
 
-            const campos = [
-                {
-                    key: 'name',
-                    input: registerName,
-                    error: document.getElementById(
-                        'register-name-error'
-                    )
-                },
-                {
-                    key: 'email',
-                    input: registerEmail,
-                    error: document.getElementById(
-                        'register-email-error'
-                    )
-                },
+            const campos = camposPersona.concat([
                 {
                     key: 'password',
                     input: registerPassword,
@@ -697,7 +772,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         'register-password-confirmation-error'
                     )
                 }
-            ];
+            ]);
 
             campos.forEach(function (campo) {
                 if (errors[campo.key]) {
@@ -719,19 +794,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        [
-            [
-                registerName,
-                document.getElementById(
-                    'register-name-error'
-                )
-            ],
-            [
-                registerEmail,
-                document.getElementById(
-                    'register-email-error'
-                )
-            ],
+        camposPersona.map(function (campo) {
+            return [campo.input, campo.error];
+        }).concat([
             [
                 registerPassword,
                 document.getElementById(
@@ -744,7 +809,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     'register-password-confirmation-error'
                 )
             ]
-        ].forEach(function (campo) {
+        ]).forEach(function (campo) {
             if (campo[0] && campo[0] !== registerPassword) {
                 campo[0].addEventListener(
                     'input',

@@ -31,6 +31,10 @@
                             {{ $usuario->name }}
                         </h2>
 
+                        <span class="text-secondary align-self-md-end" id="profileUsername">
+                            &#64;{{ $usuario->username }}
+                        </span>
+
                         <span class="badge text-bg-success profile-status-badge">
                             <i class="fa-solid fa-circle me-1"></i>
                             Activa
@@ -233,23 +237,60 @@
 
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="perfil_name" class="form-label">
-                                Nombre completo
-                            </label>
+                            <label for="perfil_username" class="form-label">Usuario</label>
 
-                            <input type="text" class="form-control" id="perfil_name" name="name"
-                                value="{{ $usuario->name }}" maxlength="255" required>
+                            <input type="text" class="form-control" id="perfil_username" name="username"
+                                value="{{ $usuario->username }}" maxlength="50" required autocomplete="off">
 
-                            <div class="invalid-feedback d-block" id="perfil-name-error"></div>
+                            <div class="form-text">Es el que usas para iniciar sesión.</div>
+                            <div class="invalid-feedback d-block" id="perfil-username-error"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="perfil_nombre" class="form-label">Nombre(s)</label>
+
+                            <input type="text" class="form-control" id="perfil_nombre" name="nombre"
+                                value="{{ $usuario->persona?->nombre }}" maxlength="100" required>
+
+                            <div class="invalid-feedback d-block" id="perfil-nombre-error"></div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-md-6">
+                                <label for="perfil_apellido_paterno" class="form-label">Apellido paterno</label>
+
+                                <input type="text" class="form-control" id="perfil_apellido_paterno"
+                                    name="apellido_paterno" value="{{ $usuario->persona?->apellido_paterno }}"
+                                    maxlength="100" required>
+
+                                <div class="invalid-feedback d-block" id="perfil-apellido-paterno-error"></div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="perfil_apellido_materno" class="form-label">Apellido materno</label>
+
+                                <input type="text" class="form-control" id="perfil_apellido_materno"
+                                    name="apellido_materno" value="{{ $usuario->persona?->apellido_materno }}"
+                                    maxlength="100">
+
+                                <div class="invalid-feedback d-block" id="perfil-apellido-materno-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="perfil_telefono" class="form-label">Teléfono</label>
+
+                            <input type="tel" class="form-control" id="perfil_telefono" name="telefono"
+                                value="{{ $usuario->persona?->telefono }}" maxlength="30">
+
+                            <div class="invalid-feedback d-block" id="perfil-telefono-error"></div>
                         </div>
 
                         <div>
-                            <label for="perfil_email" class="form-label">
-                                Correo electrónico
-                            </label>
+                            <label for="perfil_email" class="form-label">Correo electrónico</label>
 
                             <input type="email" class="form-control" id="perfil_email" name="email"
-                                value="{{ $usuario->email }}" maxlength="255" required>
+                                value="{{ $usuario->persona?->email }}" maxlength="255" required>
 
                             <div class="invalid-feedback d-block" id="perfil-email-error"></div>
                         </div>

@@ -13,6 +13,7 @@ use App\Services\PermissionService;
 use App\Services\SystemSettings;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -101,7 +102,7 @@ class SesionCajaController extends Controller
             $accionesCajas = $submoduloCajas->acciones
                 ->filter(function ($accion) use ($permissionService) {
                     return $permissionService->tieneAccion(
-                        auth()->user(),
+                        auth()->guard()->user(),
                         $accion->id
                     );
                 })
@@ -112,10 +113,15 @@ class SesionCajaController extends Controller
         $autorizadores = collect();
 
         if ($accionesCajas->contains('slug', 'cajas.cerrar')) {
+            $usuarioActualId = auth()->guard()->user()?->id;
+
             $autorizadores = User::query()
-                ->where('id', '!=', auth()->id())
-                ->orderBy('name')
+                ->when($usuarioActualId !== null, function ($query) use ($usuarioActualId) {
+                    $query->where('id', '!=', $usuarioActualId);
+                })
+                ->where('activo', true)
                 ->get()
+                ->sortBy(fn ($usuario) => mb_strtolower($usuario->name))
                 ->filter(function ($usuario) use ($permissionService) {
                     return $permissionService->tieneAccionPorSlug(
                         $usuario,
@@ -221,7 +227,7 @@ class SesionCajaController extends Controller
             }
 
             $sesionUsuario = SesionCaja::query()
-                ->where('usuario_apertura_id', auth()->id())
+                ->where('usuario_apertura_id', auth()->guard()->user()?->id)
                 ->where('estado', SesionCaja::ESTADO_ABIERTA)
                 ->exists();
 
@@ -233,7 +239,7 @@ class SesionCajaController extends Controller
 
             return SesionCaja::create([
                 'caja_id' => $caja->id,
-                'usuario_apertura_id' => auth()->id(),
+                'usuario_apertura_id' => auth()->guard()->user()?->id,
                 'fecha_apertura' => Carbon::now(),
                 'fondo_inicial' => $fondoInicial,
                 'estado' => SesionCaja::ESTADO_ABIERTA,
@@ -273,7 +279,7 @@ class SesionCajaController extends Controller
             'movimientos.pago',
         ])
             ->where('estado', SesionCaja::ESTADO_ABIERTA)
-            ->where('usuario_apertura_id', auth()->id())
+            ->where('usuario_apertura_id', request()->user()?->getAuthIdentifier())
             ->latest('fecha_apertura')
             ->first();
 
@@ -513,7 +519,7 @@ class SesionCajaController extends Controller
             return MovimientoCaja::create([
                 'sesion_caja_id' => $sesionBloqueada->id,
                 'pago_id' => null,
-                'usuario_id' => auth()->id(),
+                'usuario_id' => Auth::id(),
                 'tipo' => MovimientoCaja::TIPO_SALIDA,
                 'concepto' => $datos['concepto'],
                 'monto' => $monto,
@@ -657,7 +663,7 @@ class SesionCajaController extends Controller
             ]);
         }
 
-        if ((int) $autorizador->id === (int) auth()->id()) {
+        if ((int) $autorizador->id === (int) Auth::id()) {
             throw ValidationException::withMessages([
                 'usuario_autorizacion_id' => 'El usuario que cierra la caja no puede autorizar su propio cierre.',
             ]);
@@ -730,7 +736,7 @@ class SesionCajaController extends Controller
                 2
             );
 
-            $sesionBloqueada->usuario_cierre_id = auth()->id();
+            $sesionBloqueada->usuario_cierre_id = Auth::id();
             $sesionBloqueada->usuario_autorizacion_id = $autorizador->id;
             $sesionBloqueada->fecha_cierre = Carbon::now();
             $sesionBloqueada->efectivo_esperado = $efectivoEsperado;

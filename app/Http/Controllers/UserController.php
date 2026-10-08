@@ -8,6 +8,9 @@ use App\Models\User;
 use App\Services\AuditLogService;
 use App\Services\PasswordPolicy;
 use App\Services\PermissionService;
+use App\Services\UsuarioService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
@@ -16,9 +19,10 @@ class UserController extends Controller
 {
     public function index(): View
     {
-        $usuarios = User::with('roles')
-            ->orderBy('name')
-            ->get();
+        $usuarios = User::with(['roles', 'persona'])
+            ->get()
+            ->sortBy(fn (User $usuario) => Str::lower($usuario->name))
+            ->values();
 
         $roles = Role::orderBy('name')->get();
 
@@ -65,79 +69,125 @@ class UserController extends Controller
         ));
     }
 
-    public function store(Request $request, PasswordPolicy $politica)
-    {
-        $datos = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => $politica->rules(),
-        ], $politica->messages());
-
-        $usuario = User::create([
-            'name' => $datos['name'],
-            'email' => $datos['email'],
-            'password' => Hash::make($datos['password']),
+    public function store(
+        Request $request,
+        PasswordPolicy $politica,
+        UsuarioService $servicio
+    ) {
+        $request->merge([
+            'username' => Str::lower(trim((string) $request->input('username'))),
         ]);
+
+        $datos = $request->validate([
+            'username' => $servicio->reglasUsername(),
+            ...$servicio->reglasPersona(),
+            'password' => $politica->rules(),
+            'activo' => ['nullable', 'boolean'],
+            'roles' => ['nullable', 'array'],
+            'roles.*' => ['integer', 'exists:roles,id'],
+        ], [
+            ...$servicio->mensajesUsername(),
+            ...$servicio->mensajesPersona(),
+            ...$politica->messages(),
+        ]);
+
+        $usuario = $servicio->crear(
+            [
+                'username' => $datos['username'],
+                'password' => $datos['password'],
+                'activo' => $request->boolean('activo', true),
+            ],
+            $datos,
+            $datos['roles'] ?? []
+        );
 
         AuditLogService::log(
             module: 'usuarios',
             action: 'CREAR_USUARIO',
-            description: 'Se creó el usuario "' . $usuario->name .
-                '" con correo "' . $usuario->email . '".',
+            description: 'Se creó el usuario "' . $usuario->username .
+                '" para "' . $usuario->name . '" (' . $usuario->email . ').',
             entity: $usuario
         );
-
-        $usuario->load('roles');
 
         return response()->json([
             'success' => true,
             'mensaje' => 'Usuario creado correctamente.',
-            'usuario' => $usuario,
-            'urls' => [
-                'update' => route('usuarios.update', $usuario),
-                'password' => route('usuarios.password', $usuario),
-                'roles' => route('usuarios.roles', $usuario),
-                'delete' => route('usuarios.destroy', $usuario),
-            ],
+            'usuario' => $servicio->presentar($usuario),
+            'urls' => $this->urls($usuario),
         ]);
     }
 
-    public function update(Request $request, User $usuario)
-    {
-        $datos = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                'unique:users,email,' . $usuario->id,
-            ],
+    public function update(
+        Request $request,
+        User $usuario,
+        UsuarioService $servicio
+    ) {
+        $usuario->loadMissing('persona');
+
+        $request->merge([
+            'username' => Str::lower(trim((string) $request->input('username'))),
         ]);
 
-        $nombreAnterior = $usuario->name;
-        $correoAnterior = $usuario->email;
+        $datos = $request->validate([
+            'username' => $servicio->reglasUsername($usuario->id),
+            ...$servicio->reglasPersona($usuario->persona?->id),
+            'activo' => ['nullable', 'boolean'],
+        ], [
+            ...$servicio->mensajesUsername(),
+            ...$servicio->mensajesPersona(),
+        ]);
 
-        $usuario->name = $datos['name'];
-        $usuario->email = $datos['email'];
+        $activo = $request->boolean('activo');
+
+        if (!$activo && $usuario->id === auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No puedes desactivar tu propia cuenta.',
+            ], 422);
+        }
 
         $cambios = [];
 
-        if ($nombreAnterior !== $usuario->name) {
-            $cambios[] = 'Nombre: "' . $nombreAnterior . '" → "' . $usuario->name . '"';
-        }
+        DB::transaction(function () use ($usuario, $datos, $activo, &$cambios) {
+            if ($usuario->username !== $datos['username']) {
+                $cambios[] = 'Usuario: "' . $usuario->username . '" → "' . $datos['username'] . '"';
+            }
 
-        if ($correoAnterior !== $usuario->email) {
-            $cambios[] = 'Correo: "' . $correoAnterior . '" → "' . $usuario->email . '"';
-        }
+            if ($usuario->activo !== $activo) {
+                $cambios[] = 'Estado: ' . ($usuario->activo ? 'Activo' : 'Inactivo') .
+                    ' → ' . ($activo ? 'Activo' : 'Inactivo');
+            }
 
-        $usuario->save();
+            $usuario->username = $datos['username'];
+            $usuario->activo = $activo;
+            $usuario->save();
+
+            $persona = $usuario->persona ?? new \App\Models\Persona([
+                'usuario_id' => $usuario->id
+            ]);
+
+            foreach (UsuarioService::CAMPOS_PERSONA as $campo) {
+                $nuevo = $datos[$campo] ?? null;
+
+                if ($persona->exists && ($persona->{$campo} ?? null) !== $nuevo) {
+                    $cambios[] = ucfirst(str_replace('_', ' ', $campo)) .
+                        ': "' . ($persona->{$campo} ?? '') . '" → "' . ($nuevo ?? '') . '"';
+                }
+
+                $persona->{$campo} = $nuevo;
+            }
+
+            $persona->usuario_id = $usuario->id;
+            $persona->save();
+        });
+
+        $usuario->load(['persona', 'roles']);
 
         if (!empty($cambios)) {
             AuditLogService::log(
                 module: 'usuarios',
                 action: 'EDITAR_USUARIO',
-                description: 'Se modificó el usuario "' . $usuario->name .
+                description: 'Se modificó el usuario "' . $usuario->username .
                     '". Cambios: ' . implode(' | ', $cambios),
                 entity: $usuario
             );
@@ -146,13 +196,52 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'mensaje' => 'Datos del usuario actualizados correctamente.',
-            'usuario' => $usuario,
-            'urls' => [
-                'update' => route('usuarios.update', $usuario),
-                'password' => route('usuarios.password', $usuario),
-                'roles' => route('usuarios.roles', $usuario),
-                'delete' => route('usuarios.destroy', $usuario),
-            ],
+            'usuario' => $servicio->presentar($usuario),
+            'urls' => $this->urls($usuario),
+        ]);
+    }
+
+    /**
+     * Activa o desactiva el acceso al sistema de un usuario.
+     */
+    public function toggleEstado(
+        Request $request,
+        User $usuario,
+        UsuarioService $servicio
+    ) {
+        $datos = $request->validate([
+            'activo' => ['required', 'boolean'],
+        ]);
+
+        $activo = (bool) $datos['activo'];
+
+        if (!$activo && $usuario->id === auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No puedes desactivar tu propia cuenta.',
+            ], 422);
+        }
+
+        if ($usuario->activo !== $activo) {
+            $usuario->activo = $activo;
+            $usuario->save();
+
+            AuditLogService::log(
+                module: 'usuarios',
+                action: $activo ? 'ACTIVAR_USUARIO' : 'DESACTIVAR_USUARIO',
+                description: 'Se ' . ($activo ? 'activó' : 'desactivó') .
+                    ' el usuario "' . $usuario->username . '".',
+                entity: $usuario
+            );
+        }
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => $activo
+                ? 'Usuario activado correctamente.'
+                : 'Usuario desactivado correctamente. Ya no podrá iniciar sesión.',
+            'usuario' => $servicio->presentar($usuario),
+            'urls' => $this->urls($usuario),
         ]);
     }
 
@@ -160,8 +249,7 @@ class UserController extends Controller
         Request $request,
         User $usuario,
         PasswordPolicy $politica
-    )
-    {
+    ) {
         $datos = $request->validate([
             'password' => $politica->rules(),
         ], $politica->messages());
@@ -174,7 +262,7 @@ class UserController extends Controller
             module: 'usuarios',
             action: 'CAMBIAR_PASSWORD',
             description: 'Se cambió la contraseña del usuario "' .
-                $usuario->name . '".',
+                $usuario->username . '".',
             entity: $usuario
         );
 
@@ -215,7 +303,7 @@ class UserController extends Controller
             module: 'usuarios',
             action: 'ASIGNAR_ROLES',
             description: 'Se actualizaron los roles del usuario "' .
-                $usuario->name . '". Roles anteriores: "' .
+                $usuario->username . '". Roles anteriores: "' .
                 $rolesAnterioresTexto . '". Roles nuevos: "' .
                 $rolesNuevosTexto . '".',
             entity: $usuario
@@ -226,20 +314,28 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'mensaje' => 'Roles del usuario actualizados correctamente.',
-            'usuario' => $usuario,
+            'usuario' => app(UsuarioService::class)->presentar($usuario),
         ]);
     }
 
     public function destroy(User $usuario)
     {
-        $nombre = $usuario->name;
-        $correo = $usuario->email;
+        if ($usuario->id === auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No puedes eliminar tu propia cuenta.',
+            ], 422);
+        }
+
+        $nombre = $usuario->username;
+        $persona = $usuario->name;
+        $id = $usuario->id;
 
         AuditLogService::log(
             module: 'usuarios',
             action: 'ELIMINAR_USUARIO',
             description: 'Se eliminó el usuario "' . $nombre .
-                '" con correo "' . $correo . '".',
+                '" (' . $persona . '). La persona se conserva sin usuario.',
             entity: $usuario
         );
 
@@ -248,7 +344,18 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'mensaje' => 'Usuario eliminado correctamente.',
-            'id' => $usuario->id,
+            'id' => $id,
         ]);
+    }
+
+    private function urls(User $usuario): array
+    {
+        return [
+            'update' => route('usuarios.update', $usuario),
+            'estado' => route('usuarios.estado', $usuario),
+            'password' => route('usuarios.password', $usuario),
+            'roles' => route('usuarios.roles', $usuario),
+            'delete' => route('usuarios.destroy', $usuario),
+        ];
     }
 }

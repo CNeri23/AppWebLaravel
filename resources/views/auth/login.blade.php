@@ -104,19 +104,19 @@
                         <form method="POST" action="{{ route('login.submit') }}" id="formLogin" novalidate>
                             @csrf
                             <div class="mb-3">
-                                <label for="email" class="form-label">
-                                    Correo electrónico
+                                <label for="username" class="form-label">
+                                    Usuario
                                 </label>
 
                                 <div class="input-group has-validation">
                                     <span class="input-group-text">
-                                        <i class="fa-solid fa-envelope"></i>
+                                        <i class="fa-solid fa-user"></i>
                                     </span>
 
-                                    <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required autofocus placeholder="example@domain.com">
+                                    <input type="text" class="form-control" id="username" name="username" value="{{ old('username') }}" required autofocus autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Ingresa tu usuario">
                                 </div>
 
-                                <div class="invalid-feedback d-block" id="email-error"></div>
+                                <div class="invalid-feedback d-block" id="username-error"></div>
                             </div>
 
                             <div class="mb-3">
@@ -189,8 +189,8 @@
                             @csrf
 
                             <div class="mb-3">
-                                <label for="registerName" class="form-label">
-                                    Nombre completo
+                                <label for="registerUsername" class="form-label">
+                                    Usuario
                                 </label>
 
                                 <div class="input-group has-validation">
@@ -198,10 +198,75 @@
                                         <i class="fa-solid fa-user"></i>
                                     </span>
 
-                                    <input type="text" class="form-control" id="registerName" name="name" required placeholder="Ingresa tu nombre completo">
+                                    <input type="text" class="form-control" id="registerUsername" name="username" required placeholder="Elige tu usuario para iniciar sesión" maxlength="50" autocomplete="username" autocapitalize="none" spellcheck="false">
                                 </div>
 
-                                <div class="invalid-feedback d-block" id="register-name-error"></div>
+                                <div class="invalid-feedback d-block" id="register-username-error"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="registerNombre" class="form-label">
+                                    Nombre(s)
+                                </label>
+
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text">
+                                        <i class="fa-solid fa-id-card"></i>
+                                    </span>
+
+                                    <input type="text" class="form-control" id="registerNombre" name="nombre" required placeholder="Ingresa tu nombre" maxlength="100" autocomplete="given-name">
+                                </div>
+
+                                <div class="invalid-feedback d-block" id="register-nombre-error"></div>
+                            </div>
+
+                            <div class="row gx-3">
+                                <div class="col-12 col-sm-6 mb-3">
+                                    <label for="registerApellidoPaterno" class="form-label">
+                                        Apellido paterno
+                                    </label>
+
+                                    <div class="input-group has-validation">
+                                        <span class="input-group-text">
+                                            <i class="fa-solid fa-id-card"></i>
+                                        </span>
+
+                                        <input type="text" class="form-control" id="registerApellidoPaterno" name="apellido_paterno" required placeholder="Apellido paterno" maxlength="100" autocomplete="family-name">
+                                    </div>
+
+                                    <div class="invalid-feedback d-block" id="register-apellido-paterno-error"></div>
+                                </div>
+                                <div class="col-12 col-sm-6 mb-3">
+                                    <label for="registerApellidoMaterno" class="form-label">
+                                        Apellido materno (opc.)
+                                    </label>
+
+                                    <div class="input-group has-validation">
+                                        <span class="input-group-text">
+                                            <i class="fa-solid fa-id-card"></i>
+                                        </span>
+
+                                        <input type="text" class="form-control" id="registerApellidoMaterno" name="apellido_materno" placeholder="Apellido materno" maxlength="100">
+                                    </div>
+
+                                    <div class="invalid-feedback d-block" id="register-apellido-materno-error"></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="registerTelefono" class="form-label">
+                                    Teléfono (opcional)
+                                </label>
+
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text">
+                                        <i class="fa-solid fa-phone"></i>
+                                    </span>
+
+                                    <input type="tel" class="form-control" id="registerTelefono" name="telefono" placeholder="Ingresa tu teléfono" maxlength="30" autocomplete="tel">
+                                </div>
+
+                                <div class="invalid-feedback d-block" id="register-telefono-error"></div>
                             </div>
 
                             <div class="mb-3">
@@ -214,7 +279,7 @@
                                         <i class="fa-solid fa-envelope"></i>
                                     </span>
 
-                                    <input type="email" class="form-control" id="registerEmail" name="email" required placeholder="example@domain.com">
+                                    <input type="email" class="form-control" id="registerEmail" name="email" required placeholder="example@domain.com" maxlength="255" autocomplete="email">
                                 </div>
 
                                 <div class="invalid-feedback d-block" id="register-email-error"></div>

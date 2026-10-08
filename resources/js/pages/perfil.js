@@ -58,6 +58,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const profileEmail =
         document.getElementById('profileEmail');
 
+    const profileUsername =
+        document.getElementById('profileUsername');
+
     const profileInfoEmail =
         document.getElementById('profileInfoEmail');
 
@@ -195,7 +198,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function obtenerIdError(campo) {
         const ids = {
-            name: 'perfil-name-error',
+            username: 'perfil-username-error',
+            nombre: 'perfil-nombre-error',
+            apellido_paterno: 'perfil-apellido-paterno-error',
+            apellido_materno: 'perfil-apellido-materno-error',
+            telefono: 'perfil-telefono-error',
             email: 'perfil-email-error',
             current_password: 'current-password-error',
             password: 'profile-password-error',
@@ -458,6 +465,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 usuario.name;
         }
 
+        if (profileUsername && usuario.username) {
+            profileUsername.textContent =
+                '@' + usuario.username;
+        }
+
         if (profileEmail) {
             profileEmail.innerHTML =
                 '<i class="fa-solid fa-envelope me-1"></i> ' +
@@ -642,15 +654,63 @@ document.addEventListener('DOMContentLoaded', function () {
     // puede validarlas el backend; aquí solo se valida lo verificable
     // en el cliente para dar feedback inmediato.
     const validadores = {
-        name: function (valor) {
+        username: function (valor) {
+            valor = valor.trim();
+
+            if (!valor) {
+                return 'El usuario es obligatorio.';
+            }
+
+            if (valor.length < 3) {
+                return 'El usuario debe tener al menos 3 caracteres.';
+            }
+
+            if (valor.length > 50) {
+                return 'El usuario no puede superar los 50 caracteres.';
+            }
+
+            if (!/^[A-Za-z0-9._-]+$/.test(valor)) {
+                return 'Solo letras, números, punto, guion y guion bajo (sin espacios).';
+            }
+
+            return '';
+        },
+        nombre: function (valor) {
             valor = valor.trim();
 
             if (!valor) {
                 return 'El nombre es obligatorio.';
             }
 
-            if (valor.length > 255) {
-                return 'El nombre no puede superar los 255 caracteres.';
+            if (valor.length > 100) {
+                return 'El nombre no puede superar los 100 caracteres.';
+            }
+
+            return '';
+        },
+        apellido_paterno: function (valor) {
+            valor = valor.trim();
+
+            if (!valor) {
+                return 'El apellido paterno es obligatorio.';
+            }
+
+            if (valor.length > 100) {
+                return 'El apellido paterno no puede superar los 100 caracteres.';
+            }
+
+            return '';
+        },
+        apellido_materno: function (valor) {
+            if (valor.trim().length > 100) {
+                return 'El apellido materno no puede superar los 100 caracteres.';
+            }
+
+            return '';
+        },
+        telefono: function (valor) {
+            if (valor.trim().length > 30) {
+                return 'El teléfono no puede superar los 30 caracteres.';
             }
 
             return '';
@@ -1045,7 +1105,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     activarValidacionEnTiempoReal(
         formEditarPerfil,
-        ['name', 'email']
+        ['username', 'nombre', 'apellido_paterno', 'apellido_materno', 'telefono', 'email']
     );
 
     activarValidacionEnTiempoReal(
@@ -1128,18 +1188,14 @@ document.addEventListener('DOMContentLoaded', function () {
     configurarEnvioFormulario({
         formulario: formEditarPerfil,
         boton: btnGuardarPerfil,
-        campos: ['name', 'email'],
+        campos: ['username', 'nombre', 'apellido_paterno', 'apellido_materno', 'telefono', 'email'],
         textoCargando: 'Guardando...',
         antesDeEnviar: function (formulario) {
-            const inputName =
-                formulario.querySelector('[name="name"]');
-
-            const inputEmail =
-                formulario.querySelector('[name="email"]');
-
-            const sinCambios =
-                inputName.value.trim() === inputName.defaultValue.trim() &&
-                inputEmail.value.trim() === inputEmail.defaultValue.trim();
+            const sinCambios = Array.from(
+                formulario.querySelectorAll('input[name]')
+            ).every(function (input) {
+                return input.value.trim() === input.defaultValue.trim();
+            });
 
             if (sinCambios) {
                 window.showToast(
@@ -1160,19 +1216,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // Sincroniza los valores "originales" para que la próxima
             // vez que se abra el modal, la comparación de cambios use
             // los datos ya guardados.
-            const inputName =
-                formEditarPerfil.querySelector('[name="name"]');
-
-            const inputEmail =
-                formEditarPerfil.querySelector('[name="email"]');
-
-            if (inputName) {
-                inputName.defaultValue = inputName.value;
-            }
-
-            if (inputEmail) {
-                inputEmail.defaultValue = inputEmail.value;
-            }
+            formEditarPerfil
+                .querySelectorAll('input[name]')
+                .forEach(function (input) {
+                    input.defaultValue = input.value;
+                });
 
             cerrarModal(
                 modalEditarPerfil

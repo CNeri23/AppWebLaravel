@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Persona;
 use App\Models\Tipo;
 use App\Services\AuditLogService;
+use App\Services\PasswordPolicy;
 use App\Services\PermissionService;
+use App\Services\UsuarioService;
+use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -64,10 +68,25 @@ class MiembroController extends Controller
                 ->values();
         }
 
+        // Usuarios que todavía no están ligados a ninguna persona (para vincular)
+        $usuariosLibres = $accionesMiembros->contains('slug', 'miembros.usuario')
+            ? User::query()->doesntHave('persona')->orderBy('username')->get(['id', 'username'])
+            : collect();
+
+        $politica = app(PasswordPolicy::class);
+
+        $politicaPassword = [
+            'min' => $politica->minLength(),
+            'complex' => $politica->requiresComplexity(),
+            'descripcion' => $politica->description(),
+        ];
+
         return view('miembros.index', compact(
             'miembros',
             'direcciones',
-            'accionesMiembros'
+            'accionesMiembros',
+            'usuariosLibres',
+            'politicaPassword'
         ));
     }
 
@@ -137,6 +156,7 @@ class MiembroController extends Controller
             'urls' => [
                 'update' => route('miembros.update', $resultado),
                 'delete' => route('miembros.destroy', $resultado),
+                'usuario' => route('miembros.usuario', $resultado),
             ],
         ]);
     }
@@ -286,6 +306,104 @@ class MiembroController extends Controller
             'success' => true,
             'mensaje' => 'Miembro eliminado correctamente.',
             'id' => $miembro->id,
+        ]);
+    }
+
+    /**
+     * Crea (o vincula) el usuario con el que un miembro entra al sistema.
+     * El usuario se inserta primero y luego se guarda su id en la persona.
+     */
+    public function asignarUsuario(
+        Request $request,
+        Persona $miembro,
+        PasswordPolicy $politica,
+        UsuarioService $servicio
+    ) {
+        if ($miembro->usuario_id) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Esta persona ya tiene un usuario asignado.',
+            ], 422);
+        }
+
+        $modo = $request->input('modo') === 'vincular' ? 'vincular' : 'crear';
+
+        $nombre = trim($miembro->nombre . ' ' . $miembro->apellido_paterno);
+
+        if ($modo === 'vincular') {
+            $datos = $request->validate([
+                'usuario_id' => [
+                    'required',
+                    'integer',
+                    'exists:users,id',
+                    function (string $atributo, mixed $valor, \Closure $fallo) {
+                        if (Persona::where('usuario_id', $valor)->exists()) {
+                            $fallo('Ese usuario ya está asignado a otra persona.');
+                        }
+                    },
+                ],
+            ], [
+                'usuario_id.required' => 'Selecciona un usuario.',
+                'usuario_id.exists' => 'El usuario seleccionado no existe.',
+            ]);
+
+            $usuario = User::findOrFail($datos['usuario_id']);
+
+            $miembro->usuario_id = $usuario->id;
+            $miembro->save();
+
+            AuditLogService::log(
+                module: 'miembros',
+                action: 'VINCULAR_USUARIO',
+                description: 'Se vinculó el usuario "' . $usuario->username .
+                    '" con el miembro "' . $nombre . '".',
+                entity: $miembro
+            );
+        } else {
+            $request->merge([
+                'username' => Str::lower(trim((string) $request->input('username'))),
+            ]);
+
+            $datos = $request->validate([
+                'username' => $servicio->reglasUsername(),
+                'password' => $politica->rules(),
+                'activo' => ['nullable', 'boolean'],
+            ], [
+                ...$servicio->mensajesUsername(),
+                ...$politica->messages(),
+            ]);
+
+            $rol = $servicio->rolPredeterminado();
+
+            $usuario = $servicio->crearParaPersona(
+                $miembro,
+                [
+                    'username' => $datos['username'],
+                    'password' => $datos['password'],
+                    'activo' => $request->boolean('activo', true),
+                ],
+                $rol ? [$rol->id] : []
+            );
+
+            AuditLogService::log(
+                module: 'miembros',
+                action: 'CREAR_USUARIO_MIEMBRO',
+                description: 'Se creó el usuario "' . $usuario->username .
+                    '" para el miembro "' . $nombre . '".',
+                entity: $miembro
+            );
+        }
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => $modo === 'vincular'
+                ? 'Usuario vinculado correctamente.'
+                : 'Usuario creado correctamente.',
+            'miembro' => $miembro->fresh(['direccion', 'tipos']),
+            'usuario' => [
+                'id' => $usuario->id,
+                'username' => $usuario->username,
+            ],
         ]);
     }
 }

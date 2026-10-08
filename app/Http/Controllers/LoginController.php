@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\AuditLogService;
 use App\Services\PasswordPolicy;
 use App\Services\SystemSettings;
+use App\Services\UsuarioService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -45,26 +46,58 @@ class LoginController extends Controller
 
     public function login(Request $request, SystemSettings $settings)
     {
+        $request->merge([
+            'username' => Str::lower(trim((string) $request->input('username'))),
+        ]);
+
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'username' => ['required', 'string'],
             'password' => ['required'],
         ], [
-            'email.required' => 'El correo electrónico es obligatorio.',
-            'email.email' => 'Ingresa un correo electrónico válido.',
+            'username.required' => 'El usuario es obligatorio.',
             'password.required' => 'La contraseña es obligatoria.',
         ]);
 
         $maxIntentos = max(1, (int) $settings->get('max_login_attempts', 5));
         $minutosBloqueo = max(1, (int) $settings->get('lockout_minutes', 5));
 
-        $claveIntentos = 'login:' . Str::lower($credentials['email']) . '|' . $request->ip();
+        $claveIntentos = 'login:' . $credentials['username'] . '|' . $request->ip();
         $claveBloqueo = $claveIntentos . ':bloqueo';
 
         if (RateLimiter::tooManyAttempts($claveBloqueo, 1)) {
             return $this->respuestaBloqueo(RateLimiter::availableIn($claveBloqueo));
         }
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        // Cuenta desactivada: solo se avisa si la contraseña es correcta,
+        // para no revelar a un extraño qué usuarios existen.
+        $existente = User::where('username', $credentials['username'])->first();
+
+        if (
+            $existente
+            && !$existente->activo
+            && Hash::check($credentials['password'], $existente->password)
+        ) {
+            AuditLogService::log(
+                module: 'autenticacion',
+                action: 'LOGIN_INACTIVO',
+                description: 'El usuario "' . $existente->username .
+                '" intentó iniciar sesión, pero su cuenta está desactivada.',
+                entity: $existente
+            );
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Tu cuenta está desactivada. Contacta al administrador.',
+            ], 403);
+        }
+
+        $intento = [
+            'username' => $credentials['username'],
+            'password' => $credentials['password'],
+            'activo' => true,
+        ];
+
+        if (Auth::attempt($intento, $request->boolean('remember'))) {
 
             RateLimiter::clear($claveIntentos);
 
@@ -75,9 +108,8 @@ class LoginController extends Controller
             AuditLogService::log(
                 module: 'autenticacion',
                 action: 'LOGIN',
-                description: 'El usuario "' . $usuario->name .
-                '" inició sesión con el correo "' .
-                $usuario->email . '".',
+                description: 'El usuario "' . $usuario->username .
+                '" (' . $usuario->name . ') inició sesión.',
                 entity: $usuario
             );
 
@@ -91,8 +123,8 @@ class LoginController extends Controller
         AuditLogService::log(
             module: 'autenticacion',
             action: 'LOGIN_FALLIDO',
-            description: 'Se intentó iniciar sesión con el correo "' .
-            $request->email . '", pero las credenciales no fueron correctas.'
+            description: 'Se intentó iniciar sesión con el usuario "' .
+            $credentials['username'] . '", pero las credenciales no fueron correctas.'
         );
 
         RateLimiter::hit($claveIntentos, self::VENTANA_INTENTOS);
@@ -106,8 +138,8 @@ class LoginController extends Controller
             AuditLogService::log(
                 module: 'autenticacion',
                 action: 'LOGIN_BLOQUEADO',
-                description: 'Se bloqueó temporalmente el acceso del correo "' .
-                $request->email . '" durante ' . $minutosBloqueo .
+                description: 'Se bloqueó temporalmente el acceso del usuario "' .
+                $credentials['username'] . '" durante ' . $minutosBloqueo .
                 ' min por superar los intentos fallidos permitidos.'
             );
 
@@ -145,7 +177,7 @@ class LoginController extends Controller
             AuditLogService::log(
                 module: 'autenticacion',
                 action: 'LOGOUT',
-                description: 'El usuario "' . $usuario->name .
+                description: 'El usuario "' . $usuario->username .
                 '" cerró sesión.',
                 entity: $usuario
             );
@@ -162,7 +194,8 @@ class LoginController extends Controller
     public function register(
         Request $request,
         SystemSettings $settings,
-        PasswordPolicy $politica
+        PasswordPolicy $politica,
+        UsuarioService $usuarios
     ) {
         if (! $settings->get('registration_enabled', true)) {
             return response()->json([
@@ -171,56 +204,53 @@ class LoginController extends Controller
             ], 403);
         }
 
+        $request->merge([
+            'username' => Str::lower(trim((string) $request->input('username'))),
+        ]);
+
         $datos = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'username' => $usuarios->reglasUsername(),
+            ...$usuarios->reglasPersona(),
             'password' => $politica->rules(),
         ], [
-            'name.required' => 'El nombre es obligatorio.',
-            'name.string' => 'El nombre no es válido.',
-            'name.max' => 'El nombre no puede superar los 255 caracteres.',
-
-            'email.required' => 'El correo electrónico es obligatorio.',
-            'email.string' => 'El correo electrónico no es válido.',
-            'email.email' => 'Ingresa un correo electrónico válido.',
-            'email.max' => 'El correo electrónico no puede superar los 255 caracteres.',
-            'email.unique' => 'Este correo electrónico ya está registrado.',
-
+            ...$usuarios->mensajesUsername(),
+            ...$usuarios->mensajesPersona(),
             ...$politica->messages(),
         ]);
 
-        $usuario = User::create([
-            'name' => $datos['name'],
-            'email' => $datos['email'],
-            'password' => Hash::make($datos['password']),
-        ]);
-
-        $rolUsuario = Role::where('name', 'usuario')->first();
+        $rolUsuario = $usuarios->rolPredeterminado();
 
         if (!$rolUsuario) {
-
-            $usuario->delete();
-
             return response()->json([
                 'success' => false,
                 'mensaje' => 'No fue posible completar el registro. El rol predeterminado no está configurado.',
             ], 500);
         }
 
-        $usuario->roles()->attach($rolUsuario->id);
+        // Primero el usuario, luego la persona con su usuario_id (una sola transacción).
+        $usuario = $usuarios->crear(
+            [
+                'username' => $datos['username'],
+                'password' => $datos['password'],
+                'activo' => true,
+            ],
+            $datos,
+            [$rolUsuario->id]
+        );
 
         AuditLogService::log(
             module: 'autenticacion',
             action: 'REGISTRO',
-            description: 'Se registró el usuario "' .
-            $usuario->name . '" con el correo "' .
-            $usuario->email . '" y se le asignó el rol "usuario".',
+            description: 'Se registró el usuario "' . $usuario->username .
+            '" (' . $usuario->name . ', ' . $usuario->email .
+            ') y se le asignó el rol "usuario".',
             entity: $usuario
         );
 
         return response()->json([
             'success' => true,
             'mensaje' => 'Cuenta creada correctamente. Ya puedes iniciar sesión.',
+            'username' => $usuario->username,
         ]);
     }
 
@@ -288,7 +318,7 @@ class LoginController extends Controller
                     module: 'autenticacion',
                     action: 'RECUPERAR_PASSWORD',
                     description: 'Se restableció la contraseña del usuario "' .
-                    $usuario->name . '".',
+                    $usuario->username . '".',
                     entity: $usuario
                 );
             }

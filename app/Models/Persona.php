@@ -19,7 +19,22 @@ class Persona extends Model
         'telefono',
         'email',
         'direccion_id',
+        'usuario_id',
     ];
+
+    public function getNombreCompletoAttribute(): string
+    {
+        return trim(
+            $this->nombre . ' ' .
+            $this->apellido_paterno . ' ' .
+            ($this->apellido_materno ?? '')
+        );
+    }
+
+    public function usuario(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'usuario_id');
+    }
 
     public function direccion(): BelongsTo
     {

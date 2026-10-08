@@ -41,21 +41,35 @@
                 <thead>
                     <tr>
                         <th>Usuario</th>
+                        <th>Nombre</th>
                         <th>Correo electrónico</th>
+                        <th>Estado</th>
                         <th>Fecha de registro</th>
                         <th class="text-center px-4">Acciones</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @forelse ($usuarios as $usuario)
+                    @foreach ($usuarios as $usuario)
                     <tr>
-                        <td>
-                            {{ $usuario->name }}
+                        <td class="fw-semibold">
+                            {{ $usuario->username }}
                         </td>
 
                         <td>
-                            {{ $usuario->email }}
+                            {{ $usuario->persona?->nombre_completo ?: '—' }}
+                        </td>
+
+                        <td>
+                            {{ $usuario->email ?: '—' }}
+                        </td>
+
+                        <td>
+                            @if ($usuario->activo)
+                            <span class="badge rounded-pill text-bg-success">Activo</span>
+                            @else
+                            <span class="badge rounded-pill text-bg-secondary">Inactivo</span>
+                            @endif
                         </td>
 
                         <td>
@@ -77,9 +91,25 @@
                                     data-bs-target="#modalEditarUsuario"
                                     data-id="{{ $usuario->id }}"
                                     data-name="{{ $usuario->name }}"
-                                    data-email="{{ $usuario->email }}"
+                                    data-username="{{ $usuario->username }}"
+                                    data-nombre="{{ $usuario->persona?->nombre }}"
+                                    data-apellido-paterno="{{ $usuario->persona?->apellido_paterno }}"
+                                    data-apellido-materno="{{ $usuario->persona?->apellido_materno }}"
+                                    data-telefono="{{ $usuario->persona?->telefono }}"
+                                    data-email="{{ $usuario->persona?->email }}"
+                                    data-activo="{{ $usuario->activo ? 1 : 0 }}"
                                     data-url="{{ route('usuarios.update', $usuario) }}">
                                     {!! $accion->icono ?: '<i class="fa-solid fa-pen"></i>' !!}
+                                </button>
+
+                                <button type="button"
+                                    class="btn btn-sm usuario-action-btn btn-estado-usuario {{ $usuario->activo ? 'btn-outline-secondary' : 'btn-outline-success' }}"
+                                    title="{{ $usuario->activo ? 'Desactivar' : 'Activar' }}"
+                                    data-id="{{ $usuario->id }}"
+                                    data-name="{{ $usuario->username }}"
+                                    data-activo="{{ $usuario->activo ? 1 : 0 }}"
+                                    data-url="{{ route('usuarios.estado', $usuario) }}">
+                                    <i class="fa-solid {{ $usuario->activo ? 'fa-toggle-on' : 'fa-toggle-off' }}"></i>
                                 </button>
 
                                 @elseif ($accion->slug === 'usuarios.password')
@@ -123,16 +153,7 @@
                             </div>
                         </td>
                     </tr>
-                    @empty
-                    <tr>
-                        <td colspan="4" class="text-center py-5">
-                            <div class="text-secondary">
-                                <i class="fa-solid fa-users-slash fa-2x mb-3"></i>
-                                <p class="mb-0">No hay usuarios registrados.</p>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -141,7 +162,7 @@
 
 {{-- MODAL NUEVO USUARIO --}}
 <div class="modal fade" id="modalNuevoUsuario" tabindex="-1" aria-labelledby="modalNuevoUsuarioLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalNuevoUsuarioLabel">
@@ -156,39 +177,91 @@
                 @csrf
 
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nombre</label>
-                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                            name="name" value="{{ old('name') }}" required>
-                        @error('name')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                    <h6 class="fw-semibold mb-3"><i class="fa-solid fa-right-to-bracket me-2"></i>Acceso</h6>
 
                     <div class="mb-3">
-                        <label for="email" class="form-label">Correo electrónico</label>
-                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
-                            name="email" value="{{ old('email') }}" required>
-                        @error('email')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label for="username" class="form-label">Usuario</label>
+                        <input type="text" class="form-control" id="username" name="username" maxlength="50"
+                            placeholder="Ej. juan.perez" required>
+                        <div class="invalid-feedback" id="username-error"></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="password" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control @error('password') is-invalid @enderror"
-                            id="password" name="password" required>
-                        <div class="invalid-feedback" id="password-error">@error('password'){{ $message }}@enderror</div>
+                        <input type="password" class="form-control" id="password" name="password"
+                            placeholder="Ingresa la contraseña" required autocomplete="new-password">
+                        <div class="invalid-feedback" id="password-error"></div>
                         <div class="form-text" id="password-hint">{{ $politicaPassword['descripcion'] }}</div>
                     </div>
 
-                    <div>
+                    <div class="mb-3">
                         <label for="password_confirmation" class="form-label">Confirmar contraseña</label>
                         <input type="password" class="form-control" id="password_confirmation"
-                            name="password_confirmation" required>
+                            name="password_confirmation" placeholder="Confirma la contraseña" required
+                            autocomplete="new-password">
                         <div class="invalid-feedback" id="password-confirmation-error"></div>
                     </div>
 
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" role="switch" id="nuevo_activo" name="activo"
+                            value="1" checked>
+                        <label class="form-check-label" for="nuevo_activo">Usuario activo</label>
+                        <div class="form-text">Si está inactivo no podrá iniciar sesión.</div>
+                    </div>
+
+                    <h6 class="fw-semibold mb-3"><i class="fa-solid fa-user me-2"></i>Datos personales</h6>
+
+                    <div class="mb-3">
+                        <label for="nuevo_nombre" class="form-label">Nombre(s)</label>
+                        <input type="text" class="form-control" id="nuevo_nombre" name="nombre" maxlength="100"
+                            placeholder="Ingresa el nombre" required>
+                        <div class="invalid-feedback" id="nombre-error"></div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="nuevo_apellido_paterno" class="form-label">Apellido paterno</label>
+                            <input type="text" class="form-control" id="nuevo_apellido_paterno" name="apellido_paterno"
+                                maxlength="100" placeholder="Apellido paterno" required>
+                            <div class="invalid-feedback" id="apellido_paterno-error"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="nuevo_apellido_materno" class="form-label">Apellido materno</label>
+                            <input type="text" class="form-control" id="nuevo_apellido_materno" name="apellido_materno"
+                                maxlength="100" placeholder="Apellido materno (opcional)">
+                            <div class="invalid-feedback" id="apellido_materno-error"></div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="nuevo_telefono" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" id="nuevo_telefono" name="telefono" maxlength="30"
+                                placeholder="Teléfono (opcional)">
+                            <div class="invalid-feedback" id="telefono-error"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="nuevo_email" class="form-label">Correo electrónico</label>
+                            <input type="email" class="form-control" id="nuevo_email" name="email" maxlength="255"
+                                placeholder="example@domain.com" required>
+                            <div class="invalid-feedback" id="email-error"></div>
+                        </div>
+                    </div>
+
+                    @if ($roles->isNotEmpty())
+                    <label class="form-label fw-semibold">Roles (opcional)</label>
+                    <div class="border rounded p-3">
+                        @foreach ($roles as $rol)
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="roles[]" value="{{ $rol->id }}"
+                                id="nuevo_rol_{{ $rol->id }}">
+                            <label class="form-check-label" for="nuevo_rol_{{ $rol->id }}">{{ $rol->name }}</label>
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
                 </div>
 
                 <div class="modal-footer">
@@ -208,7 +281,7 @@
 
 {{-- MODAL EDITAR USUARIO --}}
 <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalEditarUsuarioLabel">
@@ -227,16 +300,61 @@
 
                     <input type="hidden" id="editar_id" name="id">
 
-                    <div class="mb-3">
-                        <label for="editar_name" class="form-label">Nombre</label>
+                    <h6 class="fw-semibold mb-3"><i class="fa-solid fa-right-to-bracket me-2"></i>Acceso</h6>
 
-                        <input type="text" class="form-control" id="editar_name" name="name" required>
+                    <div class="mb-3">
+                        <label for="editar_username" class="form-label">Usuario</label>
+                        <input type="text" class="form-control" id="editar_username" name="username" maxlength="50"
+                            placeholder="Ej. juan.perez" required>
+                        <div class="invalid-feedback" id="editar-username-error"></div>
                     </div>
 
-                    <div>
-                        <label for="editar_email" class="form-label">Correo electrónico</label>
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" role="switch" id="editar_activo" name="activo"
+                            value="1">
+                        <label class="form-check-label" for="editar_activo">Usuario activo</label>
+                        <div class="form-text">Si está inactivo no podrá iniciar sesión.</div>
+                    </div>
 
-                        <input type="email" class="form-control" id="editar_email" name="email" required>
+                    <h6 class="fw-semibold mb-3"><i class="fa-solid fa-user me-2"></i>Datos personales</h6>
+
+                    <div class="mb-3">
+                        <label for="editar_nombre" class="form-label">Nombre(s)</label>
+                        <input type="text" class="form-control" id="editar_nombre" name="nombre" maxlength="100"
+                            placeholder="Ingresa el nombre" required>
+                        <div class="invalid-feedback" id="editar-nombre-error"></div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="editar_apellido_paterno" class="form-label">Apellido paterno</label>
+                            <input type="text" class="form-control" id="editar_apellido_paterno" name="apellido_paterno"
+                                maxlength="100" placeholder="Apellido paterno" required>
+                            <div class="invalid-feedback" id="editar-apellido_paterno-error"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="editar_apellido_materno" class="form-label">Apellido materno</label>
+                            <input type="text" class="form-control" id="editar_apellido_materno" name="apellido_materno"
+                                maxlength="100" placeholder="Apellido materno (opcional)">
+                            <div class="invalid-feedback" id="editar-apellido_materno-error"></div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="editar_telefono" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" id="editar_telefono" name="telefono" maxlength="30"
+                                placeholder="Teléfono (opcional)">
+                            <div class="invalid-feedback" id="editar-telefono-error"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="editar_email" class="form-label">Correo electrónico</label>
+                            <input type="email" class="form-control" id="editar_email" name="email" maxlength="255"
+                                placeholder="example@domain.com" required>
+                            <div class="invalid-feedback" id="editar-email-error"></div>
+                        </div>
                     </div>
 
                 </div>

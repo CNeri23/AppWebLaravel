@@ -162,6 +162,32 @@ document.addEventListener('DOMContentLoaded', function () {
                     '</button>';
             }
 
+            else if (accion.slug === 'miembros.usuario') {
+
+                if (miembro.usuario_id) {
+                    html +=
+                        '<button type="button" ' +
+                        'class="btn btn-sm btn-success miembro-action-btn miembro-usuario-btn" ' +
+                        'title="Ya tiene usuario" ' +
+                        'data-id="' + escapeAttribute(miembro.id) + '" ' +
+                        'data-tiene-usuario="1" disabled>' +
+                        '<i class="fa-solid fa-user-check"></i>' +
+                        '</button>';
+                } else {
+                    html +=
+                        '<button type="button" ' +
+                        'class="btn btn-sm btn-outline-success miembro-action-btn miembro-usuario-btn" ' +
+                        'title="' + escapeAttribute(accion.nombre) + '" ' +
+                        'data-bs-toggle="modal" ' +
+                        'data-bs-target="#modalUsuarioMiembro" ' +
+                        'data-id="' + escapeAttribute(miembro.id) + '" ' +
+                        'data-name="' + escapeAttribute(nombreCompleto(miembro)) + '" ' +
+                        'data-url="' + escapeAttribute(urls.usuario || ('/miembros/' + miembro.id + '/usuario')) + '">' +
+                        '<i class="fa-solid fa-user-lock"></i>' +
+                        '</button>';
+                }
+            }
+
             else if (accion.slug === 'miembros.eliminar') {
 
                 html +=
@@ -748,6 +774,193 @@ document.addEventListener('DOMContentLoaded', function () {
                     .catch(mostrarError);
             }
         );
+    }
+
+
+    // ---- Crear / vincular usuario de acceso ----
+    const modalUsuarioMiembroEl =
+        document.getElementById('modalUsuarioMiembro');
+
+    const formUsuarioMiembro =
+        document.getElementById('formUsuarioMiembro');
+
+    if (modalUsuarioMiembroEl && formUsuarioMiembro) {
+        const modalUsuarioMiembro =
+            new bootstrap.Modal(modalUsuarioMiembroEl);
+
+        const bloqueCrear =
+            document.getElementById('usuario_bloque_crear');
+
+        const bloqueVincular =
+            document.getElementById('usuario_bloque_vincular');
+
+        const politica = window.politicaPassword || {};
+        const passwordMinimo = parseInt(politica.min, 10) || 8;
+        const passwordComplejo = !!politica.complex;
+
+        let botonOrigen = null;
+
+        function modoActual() {
+            const marcado = formUsuarioMiembro.querySelector(
+                'input[name="modo"]:checked'
+            );
+
+            if (marcado) {
+                return marcado.value;
+            }
+
+            const oculto = formUsuarioMiembro.querySelector(
+                'input[name="modo"][type="hidden"]'
+            );
+
+            return oculto ? oculto.value : 'crear';
+        }
+
+        function aplicarModo() {
+            const vincular = modoActual() === 'vincular';
+
+            bloqueCrear.classList.toggle('d-none', vincular);
+
+            if (bloqueVincular) {
+                bloqueVincular.classList.toggle('d-none', !vincular);
+            }
+        }
+
+        function marcarError(input, texto) {
+            if (!input) {
+                return;
+            }
+
+            input.classList.toggle('is-invalid', !!texto);
+
+            const error = input.parentElement.querySelector('.invalid-feedback');
+
+            if (error) {
+                error.textContent = texto || '';
+            }
+        }
+
+        function limpiarFormularioUsuario() {
+            formUsuarioMiembro.reset();
+
+            formUsuarioMiembro
+                .querySelectorAll('.is-invalid')
+                .forEach(function (input) {
+                    marcarError(input, '');
+                });
+
+            aplicarModo();
+        }
+
+        formUsuarioMiembro
+            .querySelectorAll('input[name="modo"]')
+            .forEach(function (radio) {
+                radio.addEventListener('change', aplicarModo);
+            });
+
+        modalUsuarioMiembroEl.addEventListener('show.bs.modal', function (event) {
+            botonOrigen = event.relatedTarget;
+
+            limpiarFormularioUsuario();
+
+            if (!botonOrigen) {
+                return;
+            }
+
+            document.getElementById('usuario_miembro_nombre').textContent =
+                botonOrigen.dataset.name || 'este miembro';
+
+            formUsuarioMiembro.setAttribute('action', botonOrigen.dataset.url);
+        });
+
+        function validarUsuarioMiembro() {
+            const modo = modoActual();
+            let valido = true;
+
+            if (modo === 'vincular') {
+                const select = document.getElementById('usuario_miembro_existente');
+
+                if (!select || !select.value) {
+                    marcarError(select, 'Selecciona un usuario.');
+                    return false;
+                }
+
+                marcarError(select, '');
+                return true;
+            }
+
+            const username = document.getElementById('usuario_miembro_username');
+            const password = document.getElementById('usuario_miembro_password');
+            const confirmacion = document.getElementById('usuario_miembro_password_confirmation');
+
+            const valorUsuario = username.value.trim();
+
+            if (valorUsuario.length < 3) {
+                marcarError(username, 'El usuario debe tener al menos 3 caracteres.');
+                valido = false;
+            } else if (!/^[A-Za-z0-9._-]+$/.test(valorUsuario)) {
+                marcarError(username, 'Solo letras, números, punto, guion y guion bajo (sin espacios).');
+                valido = false;
+            } else {
+                marcarError(username, '');
+            }
+
+            let mensajeClave = '';
+
+            if (password.value.length < passwordMinimo) {
+                mensajeClave = 'La contraseña debe tener al menos ' + passwordMinimo + ' caracteres.';
+            } else if (
+                passwordComplejo &&
+                !(/\p{Ll}/u.test(password.value) && /\p{Lu}/u.test(password.value) && /\d/.test(password.value))
+            ) {
+                mensajeClave = 'La contraseña debe incluir una mayúscula, una minúscula y un número.';
+            }
+
+            marcarError(password, mensajeClave);
+
+            if (mensajeClave) {
+                valido = false;
+            }
+
+            if (confirmacion.value !== password.value) {
+                marcarError(confirmacion, 'Las contraseñas no coinciden.');
+                valido = false;
+            } else {
+                marcarError(confirmacion, '');
+            }
+
+            return valido;
+        }
+
+        formUsuarioMiembro.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            if (!validarUsuarioMiembro()) {
+                return;
+            }
+
+            enviarFormulario(
+                formUsuarioMiembro,
+                modalUsuarioMiembro,
+                'Usuario asignado correctamente.'
+            )
+                .then(function () {
+                    if (!botonOrigen) {
+                        return;
+                    }
+
+                    // El botón pasa a "ya tiene usuario"
+                    botonOrigen.className =
+                        'btn btn-sm btn-success miembro-action-btn miembro-usuario-btn';
+                    botonOrigen.disabled = true;
+                    botonOrigen.title = 'Ya tiene usuario';
+                    botonOrigen.dataset.tieneUsuario = '1';
+                    botonOrigen.removeAttribute('data-bs-toggle');
+                    botonOrigen.removeAttribute('data-bs-target');
+                    botonOrigen.innerHTML = '<i class="fa-solid fa-user-check"></i>';
+                })
+                .catch(mostrarError);
+        });
     }
 
     ajustarTodasLasFilas();
