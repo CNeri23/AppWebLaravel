@@ -50,7 +50,7 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                 </thead>
 
                 <tbody>
-                    @forelse ($miembros as $miembro)
+                    @foreach ($miembros as $miembro)
                     <tr>
                         <td>
                             {{ trim(
@@ -126,16 +126,7 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                             </div>
                         </td>
                     </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="text-center py-5">
-                            <div class="text-secondary">
-                                <i class="fa-solid fa-users-slash fa-2x mb-3"></i>
-                                <p class="mb-0">No hay miembros registrados.</p>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
             </table>
         </div>

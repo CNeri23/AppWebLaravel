@@ -1,0 +1,63 @@
+.asistencias-resultados .list-group-item {
+    cursor: pointer;
+}
+
+.asistencias-resultados .list-group-item:disabled {
+    cursor: wait;
+}
+
+.asistencia-resultado .asistencia-resultado-icono {
+    font-size: 2.25rem;
+    line-height: 1;
+}
+
+.asistencia-kpi-icono {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    font-size: 1.25rem;
+}
+
+.asistencia-kpi-valor {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.asistencia-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 6px;
+    min-width: max-content;
+}
+
+.btn.asistencia-action-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 10px;
+    line-height: 1;
+}
+
+.btn.asistencia-action-btn > i,
+.btn.asistencia-action-btn > svg {
+    margin: 0 !important;
+    font-size: 14px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.asistencias-table-wrap {
+    overflow-x: auto;
+    overflow-y: hidden;
+}

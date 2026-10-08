@@ -17,6 +17,7 @@ use App\Http\Controllers\MembresiaController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\SesionCajaController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\AsistenciaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -180,6 +181,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/tickets/{ticket}/imprimir', [TicketController::class, 'print'])
         ->middleware('permiso:accion,membresias.ver')
         ->name('tickets.print');
+
+    // Rutas asistencias
+
+    Route::get('/asistencias', [AsistenciaController::class, 'index'])
+        ->middleware('permiso:submodulo,asistencias')
+        ->name('asistencias.index');
+
+    Route::get('/asistencias/buscar', [AsistenciaController::class, 'buscar'])
+        ->middleware('permiso:accion,asistencias.registrar')
+        ->name('asistencias.buscar');
+
+    Route::post('/asistencias', [AsistenciaController::class, 'store'])
+        ->middleware('permiso:accion,asistencias.registrar')
+        ->name('asistencias.store');
+
+    Route::delete('/asistencias/{asistencia}', [AsistenciaController::class, 'destroy'])
+        ->middleware('permiso:accion,asistencias.eliminar')
+        ->name('asistencias.destroy');
 
     // Rutas caja
 

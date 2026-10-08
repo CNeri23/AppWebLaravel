@@ -366,47 +366,10 @@ document.addEventListener('DOMContentLoaded', function () {
         dataTable.draw(false);
     }
 
-    function quitarFilaVacia() {
-        const filaVacia =
-            tabla.querySelector(
-                'tbody .empty-row'
-            );
-
-        if (filaVacia) {
-            filaVacia.remove();
-        }
-    }
-
-    function mostrarFilaVacia() {
-        if (!dataTable) {
-            return;
-        }
-
-        if (dataTable.rows().count() > 0) {
-            return;
-        }
-
-        const tbody =
-            tabla.querySelector('tbody');
-
-        tbody.innerHTML = `
-        <tr class="empty-row">
-            <td colspan="6" class="text-center py-5">
-                <div class="text-secondary">
-                    <i class="fa-solid fa-tags fa-2x mb-3"></i>
-                    <div class="fw-semibold">No hay planes registrados.</div>
-                </div>
-            </td>
-        </tr>
-    `;
-    }
-
     function agregarPlanATabla(plan, urls = null) {
         if (!dataTable) {
             return;
         }
-
-        quitarFilaVacia();
 
         const fila =
             crearFilaPlan(
@@ -944,8 +907,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     cerrarModal(
                         modalEliminar
                     );
-
-                    mostrarFilaVacia();
 
                     mostrarExito(
                         data.mensaje ||

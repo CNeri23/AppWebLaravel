@@ -54,7 +54,7 @@
                 </thead>
 
                 <tbody>
-                    @forelse ($planes as $plan)
+                    @foreach ($planes as $plan)
                     <tr data-id="{{ $plan->id }}" data-nombre="{{ $plan->nombre }}"
                         data-descripcion="{{ $plan->descripcion ?? '' }}"
                         data-duracion-dias="{{ $plan->duracion_dias }}" data-precio="{{ $plan->precio }}"
@@ -124,16 +124,7 @@
                             </div>
                         </td>
                     </tr>
-                    @empty
-                    <tr class="empty-row">
-                        <td colspan="6" class="text-center py-5">
-                            <div class="text-secondary">
-                                <i class="fa-solid fa-tags fa-2x mb-3"></i>
-                                <div class="fw-semibold">No hay planes registrados.</div>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
             </table>
         </div>
