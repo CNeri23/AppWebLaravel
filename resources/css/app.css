@@ -12,6 +12,7 @@
 @import './pages/sesiones.css';
 @import './pages/ticket.css';
 @import './pages/preferences.css';
+@import './pages/logs.css';
 
 @import 'tailwindcss';
 
