@@ -7,154 +7,101 @@
 @endpush
 
 @section('content')
-    <div class="preferences-page">
-        <div class="preferences-header">
-            <div>
-                <span class="preferences-eyebrow">
-                    <i class="fa-solid fa-sliders"></i>
-                    Personalización
+
+<div class="container-fluid py-4 preferencias-page">
+    <div class="theme-style-grid">
+        @php
+            $lightThemeStyles = [
+                'white' => [
+                    'name' => 'White',
+                    'description' => 'Claro limpio',
+                    'class' => 'theme-preview-white',
+                ],
+                'mist' => [
+                    'name' => 'Mist',
+                    'description' => 'Claro suave',
+                    'class' => 'theme-preview-mist',
+                ],
+                'sky' => [
+                    'name' => 'Sky',
+                    'description' => 'Claro fresco',
+                    'class' => 'theme-preview-sky',
+                ],
+            ];
+
+            $darkThemeStyles = [
+                'graphite' => [
+                    'name' => 'Graphite',
+                    'description' => 'Oscuro elegante',
+                    'class' => 'theme-preview-graphite',
+                ],
+                'charcoal' => [
+                    'name' => 'Charcoal',
+                    'description' => 'Oscuro neutro',
+                    'class' => 'theme-preview-charcoal',
+                ],
+                'black' => [
+                    'name' => 'Black',
+                    'description' => 'Negro profundo',
+                    'class' => 'theme-preview-black',
+                ],
+            ];
+        @endphp
+
+        @foreach ($lightThemeStyles as $value => $style)
+            <label class="theme-style-option">
+                <input type="radio"
+                    name="light_theme_style"
+                    value="{{ $value }}"
+                    {{ $preferencias['light_theme_style'] === $value ? 'checked' : '' }}>
+
+                <span class="theme-style-content">
+                    <span class="theme-preview {{ $style['class'] }}">
+                        <span class="theme-preview-sidebar"></span>
+
+                        <span class="theme-preview-main">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </span>
+
+                    <span class="theme-style-info">
+                        <strong>{{ $style['name'] }}</strong>
+                        <small>{{ $style['description'] }}</small>
+                    </span>
                 </span>
+            </label>
+        @endforeach
 
-                <h1 class="preferences-title">
-                    Preferencias
-                </h1>
+        @foreach ($darkThemeStyles as $value => $style)
+            <label class="theme-style-option">
+                <input type="radio"
+                    name="dark_theme_style"
+                    value="{{ $value }}"
+                    {{ $preferencias['dark_theme_style'] === $value ? 'checked' : '' }}>
 
-                <p class="preferences-description">
-                    Personaliza la apariencia de IronPulse para tu cuenta.
-                </p>
-            </div>
-        </div>
+                <span class="theme-style-content">
+                    <span class="theme-preview {{ $style['class'] }}">
+                        <span class="theme-preview-sidebar"></span>
 
-        <section class="preferences-section">
-            <div class="preferences-section-header">
-                <div>
-                    <h2>
-                        <i class="fa-solid fa-palette"></i>
-                        Apariencia
-                    </h2>
-
-                    <p>
-                        Elige una variante para cada modo. Tus preferencias son personales y se conservan en tu cuenta.
-                    </p>
-                </div>
-
-                <div class="preferences-current">
-                    <span>Modo actual</span>
-                    <strong id="preferencesCurrentMode">
-                        {{ $preferencias['theme_mode'] === 'dark' ? 'Oscuro' : 'Claro' }}
-                    </strong>
-                </div>
-            </div>
-
-            <div class="preferences-group">
-                <div class="preferences-group-title">
-                    <span>
-                        <i class="fa-regular fa-sun"></i>
-                        Claro
+                        <span class="theme-preview-main">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
                     </span>
 
-                    <small>
-                        {{ ucfirst($preferencias['light_theme_style']) }}
-                    </small>
-                </div>
-
-                <div class="theme-options">
-                    @foreach ([
-                        'white' => [
-                            'name' => 'White',
-                            'description' => 'Claro y limpio',
-                        ],
-                        'mist' => [
-                            'name' => 'Mist',
-                            'description' => 'Gris suave',
-                        ],
-                        'sky' => [
-                            'name' => 'Sky',
-                            'description' => 'Azul muy sutil',
-                        ],
-                    ] as $style => $theme)
-                        <button type="button"
-                            class="theme-option {{ $preferencias['light_theme_style'] === $style ? 'is-selected' : '' }}"
-                            data-theme-style-option="{{ $style }}"
-                            data-theme-mode-option="light"
-                            aria-pressed="{{ $preferencias['light_theme_style'] === $style ? 'true' : 'false' }}">
-                            <span class="theme-preview theme-preview-light theme-preview-{{ $style }}">
-                                <span class="theme-preview-sidebar"></span>
-                                <span class="theme-preview-main">
-                                    <span class="theme-preview-topbar"></span>
-                                    <span class="theme-preview-card"></span>
-                                    <span class="theme-preview-card theme-preview-card-small"></span>
-                                </span>
-                            </span>
-
-                            <span class="theme-option-info">
-                                <strong>{{ $theme['name'] }}</strong>
-                                <small>{{ $theme['description'] }}</small>
-                            </span>
-
-                            <span class="theme-option-check">
-                                <i class="fa-solid fa-check"></i>
-                            </span>
-                        </button>
-                    @endforeach
-                </div>
-            </div>
-
-            <div class="preferences-group">
-                <div class="preferences-group-title">
-                    <span>
-                        <i class="fa-regular fa-moon"></i>
-                        Oscuro
+                    <span class="theme-style-info">
+                        <strong>{{ $style['name'] }}</strong>
+                        <small>{{ $style['description'] }}</small>
                     </span>
-
-                    <small>
-                        {{ ucfirst($preferencias['dark_theme_style']) }}
-                    </small>
-                </div>
-
-                <div class="theme-options">
-                    @foreach ([
-                        'graphite' => [
-                            'name' => 'Graphite',
-                            'description' => 'Gris profundo',
-                        ],
-                        'charcoal' => [
-                            'name' => 'Charcoal',
-                            'description' => 'Contraste equilibrado',
-                        ],
-                        'black' => [
-                            'name' => 'Black',
-                            'description' => 'Negro profundo',
-                        ],
-                    ] as $style => $theme)
-                        <button type="button"
-                            class="theme-option {{ $preferencias['dark_theme_style'] === $style ? 'is-selected' : '' }}"
-                            data-theme-style-option="{{ $style }}"
-                            data-theme-mode-option="dark"
-                            aria-pressed="{{ $preferencias['dark_theme_style'] === $style ? 'true' : 'false' }}">
-                            <span class="theme-preview theme-preview-dark theme-preview-{{ $style }}">
-                                <span class="theme-preview-sidebar"></span>
-                                <span class="theme-preview-main">
-                                    <span class="theme-preview-topbar"></span>
-                                    <span class="theme-preview-card"></span>
-                                    <span class="theme-preview-card theme-preview-card-small"></span>
-                                </span>
-                            </span>
-
-                            <span class="theme-option-info">
-                                <strong>{{ $theme['name'] }}</strong>
-                                <small>{{ $theme['description'] }}</small>
-                            </span>
-
-                            <span class="theme-option-check">
-                                <i class="fa-solid fa-check"></i>
-                            </span>
-                        </button>
-                    @endforeach
-                </div>
-            </div>
-        </section>
+                </span>
+            </label>
+        @endforeach
     </div>
+</div>
+
 @endsection
 
 @push('scripts')
