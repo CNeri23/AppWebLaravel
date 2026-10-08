@@ -2,9 +2,6 @@
 
 @section('title', 'Preferencias')
 
-@push('styles') <link rel="stylesheet" href="{{ asset('css/preferences.css') }}">
-@endpush
-
 @section('content')
 
 <div class="container-fluid py-4 preferencias-page">
@@ -15,7 +12,8 @@
                 <p>Personaliza la apariencia de IronPulse para tu cuenta.</p>
             </div>
         </div>
-        
+
+
     @php
         $lightThemeStyles = [
             'white' => [
@@ -69,7 +67,7 @@
                         type="radio"
                         name="light_theme_style"
                         value="{{ $value }}"
-                        {{ $preferencias['theme_mode'] === 'light' && $preferencias['light_theme_style'] === $value ? 'checked' : '' }}
+                        {{ $preferencias['light_theme_style'] === $value ? 'checked' : '' }}
                     >
 
                     <span class="theme-style-content">
@@ -121,7 +119,7 @@
                         type="radio"
                         name="dark_theme_style"
                         value="{{ $value }}"
-                        {{ $preferencias['theme_mode'] === 'dark' && $preferencias['dark_theme_style'] === $value ? 'checked' : '' }}
+                        {{ $preferencias['dark_theme_style'] === $value ? 'checked' : '' }}
                     >
 
                     <span class="theme-style-content">
@@ -156,9 +154,8 @@
         </div>
     </section>
 </div>
+
+
 </div>
 
 @endsection
-
-@push('scripts') <script src="{{ asset('js/preferences.js') }}"></script>
-@endpush
