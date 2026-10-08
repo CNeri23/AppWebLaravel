@@ -1,0 +1,236 @@
+#tablaLogs {
+    width: 100% !important;
+}
+
+#tablaLogs_wrapper .dt-paging button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+}
+
+#tablaLogs_wrapper .dt-paging button i {
+    font-size: 11px;
+    line-height: 1;
+}
+
+@media (max-width: 767.98px) {
+    #tablaLogs_wrapper {
+        width: 100%;
+    }
+
+    #tablaLogs_wrapper .table-responsive {
+        overflow: visible;
+    }
+
+    #tablaLogs {
+        display: block;
+        width: 100% !important;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    #tablaLogs thead {
+        display: none;
+    }
+
+    #tablaLogs tbody {
+        display: block;
+        width: 100%;
+    }
+
+    #tablaLogs tbody tr {
+        display: block;
+        width: 100%;
+        margin: 0 0 12px;
+        padding: 14px;
+        border: 1px solid var(--bs-border-color);
+        border-radius: 14px;
+        background: var(--bs-body-bg);
+        box-shadow:
+            0 5px 16px rgba(15, 26, 29, 0.05),
+            0 1px 4px rgba(15, 26, 29, 0.03);
+        transition:
+            transform 0.18s ease,
+            border-color 0.18s ease,
+            box-shadow 0.18s ease,
+            background-color 0.18s ease;
+    }
+
+    #tablaLogs tbody tr:last-child {
+        margin-bottom: 0;
+    }
+
+    #tablaLogs tbody td {
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        align-items: start;
+        gap: 10px;
+        width: 100%;
+        padding: 7px 0;
+        border: 0 !important;
+        color: var(--bs-body-color);
+        font-size: 13px;
+        line-height: 1.45;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    #tablaLogs tbody td::before {
+        color: var(--bs-secondary-color);
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.45;
+    }
+
+    #tablaLogs tbody td:nth-child(1)::before {
+        content: 'Fecha y hora';
+    }
+
+    #tablaLogs tbody td:nth-child(2)::before {
+        content: 'Usuario';
+    }
+
+    #tablaLogs tbody td:nth-child(3)::before {
+        content: 'Módulo';
+    }
+
+    #tablaLogs tbody td:nth-child(4)::before {
+        content: 'Acción';
+    }
+
+    #tablaLogs tbody td:nth-child(5)::before {
+        content: 'Descripción';
+    }
+
+    #tablaLogs tbody td:nth-child(6)::before {
+        content: 'IP';
+    }
+
+    #tablaLogs tbody td:nth-child(7)::before {
+        content: 'Navegador';
+    }
+
+    #tablaLogs tbody td:first-child {
+        padding-top: 0;
+        color: var(--bs-body-color);
+        font-weight: 600;
+    }
+
+    #tablaLogs tbody td:last-child {
+        padding-bottom: 0;
+    }
+
+    #tablaLogs tbody td + td {
+        border-top: 1px solid var(--bs-border-color) !important;
+    }
+
+    #tablaLogs tbody td:nth-child(4) {
+        font-weight: 600;
+    }
+
+    #tablaLogs tbody td:nth-child(5),
+    #tablaLogs tbody td:nth-child(7) {
+        line-height: 1.5;
+    }
+
+    #tablaLogs tbody td:nth-child(7) {
+        color: var(--bs-secondary-color);
+        font-size: 12px;
+    }
+
+    #tablaLogs tbody tr:hover {
+        background: var(--bs-tertiary-bg);
+        border-color: var(--bs-border-color);
+        transform: translateY(-2px);
+        box-shadow:
+            0 9px 22px rgba(15, 26, 29, 0.08),
+            0 2px 6px rgba(15, 26, 29, 0.04);
+    }
+
+    #tablaLogs tbody tr:hover td {
+        background: transparent !important;
+    }
+
+    #tablaLogs tbody tr.child {
+        display: none;
+    }
+
+    #tablaLogs tbody td.dataTables_empty {
+        display: block;
+        padding: 24px 10px;
+        text-align: center;
+        background: transparent !important;
+    }
+
+    #tablaLogs tbody td.dataTables_empty::before {
+        display: none;
+    }
+
+    #tablaLogs_wrapper .dataTables_length,
+    #tablaLogs_wrapper .dataTables_filter {
+        margin-bottom: 12px;
+    }
+
+    #tablaLogs_wrapper .dataTables_filter {
+        width: 100%;
+    }
+
+    #tablaLogs_wrapper .dataTables_filter label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    #tablaLogs_wrapper .dataTables_filter input {
+        min-width: 0;
+        flex: 1;
+    }
+
+    #tablaLogs_wrapper .dataTables_info {
+        margin-top: 12px;
+        font-size: 12px;
+    }
+
+    #tablaLogs_wrapper .dataTables_paginate {
+        margin-top: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    #tablaLogs tbody tr {
+        padding: 13px;
+        border-radius: 13px;
+    }
+
+    #tablaLogs tbody td {
+        grid-template-columns: 82px minmax(0, 1fr);
+        gap: 8px;
+        font-size: 12px;
+    }
+
+    #tablaLogs tbody td::before {
+        font-size: 10px;
+    }
+
+    #tablaLogs tbody td:nth-child(7) {
+        font-size: 11px;
+    }
+
+    #tablaLogs_wrapper .dt-paging button {
+        min-width: 30px;
+        height: 30px;
+        padding: 0 7px;
+    }
+
+    #tablaLogs_wrapper .dt-paging button i {
+        font-size: 10px;
+    }
+}
