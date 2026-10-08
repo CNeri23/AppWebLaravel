@@ -1,7 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Preferencias')
-
 @section('content')
 
 <div class="container-fluid py-4 preferencias-page">

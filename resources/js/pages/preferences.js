@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     const html = document.documentElement;
-
-
     const opciones = document.querySelectorAll(
         'input[name="light_theme_style"], input[name="dark_theme_style"]'
     );
@@ -14,67 +12,29 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('meta[name="csrf-token"]')
             ?.getAttribute('content');
 
-    function aplicarEstiloInmediatamente(estilo) {
-        if (
-            [
-                'white',
-                'mist',
-                'sky',
-            ].includes(estilo)
-        ) {
-            html.setAttribute(
-                'data-light-theme-style',
-                estilo
-            );
-
-            if (themeMode === 'light') {
-                html.setAttribute(
-                    'data-theme-style',
-                    estilo
-                );
-            }
-
-            return;
-        }
-
-        if (
-            [
-                'graphite',
-                'charcoal',
-                'black',
-            ].includes(estilo)
-        ) {
-            html.setAttribute(
-                'data-dark-theme-style',
-                estilo
-            );
-
-            if (themeMode === 'dark') {
-                html.setAttribute(
-                    'data-theme-style',
-                    estilo
-                );
-            }
-        }
+    function esEstiloClaro(style) {
+        return [
+            'white',
+            'mist',
+            'sky',
+        ].includes(style);
     }
 
-    function actualizarSeleccionVisual() {
-        opciones.forEach(function (opcion) {
-            if (opcion.name === 'light_theme_style') {
-                opcion.checked =
-                    opcion.value === lightThemeStyle;
-
-                return;
-            }
-
-            if (opcion.name === 'dark_theme_style') {
-                opcion.checked =
-                    opcion.value === darkThemeStyle;
-            }
-        });
+    function esEstiloOscuro(style) {
+        return [
+            'graphite',
+            'charcoal',
+            'black',
+        ].includes(style);
     }
 
-    function actualizarAtributosTema() {
+    function obtenerEstiloActual() {
+        return themeMode === 'dark'
+            ? darkThemeStyle
+            : lightThemeStyle;
+    }
+
+    function aplicarTemaActual() {
         html.setAttribute(
             'data-theme-mode',
             themeMode
@@ -92,9 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         html.setAttribute(
             'data-theme-style',
-            themeMode === 'dark'
-                ? darkThemeStyle
-                : lightThemeStyle
+            obtenerEstiloActual()
         );
 
         html.setAttribute(
@@ -103,16 +61,33 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    function notificarActualizacion() {
-        document.dispatchEvent(
-            new CustomEvent('ironpulse:preferences-updated', {
-                detail: {
-                    theme_mode: themeMode,
-                    light_theme_style: lightThemeStyle,
-                    dark_theme_style: darkThemeStyle,
-                },
-            })
-        );
+    function actualizarSeleccionVisual() {
+        opciones.forEach(function (opcion) {
+            const estiloActivo =
+                opcion.name === 'light_theme_style'
+                    ? opcion.value === lightThemeStyle
+                    : opcion.value === darkThemeStyle;
+
+            opcion.checked = estiloActivo;
+        });
+    }
+
+    function mostrarAviso(mensaje, tipo) {
+        if (typeof window.showToast === 'function') {
+            window.showToast(
+                tipo,
+                mensaje
+            );
+
+            return;
+        }
+
+        if (typeof window.mostrarAviso === 'function') {
+            window.mostrarAviso(
+                mensaje,
+                tipo === 'success' ? 'success' : 'danger'
+            );
+        }
     }
 
     async function guardarPreferencia() {
@@ -155,14 +130,56 @@ document.addEventListener('DOMContentLoaded', function () {
         return data;
     }
 
+    document.addEventListener(
+        'ironpulse:theme-changed',
+        function (event) {
+            const detalle = event.detail || {};
+
+            if (
+                detalle.theme !== 'light' &&
+                detalle.theme !== 'dark'
+            ) {
+                return;
+            }
+
+            themeMode = detalle.theme;
+
+            const estilo =
+                detalle.style || '';
+
+            if (themeMode === 'light' && esEstiloClaro(estilo)) {
+                lightThemeStyle = estilo;
+            }
+
+            if (themeMode === 'dark' && esEstiloOscuro(estilo)) {
+                darkThemeStyle = estilo;
+            }
+
+            html.setAttribute(
+                'data-theme-mode',
+                themeMode
+            );
+
+            html.setAttribute(
+                'data-theme-style',
+                obtenerEstiloActual()
+            );
+
+            actualizarSeleccionVisual();
+        }
+    );
+
     opciones.forEach(function (opcion) {
         opcion.addEventListener('change', async function () {
             if (!this.checked) {
                 return;
             }
 
-            const estiloClaroAnterior = lightThemeStyle;
-            const estiloOscuroAnterior = darkThemeStyle;
+            const lightThemeStyleAnterior =
+                lightThemeStyle;
+
+            const darkThemeStyleAnterior =
+                darkThemeStyle;
 
             if (this.name === 'light_theme_style') {
                 lightThemeStyle = this.value;
@@ -172,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 darkThemeStyle = this.value;
             }
 
-            aplicarEstiloInmediatamente(this.value);
+            aplicarTemaActual();
             actualizarSeleccionVisual();
 
             opciones.forEach(function (elemento) {
@@ -193,28 +210,28 @@ document.addEventListener('DOMContentLoaded', function () {
                         data.preferences.dark_theme_style;
                 }
 
-                actualizarAtributosTema();
+                aplicarTemaActual();
                 actualizarSeleccionVisual();
-                notificarActualizacion();
 
-                window.showToast(
-                    'success',
-                    data.mensaje
+                mostrarAviso(
+                    data.mensaje ||
+                    'El tema se actualizó correctamente.',
+                    'success'
                 );
             } catch (error) {
                 lightThemeStyle =
-                    estiloClaroAnterior;
+                    lightThemeStyleAnterior;
 
                 darkThemeStyle =
-                    estiloOscuroAnterior;
+                    darkThemeStyleAnterior;
 
-                actualizarAtributosTema();
+                aplicarTemaActual();
                 actualizarSeleccionVisual();
 
-                window.showToast(
-                    'error',
+                mostrarAviso(
                     error.message ||
-                    'No fue posible actualizar el tema.'
+                    'No fue posible actualizar el tema.',
+                    'error'
                 );
             } finally {
                 opciones.forEach(function (elemento) {
@@ -224,6 +241,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    actualizarAtributosTema();
+    aplicarTemaActual();
     actualizarSeleccionVisual();
 });

@@ -65,6 +65,20 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function applyTheme(theme) {
+        const estiloClaroActual =
+            html.getAttribute('data-light-theme-style');
+
+        const estiloOscuroActual =
+            html.getAttribute('data-dark-theme-style');
+
+        if (esEstiloClaro(estiloClaroActual)) {
+            lightThemeStyle = estiloClaroActual;
+        }
+
+        if (esEstiloOscuro(estiloOscuroActual)) {
+            darkThemeStyle = estiloOscuroActual;
+        }
+
         html.setAttribute('data-bs-theme', theme);
 
         const estiloActual =
