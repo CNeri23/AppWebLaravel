@@ -102,6 +102,7 @@
                                     {!! $accion->icono ?: '<i class="fa-solid fa-pen"></i>' !!}
                                 </button>
 
+                                @elseif ($accion->slug === 'usuarios.toggle')
                                 <button type="button"
                                     class="btn btn-sm usuario-action-btn btn-estado-usuario {{ $usuario->activo ? 'btn-outline-secondary' : 'btn-outline-success' }}"
                                     title="{{ $usuario->activo ? 'Desactivar' : 'Activar' }}"
