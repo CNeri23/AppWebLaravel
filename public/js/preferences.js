@@ -1,73 +1,93 @@
 document.addEventListener('DOMContentLoaded', function () {
     const html = document.documentElement;
-    const opciones = document.querySelectorAll('[data-theme-style-option]');
-    const currentMode = document.getElementById('preferencesCurrentMode');
+    const opciones = document.querySelectorAll(
+        'input[name="light_theme_style"], input[name="dark_theme_style"]'
+    );
 
     let themeMode = html.dataset.themeMode || 'light';
     let lightThemeStyle = html.dataset.lightThemeStyle || 'white';
     let darkThemeStyle = html.dataset.darkThemeStyle || 'graphite';
 
-    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    const csrf =
+        document.querySelector('meta[name="csrf-token"]')
+            ?.getAttribute('content');
 
-    function aplicarSeleccionVisual() {
-        opciones.forEach(opcion => {
-            const mode = opcion.dataset.themeModeOption;
-            const style = opcion.dataset.themeStyleOption;
-            const selected =
-                mode === 'light'
-                    ? style === lightThemeStyle
-                    : style === darkThemeStyle;
+    function aplicarTema(mode) {
+        themeMode = mode;
 
-            opcion.classList.toggle('is-selected', selected);
-            opcion.setAttribute('aria-pressed', selected ? 'true' : 'false');
+        html.setAttribute(
+            'data-theme-mode',
+            themeMode
+        );
+
+        html.setAttribute(
+            'data-theme-style',
+            themeMode === 'dark'
+                ? darkThemeStyle
+                : lightThemeStyle
+        );
+
+        html.setAttribute(
+            'data-bs-theme',
+            themeMode
+        );
+
+        document.dispatchEvent(
+            new CustomEvent('ironpulse:theme-changed', {
+                detail: {
+                    theme: themeMode,
+                    style: themeMode === 'dark'
+                        ? darkThemeStyle
+                        : lightThemeStyle,
+                },
+            })
+        );
+    }
+
+    function actualizarSeleccionVisual() {
+        opciones.forEach(function (opcion) {
+            const seleccionado =
+                opcion.name === 'light_theme_style'
+                    ? opcion.value === lightThemeStyle
+                    : opcion.value === darkThemeStyle;
+
+            opcion.checked = seleccionado;
         });
-
-        if (currentMode) {
-            currentMode.textContent =
-                themeMode === 'dark' ? 'Oscuro' : 'Claro';
-        }
     }
 
     async function guardarPreferencia(mode, style) {
         if (!csrf) {
-            throw new Error('No fue posible obtener el token de seguridad.');
+            throw new Error(
+                'No fue posible obtener el token de seguridad.'
+            );
         }
 
-        const nuevoLightStyle =
-            mode === 'light'
-                ? style
-                : lightThemeStyle;
+        const response = await fetch(
+            '/preferencias/tema',
+            {
+                method: 'PUT',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrf,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({
+                    theme_mode: mode,
+                    light_theme_style: lightThemeStyle,
+                    dark_theme_style: darkThemeStyle,
+                }),
+            }
+        );
 
-        const nuevoDarkStyle =
-            mode === 'dark'
-                ? style
-                : darkThemeStyle;
-
-        const response = await fetch('/preferencias/tema', {
-            method: 'PUT',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrf,
-                'X-Requested-With': 'XMLHttpRequest',
-            },
-            body: JSON.stringify({
-                theme_mode: themeMode,
-                light_theme_style: nuevoLightStyle,
-                dark_theme_style: nuevoDarkStyle,
-            }),
-        });
-
-        let data = null;
-
-        try {
-            data = await response.json();
-        } catch (e) { }
+        const data =
+            await response.json().catch(() => ({}));
 
         if (!response.ok || !data?.success) {
             throw new Error(
                 data?.mensaje ||
+                data?.message ||
                 'No fue posible guardar la preferencia.'
             );
         }
@@ -75,44 +95,65 @@ document.addEventListener('DOMContentLoaded', function () {
         return data;
     }
 
-    opciones.forEach(opcion => {
-        opcion.addEventListener('click', async function () {
-            const mode = opcion.dataset.themeModeOption;
-            const style = opcion.dataset.themeStyleOption;
+    opciones.forEach(function (opcion) {
+        opcion.addEventListener('change', async function () {
+            if (!this.checked) {
+                return;
+            }
 
-            const previousLightStyle = lightThemeStyle;
-            const previousDarkStyle = darkThemeStyle;
+            const modoAnterior = themeMode;
+            const estiloClaroAnterior = lightThemeStyle;
+            const estiloOscuroAnterior = darkThemeStyle;
 
-            if (mode === 'light') {
-                lightThemeStyle = style;
+            const nuevoModo =
+                this.name === 'dark_theme_style'
+                    ? 'dark'
+                    : 'light';
+
+            if (nuevoModo === 'dark') {
+                darkThemeStyle = this.value;
             } else {
-                darkThemeStyle = style;
+                lightThemeStyle = this.value;
             }
 
-            if (themeMode === mode) {
-                document.documentElement.setAttribute(
-                    'data-theme-style',
-                    style
-                );
-            }
+            aplicarTema(nuevoModo);
+            actualizarSeleccionVisual();
 
-            aplicarSeleccionVisual();
-
-            opciones.forEach(elemento => {
+            opciones.forEach(function (elemento) {
                 elemento.disabled = true;
             });
 
             try {
-                const data = await guardarPreferencia(mode, style);
+                const data =
+                    await guardarPreferencia(
+                        nuevoModo,
+                        this.value
+                    );
 
                 if (data.preferences) {
-                    themeMode = data.preferences.theme_mode;
-                    lightThemeStyle = data.preferences.light_theme_style;
-                    darkThemeStyle = data.preferences.dark_theme_style;
+                    themeMode =
+                        data.preferences.theme_mode;
 
-                    html.setAttribute('data-theme-mode', themeMode);
-                    html.setAttribute('data-light-theme-style', lightThemeStyle);
-                    html.setAttribute('data-dark-theme-style', darkThemeStyle);
+                    lightThemeStyle =
+                        data.preferences.light_theme_style;
+
+                    darkThemeStyle =
+                        data.preferences.dark_theme_style;
+
+                    html.setAttribute(
+                        'data-theme-mode',
+                        themeMode
+                    );
+
+                    html.setAttribute(
+                        'data-light-theme-style',
+                        lightThemeStyle
+                    );
+
+                    html.setAttribute(
+                        'data-dark-theme-style',
+                        darkThemeStyle
+                    );
 
                     html.setAttribute(
                         'data-theme-style',
@@ -120,42 +161,43 @@ document.addEventListener('DOMContentLoaded', function () {
                             ? darkThemeStyle
                             : lightThemeStyle
                     );
+
+                    html.setAttribute(
+                        'data-bs-theme',
+                        themeMode
+                    );
                 }
 
-                aplicarSeleccionVisual();
+                actualizarSeleccionVisual();
 
                 if (typeof window.mostrarAviso === 'function') {
                     window.mostrarAviso(
-                        'La preferencia de apariencia se actualizó correctamente.',
+                        'El tema se actualizó correctamente.',
                         'success'
                     );
                 }
             } catch (error) {
-                lightThemeStyle = previousLightStyle;
-                darkThemeStyle = previousDarkStyle;
+                themeMode = modoAnterior;
+                lightThemeStyle = estiloClaroAnterior;
+                darkThemeStyle = estiloOscuroAnterior;
 
-                html.setAttribute(
-                    'data-theme-style',
-                    themeMode === 'dark'
-                        ? darkThemeStyle
-                        : lightThemeStyle
-                );
-
-                aplicarSeleccionVisual();
+                aplicarTema(themeMode);
+                actualizarSeleccionVisual();
 
                 if (typeof window.mostrarAviso === 'function') {
                     window.mostrarAviso(
-                        error.message || 'No fue posible actualizar la preferencia.',
+                        error.message ||
+                        'No fue posible actualizar el tema.',
                         'danger'
                     );
                 }
             } finally {
-                opciones.forEach(elemento => {
+                opciones.forEach(function (elemento) {
                     elemento.disabled = false;
                 });
             }
         });
     });
 
-    aplicarSeleccionVisual();
+    actualizarSeleccionVisual();
 });
