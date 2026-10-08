@@ -242,6 +242,13 @@
                     </li>
 
                     <li>
+                        <a href="{{ route('preferencias.index') }}" class="dropdown-item">
+                            <i class="fa-solid fa-sliders"></i>
+                            Preferencias
+                        </a>
+                    </li>
+
+                    <li>
                         <hr class="dropdown-divider">
                     </li>
 
