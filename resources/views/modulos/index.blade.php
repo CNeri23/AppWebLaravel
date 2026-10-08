@@ -9,8 +9,8 @@
 
         @if ($accionesModulos->contains('modulos.crear'))
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoModulo">
-                <i class="fa-solid fa-layer-group me-2"></i>
-                Nuevo módulo
+                <i class="fa-solid fa-plus me-2"></i>
+                Agregar
             </button>
         @endif
     </div>
@@ -588,7 +588,7 @@
                                 Slug
                             </label>
 
-                            <input type="text" class="form-control @error('slug') is-invalid @enderror" id="submodulo_slug" name="slug" value="{{ old('slug') }}" placeholder="Ej: submodulo.crear" required>
+                            <input type="text" class="form-control @error('slug') is-invalid @enderror" id="submodulo_slug" name="slug" value="{{ old('slug') }}" placeholder="Slug del submódulo" required>
 
                             @error('slug')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -723,7 +723,7 @@
                                 Slug
                             </label>
 
-                            <input type="text" class="form-control" id="editar_submodulo_slug" name="slug" placeholder="Ej: submodulo.crear" required>
+                            <input type="text" class="form-control" id="editar_submodulo_slug" name="slug" placeholder="Slug del submódulo" required>
                         </div>
 
                         <div class="mb-3">
