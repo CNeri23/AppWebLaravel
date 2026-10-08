@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
 
+
     server: {
         host: '127.0.0.1',
         port: 8100,
@@ -21,6 +22,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
+                'resources/js/toast.js',
             ],
 
             refresh: true,
@@ -33,7 +35,5 @@ export default defineConfig({
         }),
 
         tailwindcss(),
-
     ],
-
 });
