@@ -652,6 +652,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.cambiarTemaManual = cambiarTema;
 
+    document.addEventListener('ironpulse:preferences-updated', function (event) {
+        const preferencias = event.detail || {};
+
+        if (
+            preferencias.theme_mode !== 'light' &&
+            preferencias.theme_mode !== 'dark'
+        ) {
+            return;
+        }
+
+        themeMode = preferencias.theme_mode;
+
+        if (esEstiloClaro(preferencias.light_theme_style)) {
+            lightThemeStyle = preferencias.light_theme_style;
+        }
+
+        if (esEstiloOscuro(preferencias.dark_theme_style)) {
+            darkThemeStyle = preferencias.dark_theme_style;
+        }
+
+        html.setAttribute(
+            'data-theme-mode',
+            themeMode
+        );
+
+        html.setAttribute(
+            'data-light-theme-style',
+            lightThemeStyle
+        );
+
+        html.setAttribute(
+            'data-dark-theme-style',
+            darkThemeStyle
+        );
+
+        applyTheme(themeMode);
+    });
+
     themeSwitch?.addEventListener('click', function () {
         const actual =
             html.getAttribute('data-bs-theme');
