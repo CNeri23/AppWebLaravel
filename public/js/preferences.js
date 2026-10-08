@@ -166,6 +166,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         'data-bs-theme',
                         themeMode
                     );
+
+                    document.dispatchEvent(
+                        new CustomEvent('ironpulse:preferences-updated', {
+                            detail: {
+                                theme_mode: themeMode,
+                                light_theme_style: lightThemeStyle,
+                                dark_theme_style: darkThemeStyle,
+                            },
+                        })
+                    );
                 }
 
                 actualizarSeleccionVisual();
