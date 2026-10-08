@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\AuditLogService;
 use App\Services\SystemSettings;
+use App\Services\UserPreferences;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -60,22 +61,6 @@ class SystemSettingsController extends Controller
             ],
 
             // Apariencia
-            'theme_mode' => [
-                'sometimes',
-                'required',
-                Rule::in(['light', 'dark']),
-            ],
-
-            'light_theme_style' => [
-                'sometimes',
-                Rule::in(['white', 'mist', 'sky']),
-            ],
-
-            'dark_theme_style' => [
-                'sometimes',
-                Rule::in(['graphite', 'charcoal', 'black']),
-            ],
-
             'accent_color' => [
                 'sometimes',
                 'required',
@@ -140,13 +125,6 @@ class SystemSettingsController extends Controller
             'logo.image' => 'El logotipo debe ser una imagen válida.',
             'logo.mimes' => 'El logotipo debe estar en formato PNG, JPG, JPEG o WEBP.',
             'logo.max' => 'El logotipo no puede superar los 2 MB.',
-
-            'theme_mode.required' => 'El modo del tema es obligatorio.',
-            'theme_mode.in' => 'El modo del tema seleccionado no es válido.',
-
-            'light_theme_style.in' => 'La variante clara del tema seleccionada no es válida.',
-
-            'dark_theme_style.in' => 'La variante oscura del tema seleccionada no es válida.',
 
             'accent_color.required' => 'El color de acento es obligatorio.',
             'accent_color.in' => 'El color de acento seleccionado no es válido.',
@@ -220,7 +198,6 @@ class SystemSettingsController extends Controller
 
         $claveActualizada = array_key_first($datos);
 
-        // Las tarjetas de Negocio y Seguridad envían varios campos a la vez.
         $esNegocio = array_diff(array_keys($datos), self::CLAVES_NEGOCIO) === [];
         $esSeguridad = array_diff(array_keys($datos), self::CLAVES_SEGURIDAD) === [];
         $esSeccion = count($datos) > 1 && ($esNegocio || $esSeguridad);
@@ -240,9 +217,6 @@ class SystemSettingsController extends Controller
         $partes = [];
 
         if (in_array($claveActualizada, [
-            'theme_mode',
-            'light_theme_style',
-            'dark_theme_style',
             'accent_color',
         ], true)) {
             $partes[] = 'la configuración de apariencia';
@@ -288,9 +262,6 @@ class SystemSettingsController extends Controller
         );
 
         $mensajes = [
-            'theme_mode' => 'El tema se actualizó correctamente.',
-            'light_theme_style' => 'El estilo del tema claro se actualizó correctamente.',
-            'dark_theme_style' => 'El estilo del tema oscuro se actualizó correctamente.',
             'accent_color' => 'El color de acento se actualizó correctamente.',
 
             'system_name' => 'El nombre del sistema se actualizó correctamente.',
@@ -329,6 +300,56 @@ class SystemSettingsController extends Controller
             'success' => true,
             'mensaje' => $mensaje,
             'settings' => $settings->all(),
+        ]);
+    }
+
+    public function updateTheme(
+        Request $request,
+        UserPreferences $preferences
+    ): JsonResponse {
+        $datos = $request->validate([
+            'theme_mode' => [
+                'required',
+                Rule::in(['light', 'dark']),
+            ],
+
+            'light_theme_style' => [
+                'required',
+                Rule::in(['white', 'mist', 'sky']),
+            ],
+
+            'dark_theme_style' => [
+                'required',
+                Rule::in(['graphite', 'charcoal', 'black']),
+            ],
+        ], [
+            'theme_mode.required' => 'El modo del tema es obligatorio.',
+            'theme_mode.in' => 'El modo del tema seleccionado no es válido.',
+
+            'light_theme_style.required' => 'El estilo del tema claro es obligatorio.',
+            'light_theme_style.in' => 'La variante clara del tema seleccionada no es válida.',
+
+            'dark_theme_style.required' => 'El estilo del tema oscuro es obligatorio.',
+            'dark_theme_style.in' => 'La variante oscura del tema seleccionada no es válida.',
+        ]);
+
+        $usuario = $request->user();
+
+        $preferencias = $preferences->update($usuario, $datos);
+
+        AuditLogService::log(
+            module: 'configuracion',
+            action: 'ACTUALIZAR',
+            description: 'El usuario "' .
+            $usuario->name .
+            '" actualizó sus preferencias de tema de IronPulse.',
+            entity: $usuario
+        );
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'El tema se actualizó correctamente.',
+            'preferences' => $preferencias,
         ]);
     }
 }

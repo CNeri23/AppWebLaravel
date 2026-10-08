@@ -2,6 +2,11 @@
     $systemSettings = app(\App\Services\SystemSettings::class);
     $settings = $systemSettings->all();
 
+    $usuarioActual = auth()->user();
+
+    $userPreferencesService = app(\App\Services\UserPreferences::class);
+    $userPreferences = $userPreferencesService->get($usuarioActual);
+
     $horaActual = now($settings['timezone'])->hour;
 
     if ($horaActual < 12) {
@@ -11,8 +16,6 @@
     } else {
         $greeting = 'Buenas noches';
     }
-
-    $usuarioActual = auth()->user();
 
     $permisosUsuario = $usuarioActual->permissions();
 
@@ -45,11 +48,13 @@
 
 <!DOCTYPE html>
 
-<html lang="es" data-bs-theme="{{ $settings['theme_mode'] === 'dark' ? 'dark' : 'light' }}"
-    data-theme-mode="{{ $settings['theme_mode'] }}" data-light-theme-style="{{ $settings['light_theme_style'] }}"
-    data-dark-theme-style="{{ $settings['dark_theme_style'] }}"
-    data-theme-style="{{ $settings['theme_mode'] === 'dark' ? $settings['dark_theme_style'] : $settings['light_theme_style'] }}"
-    data-accent-color="{{ $settings['accent_color'] }}" data-session-timeout="{{ (int) $settings['session_timeout'] }}"
+<html lang="es" data-bs-theme="{{ $userPreferences['theme_mode'] === 'dark' ? 'dark' : 'light' }}"
+    data-theme-mode="{{ $userPreferences['theme_mode'] }}"
+    data-light-theme-style="{{ $userPreferences['light_theme_style'] }}"
+    data-dark-theme-style="{{ $userPreferences['dark_theme_style'] }}"
+    data-theme-style="{{ $userPreferences['theme_mode'] === 'dark' ? $userPreferences['dark_theme_style'] : $userPreferences['light_theme_style'] }}"
+    data-accent-color="{{ $settings['accent_color'] }}"
+    data-session-timeout="{{ (int) $settings['session_timeout'] }}"
     data-login-url="{{ route('login') }}"
     data-timezone="{{ $settings['timezone'] }}">
 

@@ -1,19 +1,8 @@
 (function aplicarTemaInicial() {
     try {
         var raiz = document.documentElement;
-        var modo = raiz.dataset.themeMode || 'system';
-        var manual = localStorage.getItem('ironpulse-system-theme');
-        var tema;
-
-        if (manual === 'light' || manual === 'dark') {
-            tema = manual;
-        } else if (modo === 'dark' || modo === 'light') {
-            tema = modo;
-        } else {
-            tema = window.matchMedia('(prefers-color-scheme: dark)').matches
-                ? 'dark'
-                : 'light';
-        }
+        var modo = raiz.dataset.themeMode || 'light';
+        var tema = modo === 'dark' ? 'dark' : 'light';
 
         raiz.setAttribute('data-bs-theme', tema);
 
@@ -28,71 +17,14 @@
 
 document.addEventListener('DOMContentLoaded', function () {
     const html = document.documentElement;
-    // Mismo interruptor en el panel (#themeSwitch) y en el login (#loginThemeToggle):
-    // ambos comparten esta lógica, la animación y la clave de localStorage.
+
     const themeSwitch =
         document.getElementById('themeSwitch') ||
         document.getElementById('loginThemeToggle');
-    const SYSTEM_THEME_STORAGE_KEY = 'ironpulse-system-theme';
-    let themeMode = html.dataset.themeMode || 'system';
+
+    let themeMode = html.dataset.themeMode || 'light';
     let lightThemeStyle = html.dataset.lightThemeStyle || 'white';
     let darkThemeStyle = html.dataset.darkThemeStyle || 'graphite';
-
-    function getSystemTheme() {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'dark'
-            : 'light';
-    }
-
-    function leerTemaManual() {
-        try {
-            const guardado =
-                localStorage.getItem(
-                    SYSTEM_THEME_STORAGE_KEY
-                );
-
-            return guardado === 'light' || guardado === 'dark'
-                ? guardado
-                : null;
-        } catch (e) {
-            return null;
-        }
-    }
-
-    function guardarTemaManual(tema) {
-        try {
-            localStorage.setItem(
-                SYSTEM_THEME_STORAGE_KEY,
-                tema
-            );
-        } catch (e) { }
-    }
-
-    function borrarTemaManual() {
-        try {
-            localStorage.removeItem(
-                SYSTEM_THEME_STORAGE_KEY
-            );
-        } catch (e) { }
-    }
-
-    function leerTema() {
-        const manual = leerTemaManual();
-
-        if (manual) {
-            return manual;
-        }
-
-        if (themeMode === 'dark') {
-            return 'dark';
-        }
-
-        if (themeMode === 'light') {
-            return 'light';
-        }
-
-        return getSystemTheme();
-    }
 
     function obtenerEstiloPredeterminado(theme) {
         return theme === 'dark'
@@ -157,31 +89,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.dispatchEvent(
             new CustomEvent('ironpulse:theme-changed', {
-                detail: { theme },
+                detail: {
+                    theme,
+                    style: estiloActual,
+                },
             })
         );
     }
 
-    function applyThemeMode(mode, limpiarManual = false) {
-        const modoAnterior = themeMode;
+    function applyThemeMode(mode) {
+        if (mode !== 'light' && mode !== 'dark') {
+            mode = 'light';
+        }
 
-        themeMode = mode || 'system';
+        themeMode = mode;
 
         html.setAttribute(
             'data-theme-mode',
             themeMode
         );
 
-        if (limpiarManual && modoAnterior !== themeMode) {
-            borrarTemaManual();
-        }
-
-        applyTheme(leerTema());
+        applyTheme(themeMode);
     }
 
     function applyThemeStyle(style) {
         if (!style) {
-            applyTheme(leerTema());
+            applyTheme(themeMode);
 
             return;
         }
@@ -204,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
             );
         }
 
-        applyTheme(leerTema());
+        applyTheme(themeMode);
     }
 
     function applyThemeStyles(lightStyle, darkStyle) {
@@ -226,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
             );
         }
 
-        applyTheme(leerTema());
+        applyTheme(themeMode);
     }
 
     function applyAccentColor(color) {
@@ -290,12 +223,49 @@ document.addEventListener('DOMContentLoaded', function () {
             '<i class="fa-solid fa-heart-pulse"></i>';
     }
 
-    // ---------------------------------------------------------------
-    // Cierre por inactividad (Configuración > Seguridad)
-    // Lee data-session-timeout (minutos, 0 = desactivado). Al cumplirse el
-    // tiempo sin actividad manda directo al login; el servidor cierra la
-    // sesión al recibir esa petición.
-    // ---------------------------------------------------------------
+    async function guardarPreferenciasTema(preferencias) {
+        const csrf =
+            document.querySelector(
+                'meta[name="csrf-token"]'
+            )?.getAttribute('content');
+
+        if (!csrf) {
+            throw new Error(
+                'No fue posible obtener el token de seguridad.'
+            );
+        }
+
+        const response = await fetch(
+            '/preferencias/tema',
+            {
+                method: 'PUT',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrf,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify(preferencias),
+            }
+        );
+
+        let data = null;
+
+        try {
+            data = await response.json();
+        } catch (e) { }
+
+        if (!response.ok || !data?.success) {
+            throw new Error(
+                data?.mensaje ||
+                'No fue posible guardar las preferencias del tema.'
+            );
+        }
+
+        return data;
+    }
+
     const CLAVE_ACTIVIDAD = 'ironpulse-last-activity';
     let minutosSesion = 0;
     let temporizadorSesion = null;
@@ -339,14 +309,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // 1,5 s de margen para que el servidor ya considere vencida la sesión
         if (Date.now() - actividadCompartida() >= minutosSesion * 60000 + 1500) {
             irAlLogin();
         }
     }
 
-    // Mientras la persona sigue trabajando se renueva la sesión del servidor
-    // (aunque no haga peticiones), para que ambos relojes coincidan.
     function mantenerSesion() {
         ultimoPing = Date.now();
 
@@ -420,7 +387,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Los navegadores frenan los temporizadores en pestañas ocultas
     document.addEventListener('visibilitychange', function () {
         if (!document.hidden) {
             revisarSesion();
@@ -429,9 +395,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.addEventListener('pageshow', revisarSesion);
 
-    // ---------------------------------------------------------------
-    // Saludo de la barra superior según la zona horaria del sistema
-    // ---------------------------------------------------------------
     function actualizarSaludo(zona) {
         const texto = document.getElementById('topbarGreetingText');
 
@@ -469,34 +432,6 @@ document.addEventListener('DOMContentLoaded', function () {
     window.aplicarConfiguracionGlobal = function (settings) {
         if (!settings) {
             return;
-        }
-
-        if (
-            Object.prototype.hasOwnProperty.call(
-                settings,
-                'light_theme_style'
-            ) ||
-            Object.prototype.hasOwnProperty.call(
-                settings,
-                'dark_theme_style'
-            )
-        ) {
-            applyThemeStyles(
-                settings.light_theme_style,
-                settings.dark_theme_style
-            );
-        }
-
-        if (
-            Object.prototype.hasOwnProperty.call(
-                settings,
-                'theme_mode'
-            )
-        ) {
-            applyThemeMode(
-                settings.theme_mode,
-                true
-            );
         }
 
         if (
@@ -576,32 +511,90 @@ document.addEventListener('DOMContentLoaded', function () {
 
     actualizarSaludo();
 
-    // Cambia solo al cruzar las 12:00 o las 19:00, sin recargar
     setInterval(actualizarSaludo, 60000);
 
-    const systemThemeMedia =
-        window.matchMedia(
-            '(prefers-color-scheme: dark)'
-        );
+    async function guardarYAplicar(tema) {
+        const modoAnterior = themeMode;
+        const estiloClaroAnterior = lightThemeStyle;
+        const estiloOscuroAnterior = darkThemeStyle;
 
-    systemThemeMedia.addEventListener(
-        'change',
-        function () {
-            if (
-                themeMode === 'system' &&
-                !leerTemaManual()
-            ) {
-                applyTheme(
-                    getSystemTheme()
+        themeMode = tema;
+
+        applyTheme(tema);
+
+        try {
+            const respuesta =
+                await guardarPreferenciasTema({
+                    theme_mode: themeMode,
+                    light_theme_style: lightThemeStyle,
+                    dark_theme_style: darkThemeStyle,
+                });
+
+            if (respuesta.preferences) {
+                themeMode =
+                    respuesta.preferences.theme_mode;
+
+                lightThemeStyle =
+                    respuesta.preferences.light_theme_style;
+
+                darkThemeStyle =
+                    respuesta.preferences.dark_theme_style;
+
+                html.setAttribute(
+                    'data-theme-mode',
+                    themeMode
+                );
+
+                html.setAttribute(
+                    'data-light-theme-style',
+                    lightThemeStyle
+                );
+
+                html.setAttribute(
+                    'data-dark-theme-style',
+                    darkThemeStyle
+                );
+
+                applyTheme(themeMode);
+            }
+
+            if (typeof window.mostrarAviso === 'function') {
+                window.mostrarAviso(
+                    respuesta.mensaje ||
+                    'El tema se actualizó correctamente.',
+                    'success'
+                );
+            }
+        } catch (error) {
+            themeMode = modoAnterior;
+            lightThemeStyle = estiloClaroAnterior;
+            darkThemeStyle = estiloOscuroAnterior;
+
+            html.setAttribute(
+                'data-theme-mode',
+                themeMode
+            );
+
+            html.setAttribute(
+                'data-light-theme-style',
+                lightThemeStyle
+            );
+
+            html.setAttribute(
+                'data-dark-theme-style',
+                darkThemeStyle
+            );
+
+            applyTheme(themeMode);
+
+            if (typeof window.mostrarAviso === 'function') {
+                window.mostrarAviso(
+                    error.message ||
+                    'No fue posible actualizar el tema.',
+                    'danger'
                 );
             }
         }
-    );
-
-    function guardarYAplicar(tema) {
-        guardarTemaManual(tema);
-
-        applyTheme(tema);
     }
 
     function cambiarTema(siguiente) {
@@ -611,6 +604,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!document.startViewTransition || reducirMovimiento) {
             html.classList.add('theme-switching');
+
             guardarYAplicar(siguiente);
 
             setTimeout(function () {

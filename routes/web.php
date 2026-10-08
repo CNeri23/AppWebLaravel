@@ -57,6 +57,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/configuracion', [SystemSettingsController::class, 'update'])
         ->name('configuracion.update');
 
+    // Rutas preferencias
+
+    Route::put('/preferencias/tema', [SystemSettingsController::class, 'updateTheme'])
+        ->name('preferencias.tema.update');
+
     // Rutas autenticación
 
     Route::post('/logout', [LoginController::class, 'logout'])

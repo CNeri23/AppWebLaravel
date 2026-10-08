@@ -10,17 +10,11 @@ class SystemSettings
 {
     private const CACHE_KEY = 'ironpulse.system_settings';
 
-    private const THEME_MODES = ['light', 'dark'];
-
     private const DEFAULTS = [
-        // General
         'system_name' => 'IronPulse',
         'logo_path' => null,
 
         // Apariencia
-        'theme_mode' => 'light',
-        'light_theme_style' => 'white',
-        'dark_theme_style' => 'graphite',
         'accent_color' => 'orange',
 
         // Regional
@@ -39,9 +33,9 @@ class SystemSettings
         'business_schedule' => '',
 
         // Seguridad
-        'session_timeout' => 0,          // minutos de inactividad; 0 = desactivado
+        'session_timeout' => 0,
         'password_min_length' => 8,
-        'password_complexity' => false,  // mayúsculas, minúsculas y números
+        'password_complexity' => false,
         'max_login_attempts' => 5,
         'lockout_minutes' => 5,
         'registration_enabled' => true,
@@ -49,7 +43,7 @@ class SystemSettings
 
     private const GROUPS = [
         'general' => ['system_name', 'logo_path'],
-        'appearance' => ['theme_mode', 'light_theme_style', 'dark_theme_style', 'accent_color'],
+        'appearance' => ['accent_color'],
         'regional' => ['currency', 'timezone', 'date_format', 'time_format'],
         'business' => [
             'business_name',
@@ -70,7 +64,6 @@ class SystemSettings
         ],
     ];
 
-    // En la base de datos todo se guarda como texto; aquí se devuelve con su tipo.
     private const BOOLEANS = ['password_complexity', 'registration_enabled'];
 
     private const INTEGERS = [
@@ -138,17 +131,8 @@ class SystemSettings
         return 'general';
     }
 
-    /**
-     * Devuelve los valores con su tipo correcto y corrige datos heredados
-     * sin tocar la base de datos ni depender de limpiar la caché.
-     */
     private function normalizar(array $settings): array
     {
-        // El modo "system" ya no existe: solo hay claro y oscuro.
-        if (! in_array($settings['theme_mode'] ?? null, self::THEME_MODES, true)) {
-            $settings['theme_mode'] = self::DEFAULTS['theme_mode'];
-        }
-
         foreach (self::BOOLEANS as $key) {
             $settings[$key] = filter_var(
                 $settings[$key] ?? self::DEFAULTS[$key],
