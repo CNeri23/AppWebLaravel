@@ -10,6 +10,7 @@ use App\Http\Controllers\SubmoduloController;
 use App\Http\Controllers\AccionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SystemSettingsController;
+use App\Http\Controllers\PreferencesController;
 use App\Http\Controllers\MiembroController;
 use App\Http\Controllers\DireccionController;
 use App\Http\Controllers\PlanController;
@@ -58,6 +59,9 @@ Route::middleware('auth')->group(function () {
         ->name('configuracion.update');
 
     // Rutas preferencias
+
+    Route::get('/preferencias', [PreferencesController::class, 'index'])
+        ->name('preferencias.index');
 
     Route::put('/preferencias/tema', [SystemSettingsController::class, 'updateTheme'])
         ->name('preferencias.tema.update');
