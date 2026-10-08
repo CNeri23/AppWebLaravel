@@ -161,11 +161,9 @@
 </div>
 
 {{-- MODAL NUEVA CAJA --}}
-<div class="modal fade" id="modalNuevaCaja" tabindex="-1" aria-labelledby="modalNuevaCajaLabel"
-    aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="modalNuevaCaja" tabindex="-1" aria-labelledby="modalNuevaCajaLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="modalNuevaCajaLabel">
                     <i class="fa-solid fa-cash-register me-2"></i>
@@ -180,19 +178,12 @@
                 @csrf
 
                 <div class="modal-body">
-
                     <div class="mb-3">
                         <label for="nombre" class="form-label">
                             Nombre
                         </label>
 
-                        <input type="text"
-                            class="form-control"
-                            id="nombre"
-                            name="nombre"
-                            maxlength="100"
-                            required>
-
+                        <input type="text" class="form-control" id="nombre" name="nombre" maxlength="100" placeholder="Nombre de la caja" required>
                         <div class="invalid-feedback" id="nombre-error"></div>
                     </div>
 
@@ -201,15 +192,9 @@
                             Descripción
                         </label>
 
-                        <textarea class="form-control"
-                            id="descripcion"
-                            name="descripcion"
-                            rows="3"
-                            maxlength="255"></textarea>
-
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" maxlength="255" placeholder="Descripción de la caja"></textarea>
                         <div class="invalid-feedback" id="descripcion-error"></div>
                     </div>
-
                 </div>
 
                 <div class="modal-footer">
@@ -222,18 +207,15 @@
                         Guardar
                     </button>
                 </div>
-
             </form>
         </div>
     </div>
 </div>
 
 {{-- MODAL EDITAR CAJA --}}
-<div class="modal fade" id="modalEditarCaja" tabindex="-1" aria-labelledby="modalEditarCajaLabel"
-    aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="modalEditarCaja" tabindex="-1" aria-labelledby="modalEditarCajaLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="modalEditarCajaLabel">
                     <i class="fa-solid fa-pen-to-square me-2"></i>
@@ -248,7 +230,6 @@
                 @method('PUT')
 
                 <div class="modal-body">
-
                     <input type="hidden" id="editar_caja_id" name="id">
 
                     <div class="mb-3">
@@ -256,13 +237,7 @@
                             Nombre
                         </label>
 
-                        <input type="text"
-                            class="form-control"
-                            id="editar_nombre"
-                            name="nombre"
-                            maxlength="100"
-                            required>
-
+                        <input type="text" class="form-control" id="editar_nombre" name="nombre" maxlength="100" required>
                         <div class="invalid-feedback" id="editar_nombre-error"></div>
                     </div>
 
@@ -271,15 +246,9 @@
                             Descripción
                         </label>
 
-                        <textarea class="form-control"
-                            id="editar_descripcion"
-                            name="descripcion"
-                            rows="3"
-                            maxlength="255"></textarea>
-
+                        <textarea class="form-control" id="editar_descripcion" name="descripcion" rows="3" maxlength="255"></textarea>
                         <div class="invalid-feedback" id="editar_descripcion-error"></div>
                     </div>
-
                 </div>
 
                 <div class="modal-footer">
@@ -292,15 +261,13 @@
                         Guardar
                     </button>
                 </div>
-
             </form>
         </div>
     </div>
 </div>
 
 {{-- MODAL ACTIVAR / DESACTIVAR CAJA --}}
-<div class="modal fade" id="modalEstadoCaja" tabindex="-1" aria-labelledby="modalEstadoCajaLabel"
-    aria-hidden="true">
+<div class="modal fade" id="modalEstadoCaja" tabindex="-1" aria-labelledby="modalEstadoCajaLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
 
@@ -320,10 +287,7 @@
                 <input type="hidden" id="estado_caja_id" name="id">
 
                 <div class="modal-body text-center">
-
-                    <div id="estadoCajaIcono"
-                        class="mx-auto mb-3 rounded-circle bg-warning-subtle text-warning d-flex align-items-center justify-content-center"
-                        style="width: 58px; height: 58px;">
+                    <div id="estadoCajaIcono" class="mx-auto mb-3 rounded-circle bg-warning-subtle text-warning d-flex align-items-center justify-content-center" style="width: 58px; height: 58px;">
                         <i class="fa-solid fa-toggle-on fa-lg"></i>
                     </div>
 
@@ -333,9 +297,7 @@
 
                     <p class="text-secondary mb-0">
                         La caja
-                        <strong id="estado_caja_nombre">
-                            esta caja
-                        </strong>
+                        <strong id="estado_caja_nombre"> esta caja </strong>
                         cambiará de estado.
                     </p>
 
@@ -351,7 +313,6 @@
                         Guardar
                     </button>
                 </div>
-
             </form>
         </div>
     </div>

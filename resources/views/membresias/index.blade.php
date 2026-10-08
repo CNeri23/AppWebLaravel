@@ -191,13 +191,16 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modalNuevaMembresia" tabindex="-1" aria-labelledby="modalNuevaMembresiaLabel"
-        aria-hidden="true" data-bs-backdrop="static">
+
+    <div class="modal fade" id="modalNuevaMembresia" tabindex="-1" aria-labelledby="modalNuevaMembresiaLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalNuevaMembresiaLabel"> <i class="fa-solid fa-id-card me-2"></i> Nueva
-                        membresía </h5>
+                    <h5 class="modal-title" id="modalNuevaMembresiaLabel"> 
+                        <i class="fa-solid fa-id-card me-2"></i>
+                         Nueva membresía 
+                    </h5>
+
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
 
@@ -221,13 +224,13 @@
                                     <option value="">Selecciona un miembro</option>
 
                                     @foreach ($miembros as $miembro)
-                                                                    <option value="{{ $miembro->id }}">
-                                                                        {{ trim(
-                                            $miembro->nombre . ' ' .
-                                            $miembro->apellido_paterno . ' ' .
-                                            ($miembro->apellido_materno ?? '')
-                                        ) }}
-                                                                    </option>
+                                        <option value="{{ $miembro->id }}">
+                                             {{ trim(
+                                                $miembro->nombre . ' ' .
+                                                $miembro->apellido_paterno . ' ' .
+                                                ($miembro->apellido_materno ?? '')
+                                            ) }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -281,10 +284,10 @@
                                     Referencia
                                 </label>
 
-                                <input type="text" class="form-control" id="referencia" name="referencia" maxlength="100">
+                                <input type="text" class="form-control" id="referencia" name="referencia" maxlength="100" placeholder="Folio, autorización o referencia del pago.">
 
                                 <div class="form-text">
-                                    Opcional. Folio, autorización o referencia del pago.
+                                    Opcional.
                                 </div>
                             </div>
 
@@ -298,8 +301,7 @@
                                         {{ $moneda['simbolo'] ?? '$' }}
                                     </span>
 
-                                    <input type="number" class="form-control" id="monto_recibido" name="monto_recibido"
-                                        min="0" step="0.01" inputmode="decimal">
+                                    <input type="number" class="form-control" id="monto_recibido" name="monto_recibido" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
                                 </div>
 
                                 <div class="form-text">
@@ -326,22 +328,19 @@
                                     Observaciones
                                 </label>
 
-                                <textarea class="form-control" id="observaciones" name="observaciones" rows="3"
-                                    maxlength="255"></textarea>
+                                <textarea class="form-control" id="observaciones" name="observaciones" rows="3" maxlength="255" placeholder="Observaciones adicionales..."></textarea>
                             </div>
                         </div>
 
                         <div class="alert alert-info d-flex align-items-start gap-2 mt-4 mb-0">
                             <i class="fa-solid fa-circle-info mt-1"></i>
-
                             <div>
                                 <div class="fw-semibold">
                                     Inicio de la membresía
                                 </div>
 
                                 <div>
-                                    La membresía comenzará el día de la contratación y finalizará de acuerdo con la
-                                    duración del plan seleccionado.
+                                    La membresía comenzará el día de la contratación y finalizará de acuerdo con la duración del plan seleccionado.
                                 </div>
                             </div>
                         </div>
@@ -361,13 +360,16 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modalEditarMembresia" tabindex="-1" aria-labelledby="modalEditarMembresiaLabel"
-        aria-hidden="true" data-bs-backdrop="static">
+
+    <div class="modal fade" id="modalEditarMembresia" tabindex="-1" aria-labelledby="modalEditarMembresiaLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditarMembresiaLabel"> <i class="fa-solid fa-pen me-2"></i> Editar
-                        membresía </h5>
+                    <h5 class="modal-title" id="modalEditarMembresiaLabel">
+                         <i class="fa-solid fa-pen me-2"></i> 
+                         Editar membresía
+                    </h5>
+                    
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
 
@@ -376,7 +378,6 @@
                     @method('PUT')
 
                     <input type="hidden" id="editar_id" name="id">
-
                     <div class="modal-body">
                         <h6 class="fw-semibold mb-3">
                             <i class="fa-solid fa-file-signature me-2"></i>
@@ -429,8 +430,7 @@
                                     Observaciones
                                 </label>
 
-                                <textarea class="form-control" id="editar_observaciones" name="observaciones" rows="4"
-                                    maxlength="255"></textarea>
+                                <textarea class="form-control" id="editar_observaciones" name="observaciones" rows="4" maxlength="255"></textarea>
                             </div>
                         </div>
                     </div>
@@ -449,13 +449,16 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modalRenovarMembresia" tabindex="-1" aria-labelledby="modalRenovarMembresiaLabel"
-        aria-hidden="true" data-bs-backdrop="static">
+
+    <div class="modal fade" id="modalRenovarMembresia" tabindex="-1" aria-labelledby="modalRenovarMembresiaLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalRenovarMembresiaLabel"> <i
-                            class="fa-solid fa-arrows-rotate text-success me-2"></i> Renovar membresía </h5>
+                    <h5 class="modal-title" id="modalRenovarMembresiaLabel"> 
+                        <i class="fa-solid fa-arrows-rotate text-success me-2"></i> 
+                        Renovar membresía 
+                    </h5>
+
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
 
@@ -540,11 +543,10 @@
                                     Referencia
                                 </label>
 
-                                <input type="text" class="form-control" id="renovar_referencia" name="referencia"
-                                    maxlength="100">
+                                <input type="text" class="form-control" id="renovar_referencia" name="referencia" maxlength="100" placeholder="Folio, autorización o referencia del pago.">
 
                                 <div class="form-text">
-                                    Opcional. Folio, autorización o referencia del pago.
+                                    Opcional.
                                 </div>
                             </div>
 
@@ -558,8 +560,7 @@
                                         {{ $moneda['simbolo'] ?? '$' }}
                                     </span>
 
-                                    <input type="number" class="form-control" id="renovar_monto_recibido"
-                                        name="monto_recibido" min="0" step="0.01" inputmode="decimal">
+                                    <input type="number" class="form-control" id="renovar_monto_recibido" name="monto_recibido" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
                                 </div>
 
                                 <div class="form-text">
@@ -586,14 +587,12 @@
                                     Observaciones
                                 </label>
 
-                                <textarea class="form-control" id="renovar_observaciones" name="observaciones" rows="3"
-                                    maxlength="255"></textarea>
+                                <textarea class="form-control" id="renovar_observaciones" name="observaciones" rows="3" maxlength="255" placeholder="Observaciones sobre la renovación de la membresía."></textarea>
                             </div>
                         </div>
 
                         <div class="alert alert-info d-flex align-items-start gap-2 mt-4 mb-0">
                             <i class="fa-solid fa-circle-info mt-1"></i>
-
                             <div>
                                 <div class="fw-semibold">
                                     Periodo de renovación
@@ -620,13 +619,16 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modalCancelarMembresia" tabindex="-1" aria-labelledby="modalCancelarMembresiaLabel"
-        aria-hidden="true">
+
+    <div class="modal fade" id="modalCancelarMembresia" tabindex="-1" aria-labelledby="modalCancelarMembresiaLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-md">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalCancelarMembresiaLabel"> <i
-                            class="fa-solid fa-ban text-danger me-2"></i> Cancelar membresía </h5>
+                    <h5 class="modal-title" id="modalCancelarMembresiaLabel"> 
+                        <i class="fa-solid fa-ban text-danger me-2"></i> 
+                        Cancelar membresía 
+                    </h5>
+
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
 
@@ -634,10 +636,8 @@
                     @csrf
 
                     <input type="hidden" id="cancelar_id" name="id">
-
                     <div class="modal-body text-center">
-                        <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center"
-                            style="width: 58px; height: 58px;">
+                        <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center" style="width: 58px; height: 58px;">
                             <i class="fa-solid fa-ban fa-lg"></i>
                         </div>
 
@@ -671,7 +671,7 @@
 
                         <button type="submit" class="btn btn-danger">
                             <i class="fa-solid fa-ban me-2"></i>
-                            Cancelar membresía
+                            Cancelar
                         </button>
                     </div>
                 </form>

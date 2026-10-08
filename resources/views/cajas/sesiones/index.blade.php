@@ -172,11 +172,9 @@
 </div>
 
 {{-- MODAL ABRIR CAJA --}}
-<div class="modal fade" id="modalAbrirSesion" tabindex="-1" aria-labelledby="modalAbrirSesionLabel"
-    aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="modalAbrirSesion" tabindex="-1" aria-labelledby="modalAbrirSesionLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="modalAbrirSesionLabel">
                     <i class="fa-solid fa-lock-open me-2"></i>
@@ -186,12 +184,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
-            <form method="POST" id="formAbrirSesion" action="{{ route('cajas.sesiones.abrir') }}" novalidate
-                autocomplete="off">
+            <form method="POST" id="formAbrirSesion" action="{{ route('cajas.sesiones.abrir') }}" novalidate autocomplete="off">
                 @csrf
 
                 <div class="modal-body">
-
                     <div class="mb-3">
                         <label for="abrir_caja_id" class="form-label">
                             Caja
@@ -199,7 +195,6 @@
 
                         <select class="form-select" id="abrir_caja_id" name="caja_id" required>
                             <option value="">Selecciona una caja</option>
-
                             @foreach ($cajas as $caja)
                                 <option value="{{ $caja->id }}"
                                     @selected($cajaFiltro && $cajaFiltro->id === $caja->id)>
@@ -214,14 +209,7 @@
                             Fondo inicial ({{ $codigoMoneda }})
                         </label>
 
-                        <input type="number"
-                            class="form-control"
-                            id="abrir_fondo_inicial"
-                            name="fondo_inicial"
-                            min="0"
-                            step="0.01"
-                            value="0"
-                            required>
+                        <input type="number" class="form-control" id="abrir_fondo_inicial" name="fondo_inicial" min="0" step="0.01" value="0" placeholder="0.00" required>
                     </div>
 
                     <div>
@@ -229,13 +217,8 @@
                             Observaciones
                         </label>
 
-                        <textarea class="form-control"
-                            id="abrir_observaciones"
-                            name="observaciones_apertura"
-                            rows="3"
-                            maxlength="255"></textarea>
+                        <textarea class="form-control" id="abrir_observaciones" name="observaciones_apertura" rows="3" placeholder="Observaciones de la apertura de la caja" maxlength="255"></textarea>
                     </div>
-
                 </div>
 
                 <div class="modal-footer">
@@ -248,18 +231,15 @@
                         Guardar
                     </button>
                 </div>
-
             </form>
         </div>
     </div>
 </div>
 
 {{-- MODAL DETALLE DE SESIÓN --}}
-<div class="modal fade" id="modalDetalleSesion" tabindex="-1" aria-labelledby="modalDetalleSesionLabel"
-    aria-hidden="true">
+<div class="modal fade" id="modalDetalleSesion" tabindex="-1" aria-labelledby="modalDetalleSesionLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="modalDetalleSesionLabel">
                     <i class="fa-solid fa-cash-register me-2"></i>
@@ -270,14 +250,12 @@
             </div>
 
             <div class="modal-body">
-
                 <div id="detalleSesionCargando" class="text-center text-secondary py-5">
                     <span class="spinner-border spinner-border-sm me-2"></span>
                     Cargando...
                 </div>
 
                 <div id="detalleSesionContenido" class="d-none">
-
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
                             <div class="text-secondary small">Caja</div>
@@ -372,9 +350,7 @@
                             <tbody id="det_movimientos"></tbody>
                         </table>
                     </div>
-
                 </div>
-
             </div>
 
             <div class="modal-footer">
@@ -382,17 +358,14 @@
                     Cerrar
                 </button>
             </div>
-
         </div>
     </div>
 </div>
 
 {{-- MODAL RETIRO DE DINERO --}}
-<div class="modal fade" id="modalRetiroSesion" tabindex="-1" aria-labelledby="modalRetiroSesionLabel"
-    aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="modalRetiroSesion" tabindex="-1" aria-labelledby="modalRetiroSesionLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="modalRetiroSesionLabel">
                     <i class="fa-solid fa-hand-holding-dollar me-2"></i>
@@ -406,7 +379,6 @@
                 @csrf
 
                 <div class="modal-body">
-
                     <p class="text-secondary">
                         Salida de efectivo de la caja
                         <strong id="retiro_caja_nombre"></strong>.
@@ -417,14 +389,7 @@
                             Monto ({{ $codigoMoneda }})
                         </label>
 
-                        <input type="number"
-                            class="form-control"
-                            id="retiro_monto"
-                            name="monto"
-                            min="0.01"
-                            step="0.01"
-                            required>
-
+                        <input type="number" class="form-control" id="retiro_monto" name="monto" min="0.01" step="0.01" placeholder="0.00" required>
                         <div class="form-text" id="retiro_disponible"></div>
                     </div>
 
@@ -447,12 +412,7 @@
                             Referencia
                         </label>
 
-                        <input type="text"
-                            class="form-control"
-                            id="retiro_referencia"
-                            name="referencia"
-                            maxlength="100"
-                            placeholder="Folio, ticket, etc. (opcional)">
+                        <input type="text" class="form-control" id="retiro_referencia" name="referencia" maxlength="100" placeholder="Folio, ticket, etc. (opcional)">
                     </div>
 
                     <div>
@@ -460,11 +420,7 @@
                             Observaciones
                         </label>
 
-                        <textarea class="form-control"
-                            id="retiro_observaciones"
-                            name="observaciones"
-                            rows="2"
-                            maxlength="255"></textarea>
+                        <textarea class="form-control" id="retiro_observaciones" name="observaciones" rows="2" maxlength="255" placeholder="Observaciones (opcional)"></textarea>
                     </div>
 
                 </div>
@@ -479,18 +435,15 @@
                         Guardar
                     </button>
                 </div>
-
             </form>
         </div>
     </div>
 </div>
 
 {{-- MODAL CERRAR CAJA --}}
-<div class="modal fade" id="modalCerrarSesion" tabindex="-1" aria-labelledby="modalCerrarSesionLabel"
-    aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="modalCerrarSesion" tabindex="-1" aria-labelledby="modalCerrarSesionLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="modalCerrarSesionLabel">
                     <i class="fa-solid fa-lock me-2"></i>
@@ -504,7 +457,6 @@
                 @csrf
 
                 <div class="modal-body">
-
                     <p class="text-secondary">
                         Vas a cerrar la caja
                         <strong id="cerrar_caja_nombre"></strong>.
@@ -551,14 +503,7 @@
                                 Efectivo contado ({{ $codigoMoneda }})
                             </label>
 
-                            <input type="number"
-                                class="form-control"
-                                id="cerrar_efectivo_contado"
-                                name="efectivo_contado"
-                                min="0"
-                                step="0.01"
-                                required>
-
+                            <input type="number" class="form-control"id="cerrar_efectivo_contado" name="efectivo_contado" min="0" step="0.01" placeholder="0.00" required>
                             <div class="small mt-1" id="cerrar_diferencia"></div>
                         </div>
 
@@ -579,10 +524,7 @@
                                 Administrador que autoriza
                             </label>
 
-                            <select class="form-select"
-                                id="cerrar_autorizador"
-                                name="usuario_autorizacion_id"
-                                required>
+                            <select class="form-select" id="cerrar_autorizador" name="usuario_autorizacion_id" required>
                                 <option value="">Selecciona un administrador</option>
 
                                 @foreach ($autorizadores as $autorizador)
@@ -598,12 +540,7 @@
                                 Contraseña del administrador
                             </label>
 
-                            <input type="password"
-                                class="form-control"
-                                id="cerrar_password"
-                                name="password_autorizacion"
-                                autocomplete="new-password"
-                                required>
+                            <input type="password" class="form-control" id="cerrar_password" name="password_autorizacion" autocomplete="new-password" placeholder="Ingresa la contraseña" required>
                         </div>
 
                         <div>
@@ -611,11 +548,7 @@
                                 Observaciones
                             </label>
 
-                            <textarea class="form-control"
-                                id="cerrar_observaciones"
-                                name="observaciones_cierre"
-                                rows="2"
-                                maxlength="255"></textarea>
+                            <textarea class="form-control" id="cerrar_observaciones" name="observaciones_cierre" rows="2" maxlength="255" placeholder="Observaciones del cierre"></textarea>
                         </div>
                     </div>
 
@@ -631,7 +564,6 @@
                         Guardar
                     </button>
                 </div>
-
             </form>
         </div>
     </div>

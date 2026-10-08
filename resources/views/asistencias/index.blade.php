@@ -54,7 +54,6 @@
                 </form>
 
                 <div id="asistenciaResultados" class="list-group asistencias-resultados mt-3 d-none"></div>
-
                 <div id="asistenciaResultado" class="alert asistencia-resultado mt-3 mb-0 d-none" role="alert"></div>
             </div>
         </div>

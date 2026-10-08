@@ -2,31 +2,31 @@
 @section('content')
 
 @php
-$moneda = $moneda ?? [
-    'codigo' => 'MXN',
-    'simbolo' => '$',
-    'tasa' => 1,
-];
+    $moneda = $moneda ?? [
+        'codigo' => 'MXN',
+        'simbolo' => '$',
+        'tasa' => 1,
+    ];
 
-$membresia = $ticket->pago?->membresia;
-$persona = $membresia?->persona;
-$plan = $membresia?->plan;
-$pago = $ticket->pago;
+    $membresia = $ticket->pago?->membresia;
+    $persona = $membresia?->persona;
+    $plan = $membresia?->plan;
+    $pago = $ticket->pago;
 
-$nombreMiembro = $persona
-    ? trim(
-    $persona->nombre . ' ' .
-    $persona->apellido_paterno . ' ' .
-    ($persona->apellido_materno ?? '')
-    )
-: '—';
+    $nombreMiembro = $persona
+        ? trim(
+            $persona->nombre . ' ' .
+            $persona->apellido_paterno . ' ' .
+            ($persona->apellido_materno ?? '')
+        )
+        : '—';
 
-$metodoPago = match ($pago?->metodo_pago) {
-    'efectivo' => 'Efectivo',
-    'tarjeta' => 'Tarjeta',
-    'transferencia' => 'Transferencia',
-    default => ucfirst($pago?->metodo_pago ?? '—'),
-};
+    $metodoPago = match ($pago?->metodo_pago) {
+        'efectivo' => 'Efectivo',
+        'tarjeta' => 'Tarjeta',
+        'transferencia' => 'Transferencia',
+        default => ucfirst($pago?->metodo_pago ?? '—'),
+    };
 @endphp
 
 <div class="d-flex justify-content-between align-items-center mb-4">

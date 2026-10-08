@@ -136,6 +136,7 @@
                         <i class="fa-solid fa-user-shield me-2"></i>
                         Nuevo rol
                     </h5>
+
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
 
@@ -148,8 +149,7 @@
                                 Nombre
                             </label>
 
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                                name="name" value="{{ old('name') }}" required>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" placeholder="Nombre del rol" required>
 
                             @error('name')
                                 <div class="invalid-feedback">
@@ -163,8 +163,7 @@
                                 Descripción
                             </label>
 
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="description"
-                                name="description" rows="3">{{ old('description') }}</textarea>
+                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3" placeholder="Descripción del rol">{{ old('description') }}</textarea>
                             @error('description')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -268,8 +267,7 @@
                                     </div>
 
                                     <small class="text-secondary">
-                                        Selecciona los módulos, submódulos y acciones
-                                        que tendrá el rol
+                                        Selecciona los módulos, submódulos y acciones que tendrá el rol
                                         <strong id="permisos_rol_nombre">
                                             este rol
                                         </strong>.
@@ -323,8 +321,7 @@
                     <input type="hidden" id="eliminar_id" name="id">
 
                     <div class="modal-body text-center">
-                        <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center"
-                            style="width: 58px; height: 58px;">
+                        <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center" style="width: 58px; height: 58px;">
                             <i class="fa-solid fa-trash fa-lg"></i>
                         </div>
 
@@ -342,7 +339,6 @@
                     </div>
 
                     <div class="modal-footer justify-content-center">
-
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             Cancelar
                         </button>

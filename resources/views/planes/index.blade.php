@@ -131,7 +131,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalNuevoPlan" tabindex="-1" aria-labelledby="modalNuevoPlanLabel" aria-hidden="true">
+<div class="modal fade" id="modalNuevoPlan" tabindex="-1" aria-labelledby="modalNuevoPlanLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -149,22 +149,19 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="nuevoPlanNombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nuevoPlanNombre" name="nombre" maxlength="100"
-                            required>
+                        <input type="text" class="form-control" id="nuevoPlanNombre" name="nombre" maxlength="100" placeholder="Nombre del plan" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="nuevoPlanDescripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="nuevoPlanDescripcion" name="descripcion" rows="3"
-                            maxlength="255"></textarea>
+                        <textarea class="form-control" id="nuevoPlanDescripcion" name="descripcion" rows="3" maxlength="255" placeholder="Descripción del plan" required></textarea>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="nuevoPlanDuracion" class="form-label">Duración</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="nuevoPlanDuracion" name="duracion_dias"
-                                    min="1" step="1" required>
+                                <input type="number" class="form-control" id="nuevoPlanDuracion" name="duracion_dias" min="1" step="1" placeholder="Duración plan" required>
                                 <span class="input-group-text">días</span>
                             </div>
                         </div>
@@ -173,8 +170,7 @@
                             <label for="nuevoPlanPrecio" class="form-label">Precio</label>
                             <div class="input-group">
                                 <span class="input-group-text">{{ $moneda['simbolo'] }} {{ $moneda['codigo'] }}</span>
-                                <input type="number" class="form-control" id="nuevoPlanPrecio" name="precio" min="0"
-                                    max="99999999.99" step="0.01" required>
+                                <input type="number" class="form-control" id="nuevoPlanPrecio" name="precio" min="0" max="99999999.99" step="0.01" placeholder="Precio" required>
                             </div>
                         </div>
                     </div>
@@ -195,7 +191,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalEditarPlan" tabindex="-1" aria-labelledby="modalEditarPlanLabel" aria-hidden="true">
+<div class="modal fade" id="modalEditarPlan" tabindex="-1" aria-labelledby="modalEditarPlanLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -214,22 +210,19 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="editarPlanNombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="editarPlanNombre" name="nombre" maxlength="100"
-                            required>
+                        <input type="text" class="form-control" id="editarPlanNombre" name="nombre" maxlength="100" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="editarPlanDescripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="editarPlanDescripcion" name="descripcion" rows="3"
-                            maxlength="255"></textarea>
+                        <textarea class="form-control" id="editarPlanDescripcion" name="descripcion" rows="3" maxlength="255"></textarea>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="editarPlanDuracion" class="form-label">Duración</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="editarPlanDuracion" name="duracion_dias"
-                                    min="1" step="1" required>
+                                <input type="number" class="form-control" id="editarPlanDuracion" name="duracion_dias" min="1" step="1" required>
                                 <span class="input-group-text">días</span>
                             </div>
                         </div>
@@ -238,8 +231,7 @@
                             <label for="editarPlanPrecio" class="form-label">Precio</label>
                             <div class="input-group">
                                 <span class="input-group-text">{{ $moneda['simbolo'] }} {{ $moneda['codigo'] }}</span>
-                                <input type="number" class="form-control" id="editarPlanPrecio" name="precio" min="0"
-                                    max="99999999.99" step="0.01" required>
+                                <input type="number" class="form-control" id="editarPlanPrecio" name="precio" min="0" max="99999999.99" step="0.01" required>
                             </div>
                         </div>
                     </div>
@@ -252,7 +244,7 @@
 
                     <button type="submit" class="btn btn-primary">
                         <i class="fa-solid fa-floppy-disk me-2"></i>
-                        Guardar cambios
+                        Guardar
                     </button>
                 </div>
             </form>
@@ -260,8 +252,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalEliminarPlan" tabindex="-1" aria-labelledby="modalEliminarPlanLabel"
-    aria-hidden="true">
+<div class="modal fade" id="modalEliminarPlan" tabindex="-1" aria-labelledby="modalEliminarPlanLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-header">
@@ -298,7 +289,7 @@
                     </button>
 
                     <button type="submit" class="btn btn-danger">
-                        <i class="fa-regular fa-trash-can me-2"></i>
+                        <i class="fa-solid fa-trash me-2"></i>
                         Eliminar
                     </button>
                 </div>

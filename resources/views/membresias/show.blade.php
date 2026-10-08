@@ -46,7 +46,6 @@
     </div>
 
     <div class="d-flex align-items-center gap-2">
-
         @foreach ($accionesMembresias as $accion)
             @if ($accion->slug === 'membresias.cancelar' && $membresia->estado === 'activa')
                 <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
@@ -277,8 +276,7 @@
                 </h5>
 
                 <div class="d-flex align-items-center gap-3 mb-4">
-                    <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center"
-                        style="width: 52px; height: 52px;">
+                    <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center" style="width: 52px; height: 52px;">
                         <i class="fa-solid fa-user"></i>
                     </div>
 
@@ -401,7 +399,7 @@
 </div>
 
 @if ($membresia->estado === 'activa')
-    <div class="modal fade" id="modalCancelarMembresia" tabindex="-1" aria-labelledby="modalCancelarMembresiaLabel" aria-hidden="true">
+    <div class="modal fade" id="modalCancelarMembresia" tabindex="-1" aria-labelledby="modalCancelarMembresiaLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-md">
             <div class="modal-content">
                 <div class="modal-header">
@@ -417,8 +415,7 @@
                     @csrf
 
                     <div class="modal-body text-center">
-                        <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center"
-                            style="width: 58px; height: 58px;">
+                        <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center" style="width: 58px; height: 58px;">
                             <i class="fa-solid fa-ban fa-lg"></i>
                         </div>
 
@@ -452,7 +449,7 @@
 
                         <button type="submit" class="btn btn-danger">
                             <i class="fa-solid fa-ban me-2"></i>
-                            Cancelar membresía
+                            Cancelar
                         </button>
                     </div>
                 </form>

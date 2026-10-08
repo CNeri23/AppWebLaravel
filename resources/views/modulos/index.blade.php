@@ -151,7 +151,6 @@
                                                                     aria-label="Más acciones para {{ $accion->nombre }}">
 
                                                                     <i class="fa-solid fa-ellipsis-vertical"></i>
-
                                                                 </button>
                                                             @endif
                                                         </div>
@@ -175,7 +174,6 @@
             </div>
         </div>
     </div>
-
 
     {{-- MENÚ CONTEXTUAL MÓDULO --}}
     <div class="context-menu" id="moduloContextMenu">
@@ -324,6 +322,7 @@
                         <i class="fa-solid fa-layer-group me-2"></i>
                         Nuevo módulo
                     </h5>
+
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
 
@@ -333,8 +332,7 @@
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre</label>
 
-                            <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre"
-                                name="nombre" value="{{ old('nombre') }}" required>
+                            <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre" name="nombre" value="{{ old('nombre') }}" placeholder="Nombre del módulo" required>
 
                             @error('nombre')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -344,8 +342,7 @@
                         <div class="mb-3">
                             <label for="slug" class="form-label">Slug</label>
 
-                            <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug"
-                                name="slug" value="{{ old('slug') }}" required>
+                            <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug" value="{{ old('slug') }}" placeholder="Slug del módulo" required>
 
                             @error('slug')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -355,8 +352,7 @@
                         <div class="mb-3">
                             <label for="descripcion" class="form-label">Descripción</label>
 
-                            <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion"
-                                name="descripcion" rows="3">{{ old('descripcion') }}</textarea>
+                            <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="3" placeholder="Descripción del módulo">{{ old('descripcion') }}</textarea>
 
                             @error('descripcion')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -368,8 +364,7 @@
                                 Icono
                             </label>
 
-                            <input type="text" class="form-control @error('icono') is-invalid @enderror" id="icono"
-                                name="icono" value="{{ old('icono') }}">
+                            <input type="text" class="form-control @error('icono') is-invalid @enderror" id="icono" name="icono" value="{{ old('icono') }}" placeholder="<i class='fa-solid fa-users'></i>">
 
                             @error('icono')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -396,9 +391,7 @@
 
                         <div>
                             <label for="orden" class="form-label">Orden</label>
-
-                            <input type="number" class="form-control @error('orden') is-invalid @enderror" id="orden"
-                                name="orden" value="{{ old('orden', 0) }}" min="0" required>
+                            <input type="number" class="form-control @error('orden') is-invalid @enderror" id="orden" name="orden" value="{{ old('orden', 0) }}" min="0" placeholder="Orden del módulo" required>
 
                             @error('orden')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -421,7 +414,6 @@
         </div>
     </div>
 
-
     {{-- MODAL EDITAR MÓDULO --}}
     <div class="modal fade" id="modalEditarModulo" tabindex="-1" aria-labelledby="modalEditarModuloLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
@@ -443,17 +435,17 @@
                         <input type="hidden" id="editar_id" name="id">
                         <div class="mb-3">
                             <label for="editar_nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="editar_nombre" name="nombre" required>
+                            <input type="text" class="form-control" id="editar_nombre" name="nombre" placeholder="Nombre del módulo" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="editar_slug" class="form-label">Slug</label>
-                            <input type="text" class="form-control" id="editar_slug" name="slug" required>
+                            <input type="text" class="form-control" id="editar_slug" name="slug" placeholder="Slug del módulo" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="editar_descripcion" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="editar_descripcion" name="descripcion" rows="3"></textarea>
+                            <textarea class="form-control" id="editar_descripcion" name="descripcion" rows="3" placeholder="Descripción del módulo"></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -461,7 +453,7 @@
                                 Icono
                             </label>
 
-                            <input type="text" class="form-control" id="editar_icono" name="icono">
+                            <input type="text" class="form-control" id="editar_icono" name="icono" placeholder="<i class='fa-solid fa-users'></i>">
                             <div class="alert alert-light border mt-2 mb-0 py-2">
                                 <div class="d-flex align-items-start gap-2">
                                     <i class="fa-solid fa-circle-info text-primary mt-1"></i>
@@ -486,7 +478,7 @@
 
                         <div>
                             <label for="editar_orden" class="form-label">Orden</label>
-                            <input type="number" class="form-control" id="editar_orden" name="orden" min="0" required>
+                            <input type="number" class="form-control" id="editar_orden" name="orden" min="0" placeholder="Orden del módulo" required>
                         </div>
                     </div>
 
@@ -584,8 +576,7 @@
                                 Nombre
                             </label>
 
-                            <input type="text" class="form-control @error('nombre') is-invalid @enderror"
-                                id="submodulo_nombre" name="nombre" value="{{ old('nombre') }}" required>
+                            <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="submodulo_nombre" name="nombre" value="{{ old('nombre') }}" placeholder="Nombre del submódulo" required>
 
                             @error('nombre')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -597,8 +588,7 @@
                                 Slug
                             </label>
 
-                            <input type="text" class="form-control @error('slug') is-invalid @enderror" id="submodulo_slug"
-                                name="slug" value="{{ old('slug') }}" required>
+                            <input type="text" class="form-control @error('slug') is-invalid @enderror" id="submodulo_slug" name="slug" value="{{ old('slug') }}" placeholder="Ej: submodulo.crear" required>
 
                             @error('slug')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -610,8 +600,7 @@
                                 Ruta
                             </label>
 
-                            <input type="text" class="form-control @error('ruta') is-invalid @enderror" id="submodulo_ruta"
-                                name="ruta" value="{{ old('ruta') }}" placeholder="ejemplo.index">
+                            <input type="text" class="form-control @error('ruta') is-invalid @enderror" id="submodulo_ruta" name="ruta" value="{{ old('ruta') }}" placeholder="Ej: submodulo.index">
 
                             @error('ruta')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -627,8 +616,7 @@
                                 Descripción
                             </label>
 
-                            <textarea class="form-control @error('descripcion') is-invalid @enderror"
-                                id="submodulo_descripcion" name="descripcion" rows="3">{{ old('descripcion') }}</textarea>
+                            <textarea class="form-control @error('descripcion') is-invalid @enderror" id="submodulo_descripcion" name="descripcion" rows="3" placeholder="Descripción del submódulo">{{ old('descripcion') }}</textarea>
 
                             @error('descripcion')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -640,8 +628,7 @@
                                 Icono
                             </label>
 
-                            <input type="text" class="form-control @error('icono') is-invalid @enderror"
-                                id="submodulo_icono" name="icono" value="{{ old('icono') }}">
+                            <input type="text" class="form-control @error('icono') is-invalid @enderror" id="submodulo_icono" name="icono" value="{{ old('icono') }}" placeholder="<i class='fa-solid fa-users'></i>">
 
                             @error('icono')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -650,7 +637,6 @@
                             <div class="alert alert-light border mt-2 mb-0 py-2">
                                 <div class="d-flex align-items-start gap-2">
                                     <i class="fa-solid fa-circle-info text-primary mt-1"></i>
-
                                     <div>
                                         <div class="fw-semibold small">Formato del icono</div>
 
@@ -672,8 +658,7 @@
                                 Orden
                             </label>
 
-                            <input type="number" class="form-control @error('orden') is-invalid @enderror"
-                                id="submodulo_orden" name="orden" value="{{ old('orden', 0) }}" min="0" required>
+                            <input type="number" class="form-control @error('orden') is-invalid @enderror" id="submodulo_orden" name="orden" value="{{ old('orden', 0) }}" min="0" placeholder="0" required>
 
                             @error('orden')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -730,7 +715,7 @@
                                 Nombre
                             </label>
 
-                            <input type="text" class="form-control" id="editar_submodulo_nombre" name="nombre" required>
+                            <input type="text" class="form-control" id="editar_submodulo_nombre" name="nombre" placeholder="Nombre del submódulo" required>
                         </div>
 
                         <div class="mb-3">
@@ -738,7 +723,7 @@
                                 Slug
                             </label>
 
-                            <input type="text" class="form-control" id="editar_submodulo_slug" name="slug" required>
+                            <input type="text" class="form-control" id="editar_submodulo_slug" name="slug" placeholder="Ej: submodulo.crear" required>
                         </div>
 
                         <div class="mb-3">
@@ -746,8 +731,7 @@
                                 Ruta
                             </label>
 
-                            <input type="text" class="form-control" id="editar_submodulo_ruta" name="ruta"
-                                placeholder="ejemplo.index">
+                            <input type="text" class="form-control" id="editar_submodulo_ruta" name="ruta" placeholder="Ej: submodulo.index">
 
                             <div class="form-text">
                                 Nombre de la ruta de Laravel que abrirá este submódulo.
@@ -759,8 +743,7 @@
                                 Descripción
                             </label>
 
-                            <textarea class="form-control" id="editar_submodulo_descripcion" name="descripcion"
-                                rows="3"></textarea>
+                            <textarea class="form-control" id="editar_submodulo_descripcion" name="descripcion" placeholder="Descripción del submódulo" rows="3"></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -768,12 +751,11 @@
                                 Icono
                             </label>
 
-                            <input type="text" class="form-control" id="editar_submodulo_icono" name="icono">
+                            <input type="text" class="form-control" id="editar_submodulo_icono" name="icono" placeholder="<i class='fa-solid fa-users'></i>">
 
                             <div class="alert alert-light border mt-2 mb-0 py-2">
                                 <div class="d-flex align-items-start gap-2">
                                     <i class="fa-solid fa-circle-info text-primary mt-1"></i>
-                                    
                                     <div>
                                         <div class="fw-semibold small">
                                             Formato del icono
@@ -819,7 +801,7 @@
     </div>
 
     {{-- MODAL ELIMINAR SUBMÓDULO --}}
-    <div class="modal fade" id="modalEliminarSubmodulo" tabindex="-1" aria-labelledby="modalEliminarSubmoduloLabel" aria-hidden="true">
+    <div class="modal fade" id="modalEliminarSubmodulo" tabindex="-1" aria-labelledby="modalEliminarSubmoduloLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered modal-md">
             <div class="modal-content">
                 <div class="modal-header">
@@ -896,7 +878,7 @@
                                 Nombre
                             </label>
 
-                            <input type="text" class="form-control" id="accion_nombre" name="nombre" required>
+                            <input type="text" class="form-control" id="accion_nombre" name="nombre" placeholder="Nombre de la acción" required>
                         </div>
 
                         <div class="mb-3">
@@ -904,7 +886,7 @@
                                 Slug
                             </label>
 
-                            <input type="text" class="form-control" id="accion_slug" name="slug" required>
+                            <input type="text" class="form-control" id="accion_slug" name="slug" placeholder="Ej: accion.crear" required>
                         </div>
 
                         <div class="mb-3">
@@ -912,7 +894,7 @@
                                 Descripción
                             </label>
 
-                            <textarea class="form-control" id="accion_descripcion" name="descripcion" rows="3"></textarea>
+                            <textarea class="form-control" id="accion_descripcion" name="descripcion" rows="3" placeholder="Descripción de la acción"></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -920,7 +902,7 @@
                                 Icono
                             </label>
 
-                            <input type="text" class="form-control" id="accion_icono" name="icono">
+                            <input type="text" class="form-control" id="accion_icono" name="icono" placeholder="<i class='fa-solid fa-users'></i>">
 
                             <div class="alert alert-light border mt-2 mb-0 py-2">
                                 <div class="d-flex align-items-start gap-2">
@@ -949,7 +931,7 @@
                                 Orden
                             </label>
 
-                            <input type="number" class="form-control" id="accion_orden" name="orden" value="0" min="0" required>
+                            <input type="number" class="form-control" id="accion_orden" name="orden" value="0" min="0" placeholder="Orden de la acción" required>
                         </div>
                     </div>
 
@@ -1000,7 +982,7 @@
                                 Nombre
                             </label>
 
-                            <input type="text" class="form-control" id="editar_accion_nombre" name="nombre" required>
+                            <input type="text" class="form-control" id="editar_accion_nombre" name="nombre" placeholder="Nombre de la acción" required>
                         </div>
 
                         <div class="mb-3">
@@ -1008,7 +990,7 @@
                                 Slug
                             </label>
 
-                            <input type="text" class="form-control" id="editar_accion_slug" name="slug" required>
+                            <input type="text" class="form-control" id="editar_accion_slug" name="slug" placeholder="Ej: accion.crear" required>
                         </div>
 
                         <div class="mb-3">
@@ -1016,7 +998,7 @@
                                 Descripción
                             </label>
 
-                            <textarea class="form-control" id="editar_accion_descripcion" name="descripcion" rows="3"></textarea>
+                            <textarea class="form-control" id="editar_accion_descripcion" name="descripcion" rows="3" placeholder="Descripción de la acción"></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -1024,7 +1006,7 @@
                                 Icono
                             </label>
 
-                            <input type="text" class="form-control" id="editar_accion_icono" name="icono">
+                            <input type="text" class="form-control" id="editar_accion_icono" name="icono" placeholder="<i class='fa-solid fa-users'></i>">
                             <div class="alert alert-light border mt-2 mb-0 py-2">
                                 <div class="d-flex align-items-start gap-2">
                                     <i class="fa-solid fa-circle-info text-primary mt-1"></i>
@@ -1051,7 +1033,7 @@
                                 Orden
                             </label>
 
-                            <input type="number" class="form-control" id="editar_accion_orden" name="orden" min="0" required>
+                            <input type="number" class="form-control" id="editar_accion_orden" name="orden" min="0" placeholder="Orden de la acción" required>
                         </div>
                     </div>
 
@@ -1071,7 +1053,7 @@
     </div>
 
     {{-- MODAL ELIMINAR ACCIÓN --}}
-    <div class="modal fade" id="modalEliminarAccion" tabindex="-1" aria-labelledby="modalEliminarAccionLabel" aria-hidden="true">
+    <div class="modal fade" id="modalEliminarAccion" tabindex="-1" aria-labelledby="modalEliminarAccionLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-md">
             <div class="modal-content">
                 <div class="modal-header">

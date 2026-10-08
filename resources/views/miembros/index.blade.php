@@ -162,7 +162,7 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                                 Nombre
                             </label>
 
-                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingresa el nombre" required>
                         </div>
 
                         <div class="col-md-4">
@@ -170,8 +170,7 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                                 Apellido paterno
                             </label>
 
-                            <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno"
-                                required>
+                            <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno" placeholder="Ingresa el apellido paterno" required>
                         </div>
 
                         <div class="col-md-4">
@@ -179,7 +178,7 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                                 Apellido materno
                             </label>
 
-                            <input type="text" class="form-control" id="apellido_materno" name="apellido_materno">
+                            <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" placeholder="Ingresa el apellido materno">
                         </div>
 
                         <div class="col-md-6">
@@ -187,7 +186,7 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                                 Teléfono
                             </label>
 
-                            <input type="text" class="form-control" id="telefono" name="telefono">
+                            <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ej. 5551234567">
                         </div>
 
                         <div class="col-md-6">
@@ -195,7 +194,7 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                                 Correo electrónico
                             </label>
 
-                            <input type="email" class="form-control" id="email" name="email">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
                         </div>
 
                         <div class="col-12">
@@ -223,9 +222,7 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                                 @endforeach
                             </select>
                         </div>
-
                     </div>
-
                 </div>
 
                 <div class="modal-footer">
@@ -238,19 +235,15 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                         Guardar
                     </button>
                 </div>
-
             </form>
         </div>
     </div>
 </div>
 
 {{-- MODAL EDITAR --}}
-<div class="modal fade" id="modalEditarMiembro" tabindex="-1" aria-labelledby="modalEditarMiembroLabel"
-    aria-hidden="true" data-bs-backdrop="static">
-
+<div class="modal fade" id="modalEditarMiembro" tabindex="-1" aria-labelledby="modalEditarMiembroLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="modalEditarMiembroLabel">
                     <i class="fa-solid fa-user-pen me-2"></i>
@@ -261,21 +254,17 @@ window.accionesMiembros = @json($accionesMiembrosJs);
             </div>
 
             <form method="POST" id="formEditarMiembro" novalidate autocomplete="off">
-
                 @csrf
                 @method('PUT')
 
                 <div class="modal-body">
-
                     <input type="hidden" id="editar_id" name="id">
-
                     <h6 class="fw-semibold mb-3">
                         <i class="fa-solid fa-user me-2"></i>
                         Datos personales
                     </h6>
 
                     <div class="row g-3">
-
                         <div class="col-md-4">
                             <label for="editar_nombre" class="form-label">
                                 Nombre
@@ -289,8 +278,7 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                                 Apellido paterno
                             </label>
 
-                            <input type="text" class="form-control" id="editar_apellido_paterno" name="apellido_paterno"
-                                required>
+                            <input type="text" class="form-control" id="editar_apellido_paterno" name="apellido_paterno"required>
                         </div>
 
                         <div class="col-md-4">
@@ -298,8 +286,7 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                                 Apellido materno
                             </label>
 
-                            <input type="text" class="form-control" id="editar_apellido_materno"
-                                name="apellido_materno">
+                            <input type="text" class="form-control" id="editar_apellido_materno" name="apellido_materno">
                         </div>
 
                         <div class="col-md-6">
@@ -343,9 +330,7 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                                 @endforeach
                             </select>
                         </div>
-
                     </div>
-
                 </div>
 
                 <div class="modal-footer">
@@ -358,14 +343,13 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                         Guardar
                     </button>
                 </div>
-
             </form>
         </div>
     </div>
 </div>
 
 {{-- MODAL ELIMINAR --}}
-<div class="modal fade" id="modalEliminarMiembro" tabindex="-1" aria-labelledby="modalEliminarMiembroLabel" aria-hidden="true">
+<div class="modal fade" id="modalEliminarMiembro" tabindex="-1" aria-labelledby="modalEliminarMiembroLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-header">
@@ -384,7 +368,6 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                 <input type="hidden" id="eliminar_id" name="id">
 
                 <div class="modal-body text-center">
-
                     <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center"
                         style="width: 58px; height: 58px;">
                         <i class="fa-solid fa-trash fa-lg"></i>
@@ -401,11 +384,9 @@ window.accionesMiembros = @json($accionesMiembrosJs);
                         </strong>.
                         Esta acción no se puede deshacer.
                     </p>
-
                 </div>
 
                 <div class="modal-footer justify-content-center">
-
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         Cancelar
                     </button>

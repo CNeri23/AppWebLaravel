@@ -182,7 +182,7 @@
                                 Calle
                             </label>
 
-                            <input type="text" class="form-control" id="calle" name="calle" maxlength="150" required>
+                            <input type="text" class="form-control" id="calle" name="calle" maxlength="150" placeholder="Nombre de la calle" required>
                         </div>
 
                         <div class="col-md-4">
@@ -190,7 +190,7 @@
                                 Número exterior
                             </label>
 
-                            <input type="text" class="form-control" id="numero_exterior" name="numero_exterior" maxlength="20" required>
+                            <input type="text" class="form-control" id="numero_exterior" name="numero_exterior" maxlength="20" placeholder="Ej: 12" required>
                         </div>
 
                         <div class="col-md-4">
@@ -198,7 +198,7 @@
                                 Número interior
                             </label>
 
-                            <input type="text" class="form-control" id="numero_interior" name="numero_interior" maxlength="20">
+                            <input type="text" class="form-control" id="numero_interior" name="numero_interior" maxlength="20" placeholder="Ej: 3A">
                         </div>
 
                         <div class="col-md-8">
@@ -206,7 +206,7 @@
                                 Colonia
                             </label>
 
-                            <input type="text" class="form-control" id="colonia" name="colonia" maxlength="100" required>
+                            <input type="text" class="form-control" id="colonia" name="colonia" maxlength="100" placeholder="Nombre de la colonia" required>
                         </div>
 
                         <div class="col-md-4">
@@ -214,7 +214,7 @@
                                 Código postal
                             </label>
 
-                            <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" maxlength="5" inputmode="numeric" required>
+                            <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" maxlength="5" inputmode="numeric" placeholder="Ej: 12345" required>
                         </div>
 
                         <div class="col-md-8">
@@ -222,7 +222,7 @@
                                 Municipio
                             </label>
 
-                            <input type="text" class="form-control" id="municipio" name="municipio" maxlength="100" required>
+                            <input type="text" class="form-control" id="municipio" name="municipio" maxlength="100" placeholder="Nombre del municipio" required>
                         </div>
 
                         <div class="col-md-6">
@@ -230,7 +230,7 @@
                                 Estado
                             </label>
 
-                            <input type="text" class="form-control" id="estado" name="estado" maxlength="100" required>
+                            <input type="text" class="form-control" id="estado" name="estado" maxlength="100" placeholder="Nombre del estado" required>
                         </div>
 
                         <div class="col-md-6">
@@ -240,9 +240,7 @@
 
                             <input type="text" class="form-control" id="pais" name="pais" maxlength="100" value="México" required>
                         </div>
-
                     </div>
-
                 </div>
 
                 <div class="modal-footer">
@@ -293,8 +291,7 @@
                                 Calle
                             </label>
 
-                            <input type="text" class="form-control" id="editar_calle" name="calle" maxlength="150"
-                                required>
+                            <input type="text" class="form-control" id="editar_calle" name="calle" maxlength="150" required>
                         </div>
 
                         <div class="col-md-4">
@@ -302,8 +299,7 @@
                                 Número exterior
                             </label>
 
-                            <input type="text" class="form-control" id="editar_numero_exterior" name="numero_exterior"
-                                maxlength="20" required>
+                            <input type="text" class="form-control" id="editar_numero_exterior" name="numero_exterior" maxlength="20" required>
                         </div>
 
                         <div class="col-md-4">
@@ -311,8 +307,7 @@
                                 Número interior
                             </label>
 
-                            <input type="text" class="form-control" id="editar_numero_interior" name="numero_interior"
-                                maxlength="20">
+                            <input type="text" class="form-control" id="editar_numero_interior" name="numero_interior" placeholder="Ej: 3A" maxlength="20">
                         </div>
 
                         <div class="col-md-8">
@@ -320,8 +315,7 @@
                                 Colonia
                             </label>
 
-                            <input type="text" class="form-control" id="editar_colonia" name="colonia" maxlength="100"
-                                required>
+                            <input type="text" class="form-control" id="editar_colonia" name="colonia" maxlength="100" required>
                         </div>
 
                         <div class="col-md-4">
@@ -329,8 +323,7 @@
                                 Código postal
                             </label>
 
-                            <input type="text" class="form-control" id="editar_codigo_postal" name="codigo_postal"
-                                maxlength="5" inputmode="numeric" required>
+                            <input type="text" class="form-control" id="editar_codigo_postal" name="codigo_postal" maxlength="5" inputmode="numeric" required>
                         </div>
 
                         <div class="col-md-8">
@@ -338,8 +331,7 @@
                                 Municipio
                             </label>
 
-                            <input type="text" class="form-control" id="editar_municipio" name="municipio"
-                                maxlength="100" required>
+                            <input type="text" class="form-control" id="editar_municipio" name="municipio" maxlength="100" required>
                         </div>
 
                         <div class="col-md-6">
@@ -347,8 +339,7 @@
                                 Estado
                             </label>
 
-                            <input type="text" class="form-control" id="editar_estado" name="estado" maxlength="100"
-                                required>
+                            <input type="text" class="form-control" id="editar_estado" name="estado" maxlength="100" required>
                         </div>
 
                         <div class="col-md-6">
@@ -378,7 +369,7 @@
 
 {{-- MODAL ELIMINAR DIRECCIÓN --}}
 
-<div class="modal fade" id="modalEliminarDireccion" tabindex="-1" aria-labelledby="modalEliminarDireccionLabel" aria-hidden="true">
+<div class="modal fade" id="modalEliminarDireccion" tabindex="-1" aria-labelledby="modalEliminarDireccionLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-header">
@@ -396,8 +387,7 @@
                 <input type="hidden" id="eliminar_id" name="id">
 
                 <div class="modal-body text-center">
-                    <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center"
-                        style="width: 58px; height: 58px;">
+                    <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center" style="width: 58px; height: 58px;">
                         <i class="fa-solid fa-trash fa-lg"></i>
                     </div>
 
