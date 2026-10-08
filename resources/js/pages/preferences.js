@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'input[name="light_theme_style"], input[name="dark_theme_style"]'
     );
 
+
     let themeMode = html.dataset.themeMode || 'light';
     let lightThemeStyle = html.dataset.lightThemeStyle || 'white';
     let darkThemeStyle = html.dataset.darkThemeStyle || 'graphite';
@@ -15,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function aplicarTema(mode) {
         themeMode = mode;
 
+        const estiloActual =
+            themeMode === 'dark'
+                ? darkThemeStyle
+                : lightThemeStyle;
+
         html.setAttribute(
             'data-theme-mode',
             themeMode
@@ -22,9 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         html.setAttribute(
             'data-theme-style',
-            themeMode === 'dark'
-                ? darkThemeStyle
-                : lightThemeStyle
+            estiloActual
         );
 
         html.setAttribute(
@@ -36,9 +40,17 @@ document.addEventListener('DOMContentLoaded', function () {
             new CustomEvent('ironpulse:theme-changed', {
                 detail: {
                     theme: themeMode,
-                    style: themeMode === 'dark'
-                        ? darkThemeStyle
-                        : lightThemeStyle,
+                    style: estiloActual,
+                },
+            })
+        );
+
+        document.dispatchEvent(
+            new CustomEvent('ironpulse:preferences-updated', {
+                detail: {
+                    theme_mode: themeMode,
+                    light_theme_style: lightThemeStyle,
+                    dark_theme_style: darkThemeStyle,
                 },
             })
         );
@@ -46,16 +58,50 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function actualizarSeleccionVisual() {
         opciones.forEach(function (opcion) {
-            const seleccionado =
+            const esTemaActivo =
+                themeMode === 'light'
+                    ? opcion.name === 'light_theme_style'
+                    : opcion.name === 'dark_theme_style';
+
+            const estiloActivo =
                 opcion.name === 'light_theme_style'
                     ? opcion.value === lightThemeStyle
                     : opcion.value === darkThemeStyle;
 
-            opcion.checked = seleccionado;
+            opcion.checked =
+                esTemaActivo && estiloActivo;
         });
     }
 
-    async function guardarPreferencia(mode, style) {
+    function mostrarSweetAlert(mensaje, icono) {
+        if (typeof window.Swal !== 'undefined') {
+            window.Swal.fire({
+                icon: icono,
+                title: icono === 'success'
+                    ? 'Preferencias actualizadas'
+                    : 'No fue posible actualizar',
+                text: mensaje,
+                timer: icono === 'success' ? 1800 : undefined,
+                showConfirmButton: icono !== 'success',
+                confirmButtonText: 'Aceptar',
+                timerProgressBar: icono === 'success',
+                customClass: {
+                    popup: 'ironpulse-swal',
+                },
+            });
+
+            return;
+        }
+
+        if (typeof window.mostrarAviso === 'function') {
+            window.mostrarAviso(
+                mensaje,
+                icono === 'success' ? 'success' : 'danger'
+            );
+        }
+    }
+
+    async function guardarPreferencia() {
         if (!csrf) {
             throw new Error(
                 'No fue posible obtener el token de seguridad.'
@@ -74,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     'X-Requested-With': 'XMLHttpRequest',
                 },
                 body: JSON.stringify({
-                    theme_mode: mode,
+                    theme_mode: themeMode,
                     light_theme_style: lightThemeStyle,
                     dark_theme_style: darkThemeStyle,
                 }),
@@ -116,7 +162,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 lightThemeStyle = this.value;
             }
 
-            aplicarTema(nuevoModo);
+            themeMode = nuevoModo;
+
+            aplicarTema(themeMode);
             actualizarSeleccionVisual();
 
             opciones.forEach(function (elemento) {
@@ -124,11 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             try {
-                const data =
-                    await guardarPreferencia(
-                        nuevoModo,
-                        this.value
-                    );
+                const data = await guardarPreferencia();
 
                 if (data.preferences) {
                     themeMode =
@@ -166,26 +210,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         'data-bs-theme',
                         themeMode
                     );
-
-                    document.dispatchEvent(
-                        new CustomEvent('ironpulse:preferences-updated', {
-                            detail: {
-                                theme_mode: themeMode,
-                                light_theme_style: lightThemeStyle,
-                                dark_theme_style: darkThemeStyle,
-                            },
-                        })
-                    );
                 }
 
+                aplicarTema(themeMode);
                 actualizarSeleccionVisual();
 
-                if (typeof window.mostrarAviso === 'function') {
-                    window.mostrarAviso(
-                        'El tema se actualizó correctamente.',
-                        'success'
-                    );
-                }
+                mostrarSweetAlert(
+                    'El tema se actualizó correctamente.',
+                    'success'
+                );
             } catch (error) {
                 themeMode = modoAnterior;
                 lightThemeStyle = estiloClaroAnterior;
@@ -194,13 +227,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 aplicarTema(themeMode);
                 actualizarSeleccionVisual();
 
-                if (typeof window.mostrarAviso === 'function') {
-                    window.mostrarAviso(
-                        error.message ||
-                        'No fue posible actualizar el tema.',
-                        'danger'
-                    );
-                }
+                mostrarSweetAlert(
+                    error.message ||
+                    'No fue posible actualizar el tema.',
+                    'error'
+                );
             } finally {
                 opciones.forEach(function (elemento) {
                     elemento.disabled = false;

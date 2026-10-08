@@ -11,6 +11,7 @@ import './pages/membresias.js';
 import './pages/asistencias.js';
 import './pages/cajas.js';
 import './pages/sesiones.js';
+import './pages/preferences.js';
 
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';

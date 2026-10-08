@@ -11,6 +11,7 @@
 @import './pages/cajas.css';
 @import './pages/sesiones.css';
 @import './pages/ticket.css';
+@import './pages/preferences.css';
 
 @import 'tailwindcss';
 
