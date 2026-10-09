@@ -2,10 +2,25 @@ document.addEventListener('DOMContentLoaded', function () {
     const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfTokenElement ? csrfTokenElement.content : '';
 
-    // El login no tiene preferencias de usuario autenticado: solo cambia el tema visual.
+    // El login conserva su tema visual temporal sin modificar preferencias de usuarios.
     const loginThemeToggle = document.getElementById('loginThemeToggle');
     if (loginThemeToggle) {
         const raiz = document.documentElement;
+        const claveTemaLogin = 'ironpulse-login-theme';
+
+        function obtenerTemaLogin() {
+            try {
+                const temaGuardado = localStorage.getItem(claveTemaLogin);
+
+                if (temaGuardado === 'dark' || temaGuardado === 'light') {
+                    return temaGuardado;
+                }
+            } catch (error) {
+                // Si el almacenamiento no está disponible, se usa el tema predeterminado.
+            }
+
+            return 'light';
+        }
 
         function aplicarTemaLogin(modo) {
             const tema = modo === 'dark' ? 'dark' : 'light';
@@ -27,11 +42,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 : 'Cambiar a modo oscuro';
         }
 
-        aplicarTemaLogin(raiz.dataset.themeMode || raiz.getAttribute('data-bs-theme') || 'light');
+        aplicarTemaLogin(obtenerTemaLogin());
 
         loginThemeToggle.addEventListener('click', function () {
             const modoActual = raiz.getAttribute('data-bs-theme');
-            aplicarTemaLogin(modoActual === 'dark' ? 'light' : 'dark');
+            const siguienteTema = modoActual === 'dark' ? 'light' : 'dark';
+
+            aplicarTemaLogin(siguienteTema);
+
+            try {
+                localStorage.setItem(claveTemaLogin, siguienteTema);
+            } catch (error) {
+                // El cambio sigue funcionando durante la página actual.
+            }
         });
     }
 
