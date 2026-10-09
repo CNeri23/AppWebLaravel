@@ -36,16 +36,6 @@
     overflow-x: auto;
     overflow-y: hidden;
 }
-
-/* Colores de acciones de la tabla: Editar, acceso y Eliminar. */
-#tablaMiembros .miembro-action-btn:has(.fa-pen),
-#tablaMiembros .miembro-action-btn:has(.fa-pen-to-square),
-#tablaMiembros .miembro-action-btn:has(.fa-pencil),
-#tablaMiembros .miembro-action-btn:has(.fa-user-pen) {
-    border-color: #0d6efd !important;
-    background: #0d6efd !important;
-    color: #fff !important;
-}
 #tablaMiembros .miembro-action-btn:has(.fa-pen):hover,
 #tablaMiembros .miembro-action-btn:has(.fa-pen-to-square):hover,
 #tablaMiembros .miembro-action-btn:has(.fa-pencil):hover,
@@ -54,30 +44,15 @@
     background: #0a58ca !important;
     color: #fff !important;
 }
-#tablaMiembros .miembro-action-btn:has(.fa-user-check) {
-    border-color: #198754 !important;
-    background: #198754 !important;
-    color: #fff !important;
-}
 #tablaMiembros .miembro-action-btn:has(.fa-user-check):hover {
     border-color: #146c43 !important;
     background: #146c43 !important;
     color: #fff !important;
 }
-#tablaMiembros .miembro-action-btn:has(.fa-user-lock) {
-    border-color: #ffc107 !important;
-    background: #ffc107 !important;
-    color: #212529 !important;
-}
 #tablaMiembros .miembro-action-btn:has(.fa-user-lock):hover {
     border-color: #ffca2c !important;
     background: #ffca2c !important;
     color: #212529 !important;
-}
-#tablaMiembros .miembro-action-btn:has(.fa-trash) {
-    border-color: #dc3545 !important;
-    background: #dc3545 !important;
-    color: #fff !important;
 }
 #tablaMiembros .miembro-action-btn:has(.fa-trash):hover {
     border-color: #b02a37 !important;
