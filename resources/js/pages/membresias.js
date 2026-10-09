@@ -149,7 +149,10 @@ function inicializarModalTicket() {
             '<div class="spinner-border" role="status"></div>' +
             '</div>';
 
-        bootstrap.Modal.getOrCreateInstance(modalTicket).show();
+        bootstrap.Modal.getOrCreateInstance(modalTicket, {
+            backdrop: 'static',
+            keyboard: false
+        }).show();
 
         obtenerHtmlTicket(url)
             .then(function (tarjetaHtml) {
