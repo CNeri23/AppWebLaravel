@@ -1777,12 +1777,11 @@ html[data-bs-theme] {
     --gym-fill: var(--gym);
 }
 
-/* Botones de acción: conservar los botones destructivos en rojo. */
+/* Botones principales y destructivos de la aplicación. Los botones de acción de tablas se definen en el CSS de cada módulo. */
 html[data-bs-theme] .btn-primary,
 html[data-bs-theme] .btn-success,
 html[data-bs-theme] .btn-info,
 html[data-bs-theme] .btn-warning,
-html[data-bs-theme] .btn-outline-primary,
 html[data-bs-theme] .btn-agregar,
 html[data-bs-theme] .btn-add,
 html[data-bs-theme] .btn-crear,
@@ -1797,7 +1796,6 @@ html[data-bs-theme] .btn-primary:hover,
 html[data-bs-theme] .btn-success:hover,
 html[data-bs-theme] .btn-info:hover,
 html[data-bs-theme] .btn-warning:hover,
-html[data-bs-theme] .btn-outline-primary:hover,
 html[data-bs-theme] .btn-agregar:hover,
 html[data-bs-theme] .btn-add:hover,
 html[data-bs-theme] .btn-crear:hover,
@@ -1811,7 +1809,7 @@ html[data-bs-theme] .btn-save:hover {
 /* La acción de eliminar mantiene siempre su tratamiento de peligro. */
 html[data-bs-theme] .btn-danger,
 html[data-bs-theme] .btn-danger:hover,
-html[data-bs-theme] .btn-outline-danger:hover {
+html[data-bs-theme] .btn-danger:hover {
     border-color: var(--danger-fill);
     background-color: var(--danger-fill);
     color: #ffffff;
