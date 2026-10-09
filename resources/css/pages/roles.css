@@ -219,12 +219,16 @@
 }
 
 /* Colores de acciones de la tabla: Editar, Permisos y Eliminar. */
-#tablaRoles .rol-action-btn:has(.fa-pen) {
+#tablaRoles .rol-action-btn:has(.fa-pen),
+#tablaRoles .rol-action-btn:has(.fa-pen-to-square),
+#tablaRoles .rol-action-btn:has(.fa-pencil) {
     border-color: #0d6efd !important;
     background: #0d6efd !important;
     color: #fff !important;
 }
-#tablaRoles .rol-action-btn:has(.fa-pen):hover {
+#tablaRoles .rol-action-btn:has(.fa-pen):hover,
+#tablaRoles .rol-action-btn:has(.fa-pen-to-square):hover,
+#tablaRoles .rol-action-btn:has(.fa-pencil):hover {
     border-color: #0a58ca !important;
     background: #0a58ca !important;
     color: #fff !important;
