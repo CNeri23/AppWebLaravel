@@ -80,7 +80,7 @@
                     <span class="profile-detail-icon"><i class="fa-solid fa-user"></i></span>
                     <div class="profile-detail-content">
                         <span class="profile-info-label">Nombre completo</span>
-                        <span class="profile-info-value">{{ $usuario->persona?->nombre_completo ?: 'No registrado' }}</span>
+                        <span class="profile-info-value" id="profileDetailName">{{ $usuario->persona?->nombre_completo ?: 'No registrado' }}</span>
                     </div>
                 </div>
 
@@ -88,7 +88,7 @@
                     <span class="profile-detail-icon"><i class="fa-solid fa-at"></i></span>
                     <div class="profile-detail-content">
                         <span class="profile-info-label">Nombre de usuario</span>
-                        <span class="profile-info-value">{{ '@' . $usuario->username }}</span>
+                        <span class="profile-info-value" id="profileDetailUsername">{{ '@' . $usuario->username }}</span>
                     </div>
                 </div>
 
@@ -96,7 +96,7 @@
                     <span class="profile-detail-icon"><i class="fa-solid fa-envelope"></i></span>
                     <div class="profile-detail-content">
                         <span class="profile-info-label">Correo electrónico</span>
-                        <span class="profile-info-value">{{ $usuario->persona?->email ?: 'No registrado' }}</span>
+                        <span class="profile-info-value" id="profileDetailEmail">{{ $usuario->persona?->email ?: 'No registrado' }}</span>
                     </div>
                 </div>
 
@@ -104,7 +104,7 @@
                     <span class="profile-detail-icon"><i class="fa-solid fa-phone"></i></span>
                     <div class="profile-detail-content">
                         <span class="profile-info-label">Teléfono</span>
-                        <span class="profile-info-value">{{ $usuario->persona?->telefono ?: 'No registrado' }}</span>
+                        <span class="profile-info-value" id="profileDetailPhone">{{ $usuario->persona?->telefono ?: 'No registrado' }}</span>
                     </div>
                 </div>
 
@@ -114,7 +114,7 @@
                         <span class="profile-info-label">Dirección</span>
                         <span class="profile-info-value">
                             @if ($direccion = $usuario->persona?->direccion)
-                                {{ collect([$direccion->calle, trim(($direccion->numero_exterior ?? '') . ' ' . ($direccion->numero_interior ? 'Int. ' . $direccion->numero_interior : '')), $direccion->colonia, $direccion->codigo_postal, $direccion->municipio, $direccion->estado, $direccion->pais])->filter()->implode(', ') }}
+                                {{ collect([$direccion->calle, trim(($direccion->numero_exterior ?? '') . ' ' . ($direccion->numero_interior ? 'Int. ' . $direccion->numero_interior : '')), $direccion->colonia, $direccion->codigo_postal, $direccion->municipio, $direccion->estado, $direccion->pais])->map(fn ($parte) => trim((string) $parte))->filter()->implode(', ') }}
                             @else
                                 No registrada
                             @endif
