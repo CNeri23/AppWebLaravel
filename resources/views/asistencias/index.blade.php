@@ -76,7 +76,7 @@
         </div>
 
         <div class="col-12 col-md-4">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card border-0 shadow-sm h-100 asistencia-kpi-card">
                 <div class="card-body d-flex align-items-center gap-3">
                     <div class="asistencia-kpi-icono bg-primary-subtle text-primary">
                         <i class="fa-solid fa-user-check"></i>
@@ -91,7 +91,7 @@
         </div>
 
         <div class="col-12 col-md-4">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card border-0 shadow-sm h-100 asistencia-kpi-card">
                 <div class="card-body d-flex align-items-center gap-3">
                     <div class="asistencia-kpi-icono bg-danger-subtle text-danger">
                         <i class="fa-solid fa-ban"></i>
