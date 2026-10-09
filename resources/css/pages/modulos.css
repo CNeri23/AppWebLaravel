@@ -748,3 +748,15 @@
 [data-bs-theme="dark"] .tree-item.selected.tree-item:hover .tree-action-folder {
     color: #0f172a;
 }
+
+/* Scroll interno para los modales de alta y edición de módulos, submódulos y acciones. */
+#modalNuevoModulo .modal-body,
+#modalEditarModulo .modal-body,
+#modalNuevoSubmodulo .modal-body,
+#modalEditarSubmodulo .modal-body,
+#modalNuevaAccion .modal-body,
+#modalEditarAccion .modal-body {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
