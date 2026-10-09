@@ -2,6 +2,39 @@ document.addEventListener('DOMContentLoaded', function () {
     const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfTokenElement ? csrfTokenElement.content : '';
 
+    // El login no tiene preferencias de usuario autenticado: solo cambia el tema visual.
+    const loginThemeToggle = document.getElementById('loginThemeToggle');
+    if (loginThemeToggle) {
+        const raiz = document.documentElement;
+
+        function aplicarTemaLogin(modo) {
+            const tema = modo === 'dark' ? 'dark' : 'light';
+            const estilo = tema === 'dark'
+                ? (raiz.dataset.darkThemeStyle || 'graphite')
+                : (raiz.dataset.lightThemeStyle || 'white');
+
+            raiz.setAttribute('data-bs-theme', tema);
+            raiz.setAttribute('data-theme-mode', tema);
+            raiz.setAttribute('data-theme-style', estilo);
+
+            loginThemeToggle.setAttribute('aria-checked', tema === 'dark' ? 'true' : 'false');
+            loginThemeToggle.setAttribute(
+                'aria-label',
+                tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'
+            );
+            loginThemeToggle.title = tema === 'dark'
+                ? 'Cambiar a modo claro'
+                : 'Cambiar a modo oscuro';
+        }
+
+        aplicarTemaLogin(raiz.dataset.themeMode || raiz.getAttribute('data-bs-theme') || 'light');
+
+        loginThemeToggle.addEventListener('click', function () {
+            const modoActual = raiz.getAttribute('data-bs-theme');
+            aplicarTemaLogin(modoActual === 'dark' ? 'light' : 'dark');
+        });
+    }
+
     (function avisarSesionExpirada() {
         const params = new URLSearchParams(window.location.search);
 
