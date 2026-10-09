@@ -747,7 +747,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('editar_apellido_materno').value = d.apellidoMaterno || '';
                 document.getElementById('editar_telefono').value = d.telefono || '';
                 document.getElementById('editar_email').value = d.email || '';
-                document.getElementById('editar_activo').checked = d.activo === '1';
 
                 limpiarErroresForm(
                     document.getElementById('formEditarUsuario')
@@ -982,7 +981,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         );
 
                         formNuevoUsuario.reset();
-                        document.getElementById('nuevo_activo').checked = true;
                     })
                     .catch(function (error) {
                         mostrarErroresForm(formNuevoUsuario, error);
@@ -1012,7 +1010,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     apellido_materno: valor('editar_apellido_materno'),
                     telefono: valor('editar_telefono'),
                     email: valor('editar_email'),
-                    activo: document.getElementById('editar_activo').checked,
                 };
 
                 if (
