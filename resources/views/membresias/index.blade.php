@@ -209,11 +209,6 @@
                     @csrf
 
                     <div class="modal-body">
-                        <h6 class="fw-semibold mb-3">
-                            <i class="fa-solid fa-file-signature me-2"></i>
-                            Datos de la membresía
-                        </h6>
-
                         <div class="row g-3">
                             <div class="col-12">
                                 <label for="persona_id" class="form-label">
@@ -379,11 +374,6 @@
 
                     <input type="hidden" id="editar_id" name="id">
                     <div class="modal-body">
-                        <h6 class="fw-semibold mb-3">
-                            <i class="fa-solid fa-file-signature me-2"></i>
-                            Datos de la membresía
-                        </h6>
-
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">
@@ -468,11 +458,6 @@
                     <input type="hidden" id="renovar_id" name="id">
 
                     <div class="modal-body">
-                        <h6 class="fw-semibold mb-3">
-                            <i class="fa-solid fa-file-signature me-2"></i>
-                            Datos de la renovación
-                        </h6>
-
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">
