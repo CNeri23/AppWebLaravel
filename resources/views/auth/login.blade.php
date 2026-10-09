@@ -57,6 +57,7 @@
     data-theme-style="{{ $themeMode === 'dark' ? $darkThemeStyle : $lightThemeStyle }}"
     data-accent-color="{{ $accentColor }}"
     data-system-name="{{ $systemName }}"
+    data-theme-guest="true"
 >
 
 <head>
