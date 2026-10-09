@@ -1808,7 +1808,6 @@ html[data-bs-theme] .btn-save:hover {
 
 /* La acción de eliminar mantiene siempre su tratamiento de peligro. */
 html[data-bs-theme] .btn-danger,
-html[data-bs-theme] .btn-danger:hover,
 html[data-bs-theme] .btn-danger:hover {
     border-color: var(--danger-fill);
     background-color: var(--danger-fill);
