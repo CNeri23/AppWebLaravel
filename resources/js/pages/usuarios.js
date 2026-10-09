@@ -405,14 +405,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 html +=
                     '<button type="button" ' +
-                    'class="btn btn-sm usuario-action-btn btn-estado-usuario ' +
-                    (usuario.activo ? 'btn-outline-secondary' : 'btn-outline-success') + '" ' +
-                    'title="' + (usuario.activo ? 'Desactivar' : 'Activar') + '" ' +
+                    'class="usuario-toggle-btn btn-estado-usuario ' +
+                    (usuario.activo ? 'activo' : 'inactivo') + '" ' +
+                    'title="' + (usuario.activo ? 'Desactivar usuario' : 'Activar usuario') + '" ' +
+                    'data-tooltip="' + (usuario.activo ? 'Desactivar usuario' : 'Activar usuario') + '" ' +
+                    'aria-pressed="' + (usuario.activo ? 'true' : 'false') + '" ' +
                     'data-id="' + escapeAttribute(usuario.id) + '" ' +
                     'data-name="' + escapeAttribute(usuario.username) + '" ' +
                     'data-activo="' + (usuario.activo ? 1 : 0) + '" ' +
                     'data-url="' + escapeAttribute(urls.estado) + '">' +
-                    '<i class="fa-solid ' + (usuario.activo ? 'fa-toggle-on' : 'fa-toggle-off') + '"></i>' +
+                    '<span class="usuario-toggle-track">' +
+                    '<span class="usuario-toggle-thumb"></span>' +
+                    '</span>' +
                     '</button>';
             }
 
