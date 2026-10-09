@@ -1821,62 +1821,100 @@ html[data-bs-theme] .modal {
     --modal-head-bg: var(--gym);
 }
 
-/* Los botones de las tablas conservan colores semánticos uniformes, independientes del acento. */
-html[data-bs-theme] table .btn-info,
-html[data-bs-theme] table .btn-outline-info {
+/* Acciones de tabla: el color depende de la acción/icono, no del módulo ni de la clase Bootstrap original. */
+/* Ver: cian claro, tanto con relleno como en botones outline. */
+html[data-bs-theme] table .btn:has(.fa-eye),
+html[data-bs-theme] table .btn:has(.fa-eye-slash),
+html[data-bs-theme] table .btn:has(.bi-eye),
+html[data-bs-theme] table .btn:has(.bi-eye-slash) {
     --bs-btn-color: #055160;
     --bs-btn-bg: #0dcaf0;
     --bs-btn-border-color: #0dcaf0;
     --bs-btn-hover-color: #000000;
     --bs-btn-hover-bg: #3dd5f3;
     --bs-btn-hover-border-color: #25cff2;
-    --bs-btn-active-color: #000000;
-    --bs-btn-active-bg: #3dd5f3;
-    --bs-btn-active-border-color: #25cff2;
-    --bs-btn-disabled-color: #055160;
-    --bs-btn-disabled-bg: #0dcaf0;
-    --bs-btn-disabled-border-color: #0dcaf0;
     border-color: #0dcaf0 !important;
     background-color: #0dcaf0 !important;
     color: #055160 !important;
 }
 
-html[data-bs-theme] table .btn-info:hover,
-html[data-bs-theme] table .btn-outline-info:hover {
+html[data-bs-theme] table .btn:has(.fa-eye):hover,
+html[data-bs-theme] table .btn:has(.fa-eye-slash):hover,
+html[data-bs-theme] table .btn:has(.bi-eye):hover,
+html[data-bs-theme] table .btn:has(.bi-eye-slash):hover {
     border-color: #25cff2 !important;
     background-color: #3dd5f3 !important;
     color: #000000 !important;
 }
 
-html[data-bs-theme] table .btn-primary,
-html[data-bs-theme] table .btn-outline-primary,
-html[data-bs-theme] table .btn[class*="btn-editar"],
-html[data-bs-theme] table .btn[class*="btn-editar-membresia"] {
+/* Editar: azul primario uniforme, incluso en membresías. */
+html[data-bs-theme] table .btn:has(.fa-pen),
+html[data-bs-theme] table .btn:has(.fa-pencil),
+html[data-bs-theme] table .btn:has(.fa-edit),
+html[data-bs-theme] table .btn:has(.fa-user-pen),
+html[data-bs-theme] table .btn:has(.bi-pencil),
+html[data-bs-theme] table .btn[class*="btn-editar"] {
     border-color: #0d6efd !important;
     background-color: #0d6efd !important;
     color: #ffffff !important;
 }
 
-html[data-bs-theme] table .btn-primary:hover,
-html[data-bs-theme] table .btn-outline-primary:hover,
-html[data-bs-theme] table .btn[class*="btn-editar"]:hover,
-html[data-bs-theme] table .btn[class*="btn-editar-membresia"]:hover {
+html[data-bs-theme] table .btn:has(.fa-pen):hover,
+html[data-bs-theme] table .btn:has(.fa-pencil):hover,
+html[data-bs-theme] table .btn:has(.fa-edit):hover,
+html[data-bs-theme] table .btn:has(.fa-user-pen):hover,
+html[data-bs-theme] table .btn:has(.bi-pencil):hover,
+html[data-bs-theme] table .btn[class*="btn-editar"]:hover {
     border-color: #0a58ca !important;
     background-color: #0a58ca !important;
     color: #ffffff !important;
 }
 
-html[data-bs-theme] table .btn-danger,
-html[data-bs-theme] table .btn-outline-danger {
+/* Eliminar/cancelar: rojo uniforme. */
+html[data-bs-theme] table .btn:has(.fa-trash),
+html[data-bs-theme] table .btn:has(.fa-ban),
+html[data-bs-theme] table .btn:has(.bi-trash),
+html[data-bs-theme] table .btn[class*="btn-eliminar"],
+html[data-bs-theme] table .btn[class*="btn-cancelar"] {
     border-color: #dc3545 !important;
     background-color: #dc3545 !important;
     color: #ffffff !important;
 }
 
-html[data-bs-theme] table .btn-danger:hover,
-html[data-bs-theme] table .btn-outline-danger:hover {
+html[data-bs-theme] table .btn:has(.fa-trash):hover,
+html[data-bs-theme] table .btn:has(.fa-ban):hover,
+html[data-bs-theme] table .btn:has(.bi-trash):hover,
+html[data-bs-theme] table .btn[class*="btn-eliminar"]:hover,
+html[data-bs-theme] table .btn[class*="btn-cancelar"]:hover {
     border-color: #b02a37 !important;
     background-color: #b02a37 !important;
     color: #ffffff !important;
 }
 
+/* Acciones de seguridad: conservar amarillo para contraseña y verde para roles/permisos. */
+html[data-bs-theme] table .btn:has(.fa-key),
+html[data-bs-theme] table .btn:has(.bi-key) {
+    border-color: #ffc107 !important;
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+html[data-bs-theme] table .btn:has(.fa-user-shield),
+html[data-bs-theme] table .btn:has(.fa-shield-halved),
+html[data-bs-theme] table .btn:has(.bi-shield-lock) {
+    border-color: #198754 !important;
+    background-color: #198754 !important;
+    color: #ffffff !important;
+}
+
+/* Otras acciones Bootstrap conservan su color semántico cuando no hay una regla por icono. */
+html[data-bs-theme] table .btn-info {
+    border-color: #0dcaf0;
+    background-color: #0dcaf0;
+    color: #055160;
+}
+html[data-bs-theme] table .btn-info:hover {
+    border-color: #25cff2;
+    background-color: #3dd5f3;
+    color: #000000;
+}
