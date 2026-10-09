@@ -193,7 +193,7 @@
     </div>
 
     <div class="modal fade" id="modalNuevaMembresia" tabindex="-1" aria-labelledby="modalNuevaMembresiaLabel" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalNuevaMembresiaLabel"> 
@@ -357,7 +357,7 @@
     </div>
 
     <div class="modal fade" id="modalEditarMembresia" tabindex="-1" aria-labelledby="modalEditarMembresiaLabel" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalEditarMembresiaLabel">
@@ -441,7 +441,7 @@
     </div>
 
     <div class="modal fade" id="modalRenovarMembresia" tabindex="-1" aria-labelledby="modalRenovarMembresiaLabel" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalRenovarMembresiaLabel"> 
@@ -606,7 +606,7 @@
     </div>
 
     <div class="modal fade" id="modalCancelarMembresia" tabindex="-1" aria-labelledby="modalCancelarMembresiaLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalCancelarMembresiaLabel"> 
