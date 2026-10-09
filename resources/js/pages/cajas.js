@@ -146,46 +146,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return '';
     }
 
-    function confirmarDesactivacionCaja() {
-        if (!window.Swal) {
-            return Promise.resolve(window.confirm('¿Desactivar caja?'));
-        }
-
-        const cuerpo = getComputedStyle(document.body);
-        const referencia = document.querySelector('.modal-content');
-
-        let fondo = referencia
-            ? getComputedStyle(referencia).backgroundColor
-            : cuerpo.backgroundColor;
-
-        if (!fondo || fondo === 'transparent' || fondo === 'rgba(0, 0, 0, 0)') {
-            fondo = cuerpo.backgroundColor;
-        }
-
-        return Swal.fire({
-            background: fondo,
-            color: cuerpo.color,
-            icon: 'warning',
-            title: '¿Desactivar caja?',
-            text: 'La caja "' + (window.cajaNombreConfirmacion || '') + '" quedará inactiva.',
-            showCancelButton: true,
-            reverseButtons: true,
-            confirmButtonText: 'Desactivar',
-            cancelButtonText: 'Cancelar',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            allowEnterKey: false,
-            buttonsStyling: false,
-            heightAuto: false,
-            customClass: {
-                confirmButton: 'btn btn-danger mx-1',
-                cancelButton: 'btn btn-secondary mx-1'
-            }
-        }).then(function (resultado) {
-            return resultado.isConfirmed;
-        });
-    }
-
     function cambiarEstadoCaja(boton, activar) {
         if (boton.disabled) {
             return;
