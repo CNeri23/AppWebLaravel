@@ -310,3 +310,11 @@ html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.bi-sh
 html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:is(:hover, :focus-visible) {
     filter: brightness(.9);
 }
+
+/* Respaldo para cualquier acción con clase Bootstrap outline: siempre mostrar relleno. */
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn.btn-outline-primary { color:#fff !important; background-color:#0d6efd !important; border-color:#0d6efd !important; }
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn.btn-outline-info { color:#fff !important; background-color:#0dcaf0 !important; border-color:#0dcaf0 !important; }
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn.btn-outline-success { color:#fff !important; background-color:#198754 !important; border-color:#198754 !important; }
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn.btn-outline-danger { color:#fff !important; background-color:#dc3545 !important; border-color:#dc3545 !important; }
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn.btn-outline-warning { color:#212529 !important; background-color:#ffc107 !important; border-color:#ffc107 !important; }
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn.btn-outline-secondary { color:#fff !important; background-color:#6c757d !important; border-color:#6c757d !important; }
