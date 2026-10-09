@@ -50,3 +50,37 @@
         max-width: none;
     }
 }
+
+#modalNuevoUsuario .usuario-modal,
+#modalEditarUsuario .usuario-modal {
+    max-width: 680px;
+}
+
+#modalNuevoUsuario .modal-content,
+#modalEditarUsuario .modal-content {
+    max-height: calc(100vh - 2rem);
+}
+
+#modalNuevoUsuario form,
+#modalEditarUsuario form {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+#modalNuevoUsuario .modal-body,
+#modalEditarUsuario .modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+#modalNuevoUsuario .modal-footer,
+#modalEditarUsuario .modal-footer {
+    flex: 0 0 auto;
+    position: relative;
+    z-index: 1;
+    background: var(--bs-modal-bg);
+}
