@@ -1821,3 +1821,22 @@ html[data-bs-theme] .modal {
     --modal-head-bg: var(--gym);
 }
 
+/* Botones Editar de las tablas, incluidos los que usan outline-secondary. */
+html[data-bs-theme] table .btn-outline-primary,
+html[data-bs-theme] table .btn[class*="btn-editar"],
+html[data-bs-theme] table .btn[class*="action-btn"].btn-outline-secondary,
+html[data-bs-theme] table .btn[class*="btn-action"].btn-outline-secondary {
+    border-color: var(--gym) !important;
+    background-color: var(--gym) !important;
+    color: var(--on-gym, #ffffff) !important;
+}
+
+html[data-bs-theme] table .btn-outline-primary:hover,
+html[data-bs-theme] table .btn[class*="btn-editar"]:hover,
+html[data-bs-theme] table .btn[class*="action-btn"].btn-outline-secondary:hover,
+html[data-bs-theme] table .btn[class*="btn-action"].btn-outline-secondary:hover {
+    border-color: var(--gym-strong) !important;
+    background-color: var(--gym-strong) !important;
+    color: var(--on-gym, #ffffff) !important;
+}
+
