@@ -38,12 +38,18 @@
 }
 
 /* Colores de acciones de la tabla: Editar, acceso y Eliminar. */
-#tablaMiembros .miembro-action-btn:has(.fa-pen) {
+#tablaMiembros .miembro-action-btn:has(.fa-pen),
+#tablaMiembros .miembro-action-btn:has(.fa-pen-to-square),
+#tablaMiembros .miembro-action-btn:has(.fa-pencil),
+#tablaMiembros .miembro-action-btn:has(.fa-user-pen) {
     border-color: #0d6efd !important;
     background: #0d6efd !important;
     color: #fff !important;
 }
-#tablaMiembros .miembro-action-btn:has(.fa-pen):hover {
+#tablaMiembros .miembro-action-btn:has(.fa-pen):hover,
+#tablaMiembros .miembro-action-btn:has(.fa-pen-to-square):hover,
+#tablaMiembros .miembro-action-btn:has(.fa-pencil):hover,
+#tablaMiembros .miembro-action-btn:has(.fa-user-pen):hover {
     border-color: #0a58ca !important;
     background: #0a58ca !important;
     color: #fff !important;
