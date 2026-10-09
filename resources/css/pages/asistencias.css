@@ -61,3 +61,156 @@
     overflow-x: auto;
     overflow-y: hidden;
 }
+
+/* Presentación general del módulo */
+#asistenciasApp {
+    --asistencia-radio: 16px;
+}
+
+#asistenciasApp > .d-flex:first-child {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+#asistenciasApp > .d-flex:first-child h1 {
+    letter-spacing: -0.035em;
+}
+
+#asistenciasApp .card {
+    border-radius: var(--asistencia-radio);
+    overflow: hidden;
+}
+
+#asistenciasApp .card > .card-body {
+    padding: 1.25rem;
+}
+
+#asistenciasApp .asistencia-registro-card {
+    background: var(--bs-card-bg);
+}
+
+#asistenciasApp .asistencia-registro-card h5,
+#asistenciasApp .asistencia-registros-titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    letter-spacing: -0.015em;
+}
+
+#asistenciasApp .asistencia-registro-card .input-group {
+    border-radius: 12px;
+}
+
+#asistenciasApp .asistencia-registro-card .input-group-text,
+#asistenciasApp .asistencia-registro-card .form-control,
+#asistenciasApp .asistencia-registro-card .input-group .btn {
+    min-height: 48px;
+}
+
+#asistenciasApp .asistencia-registro-card .input-group-text {
+    padding-inline: 1rem;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+#asistenciasApp .asistencia-registro-card .input-group .btn {
+    padding-inline: 1.25rem;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    font-weight: 600;
+}
+
+#asistenciasApp .asistencia-kpi-card {
+    border: 1px solid var(--bs-border-color) !important;
+    transition: border-color 160ms ease, transform 160ms ease;
+}
+
+#asistenciasApp .asistencia-kpi-card:hover {
+    border-color: var(--bs-primary-border-subtle) !important;
+    transform: translateY(-2px);
+}
+
+#asistenciasApp .asistencia-kpi-icono {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+}
+
+#asistenciasApp .asistencia-kpi-valor {
+    margin-top: 0.25rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.035em;
+}
+
+#asistenciasApp .asistencia-registros-card .card-body {
+    padding-bottom: 0.5rem;
+}
+
+#asistenciasApp .asistencia-filtros {
+    padding: 0.85rem;
+    background: var(--bs-tertiary-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 12px;
+}
+
+#asistenciasApp .asistencia-filtros .form-control {
+    min-width: 145px;
+}
+
+#asistenciasApp .asistencias-table-wrap {
+    margin-inline: -1.25rem;
+    padding-inline: 1.25rem;
+    border-top: 1px solid var(--bs-border-color);
+}
+
+#asistenciasApp #tablaAsistencias thead th {
+    padding: 0.95rem 0.75rem;
+    color: var(--bs-secondary-color);
+    background: var(--bs-tertiary-bg);
+    border-bottom: 1px solid var(--bs-border-color);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+#asistenciasApp #tablaAsistencias tbody td {
+    padding: 0.9rem 0.75rem;
+    border-bottom-color: var(--bs-border-color);
+}
+
+#asistenciasApp #tablaAsistencias tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+#asistenciasApp #tablaAsistencias tbody tr:hover > * {
+    --bs-table-bg-state: var(--bs-tertiary-bg);
+}
+
+#asistenciasApp .asistencia-resultado {
+    border-radius: 12px;
+}
+
+@media (max-width: 767.98px) {
+    #asistenciasApp > .d-flex:first-child {
+        align-items: flex-start !important;
+    }
+
+    #asistenciasApp .card > .card-body {
+        padding: 1rem;
+    }
+
+    #asistenciasApp .asistencia-filtros {
+        width: 100%;
+    }
+
+    #asistenciasApp .asistencia-filtros .col-auto {
+        flex: 1 1 140px;
+    }
+
+    #asistenciasApp .asistencias-table-wrap {
+        margin-inline: -1rem;
+        padding-inline: 1rem;
+    }
+}
