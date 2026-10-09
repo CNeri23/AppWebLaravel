@@ -63,3 +63,40 @@
     --bs-btn-active-bg: var(--bs-body-color);
     --bs-btn-active-border-color: var(--bs-body-color);
 }
+
+#modalNuevaMembresia .modal-content,
+#modalEditarMembresia .modal-content,
+#modalRenovarMembresia .modal-content,
+#modalCancelarMembresia .modal-content {
+    max-height: calc(100vh - 2rem);
+}
+
+#modalNuevaMembresia form,
+#modalEditarMembresia form,
+#modalRenovarMembresia form,
+#modalCancelarMembresia form {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+#modalNuevaMembresia .modal-body,
+#modalEditarMembresia .modal-body,
+#modalRenovarMembresia .modal-body,
+#modalCancelarMembresia .modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+#modalNuevaMembresia .modal-footer,
+#modalEditarMembresia .modal-footer,
+#modalRenovarMembresia .modal-footer,
+#modalCancelarMembresia .modal-footer {
+    flex: 0 0 auto;
+    position: relative;
+    z-index: 1;
+    background: var(--bs-modal-bg);
+}
