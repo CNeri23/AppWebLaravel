@@ -372,7 +372,7 @@ Route::middleware('auth')->group(function () {
         ->name('acciones.destroy');
 
     Route::patch('/acciones/{accion}/toggle', [AccionController::class, 'toggle'])
-        ->middleware('permiso:accion,acciones.estado')
+        ->middleware('permiso:accion,acciones.toggle')
         ->name('acciones.toggle');
 
     Route::patch('/acciones/{accion}/reordenar', [AccionController::class, 'reorder'])

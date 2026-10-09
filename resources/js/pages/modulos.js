@@ -514,7 +514,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalEliminarSubmodulo = modalEliminarSubmoduloEl ? new bootstrap.Modal(modalEliminarSubmoduloEl): null;
     const modalNuevoAccion = modalNuevoAccionEl ? new bootstrap.Modal(modalNuevoAccionEl) : null;
     const modalEditarAccion = modalEditarAccionEl ? new bootstrap.Modal(modalEditarAccionEl) : null;
-    const modalEliminarAccion = modalEliminarAccionE ? new bootstrap.Modal(modalEliminarAccionEl) : null;
+    const modalEliminarAccion = modalEliminarAccionEl ? new bootstrap.Modal(modalEliminarAccionEl) : null;
 
     function abrirModalEditar(item) {
         document.getElementById('editar_id').value = item.dataset.id;
