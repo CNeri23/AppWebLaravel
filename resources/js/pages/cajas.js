@@ -146,6 +146,76 @@ document.addEventListener('DOMContentLoaded', function () {
         return '';
     }
 
+    function confirmarDesactivacionCaja() {
+        if (!window.Swal) {
+            return Promise.resolve(window.confirm('¿Desactivar caja?'));
+        }
+
+        const cuerpo = getComputedStyle(document.body);
+        const referencia = document.querySelector('.modal-content');
+
+        let fondo = referencia
+            ? getComputedStyle(referencia).backgroundColor
+            : cuerpo.backgroundColor;
+
+        if (!fondo || fondo === 'transparent' || fondo === 'rgba(0, 0, 0, 0)') {
+            fondo = cuerpo.backgroundColor;
+        }
+
+        return Swal.fire({
+            background: fondo,
+            color: cuerpo.color,
+            icon: 'warning',
+            title: '¿Desactivar caja?',
+            text: 'La caja "' + (window.cajaNombreConfirmacion || '') + '" quedará inactiva.',
+            showCancelButton: true,
+            reverseButtons: true,
+            confirmButtonText: 'Desactivar',
+            cancelButtonText: 'Cancelar',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            buttonsStyling: false,
+            heightAuto: false,
+            customClass: {
+                confirmButton: 'btn btn-danger mx-1',
+                cancelButton: 'btn btn-secondary mx-1'
+            }
+        }).then(function (resultado) {
+            return resultado.isConfirmed;
+        });
+    }
+
+    function cambiarEstadoCaja(boton, activar) {
+        if (boton.disabled) {
+            return;
+        }
+
+        const url = boton.dataset.url;
+        const id = boton.dataset.id;
+        boton.disabled = true;
+        boton.classList.add('procesando');
+
+        const cuerpo = new FormData();
+        cuerpo.append('_method', 'PATCH');
+        cuerpo.append('activo', activar ? '1' : '0');
+
+        peticion(url, 'POST', cuerpo)
+            .then(function (data) {
+                window.showToast(
+                    'success',
+                    data.mensaje || 'Estado de la caja actualizado correctamente.'
+                );
+
+                actualizarCajaEnTabla(data.caja);
+            })
+            .catch(function (error) {
+                mostrarError(error);
+                boton.disabled = false;
+                boton.classList.remove('procesando');
+            });
+    }
+
     function crearAccionesCaja(caja) {
         let html = '<div class="caja-actions">';
 
@@ -180,27 +250,86 @@ document.addEventListener('DOMContentLoaded', function () {
         if (tieneAccion('cajas.editar')) {
             html +=
                 '<button type="button" ' +
-                'class="btn btn-sm ' +
-                (caja.activo ? 'btn-outline-danger' : 'btn-outline-success') +
-                ' caja-action-btn" ' +
-                'title="' + (caja.activo ? 'Desactivar' : 'Activar') + '" ' +
-                'data-bs-toggle="modal" ' +
-                'data-bs-target="#modalEstadoCaja" ' +
+                'class="usuario-toggle-btn caja-toggle-btn ' +
+                (caja.activo ? 'activo' : 'inactivo') + '" ' +
+                'title="' + (caja.activo ? 'Desactivar caja' : 'Activar caja') + '" ' +
+                'data-tooltip="' + (caja.activo ? 'Desactivar caja' : 'Activar caja') + '" ' +
+                'aria-label="' + (caja.activo ? 'Desactivar caja' : 'Activar caja') + '" ' +
+                'aria-pressed="' + (caja.activo ? 'true' : 'false') + '" ' +
                 'data-id="' + escapeAttribute(caja.id) + '" ' +
-                'data-nombre="' + escapeAttribute(caja.nombre) + '" ' +
+                'data-name="' + escapeAttribute(caja.nombre) + '" ' +
                 'data-activo="' + (caja.activo ? '1' : '0') + '" ' +
                 'data-url="/cajas/' + escapeAttribute(caja.id) + '/estado">' +
-                (
-                    caja.activo
-                        ? '<i class="fa-solid fa-toggle-off"></i>'
-                        : '<i class="fa-solid fa-toggle-on"></i>'
-                ) +
+                '<span class="usuario-toggle-track">' +
+                '<span class="usuario-toggle-thumb"></span>' +
+                '</span>' +
                 '</button>';
         }
 
         html += '</div>';
 
         return html;
+    }
+
+    const tablaCajasEl = document.querySelector('#tablaCajas');
+
+    if (tablaCajasEl) {
+        tablaCajasEl.addEventListener('click', function (event) {
+            const boton = event.target.closest('.caja-toggle-btn');
+
+            if (!boton || boton.disabled) {
+                return;
+            }
+
+            const activar = boton.dataset.activo !== '1';
+
+            if (activar) {
+                cambiarEstadoCaja(boton, true);
+                return;
+            }
+
+            if (!window.Swal) {
+                if (window.confirm('¿Desactivar caja?')) {
+                    cambiarEstadoCaja(boton, false);
+                }
+                return;
+            }
+
+            const cuerpo = getComputedStyle(document.body);
+            const referencia = document.querySelector('.modal-content');
+            let fondo = referencia
+                ? getComputedStyle(referencia).backgroundColor
+                : cuerpo.backgroundColor;
+
+            if (!fondo || fondo === 'transparent' || fondo === 'rgba(0, 0, 0, 0)') {
+                fondo = cuerpo.backgroundColor;
+            }
+
+            Swal.fire({
+                background: fondo,
+                color: cuerpo.color,
+                icon: 'warning',
+                title: '¿Desactivar caja?',
+                text: 'La caja "' + (boton.dataset.name || '') + '" quedará inactiva.',
+                showCancelButton: true,
+                reverseButtons: true,
+                confirmButtonText: 'Desactivar',
+                cancelButtonText: 'Cancelar',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                buttonsStyling: false,
+                heightAuto: false,
+                customClass: {
+                    confirmButton: 'btn btn-danger mx-1',
+                    cancelButton: 'btn btn-secondary mx-1'
+                }
+            }).then(function (resultado) {
+                if (resultado.isConfirmed) {
+                    cambiarEstadoCaja(boton, false);
+                }
+            });
+        });
     }
 
     function crearFilaCaja(caja) {
