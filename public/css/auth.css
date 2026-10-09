@@ -1063,7 +1063,10 @@ button.auth-link.link-muted {
 }
 
 .login-page #formRegister > div:has(#registerUsername),
-.login-page #formRegister > div:has(#registerNombre),
+.login-page #formRegister > div:has(#registerNombre) {
+    grid-column: span 1;
+}
+
 .login-page #formRegister > .row,
 .login-page #formRegister > button[type="submit"] {
     grid-column: 1 / -1;
