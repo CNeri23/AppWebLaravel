@@ -53,3 +53,28 @@
 #tablaSesiones th.dt-type-numeric .dt-column-header {
     flex-direction: row;
 }
+
+#modalCerrarSesion .modal-content {
+    max-height: calc(100vh - 2rem);
+}
+
+#modalCerrarSesion form {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+#modalCerrarSesion .modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+#modalCerrarSesion .modal-footer {
+    flex: 0 0 auto;
+    position: relative;
+    z-index: 1;
+    background: var(--bs-modal-bg);
+}
