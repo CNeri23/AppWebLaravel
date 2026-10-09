@@ -72,7 +72,6 @@
                     <h5 class="fw-bold mb-1">Información personal</h5>
                     <p class="text-secondary mb-0">Datos asociados a tu cuenta de IronPulse.</p>
                 </div>
-                <span class="profile-account-id">ID #{{ $usuario->id }}</span>
             </div>
 
             <div class="profile-details-grid">
