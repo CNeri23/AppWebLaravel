@@ -18,9 +18,12 @@
 document.addEventListener('DOMContentLoaded', function () {
     const html = document.documentElement;
 
+    const loginThemeToggle = document.getElementById('loginThemeToggle');
+    const esPantallaLogin = Boolean(loginThemeToggle);
+
     const themeSwitch =
         document.getElementById('themeSwitch') ||
-        document.getElementById('loginThemeToggle');
+        loginThemeToggle;
 
     let themeMode = html.dataset.themeMode || 'light';
     let lightThemeStyle = html.dataset.lightThemeStyle || 'white';
@@ -535,6 +538,12 @@ document.addEventListener('DOMContentLoaded', function () {
         themeMode = tema;
 
         applyTheme(tema);
+
+        // En el login no hay un usuario autenticado al que guardar preferencias.
+        // El cambio es solo visual; las preferencias personales se guardan dentro del sistema.
+        if (esPantallaLogin) {
+            return;
+        }
 
         try {
             const respuesta =
