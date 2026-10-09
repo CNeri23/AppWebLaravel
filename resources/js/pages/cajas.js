@@ -86,9 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function escapeHtml(valor) {
         const div = document.createElement('div');
-
         div.textContent = valor ?? '';
-
         return div.innerHTML;
     }
 
@@ -318,20 +316,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const sesion = obtenerSesionAbierta(caja);
         const usuario = obtenerUsuarioSesion(sesion);
-
         const descripcion = caja.descripcion || 'Sin descripción';
-
-        const estado = caja.activo
-            ? '<span class="badge text-bg-success">Activa</span>'
-            : '<span class="badge text-bg-secondary">Inactiva</span>';
-
-        const sesionTexto = sesion
-            ? '<span class="badge text-bg-primary">Abierta</span>'
-            : '<span class="text-secondary">Sin sesión</span>';
-
-        const usuarioTexto = usuario
-            ? escapeHtml(usuario)
-            : '<span class="text-secondary">—</span>';
+        const estado = caja.activo ? '<span class="badge text-bg-success">Activa</span>' : '<span class="badge text-bg-secondary">Inactiva</span>';
+        const sesionTexto = sesion ? '<span class="badge text-bg-primary">Abierta</span>' : '<span class="text-secondary">Sin sesión</span>';
+        const usuarioTexto = usuario ? escapeHtml(usuario) : '<span class="text-secondary">—</span>';
 
         fila.innerHTML = `
             <td>
@@ -380,10 +368,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 emptyTable: 'No hay cajas registradas',
 
                 paginate: {
-                    first: 'Primero',
-                    previous: 'Anterior',
-                    next: 'Siguiente',
-                    last: 'Último'
+                    first: '<i class="fa-solid fa-angles-left"></i>',
+                    previous: '<i class="fa-solid fa-angle-left"></i>',
+                    next: '<i class="fa-solid fa-angle-right"></i>',
+                    last: '<i class="fa-solid fa-angles-right"></i>'
                 }
             },
 
@@ -412,28 +400,73 @@ document.addEventListener('DOMContentLoaded', function () {
                 topEnd: 'search',
                 bottomStart: 'info',
                 bottomEnd: 'paging'
+            },
+
+            initComplete: function () {
+                configurarTooltipsPaginacion();
+            },
+
+            drawCallback: function () {
+                configurarTooltipsPaginacion();
             }
         });
+
+        function configurarTooltipsPaginacion() {
+            const paginacion = document.querySelector(
+                '#tablaLogs_wrapper .dt-paging'
+            );
+
+            if (!paginacion) {
+                return;
+            }
+
+            const botones = paginacion.querySelectorAll('button');
+
+            botones.forEach(function (button) {
+                const icono = button.querySelector('i');
+
+                if (!icono) {
+                    return;
+                }
+
+                if (icono.classList.contains('fa-angles-left')) {
+                    button.setAttribute('title', 'Primera página');
+                    button.setAttribute('aria-label', 'Primera página');
+                }
+
+                if (icono.classList.contains('fa-angle-left')) {
+                    button.setAttribute('title', 'Página anterior');
+                    button.setAttribute('aria-label', 'Página anterior');
+                }
+
+                if (icono.classList.contains('fa-angle-right')) {
+                    button.setAttribute('title', 'Página siguiente');
+                    button.setAttribute('aria-label', 'Página siguiente');
+                }
+
+                if (icono.classList.contains('fa-angles-right')) {
+                    button.setAttribute('title', 'Última página');
+                    button.setAttribute('aria-label', 'Última página');
+                }
+            });
+        }
     }
 
     function ajustarFila(fila) {
         if (!fila) {
             return;
         }
-
         const celdas = fila.children;
 
         if (celdas.length < 6) {
             return;
         }
-
         celdas[0].style.width = '17%';
         celdas[1].style.width = '25%';
         celdas[2].style.width = '12%';
         celdas[3].style.width = '14%';
         celdas[4].style.width = '14%';
         celdas[5].style.width = '18%';
-
         celdas[5].classList.remove('text-end');
         celdas[5].classList.add('text-center', 'px-4');
     }
@@ -559,25 +592,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (activo) {
                 titulo.textContent = '¿Desactivar caja?';
-
-                icono.className =
-                    'mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center';
-
+                icono.className = 'mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center';
                 icono.innerHTML = '<i class="fa-solid fa-toggle-off fa-lg"></i>';
             } else {
                 titulo.textContent = '¿Activar caja?';
-
-                icono.className =
-                    'mx-auto mb-3 rounded-circle bg-success-subtle text-success d-flex align-items-center justify-content-center';
-
+                icono.className = 'mx-auto mb-3 rounded-circle bg-success-subtle text-success d-flex align-items-center justify-content-center';
                 icono.innerHTML = '<i class="fa-solid fa-toggle-on fa-lg"></i>';
             }
-
             boton.className = 'btn btn-primary';
-
-            boton.innerHTML =
-                '<i class="fa-solid fa-floppy-disk me-2"></i>' +
-                'Guardar';
+            boton.innerHTML ='<i class="fa-solid fa-floppy-disk me-2"></i>' +'Guardar';
         });
 
         modalEstadoCajaEl.addEventListener('hidden.bs.modal', function () {
@@ -596,9 +619,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (botonSubmit) {
             botonSubmit.disabled = true;
 
-            botonSubmit.innerHTML =
-                '<span class="spinner-border spinner-border-sm me-2"></span>' +
-                'Guardando...';
+            botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
         }
 
         return peticion(form.action, 'POST', new FormData(form))
@@ -617,14 +638,9 @@ document.addEventListener('DOMContentLoaded', function () {
             enviarFormulario(formNuevaCaja)
                 .then(function (data) {
                     cerrarModal(modalNuevaCaja);
-
-                    window.showToast(
-                        'success',
-                        data.mensaje || 'Caja creada correctamente.'
-                    );
-
+                    
+                    window.showToast( 'success', data.mensaje || 'Caja creada correctamente.');
                     agregarCajaATabla(data.caja);
-
                     formNuevaCaja.reset();
                 })
                 .catch(mostrarError);
@@ -643,38 +659,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!nombre) {
                 window.showToast('error', 'El nombre de la caja es obligatorio.');
-
                 inputNombre.focus();
-
                 return;
             }
 
-            if (
-                nombre === (formEditarCaja.dataset.nombreOriginal || '') &&
-                descripcion === (formEditarCaja.dataset.descripcionOriginal || '')
-            ) {
+            if (nombre === (formEditarCaja.dataset.nombreOriginal || '') && descripcion === (formEditarCaja.dataset.descripcionOriginal || '')) {
                 mostrarInfo('No hubo cambios para actualizar.');
-
                 return;
             }
 
             enviarFormulario(formEditarCaja)
                 .then(function (data) {
                     if (data.sin_cambios) {
-                        mostrarInfo(
-                            data.mensaje || 'No hubo cambios para actualizar.'
-                        );
-
+                        mostrarInfo(data.mensaje || 'No hubo cambios para actualizar.');
                         return;
                     }
-
                     cerrarModal(modalEditarCaja);
 
-                    window.showToast(
-                        'success',
-                        data.mensaje || 'Caja actualizada correctamente.'
-                    );
-
+                    window.showToast('success', data.mensaje || 'Caja actualizada correctamente.');
                     actualizarCajaEnTabla(data.caja);
                 })
                 .catch(mostrarError);
@@ -689,14 +691,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!id) {
                 window.showToast('error', 'No se pudo identificar la caja.');
-
                 return;
             }
 
-            if (
-                !formEstadoCaja.action ||
-                !formEstadoCaja.action.match(/\/cajas\/[^/]+\/estado$/)
-            ) {
+            if (!formEstadoCaja.action || !formEstadoCaja.action.match(/\/cajas\/[^/]+\/estado$/)) {
                 formEstadoCaja.action = `/cajas/${id}/estado`;
             }
 
@@ -704,20 +702,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const textoOriginal = botonSubmit.innerHTML;
 
             botonSubmit.disabled = true;
-
-            botonSubmit.innerHTML =
-                '<span class="spinner-border spinner-border-sm me-2"></span>' +
-                'Guardando...';
+            botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
 
             peticion(formEstadoCaja.action, 'POST', new FormData(formEstadoCaja))
                 .then(function (data) {
                     cerrarModal(modalEstadoCaja);
 
-                    window.showToast(
-                        'success',
-                        data.mensaje ||
-                        'Estado de la caja actualizado correctamente.'
-                    );
+                    window.showToast('success', data.mensaje || 'Estado de la caja actualizado correctamente.');
 
                     actualizarCajaEnTabla(data.caja);
                 })

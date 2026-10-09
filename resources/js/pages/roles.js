@@ -23,24 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!response.ok || data.success === false) {
                 if (data.errors) {
-                    const primerError =
-                        Object.values(data.errors).flat()[0];
-
-                    throw new Error(
-                        primerError ||
-                        data.mensaje ||
-                        data.message ||
-                        'Ocurrió un error al procesar la solicitud.'
-                    );
+                    const primerError = Object.values(data.errors).flat()[0];
+                    throw new Error(primerError || data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
                 }
-
-                throw new Error(
-                    data.mensaje ||
-                    data.message ||
-                    'Ocurrió un error al procesar la solicitud.'
-                );
+                throw new Error(data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
             }
-
             return data;
         });
     }
@@ -104,27 +91,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalPermisos = document.getElementById('modalPermisosRol');
     const modalEliminar = document.getElementById('modalEliminarRol');
 
-    const modalNuevoRol =
-        modalNuevo
-            ? new bootstrap.Modal(modalNuevo)
-            : null;
+    const modalNuevoRol = modalNuevo ? new bootstrap.Modal(modalNuevo) : null;
+    const modalEditarRol = modalEditar ? new bootstrap.Modal(modalEditar) : null;
+    const modalPermisosRol = modalPermisos ? new bootstrap.Modal(modalPermisos) : null;
+    const modalEliminarRol = modalEliminar ? new bootstrap.Modal(modalEliminar) : null;
 
-    const modalEditarRol =
-        modalEditar
-            ? new bootstrap.Modal(modalEditar)
-            : null;
-
-    const modalPermisosRol =
-        modalPermisos
-            ? new bootstrap.Modal(modalPermisos)
-            : null;
-
-    const modalEliminarRol =
-        modalEliminar
-            ? new bootstrap.Modal(modalEliminar)
-            : null;
-
-    // Valores con los que se abrió cada modal, para detectar si hubo cambios
     let datosOriginalesEditar = null;
     let permisosOriginales = null;
 
@@ -148,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!button) {
                 return;
             }
-
             const id = button.dataset.id;
             const name = button.dataset.name;
             const description = button.dataset.description;
@@ -161,13 +131,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             document.getElementById('editar_id').value = id;
             document.getElementById('editar_name').value = name;
-            document.getElementById('editar_description').value =
-                description || '';
-
-            document.getElementById('formEditarRol').setAttribute(
-                'action',
-                url
-            );
+            document.getElementById('editar_description').value = description || '';
+            document.getElementById('formEditarRol').setAttribute('action', url);
         });
     }
 
@@ -178,23 +143,17 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!button) {
                 return;
             }
-
             const id = button.dataset.id;
             const name = button.dataset.name;
             const url = button.dataset.url;
 
             document.getElementById('eliminar_id').value = id;
             document.getElementById('eliminar_nombre').textContent = name;
-
-            document.getElementById('formEliminarRol').setAttribute(
-                'action',
-                url
-            );
+            document.getElementById('formEliminarRol').setAttribute('action', url);
         });
     }
 
-    const permisosTree =
-        document.getElementById('permisosTree');
+    const permisosTree = document.getElementById('permisosTree');
 
     function escaparHtml(valor) {
         return String(valor ?? '')
@@ -214,19 +173,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function crearNodoModulo(modulo, permisos) {
-        const id =
-            'permisoModulo_' +
-            modulo.id;
-
-        const childrenId =
-            'permisoModuloChildren_' +
-            modulo.id;
-
-        const seleccionado =
-            permisos.has(
-                'modulo:' + modulo.id
-            );
-
+        const id = 'permisoModulo_' + modulo.id;
+        const childrenId = 'permisoModuloChildren_' + modulo.id;
+        const seleccionado = permisos.has('modulo:' + modulo.id);
         let html = '';
 
         html +=
@@ -236,25 +185,16 @@ document.addEventListener('DOMContentLoaded', function () {
             '<div class="permisos-tree-row modulo">';
 
         html +=
-            '<button ' +
-            'type="button" ' +
-            'class="permisos-tree-toggle" ' +
-            'data-tree-toggle="' +
-            childrenId +
-            '" ' +
-            'title="Expandir / contraer">' +
-            '<i class="fa-solid fa-chevron-down"></i>' +
+            '<button ' + 'type="button" ' + 'class="permisos-tree-toggle" ' + 'data-tree-toggle="' + childrenId + '" ' +
+            'title="Expandir / contraer">' + '<i class="fa-solid fa-chevron-down"></i>' +
             '</button>';
 
         html +=
-            '<input ' +
-            'type="checkbox" ' +
-            'class="form-check-input permiso-checkbox" ' +
+            '<input ' + 'type="checkbox" ' + 'class="form-check-input permiso-checkbox" ' +
             'id="' + id + '" ' +
             'data-permission-type="modulo" ' +
             'data-permission-id="' + modulo.id + '" ' +
-            (seleccionado ? 'checked ' : '') +
-            '>';
+            (seleccionado ? 'checked ' : '') +'>';
 
         html +=
             '<span class="permisos-tree-icon">';
@@ -267,213 +207,108 @@ document.addEventListener('DOMContentLoaded', function () {
 
         html += '</span>';
 
-        html +=
-            '<label ' +
-            'class="permisos-tree-label mb-0" ' +
-            'for="' + id + '">' +
-            escapeHtml(modulo.nombre);
+        html += '<label ' + 'class="permisos-tree-label mb-0" ' + 'for="' + id + '">' + escapeHtml(modulo.nombre);
 
         if (modulo.descripcion) {
-            html +=
-                '<small>' +
-                escapeHtml(modulo.descripcion) +
-                '</small>';
+            html += '<small>' + escapeHtml(modulo.descripcion) + '</small>';
         }
-
         html += '</label>';
-
         html += '</div>';
+        html += '<div ' + 'class="permisos-tree-children" ' + 'id="' + childrenId + '">';
 
-        html +=
-            '<div ' +
-            'class="permisos-tree-children" ' +
-            'id="' + childrenId + '">';
-
-        if (
-            modulo.submodulos &&
-            modulo.submodulos.length
-        ) {
+        if (modulo.submodulos && modulo.submodulos.length) {
             modulo.submodulos.forEach(function (submodulo) {
-                html +=
-                    crearNodoSubmodulo(
-                        submodulo,
-                        permisos
-                    );
+                html += crearNodoSubmodulo(submodulo, permisos);
             });
         }
-
         html += '</div>';
         html += '</div>';
-
         return html;
     }
 
     function crearNodoSubmodulo(submodulo, permisos) {
-        const id =
-            'permisoSubmodulo_' +
-            submodulo.id;
-
-        const childrenId =
-            'permisoSubmoduloChildren_' +
-            submodulo.id;
-
-        const seleccionado =
-            permisos.has(
-                'submodulo:' + submodulo.id
-            );
-
-        const tieneAcciones =
-            submodulo.acciones &&
-            submodulo.acciones.length > 0;
-
+        const id = 'permisoSubmodulo_' + submodulo.id;
+        const childrenId = 'permisoSubmoduloChildren_' + submodulo.id;
+        const seleccionado = permisos.has('submodulo:' + submodulo.id);
+        const tieneAcciones = submodulo.acciones && submodulo.acciones.length > 0;
         let html = '';
-
-        html +=
-            '<div class="permisos-tree-node">';
-
-        html +=
-            '<div class="permisos-tree-row submodulo">';
+        html += '<div class="permisos-tree-node">';
+        html += '<div class="permisos-tree-row submodulo">';
 
         if (tieneAcciones) {
-
             html +=
-                '<button ' +
-                'type="button" ' +
-                'class="permisos-tree-toggle" ' +
-                'data-tree-toggle="' +
-                childrenId + '" ' +
+                '<button ' + 'type="button" ' + 'class="permisos-tree-toggle" ' + 'data-tree-toggle="' + childrenId + '" ' +
                 'title="Expandir / contraer">' +
                 '<i class="fa-solid fa-chevron-down"></i>' +
                 '</button>';
 
         } else {
-
-            html +=
-                '<span class="permisos-tree-spacer"></span>';
-
+            html += '<span class="permisos-tree-spacer"></span>';
         }
-
         html +=
-            '<input ' +
-            'type="checkbox" ' +
-            'class="form-check-input permiso-checkbox" ' +
+            '<input ' + 'type="checkbox" ' + 'class="form-check-input permiso-checkbox" ' +
             'id="' + id + '" ' +
             'data-permission-type="submodulo" ' +
             'data-permission-id="' + submodulo.id + '" ' +
-            (seleccionado ? 'checked ' : '') +
-            '>';
+            (seleccionado ? 'checked ' : '') + '>';
 
-        html +=
-            '<span class="permisos-tree-icon">';
+        html += '<span class="permisos-tree-icon">';
 
         if (submodulo.icono) {
             html += submodulo.icono;
         } else {
             html += '<i class="fa-solid fa-circle-dot"></i>';
         }
-
         html += '</span>';
-
-        html +=
-            '<label ' +
-            'class="permisos-tree-label mb-0" ' +
-            'for="' + id + '">' +
-            escapeHtml(submodulo.nombre);
+        html +='<label ' + 'class="permisos-tree-label mb-0" ' + 'for="' + id + '">' + escapeHtml(submodulo.nombre);
 
         if (submodulo.descripcion) {
-            html +=
-                '<small>' +
-                escapeHtml(submodulo.descripcion) +
-                '</small>';
+            html += '<small>' + escapeHtml(submodulo.descripcion) + '</small>';
         }
-
         html += '</label>';
-
         html += '</div>';
 
         if (tieneAcciones) {
-
-            html +=
-                '<div ' +
-                'class="permisos-tree-children" ' +
-                'id="' + childrenId + '">';
-
+            html += '<div ' + 'class="permisos-tree-children" ' + 'id="' + childrenId + '">';
             submodulo.acciones.forEach(function (accion) {
-                html +=
-                    crearNodoAccion(
-                        accion,
-                        permisos
-                    );
+                html += crearNodoAccion(accion, permisos);
             });
-
             html += '</div>';
         }
-
         html += '</div>';
-
         return html;
     }
 
     function crearNodoAccion(accion, permisos) {
-        const id =
-            'permisoAccion_' +
-            accion.id;
-
-        const seleccionado =
-            permisos.has(
-                'accion:' + accion.id
-            );
+        const id = 'permisoAccion_' + accion.id;
+        const seleccionado = permisos.has('accion:' + accion.id);
 
         let html = '';
-
+        html += '<div class="permisos-tree-node">';
+        html += '<div class="permisos-tree-row accion">';
+        html += '<span class="permisos-tree-spacer"></span>';
         html +=
-            '<div class="permisos-tree-node">';
-
-        html +=
-            '<div class="permisos-tree-row accion">';
-
-        html +=
-            '<span class="permisos-tree-spacer"></span>';
-
-        html +=
-            '<input ' +
-            'type="checkbox" ' +
-            'class="form-check-input permiso-checkbox" ' +
+            '<input ' + 'type="checkbox" ' + 'class="form-check-input permiso-checkbox" ' +
             'id="' + id + '" ' +
             'data-permission-type="accion" ' +
             'data-permission-id="' + accion.id + '" ' +
-            (seleccionado ? 'checked ' : '') +
-            '>';
-
-        html +=
-            '<span class="permisos-tree-icon">';
+            (seleccionado ? 'checked ' : '') + '>';
+        html += '<span class="permisos-tree-icon">';
 
         if (accion.icono) {
             html += accion.icono;
         } else {
             html += '<i class="fa-solid fa-bolt"></i>';
         }
-
         html += '</span>';
-
-        html +=
-            '<label ' +
-            'class="permisos-tree-label mb-0" ' +
-            'for="' + id + '">' +
-            escapeHtml(accion.nombre);
+        html += '<label ' + 'class="permisos-tree-label mb-0" ' + 'for="' + id + '">' + escapeHtml(accion.nombre);
 
         if (accion.descripcion) {
-            html +=
-                '<small>' +
-                escapeHtml(accion.descripcion) +
-                '</small>';
+            html += '<small>' + escapeHtml(accion.descripcion) + '</small>';
         }
-
         html += '</label>';
-
         html += '</div>';
         html += '</div>';
-
         return html;
     }
 
@@ -481,11 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const resultado = new Set();
 
         permisos.forEach(function (permiso) {
-            resultado.add(
-                permiso.permission_type +
-                ':' +
-                permiso.permission_id
-            );
+            resultado.add(permiso.permission_type + ':' + permiso.permission_id);
         });
 
         return resultado;
@@ -502,23 +333,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 '<i class="fa-solid fa-folder-open fa-lg mb-2"></i>' +
                 '<div>No hay permisos disponibles.</div>' +
                 '</div>';
-
             return;
         }
 
-        const permisosSet =
-            crearPermisosSet(permisos);
-
+        const permisosSet = crearPermisosSet(permisos);
         let html = '';
-
         modulos.forEach(function (modulo) {
-            html +=
-                crearNodoModulo(
-                    modulo,
-                    permisosSet
-                );
+            html += crearNodoModulo(modulo, permisosSet);
         });
-
         permisosTree.innerHTML = html;
     }
 
@@ -529,21 +351,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return permisos;
         }
 
-        permisosTree
-            .querySelectorAll('.permiso-checkbox:checked')
-            .forEach(function (checkbox) {
-
-                permisos.push({
-                    permission_type:
-                        checkbox.dataset.permissionType,
-
+        permisosTree.querySelectorAll('.permiso-checkbox:checked').forEach(function (checkbox) {
+                permisos.push({permission_type: checkbox.dataset.permissionType,
                     permission_id:
                         Number(
                             checkbox.dataset.permissionId
                         )
                 });
             });
-
         return permisos;
     }
 
@@ -552,40 +367,22 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        permisosTree.addEventListener(
-            'click',
+        permisosTree.addEventListener('click',
             function (event) {
-
-                const toggle =
-                    event.target.closest(
-                        '[data-tree-toggle]'
-                    );
+                const toggle = event.target.closest('[data-tree-toggle]');
 
                 if (!toggle) {
                     return;
                 }
-
-                const targetId =
-                    toggle.dataset.treeToggle;
-
-                const target =
-                    document.getElementById(
-                        targetId
-                    );
+                const targetId = toggle.dataset.treeToggle;
+                const target = document.getElementById(targetId);
 
                 if (!target) {
                     return;
                 }
 
-                const oculto =
-                    target.classList.toggle(
-                        'collapsed'
-                    );
-
-                toggle.classList.toggle(
-                    'collapsed',
-                    oculto
-                );
+                const oculto = target.classList.toggle('collapsed');
+                toggle.classList.toggle('collapsed',oculto);
             }
         );
     }
@@ -593,42 +390,22 @@ document.addEventListener('DOMContentLoaded', function () {
     prepararTreeview();
 
     if (modalPermisos) {
-        modalPermisos.addEventListener(
-            'show.bs.modal',
+        modalPermisos.addEventListener('show.bs.modal',
             function (event) {
-
-                const button =
-                    event.relatedTarget;
-
+                const button = event.relatedTarget;
                 permisosOriginales = null;
 
                 if (!button) {
                     return;
                 }
+                const id = button.dataset.id;
+                const name = button.dataset.name;
+                const url = button.dataset.url;
+                const saveUrl =button.dataset.saveUrl;
 
-                const id =
-                    button.dataset.id;
-
-                const name =
-                    button.dataset.name;
-
-                const url =
-                    button.dataset.url;
-
-                const saveUrl =
-                    button.dataset.saveUrl;
-
-                document.getElementById(
-                    'permisos_rol_id'
-                ).value = id;
-
-                document.getElementById(
-                    'permisos_rol_nombre'
-                ).textContent = name;
-
-                document.getElementById(
-                    'formPermisosRol'
-                ).dataset.saveUrl = saveUrl;
+                document.getElementById('permisos_rol_id').value = id;
+                document.getElementById('permisos_rol_nombre').textContent = name;
+                document.getElementById('formPermisosRol').dataset.saveUrl = saveUrl;
 
                 if (permisosTree) {
                     permisosTree.innerHTML =
@@ -638,23 +415,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         '</div>';
                 }
 
-                peticion(
-                    url,
-                    'GET'
-                )
+                peticion(url, 'GET')
                     .then(function (data) {
-
-                        renderizarTreeview(
-                            data.modulos,
-                            data.permisos
-                        );
-
-                        // Lo que quedó marcado al cargar es la referencia para detectar cambios
-                        permisosOriginales =
-                            serializarPermisos(
-                                obtenerPermisosSeleccionados()
-                            );
-
+                        renderizarTreeview(data.modulos, data.permisos);
+                        permisosOriginales = serializarPermisos(obtenerPermisosSeleccionados());
                     })
                     .catch(function (error) {
 
@@ -663,257 +427,124 @@ document.addEventListener('DOMContentLoaded', function () {
                                 '<div class="text-center text-danger py-4">' +
                                 '<i class="fa-solid fa-circle-exclamation fa-lg mb-2"></i>' +
                                 '<div>' +
-                                escapeHtml(
-                                    error.message
-                                ) +
+                                escapeHtml(error.message) +
                                 '</div>' +
                                 '</div>';
                         }
 
-                        window.showToast(
-                            'error',
-                            error.message
-                        );
+                        window.showToast('error', error.message);
                     });
             }
         );
     }
 
-    const formPermisosRol =
-        document.getElementById(
-            'formPermisosRol'
-        );
+    const formPermisosRol = document.getElementById('formPermisosRol');
 
     if (formPermisosRol) {
-        formPermisosRol.addEventListener(
-            'submit',
+        formPermisosRol.addEventListener('submit',
             function (event) {
-
                 event.preventDefault();
-
-                const botonSubmit =
-                    document.getElementById(
-                        'btnGuardarPermisos'
-                    );
-
-                const textoOriginal =
-                    botonSubmit?.innerHTML;
-
-                const saveUrl =
-                    formPermisosRol.dataset.saveUrl;
+                const botonSubmit = document.getElementById('btnGuardarPermisos');
+                const textoOriginal = botonSubmit?.innerHTML;
+                const saveUrl = formPermisosRol.dataset.saveUrl;
 
                 if (!saveUrl) {
-                    window.showToast(
-                        'error',
-                        'No se encontró la ruta para guardar los permisos.'
-                    );
-
+                    window.showToast('error', 'No se encontró la ruta para guardar los permisos.');
                     return;
                 }
-
-                const permisos =
-                    obtenerPermisosSeleccionados();
+                const permisos = obtenerPermisosSeleccionados();
 
                 if (permisosOriginales === null) {
-                    window.showToast(
-                        'warning',
-                        'Espera a que terminen de cargar los permisos.'
-                    );
-
+                    window.showToast('warning', 'Espera a que terminen de cargar los permisos.');
                     return;
                 }
 
                 if (serializarPermisos(permisos) === permisosOriginales) {
-                    window.showToast(
-                        'info',
-                        MENSAJE_SIN_CAMBIOS
-                    );
-
+                    window.showToast('info', MENSAJE_SIN_CAMBIOS);
                     return;
                 }
 
                 if (botonSubmit) {
                     botonSubmit.disabled = true;
-
-                    botonSubmit.innerHTML =
-                        '<span class="spinner-border spinner-border-sm me-2"></span>' +
-                        'Guardando...';
+                    botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
                 }
 
-                peticion(
-                    saveUrl,
-                    'PUT',
-                    JSON.stringify({
-                        permisos
-                    })
-                )
+                peticion(saveUrl, 'PUT', JSON.stringify({permisos}))
                     .then(function (data) {
-
-                        permisosOriginales =
-                            serializarPermisos(permisos);
+                        permisosOriginales = serializarPermisos(permisos);
 
                         if (modalPermisosRol) {
                             modalPermisosRol.hide();
                         }
-
-                        window.showToast(
-                            'success',
-                            data.mensaje ||
-                            'Permisos actualizados correctamente.'
-                        );
+                        window.showToast('success', data.mensaje || 'Permisos actualizados correctamente.');
 
                         if (data.acciones_roles) {
-
-                            window.accionesRoles =
-                                data.acciones_roles;
-
+                            window.accionesRoles = data.acciones_roles;
                             actualizarBotonNuevoRol();
 
                             if (tablaRoles) {
-
                                 tablaRoles
                                     .rows()
                                     .every(function () {
-
-                                        const filaDataTable =
-                                            this;
-
-                                        const fila =
-                                            filaDataTable.node();
+                                        const filaDataTable = this;
+                                        const fila = filaDataTable.node();
 
                                         if (!fila) {
                                             return;
                                         }
+                                        const datos = filaDataTable.data();
 
-                                        const datos =
-                                            filaDataTable.data();
-
-                                        if (
-                                            !datos ||
-                                            datos.length < 4
-                                        ) {
+                                        if (!datos ||datos.length < 4) {
                                             return;
                                         }
-
-                                        const botonEditar =
-                                            fila.querySelector(
-                                                '[data-bs-target="#modalEditarRol"]'
-                                            );
-
-                                        const botonPermisos =
-                                            fila.querySelector(
-                                                '[data-bs-target="#modalPermisosRol"]'
-                                            );
-
-                                        const botonEliminar =
-                                            fila.querySelector(
-                                                '[data-bs-target="#modalEliminarRol"]'
-                                            );
+                                        const botonEditar = fila.querySelector('[data-bs-target="#modalEditarRol"]');
+                                        const botonPermisos = fila.querySelector('[data-bs-target="#modalPermisosRol"]');
+                                        const botonEliminar = fila.querySelector('[data-bs-target="#modalEliminarRol"]');
 
                                         let id = '';
                                         let name = '';
                                         let description = '';
-
-                                        let urls = {
-                                            update: '',
-                                            delete: '',
-                                            permisos: '',
-                                            actualizarPermisos: ''
-                                        };
+                                        let urls = {update: '', delete: '', permisos: '', actualizarPermisos: ''};
 
                                         if (botonEditar) {
-                                            id =
-                                                botonEditar.dataset.id ||
-                                                '';
-
-                                            name =
-                                                botonEditar.dataset.name ||
-                                                '';
-
-                                            description =
-                                                botonEditar.dataset.description ||
-                                                '';
-
-                                            urls.update =
-                                                botonEditar.dataset.url ||
-                                                '';
+                                            id = botonEditar.dataset.id ||'';
+                                            name = botonEditar.dataset.name || '';
+                                            description = botonEditar.dataset.description || '';
+                                            urls.update = botonEditar.dataset.url || '';
                                         }
 
                                         if (botonPermisos) {
-                                            id =
-                                                botonPermisos.dataset.id ||
-                                                id;
-
-                                            name =
-                                                botonPermisos.dataset.name ||
-                                                name;
-
-                                            urls.permisos =
-                                                botonPermisos.dataset.url ||
-                                                '';
-
-                                            urls.actualizarPermisos =
-                                                botonPermisos.dataset.saveUrl ||
-                                                '';
+                                            id = botonPermisos.dataset.id || id;
+                                            name = botonPermisos.dataset.name || name;
+                                            urls.permisos = botonPermisos.dataset.url ||'';
+                                            urls.actualizarPermisos = botonPermisos.dataset.saveUrl ||'';
                                         }
 
                                         if (botonEliminar) {
-                                            id =
-                                                botonEliminar.dataset.id ||
-                                                id;
-
-                                            name =
-                                                botonEliminar.dataset.name ||
-                                                name;
-
-                                            urls.delete =
-                                                botonEliminar.dataset.url ||
-                                                '';
+                                            id = botonEliminar.dataset.id || id;
+                                            name = botonEliminar.dataset.name || name;
+                                            urls.delete = botonEliminar.dataset.url || '';
                                         }
 
-                                        const nombreContenedor =
-                                            document.createElement('div');
-
-                                        nombreContenedor.innerHTML =
-                                            datos[0];
-
-                                        const nombreElemento =
-                                            nombreContenedor.textContent
-                                                .trim();
-
-                                        const descripcionContenedor =
-                                            document.createElement('div');
-
-                                        descripcionContenedor.innerHTML =
-                                            datos[1];
-
-                                        const descripcionElemento =
-                                            descripcionContenedor.textContent
-                                                .trim();
+                                        const nombreContenedor = document.createElement('div');
+                                        nombreContenedor.innerHTML = datos[0];
+                                        const nombreElemento = nombreContenedor.textContent.trim();
+                                        const descripcionContenedor = document.createElement('div');
+                                        descripcionContenedor.innerHTML = datos[1];
+                                        const descripcionElemento = descripcionContenedor.textContent.trim();
 
                                         if (!name) {
-                                            name =
-                                                nombreElemento;
+                                            name = nombreElemento;
                                         }
 
                                         if (!description) {
-                                            description =
-                                                descripcionElemento ===
-                                                    'Sin descripción'
-                                                    ? ''
-                                                    : descripcionElemento;
+                                            description = descripcionElemento === 'Sin descripción' ? '': descripcionElemento;
                                         }
 
                                         if (!id) {
-                                            const nombre =
-                                                nombreContenedor.querySelector(
-                                                    '[data-role-id]'
-                                                );
-
+                                            const nombre =nombreContenedor.querySelector('[data-role-id]');
                                             if (nombre) {
-                                                id =
-                                                    nombre.dataset.roleId ||
-                                                    '';
+                                                id =nombre.dataset.roleId || '';
                                             }
                                         }
 
@@ -921,93 +552,52 @@ document.addEventListener('DOMContentLoaded', function () {
                                             return;
                                         }
 
-                                        if (
-                                            !urls.update ||
-                                            !urls.delete ||
-                                            !urls.permisos ||
-                                            !urls.actualizarPermisos
-                                        ) {
-                                            const boton =
-                                                fila.querySelector(
-                                                    '.rol-action-btn'
-                                                );
+                                        if (!urls.update || !urls.delete || !urls.permisos || !urls.actualizarPermisos) {
+                                            const boton = fila.querySelector('.rol-action-btn');
 
                                             if (boton) {
                                                 if (!urls.update) {
-                                                    urls.update =
-                                                        boton.dataset.url ||
-                                                        '';
+                                                    urls.update = boton.dataset.url ||'';
                                                 }
 
                                                 if (!urls.delete) {
-                                                    urls.delete =
-                                                        boton.dataset.url ||
-                                                        '';
+                                                    urls.delete = boton.dataset.url || '';
                                                 }
 
                                                 if (!urls.permisos) {
-                                                    urls.permisos =
-                                                        boton.dataset.url ||
-                                                        '';
+                                                    urls.permisos = boton.dataset.url || '';
                                                 }
 
                                                 if (!urls.actualizarPermisos) {
-                                                    urls.actualizarPermisos =
-                                                        boton.dataset.saveUrl ||
-                                                        '';
+                                                    urls.actualizarPermisos = boton.dataset.saveUrl || '';
                                                 }
                                             }
                                         }
 
-                                        datos[3] =
-                                            crearAccionesRol(
-                                                {
-                                                    id: id,
-                                                    name: name,
-                                                    description: description
-                                                },
-                                                urls
-                                            );
-
-                                        filaDataTable
-                                            .data(datos)
-                                            .draw(false);
-
-                                        const nuevaFila =
-                                            filaDataTable.node();
-
-                                        ajustarFila(
-                                            nuevaFila
-                                        );
+                                        datos[3] = crearAccionesRol({id: id, name: name, description: description}, urls);
+                                        filaDataTable.data(datos).draw(false);
+                                        const nuevaFila = filaDataTable.node();
+                                        ajustarFila(nuevaFila);
                                     });
-
                                 ajustarTodasLasFilas();
                                 tablaRoles.columns.adjust();
                             }
                         }
 
                         if (
-                            typeof window.actualizarSidebar ===
-                            'function'
+                            typeof window.actualizarSidebar === 'function'
                         ) {
                             window.actualizarSidebar();
                         }
 
                     })
                     .catch(function (error) {
-
-                        window.showToast(
-                            'error',
-                            error.message
-                        );
+                        window.showToast('error', error.message);
                     })
                     .finally(function () {
-
                         if (botonSubmit) {
                             botonSubmit.disabled = false;
-
-                            botonSubmit.innerHTML =
-                                textoOriginal;
+                            botonSubmit.innerHTML = textoOriginal;
                         }
                     });
             }
@@ -1015,92 +605,46 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function actualizarBotonNuevoRol() {
-        const contenedor =
-            document.querySelector(
-                '.d-flex.justify-content-between.align-items-center.mb-4'
-            );
+        const contenedor = document.querySelector('.d-flex.justify-content-between.align-items-center.mb-4');
 
         if (!contenedor) {
             return;
         }
-
-        const acciones =
-            window.accionesRoles || [];
-
+        const acciones = window.accionesRoles || [];
         const accionCrear =
             acciones.find(function (accion) {
                 return accion.slug === 'roles.crear';
             });
-
-        const botonExistente =
-            document.getElementById('btnNuevoRol');
+        const botonExistente = document.getElementById('btnNuevoRol');
 
         if (!accionCrear) {
-
             if (botonExistente) {
                 botonExistente.remove();
             }
-
             return;
         }
 
         if (botonExistente) {
-
-            botonExistente.title =
-                accionCrear.nombre;
-
-            botonExistente.innerHTML =
-                accionCrear.icono ||
-                '<i class="fa-solid fa-user-plus me-2"></i>';
-
-            botonExistente.appendChild(
-                document.createTextNode(
-                    ' ' + accionCrear.nombre
-                )
-            );
-
+            botonExistente.title = accionCrear.nombre;
+            botonExistente.innerHTML = accionCrear.icono || '<i class="fa-solid fa-user-plus me-2"></i>';
+            botonExistente.appendChild(document.createTextNode(' ' + accionCrear.nombre));
             return;
         }
-
-        const boton =
-            document.createElement('button');
-
+        const boton = document.createElement('button');
         boton.type = 'button';
         boton.id = 'btnNuevoRol';
         boton.className = 'btn btn-primary';
-        boton.setAttribute(
-            'data-bs-toggle',
-            'modal'
-        );
-        boton.setAttribute(
-            'data-bs-target',
-            '#modalNuevoRol'
-        );
-        boton.title =
-            accionCrear.nombre;
-
-        boton.innerHTML =
-            accionCrear.icono ||
-            '<i class="fa-solid fa-user-plus me-2"></i>';
-
-        boton.appendChild(
-            document.createTextNode(
-                ' ' + accionCrear.nombre
-            )
-        );
-
-        contenedor.appendChild(
-            boton
-        );
+        boton.setAttribute('data-bs-toggle', 'modal');
+        boton.setAttribute('data-bs-target', '#modalNuevoRol');
+        boton.title = accionCrear.nombre;
+        boton.innerHTML = accionCrear.icono || '<i class="fa-solid fa-user-plus me-2"></i>';
+        boton.appendChild(document.createTextNode(' ' + accionCrear.nombre));
+        contenedor.appendChild(boton);
     }
 
     function crearAccionesRol(rol, urls) {
-        let html =
-            '<div class="rol-actions">';
-
-        const acciones =
-            window.accionesRoles || [];
-
+        let html = '<div class="rol-actions">';
+        const acciones = window.accionesRoles || [];
         acciones.forEach(function (accion) {
 
             if (accion.slug === 'roles.editar') {
@@ -1118,9 +662,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     (accion.icono || '<i class="fa-solid fa-pen"></i>') +
                     '</button>';
             }
-
             else if (accion.slug === 'roles.permisos') {
-
                 html +=
                     '<button type="button" ' +
                     'class="btn btn-sm btn-outline-success rol-action-btn" ' +
@@ -1135,9 +677,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     '</button>';
 
             }
-
             else if (accion.slug === 'roles.eliminar') {
-
                 html +=
                     '<button type="button" ' +
                     'class="btn btn-sm btn-outline-danger rol-action-btn" ' +
@@ -1153,37 +693,19 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
         });
-
-        html +=
-            '</div>';
-
+        html += '</div>';
         return html;
     }
 
     function crearFilaRol(rol, urls, fechaRegistro) {
         return [
-            '<span ' +
-            'class="fw-semibold" ' +
-            'data-role-id="' +
-            escapeAttribute(rol.id) +
-            '" ' +
-            'data-role-name="' +
-            escapeAttribute(rol.name) +
-            '" ' +
-            'data-role-description="' +
-            escapeAttribute(rol.description || '') +
-            '">' +
-            escapeHtml(rol.name) +
+            '<span ' + 'class="fw-semibold" ' +
+            'data-role-id="' + escapeAttribute(rol.id) + '" ' +
+            'data-role-name="' + escapeAttribute(rol.name) + '" ' +
+            'data-role-description="' + escapeAttribute(rol.description || '') + '">' + escapeHtml(rol.name) +
             '</span>',
-
-            rol.description
-                ? escapeHtml(rol.description)
-                : '<span class="text-secondary">Sin descripción</span>',
-
-            '<span class="text-secondary">' +
-            escapeHtml(fechaRegistro || '') +
-            '</span>',
-
+            rol.description ? escapeHtml(rol.description) : '<span class="text-secondary">Sin descripción</span>',
+            '<span class="text-secondary">' +  escapeHtml(fechaRegistro || '') + '</span>',
             crearAccionesRol(rol, urls)
         ];
     }
@@ -1192,19 +714,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!fila) {
             return;
         }
-
-        const celdas =
-            fila.children;
+        const celdas = fila.children;
 
         if (celdas.length < 4) {
             return;
         }
-
         const botonDe = function (selector) {
             return fila.querySelector(selector);
         };
 
-        // URLs que ya tenían los botones: respaldo por si la respuesta no las trae todas
         const previas = {
             update: botonDe('[data-bs-target="#modalEditarRol"]')?.dataset.url || '',
             permisos: botonDe('[data-bs-target="#modalPermisosRol"]')?.dataset.url || '',
@@ -1221,24 +739,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if ((window.accionesRoles || []).length > 0) {
             celdas[3].innerHTML =
-                crearAccionesRol(
-                    rol,
-                    urlsFinales
-                );
+                crearAccionesRol(rol, urlsFinales);
         } else {
-            // Sin la lista de acciones en memoria NO se reconstruyen los botones
-            // (antes quedaba la celda vacía): se conservan y se actualizan sus datos
             celdas[3]
                 .querySelectorAll('.rol-action-btn')
                 .forEach(function (boton) {
                     boton.dataset.name = rol.name;
-
                     if (boton.dataset.description !== undefined) {
                         boton.dataset.description = rol.description || '';
                     }
                 });
         }
-
         celdas[3].classList.add(
             'px-4'
         );
@@ -1250,8 +761,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const celdas =
-            fila.children;
+        const celdas = fila.children;
 
         if (celdas.length < 4) {
             return;
@@ -1261,26 +771,14 @@ document.addEventListener('DOMContentLoaded', function () {
         celdas[1].style.width = '33%';
         celdas[2].style.width = '20%';
         celdas[3].style.width = '20%';
-
-        celdas[3].classList.add(
-            'px-4'
-        );
-
-        // El ancho y la alineación de los botones los controla roles.css (.rol-actions)
+        celdas[3].classList.add('px-4');
     }
 
     function ajustarTodasLasFilas() {
         if (!tablaRoles) {
             return;
         }
-
-        tablaRoles
-            .rows()
-            .every(function () {
-                ajustarFila(
-                    this.node()
-                );
-            });
+        tablaRoles.rows().every(function () {ajustarFila(this.node());});
     }
 
     function cerrarModal(modal) {
@@ -1289,250 +787,114 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function enviarFormulario(
-        form,
-        modal,
-        mensajePorDefecto,
-        callback
-    ) {
-        const botonSubmit =
-            form.querySelector(
-                'button[type="submit"]'
-            );
-
-        const textoOriginal =
-            botonSubmit?.innerHTML;
+    function enviarFormulario(form, modal, mensajePorDefecto, callback) {
+        const botonSubmit = form.querySelector('button[type="submit"]');
+        const textoOriginal = botonSubmit?.innerHTML;
 
         if (botonSubmit) {
             botonSubmit.disabled = true;
-
-            botonSubmit.innerHTML =
-                '<span class="spinner-border spinner-border-sm me-2"></span>' +
-                'Guardando...';
+            botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
         }
+        const formData = new FormData(form);
 
-        const formData =
-            new FormData(form);
-
-        return peticion(
-            form.action,
-            'POST',
-            formData
-        )
+        return peticion(form.action, 'POST', formData)
             .then((data) => {
                 cerrarModal(modal);
-
-                window.showToast(
-                    'success',
-                    data.mensaje ||
-                    mensajePorDefecto
-                );
+                window.showToast('success', data.mensaje || mensajePorDefecto);
 
                 if (callback) {
                     callback(data);
                 }
-
                 return data;
             })
             .catch((error) => {
-                window.showToast(
-                    'error',
-                    error.message
-                );
-
+                window.showToast('error', error.message);
                 throw error;
             })
             .finally(() => {
                 if (botonSubmit) {
                     botonSubmit.disabled = false;
-
-                    botonSubmit.innerHTML =
-                        textoOriginal;
+                    botonSubmit.innerHTML = textoOriginal;
                 }
             });
     }
 
-    const formNuevoRol =
-        document.getElementById(
-            'formNuevoRol'
-        );
+    const formNuevoRol =document.getElementById('formNuevoRol');
 
     if (formNuevoRol) {
         formNuevoRol.addEventListener('submit', function (event) {
             event.preventDefault();
 
-            enviarFormulario(
-                formNuevoRol,
-                modalNuevoRol,
-                'Rol creado correctamente.',
+            enviarFormulario(formNuevoRol, modalNuevoRol, 'Rol creado correctamente.',
                 function (data) {
 
                     if (tablaRoles && data.rol) {
-
-                        const fila =
-                            tablaRoles
-                                .row.add(
-                                    crearFilaRol(
-                                        data.rol,
-                                        data.urls,
-                                        data.fecha_registro
-                                    )
-                                )
-                                .draw(false)
-                                .node();
-
+                        const fila = tablaRoles.row.add(crearFilaRol(data.rol, data.urls, data.fecha_registro)).draw(false).node();
                         ajustarFila(fila);
                         ajustarTodasLasFilas();
                         tablaRoles.columns.adjust();
                     }
-
                     formNuevoRol.reset();
                 }
             ).catch(() => { });
         });
     }
 
-    const formEditarRol =
-        document.getElementById(
-            'formEditarRol'
-        );
+    const formEditarRol = document.getElementById('formEditarRol');
 
     if (formEditarRol) {
-        formEditarRol.addEventListener(
-            'submit',
+        formEditarRol.addEventListener('submit',
             function (event) {
-
                 event.preventDefault();
+                const nombreActual = document.getElementById('editar_name').value.trim();
+                const descripcionActual = document.getElementById('editar_description').value.trim();
 
-                const nombreActual =
-                    document.getElementById(
-                        'editar_name'
-                    ).value.trim();
-
-                const descripcionActual =
-                    document.getElementById(
-                        'editar_description'
-                    ).value.trim();
-
-                if (
-                    datosOriginalesEditar &&
-                    nombreActual === datosOriginalesEditar.name &&
-                    descripcionActual === datosOriginalesEditar.description
+                if (datosOriginalesEditar && nombreActual === datosOriginalesEditar.name && descripcionActual === datosOriginalesEditar.description
                 ) {
-                    window.showToast(
-                        'info',
-                        MENSAJE_SIN_CAMBIOS
-                    );
-
+                    window.showToast('info', MENSAJE_SIN_CAMBIOS);
                     return;
                 }
 
-                const id =
-                    document.getElementById(
-                        'editar_id'
-                    ).value;
-
+                const id = document.getElementById('editar_id').value;
                 let filaDataTable = null;
 
                 if (tablaRoles) {
                     tablaRoles
                         .rows()
                         .every(function () {
-
-                            const fila =
-                                this.node();
+                            const fila = this.node();
 
                             if (!fila) {
                                 return;
                             }
 
-                            const boton =
-                                fila.querySelector(
-                                    '[data-bs-target="#modalEditarRol"]'
-                                );
+                            const boton = fila.querySelector('[data-bs-target="#modalEditarRol"]');
 
-                            if (
-                                boton &&
-                                boton.dataset.id === id
-                            ) {
+                            if (boton && boton.dataset.id === id) {
                                 filaDataTable = this;
                             }
                         });
                 }
 
-                enviarFormulario(
-                    formEditarRol,
-                    modalEditarRol,
-                    'Rol actualizado correctamente.',
+                enviarFormulario(formEditarRol, modalEditarRol, 'Rol actualizado correctamente.',
                     function (data) {
+                        if (filaDataTable &&data.rol) {
+                            const fila = filaDataTable.node();
+                            const datos = filaDataTable.data();
 
-                        if (
-                            filaDataTable &&
-                            data.rol
-                        ) {
-
-                            const fila =
-                                filaDataTable.node();
-
-                            const datos =
-                                filaDataTable.data();
-
-                            datos[0] =
-                                '<span ' +
-                                'class="fw-semibold" ' +
-                                'data-role-id="' +
-                                escapeAttribute(
-                                    data.rol.id
-                                ) +
-                                '" ' +
-                                'data-role-name="' +
-                                escapeAttribute(
-                                    data.rol.name
-                                ) +
-                                '" ' +
-                                'data-role-description="' +
-                                escapeAttribute(
-                                    data.rol.description || ''
-                                ) +
-                                '">' +
-                                escapeHtml(
-                                    data.rol.name
-                                ) +
+                            datos[0] = 
+                                '<span ' + 'class="fw-semibold" ' + 'data-role-id="' + escapeAttribute(data.rol.id) + '" ' +
+                                'data-role-name="' + escapeAttribute(data.rol.name) + '" ' +
+                                'data-role-description="' + escapeAttribute(data.rol.description || '') + '">' +escapeHtml(data.rol.name) +
                                 '</span>';
+                            datos[1] =  data.rol.description ? escapeHtml(data.rol.description) : '<span class="text-secondary">Sin descripción</span>';
+                            datos[2] = '<span class="text-secondary">' + escapeHtml(data.fecha_registro || '') + '</span>';
 
-                            datos[1] =
-                                data.rol.description
-                                    ? escapeHtml(
-                                        data.rol.description
-                                    )
-                                    : '<span class="text-secondary">Sin descripción</span>';
+                            filaDataTable.data(datos).draw(false);
 
-                            datos[2] =
-                                '<span class="text-secondary">' +
-                                escapeHtml(
-                                    data.fecha_registro || ''
-                                ) +
-                                '</span>';
-
-                            filaDataTable
-                                .data(datos)
-                                .draw(false);
-
-                            actualizarDatosAcciones(
-                                filaDataTable.node(),
-                                data.rol,
-                                data.urls
-                            );
-
-                            ajustarFila(
-                                filaDataTable.node()
-                            );
-
-                            // Que DataTables conserve en memoria lo que hay en pantalla
-                            filaDataTable
-                                .invalidate('dom')
-                                .draw(false);
-
+                            actualizarDatosAcciones(filaDataTable.node(), data.rol,data.urls);
+                            ajustarFila(filaDataTable.node());
+                            filaDataTable.invalidate('dom').draw(false);
                             ajustarTodasLasFilas();
                         }
                     }
@@ -1541,62 +903,35 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    const formEliminarRol =
-        document.getElementById(
-            'formEliminarRol'
-        );
+    const formEliminarRol = document.getElementById('formEliminarRol');
 
     if (formEliminarRol) {
-        formEliminarRol.addEventListener(
-            'submit',
+        formEliminarRol.addEventListener('submit',
             function (event) {
-
                 event.preventDefault();
-
-                const id =
-                    document.getElementById(
-                        'eliminar_id'
-                    ).value;
-
+                const id = document.getElementById('eliminar_id').value;
                 let filaDataTable = null;
 
                 if (tablaRoles) {
                     tablaRoles
                         .rows()
                         .every(function () {
-
-                            const fila =
-                                this.node();
+                            const fila = this.node();
 
                             if (!fila) {
                                 return;
                             }
-
-                            const boton =
-                                fila.querySelector(
-                                    '[data-bs-target="#modalEliminarRol"]'
-                                );
-
-                            if (
-                                boton &&
-                                boton.dataset.id === id
-                            ) {
+                            const boton = fila.querySelector('[data-bs-target="#modalEliminarRol"]');
+                            if (boton && boton.dataset.id === id) {
                                 filaDataTable = this;
                             }
                         });
                 }
 
-                enviarFormulario(
-                    formEliminarRol,
-                    modalEliminarRol,
-                    'Rol eliminado correctamente.',
+                enviarFormulario(formEliminarRol, modalEliminarRol, 'Rol eliminado correctamente.',
                     function () {
-
                         if (filaDataTable) {
-                            filaDataTable
-                                .remove()
-                                .draw(false);
-
+                            filaDataTable.remove().draw(false);
                             ajustarTodasLasFilas();
                         }
                     }

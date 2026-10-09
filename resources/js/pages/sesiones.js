@@ -5,14 +5,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let tablaSesiones = null;
 
     const moneda = window.codigoMonedaSesiones || '';
-
     const modalAbrirSesionEl = document.getElementById('modalAbrirSesion');
     const modalDetalleSesionEl = document.getElementById('modalDetalleSesion');
-
-    const modalAbrirSesion = modalAbrirSesionEl
-        ? new bootstrap.Modal(modalAbrirSesionEl)
-        : null;
-
+    const modalAbrirSesion = modalAbrirSesionEl ? new bootstrap.Modal(modalAbrirSesionEl) : null;
     const formAbrirSesion = document.getElementById('formAbrirSesion');
 
     function peticion(url, method, body = null) {
@@ -38,38 +33,21 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!response.ok || data.success === false) {
                 if (data.errors) {
                     const primerError = Object.values(data.errors).flat()[0];
-
-                    throw new Error(
-                        primerError ||
-                        data.mensaje ||
-                        data.message ||
-                        'Ocurrió un error al procesar la solicitud.'
-                    );
+                    throw new Error(primerError || data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
                 }
-
-                throw new Error(
-                    data.mensaje ||
-                    data.message ||
-                    'Ocurrió un error al procesar la solicitud.'
-                );
+                throw new Error(data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
             }
-
             return data;
         });
     }
 
     function mostrarError(error) {
-        window.showToast(
-            'error',
-            error.message || 'Ocurrió un error al procesar la solicitud.'
-        );
+        window.showToast('error', error.message || 'Ocurrió un error al procesar la solicitud.');
     }
 
     function escapeHtml(valor) {
         const div = document.createElement('div');
-
         div.textContent = valor ?? '';
-
         return div.innerHTML;
     }
 
@@ -93,15 +71,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function obtenerAccionesCajas() {
-        return Array.isArray(window.accionesCajas)
-            ? window.accionesCajas
-            : [];
+        return Array.isArray(window.accionesCajas) ? window.accionesCajas : [];
     }
 
     function badgeEstado(estado) {
-        return estado === 'abierta'
-            ? '<span class="badge text-bg-primary">Abierta</span>'
-            : '<span class="badge text-bg-secondary">Cerrada</span>';
+        return estado === 'abierta' ? '<span class="badge text-bg-primary">Abierta</span>' : '<span class="badge text-bg-secondary">Cerrada</span>';
     }
 
     function crearAccionesSesion(sesion) {
@@ -157,24 +131,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
-
         html += '</div>';
-
         return html;
     }
 
     function crearFilaSesion(sesion) {
         const fila = document.createElement('tr');
-
-        const usuario = sesion.usuario_apertura_nombre
-            ? escapeHtml(sesion.usuario_apertura_nombre)
-            : '<span class="text-secondary">—</span>';
-
-        const cierre = sesion.fecha_cierre_formateada
-            ? '<span class="text-secondary">' +
-              escapeHtml(sesion.fecha_cierre_formateada) +
-              '</span>'
-            : '<span class="text-secondary">—</span>';
+        const usuario = sesion.usuario_apertura_nombre ? escapeHtml(sesion.usuario_apertura_nombre) : '<span class="text-secondary">—</span>';
+        const cierre = sesion.fecha_cierre_formateada ? '<span class="text-secondary">' + escapeHtml(sesion.fecha_cierre_formateada) + '</span>' : '<span class="text-secondary">—</span>';
 
         fila.innerHTML = `
             <td>
@@ -182,32 +146,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     ${escapeHtml(sesion.caja_nombre)}
                 </div>
             </td>
-
             <td>
                 ${usuario}
             </td>
-
             <td data-order="${escapeAttribute(sesion.fecha_apertura_orden)}">
                 <span class="text-secondary">
                     ${escapeHtml(sesion.fecha_apertura_formateada)}
                 </span>
             </td>
-
-            <td>
-                ${cierre}
-            </td>
-
-            <td>
-                ${escapeHtml(formatoMonto(sesion.fondo_inicial_mostrado))}
-            </td>
-
-            <td>
-                ${badgeEstado(sesion.estado)}
-            </td>
-
-            <td class="text-end px-4">
-                ${crearAccionesSesion(sesion)}
-            </td>
+            <td>${cierre}</td>
+            <td>${escapeHtml(formatoMonto(sesion.fondo_inicial_mostrado))}</td>
+            <td>${badgeEstado(sesion.estado)}</td>
+            <td class="text-end px-4">${crearAccionesSesion(sesion)}</td>
         `;
 
         return fila;
@@ -293,7 +243,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!tablaSesiones) {
             return;
         }
-
         tablaSesiones.rows().every(function () {
             ajustarFila(this.node());
         });
@@ -304,15 +253,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        if (
-            window.cajaFiltroId &&
-            String(window.cajaFiltroId) !== String(sesion.caja_id)
-        ) {
+        if (window.cajaFiltroId && String(window.cajaFiltroId) !== String(sesion.caja_id)) {
             return;
         }
 
         tablaSesiones.row.add(crearFilaSesion(sesion)).draw(false);
-
         ajustarTodasLasFilas();
         tablaSesiones.columns.adjust();
     }
@@ -321,19 +266,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!tablaSesiones || !sesion) {
             return;
         }
-
         let filaEncontrada = null;
-
         tablaSesiones.rows().every(function () {
             const fila = this.node();
 
             if (!fila || filaEncontrada) {
                 return;
             }
-
-            const boton = fila.querySelector(
-                '.sesion-action-btn[data-id="' + sesion.id + '"]'
-            );
+            const boton = fila.querySelector('.sesion-action-btn[data-id="' + sesion.id + '"]');
 
             if (boton) {
                 filaEncontrada = this;
@@ -360,52 +300,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!selectCaja.value) {
                 window.showToast('error', 'Debes seleccionar una caja.');
-
                 selectCaja.focus();
-
                 return;
             }
 
             if (inputFondo.value === '' || Number(inputFondo.value) < 0) {
-                window.showToast(
-                    'error',
-                    'El fondo inicial es obligatorio y no puede ser negativo.'
-                );
-
+                window.showToast('error', 'El fondo inicial es obligatorio y no puede ser negativo.');
                 inputFondo.focus();
-
                 return;
             }
-
-            const botonSubmit = formAbrirSesion.querySelector(
-                'button[type="submit"]'
-            );
-
+            const botonSubmit = formAbrirSesion.querySelector('button[type="submit"]');
             const textoOriginal = botonSubmit.innerHTML;
-
             botonSubmit.disabled = true;
+            botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
 
-            botonSubmit.innerHTML =
-                '<span class="spinner-border spinner-border-sm me-2"></span>' +
-                'Guardando...';
-
-            peticion(
-                formAbrirSesion.action,
-                'POST',
-                new FormData(formAbrirSesion)
-            )
+            peticion(formAbrirSesion.action, 'POST', new FormData(formAbrirSesion))
                 .then(function (data) {
                     if (modalAbrirSesion) {
                         modalAbrirSesion.hide();
                     }
-
-                    window.showToast(
-                        'success',
-                        data.mensaje || 'Caja abierta correctamente.'
-                    );
-
+                    window.showToast('success', data.mensaje || 'Caja abierta correctamente.');
                     agregarSesionATabla(data.sesion);
-
                     formAbrirSesion.reset();
                 })
                 .catch(mostrarError)
@@ -420,10 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const elemento = document.getElementById(id);
 
         if (elemento) {
-            elemento.textContent =
-                valor === null || valor === undefined || valor === ''
-                    ? '—'
-                    : valor;
+            elemento.textContent = valor === null || valor === undefined || valor === '' ? '—' : valor;
         }
     }
 
@@ -436,52 +348,27 @@ document.addEventListener('DOMContentLoaded', function () {
         texto('det_usuario_cierre', sesion.usuario_cierre_nombre);
         texto('det_cierre', sesion.fecha_cierre_formateada);
         texto('det_autorizo', sesion.usuario_autorizacion_nombre);
-
-        document.getElementById('det_estado').innerHTML =
-            badgeEstado(sesion.estado);
-
+        document.getElementById('det_estado').innerHTML = badgeEstado(sesion.estado);
         texto('det_entradas', formatoMonto(sesion.entradas_mostradas));
         texto('det_salidas', formatoMonto(sesion.salidas_mostradas));
-
         const cerrada = sesion.estado !== 'abierta';
-
-        texto(
-            'det_esperado_etiqueta',
-            cerrada ? 'Efectivo esperado' : 'Efectivo esperado (actual)'
-        );
-
-        texto(
-            'det_esperado',
-            formatoMonto(
-                cerrada && sesion.efectivo_esperado_mostrado !== null
-                    ? sesion.efectivo_esperado_mostrado
-                    : sesion.esperado_actual_mostrado
-            )
+        texto('det_esperado_etiqueta', cerrada ? 'Efectivo esperado' : 'Efectivo esperado (actual)');
+        texto('det_esperado', formatoMonto(cerrada && sesion.efectivo_esperado_mostrado !== null ? sesion.efectivo_esperado_mostrado : sesion.esperado_actual_mostrado)
         );
 
         if (cerrada && sesion.efectivo_contado_mostrado !== null) {
-            texto(
-                'det_contado',
-                formatoMonto(sesion.efectivo_contado_mostrado) +
-                ' / ' +
-                formatoMonto(sesion.diferencia_mostrada)
-            );
+            texto('det_contado', formatoMonto(sesion.efectivo_contado_mostrado) + ' / ' + formatoMonto(sesion.diferencia_mostrada));
         } else {
             texto('det_contado', '—');
         }
-
         const cuerpo = document.getElementById('det_movimientos');
-
-        const movimientos = Array.isArray(sesion.movimientos)
-            ? sesion.movimientos
-            : [];
+        const movimientos = Array.isArray(sesion.movimientos) ? sesion.movimientos : [];
 
         if (movimientos.length === 0) {
             cuerpo.innerHTML =
                 '<tr><td colspan="5" class="text-center text-secondary py-3">' +
                 'Esta sesión no tiene movimientos.' +
                 '</td></tr>';
-
             return;
         }
 
@@ -490,21 +377,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             return (
                 '<tr>' +
-                '<td class="text-secondary">' +
-                escapeHtml(movimiento.fecha_formateada) +
-                '</td>' +
+                '<td class="text-secondary">' + escapeHtml(movimiento.fecha_formateada) + '</td>' +
                 '<td>' + escapeHtml(movimiento.concepto) + '</td>' +
-                '<td>' +
-                (
-                    esEntrada
-                        ? '<span class="badge text-bg-success">Entrada</span>'
-                        : '<span class="badge text-bg-danger">Salida</span>'
-                ) +
+                '<td>' + (esEntrada ? '<span class="badge text-bg-success">Entrada</span>' : '<span class="badge text-bg-danger">Salida</span>') +
                 '</td>' +
                 '<td>' + escapeHtml(movimiento.usuario || '—') + '</td>' +
-                '<td class="text-end">' +
-                (esEntrada ? '+' : '−') +
-                escapeHtml(formatoMonto(movimiento.monto_mostrado)) +
+                '<td class="text-end">' + (esEntrada ? '+' : '−') + escapeHtml(formatoMonto(movimiento.monto_mostrado)) +
                 '</td>' +
                 '</tr>'
             );
@@ -514,30 +392,24 @@ document.addEventListener('DOMContentLoaded', function () {
     if (modalDetalleSesionEl) {
         const cargando = document.getElementById('detalleSesionCargando');
         const contenido = document.getElementById('detalleSesionContenido');
-
         modalDetalleSesionEl.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
 
             if (!button) {
                 return;
             }
-
             const id = button.dataset.id;
             const url = button.dataset.url || `/sesiones-caja/${id}`;
-
             cargando.classList.remove('d-none');
             contenido.classList.add('d-none');
-
             peticion(url, 'GET')
                 .then(function (data) {
                     llenarDetalle(data.sesion);
-
                     cargando.classList.add('d-none');
                     contenido.classList.remove('d-none');
                 })
                 .catch(function (error) {
                     mostrarError(error);
-
                     bootstrap.Modal.getInstance(modalDetalleSesionEl)?.hide();
                 });
         });
@@ -545,15 +417,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const modalRetiroSesionEl = document.getElementById('modalRetiroSesion');
     const formRetiroSesion = document.getElementById('formRetiroSesion');
-
-    const modalRetiroSesion = modalRetiroSesionEl
-        ? new bootstrap.Modal(modalRetiroSesionEl)
-        : null;
+    const modalRetiroSesion = modalRetiroSesionEl ? new bootstrap.Modal(modalRetiroSesionEl) : null;
 
     if (modalRetiroSesionEl && formRetiroSesion) {
         const inputMontoRetiro = document.getElementById('retiro_monto');
         const textoDisponible = document.getElementById('retiro_disponible');
-
         let retiroMax = null;
         let botonRetiroActual = null;
 
@@ -561,7 +429,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (inputMontoRetiro.value === '') {
                 return;
             }
-
             const valor = parseFloat(inputMontoRetiro.value);
 
             if (isNaN(valor)) {
@@ -570,7 +437,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (valor < 0) {
                 inputMontoRetiro.value = '';
-
                 return;
             }
 
@@ -581,7 +447,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         inputMontoRetiro.addEventListener('input', limitarMonto);
         inputMontoRetiro.addEventListener('blur', limitarMonto);
-
         modalRetiroSesionEl.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
 
@@ -590,16 +455,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const id = button.dataset.id;
-
             formRetiroSesion.reset();
             formRetiroSesion.action = button.dataset.url || `/sesiones-caja/${id}/retiros`;
-
             texto('retiro_caja_nombre', button.dataset.caja);
-
             botonRetiroActual = button;
-
             const disponible = parseFloat(button.dataset.disponible);
-
             retiroMax = isNaN(disponible) ? null : Math.max(disponible, 0);
 
             if (retiroMax === null) {
@@ -607,10 +467,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 textoDisponible.textContent = '';
             } else {
                 inputMontoRetiro.max = retiroMax.toFixed(2);
-
-                textoDisponible.textContent = retiroMax > 0
-                    ? 'Disponible en caja: ' + formatoMonto(retiroMax)
-                    : 'No hay efectivo disponible en esta caja.';
+                textoDisponible.textContent = retiroMax > 0 ? 'Disponible en caja: ' + formatoMonto(retiroMax) : 'No hay efectivo disponible en esta caja.';
             }
         });
 
@@ -621,68 +478,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
         formRetiroSesion.addEventListener('submit', function (event) {
             event.preventDefault();
-
             const inputMonto = document.getElementById('retiro_monto');
             const selectConcepto = document.getElementById('retiro_concepto');
 
             if (inputMonto.value === '' || Number(inputMonto.value) <= 0) {
                 window.showToast('error', 'El monto debe ser mayor que cero.');
-
                 inputMonto.focus();
-
                 return;
             }
 
             if (!selectConcepto.value) {
                 window.showToast('error', 'Debes seleccionar el concepto del movimiento.');
-
                 selectConcepto.focus();
-
                 return;
             }
 
             if (retiroMax !== null && Number(inputMonto.value) > retiroMax) {
-                window.showToast(
-                    'error',
-                    'El monto supera el efectivo disponible en caja (' +
-                    formatoMonto(retiroMax) + ').'
-                );
-
+                window.showToast('error', 'El monto supera el efectivo disponible en caja (' + formatoMonto(retiroMax) + ').');
                 inputMonto.value = retiroMax.toFixed(2);
-
                 return;
             }
 
             const botonSubmit = document.getElementById('btnRetiroSesion');
             const textoOriginal = botonSubmit.innerHTML;
-
             botonSubmit.disabled = true;
+            botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
 
-            botonSubmit.innerHTML =
-                '<span class="spinner-border spinner-border-sm me-2"></span>' +
-                'Guardando...';
-
-            peticion(
-                formRetiroSesion.action,
-                'POST',
-                new FormData(formRetiroSesion)
-            )
+            peticion(formRetiroSesion.action, 'POST', new FormData(formRetiroSesion))
                 .then(function (data) {
                     if (modalRetiroSesion) {
                         modalRetiroSesion.hide();
                     }
+                    window.showToast('success', data.mensaje || 'Movimiento registrado correctamente.');
 
-                    window.showToast(
-                        'success',
-                        data.mensaje || 'Movimiento registrado correctamente.'
-                    );
-
-                    if (
-                        botonRetiroActual &&
-                        data.efectivo_disponible_mostrado !== undefined
-                    ) {
-                        botonRetiroActual.dataset.disponible =
-                            data.efectivo_disponible_mostrado;
+                    if (botonRetiroActual && data.efectivo_disponible_mostrado !== undefined) {
+                        botonRetiroActual.dataset.disponible = data.efectivo_disponible_mostrado;
                     }
                 })
                 .catch(mostrarError)
@@ -695,10 +525,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const modalCerrarSesionEl = document.getElementById('modalCerrarSesion');
     const formCerrarSesion = document.getElementById('formCerrarSesion');
-
-    const modalCerrarSesion = modalCerrarSesionEl
-        ? new bootstrap.Modal(modalCerrarSesionEl)
-        : null;
+    const modalCerrarSesion = modalCerrarSesionEl ? new bootstrap.Modal(modalCerrarSesionEl) : null;
 
     if (modalCerrarSesionEl && formCerrarSesion) {
         const arqueoCargando = document.getElementById('cerrarArqueoCargando');
@@ -709,26 +536,21 @@ document.addEventListener('DOMContentLoaded', function () {
         function actualizarDiferencia() {
             textoDiferencia.textContent = '';
             textoDiferencia.className = 'small mt-1';
-
             const esperado = parseFloat(formCerrarSesion.dataset.esperado);
 
             if (inputContado.value === '' || isNaN(esperado)) {
                 return;
             }
-
-            const diferencia =
-                Math.round((parseFloat(inputContado.value) - esperado) * 100) / 100;
+            const diferencia = Math.round((parseFloat(inputContado.value) - esperado) * 100) / 100;
 
             if (diferencia === 0) {
                 textoDiferencia.textContent = 'Sin diferencia.';
                 textoDiferencia.classList.add('text-success');
             } else if (diferencia > 0) {
-                textoDiferencia.textContent =
-                    'Sobrante: ' + formatoMonto(diferencia);
+                textoDiferencia.textContent = 'Sobrante: ' + formatoMonto(diferencia);
                 textoDiferencia.classList.add('text-warning');
             } else {
-                textoDiferencia.textContent =
-                    'Faltante: ' + formatoMonto(Math.abs(diferencia));
+                textoDiferencia.textContent = 'Faltante: ' + formatoMonto(Math.abs(diferencia));
                 textoDiferencia.classList.add('text-danger');
             }
         }
@@ -737,47 +559,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
         modalCerrarSesionEl.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
-
             if (!button) {
                 return;
             }
 
             const id = button.dataset.id;
-
             formCerrarSesion.reset();
             formCerrarSesion.action = button.dataset.url || `/sesiones-caja/${id}/cerrar`;
             formCerrarSesion.dataset.esperado = '';
 
             texto('cerrar_caja_nombre', button.dataset.caja);
-
             actualizarDiferencia();
-
             arqueoCargando.classList.remove('d-none');
             arqueoContenido.classList.add('d-none');
 
-            peticion(
-                button.dataset.arqueoUrl || `/sesiones-caja/${id}/arqueo`,
-                'GET'
-            )
+            peticion(button.dataset.arqueoUrl || `/sesiones-caja/${id}/arqueo`, 'GET')
                 .then(function (data) {
                     const arqueo = data.arqueo;
-
                     texto('cerrar_fondo', formatoMonto(arqueo.fondo_inicial_mostrado));
                     texto('cerrar_entradas', formatoMonto(arqueo.entradas_mostradas));
                     texto('cerrar_salidas', formatoMonto(arqueo.salidas_mostradas));
                     texto('cerrar_esperado', formatoMonto(arqueo.efectivo_esperado_mostrado));
-
-                    formCerrarSesion.dataset.esperado =
-                        arqueo.efectivo_esperado_mostrado;
-
+                    formCerrarSesion.dataset.esperado = arqueo.efectivo_esperado_mostrado;
                     arqueoCargando.classList.add('d-none');
                     arqueoContenido.classList.remove('d-none');
-
                     actualizarDiferencia();
                 })
                 .catch(function (error) {
                     mostrarError(error);
-
                     bootstrap.Modal.getInstance(modalCerrarSesionEl)?.hide();
                 });
         });
@@ -790,72 +599,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
         formCerrarSesion.addEventListener('submit', function (event) {
             event.preventDefault();
-
             const selectAutorizador = document.getElementById('cerrar_autorizador');
             const inputPassword = document.getElementById('cerrar_password');
 
             if (inputContado.value === '' || Number(inputContado.value) < 0) {
-                window.showToast(
-                    'error',
-                    'Debes ingresar el efectivo contado (no puede ser negativo).'
-                );
-
+                window.showToast('error', 'Debes ingresar el efectivo contado (no puede ser negativo).');
                 inputContado.focus();
-
                 return;
             }
 
             if (!selectAutorizador.value) {
-                window.showToast(
-                    'error',
-                    'Debes seleccionar al administrador que autoriza el cierre.'
-                );
-
+                window.showToast('error', 'Debes seleccionar al administrador que autoriza el cierre.');
                 selectAutorizador.focus();
-
                 return;
             }
 
             if (!inputPassword.value) {
-                window.showToast(
-                    'error',
-                    'La contraseña del administrador es obligatoria.'
-                );
-
+                window.showToast('error', 'La contraseña del administrador es obligatoria.');
                 inputPassword.focus();
-
                 return;
             }
 
             const botonSubmit = document.getElementById('btnCerrarSesion');
             const textoOriginal = botonSubmit.innerHTML;
-
             botonSubmit.disabled = true;
+            botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
 
-            botonSubmit.innerHTML =
-                '<span class="spinner-border spinner-border-sm me-2"></span>' +
-                'Guardando...';
-
-            peticion(
-                formCerrarSesion.action,
-                'POST',
-                new FormData(formCerrarSesion)
-            )
+            peticion(formCerrarSesion.action, 'POST', new FormData(formCerrarSesion))
                 .then(function (data) {
                     if (modalCerrarSesion) {
                         modalCerrarSesion.hide();
                     }
-
-                    window.showToast(
-                        'success',
-                        data.mensaje || 'Caja cerrada correctamente.'
-                    );
-
+                    window.showToast('success', data.mensaje || 'Caja cerrada correctamente.');
                     actualizarSesionEnTabla(data.sesion);
                 })
                 .catch(function (error) {
                     inputPassword.value = '';
-
                     mostrarError(error);
                 })
                 .finally(function () {
@@ -864,7 +643,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         });
     }
-
     ajustarTodasLasFilas();
 
     if (tablaSesiones) {

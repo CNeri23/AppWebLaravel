@@ -8,17 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalEditarMiembroEl = document.getElementById('modalEditarMiembro');
     const modalEliminarMiembroEl = document.getElementById('modalEliminarMiembro');
 
-    const modalNuevoMiembro = modalNuevoMiembroEl
-        ? new bootstrap.Modal(modalNuevoMiembroEl)
-        : null;
-
-    const modalEditarMiembro = modalEditarMiembroEl
-        ? new bootstrap.Modal(modalEditarMiembroEl)
-        : null;
-
-    const modalEliminarMiembro = modalEliminarMiembroEl
-        ? new bootstrap.Modal(modalEliminarMiembroEl)
-        : null;
+    const modalNuevoMiembro = modalNuevoMiembroEl ? new bootstrap.Modal(modalNuevoMiembroEl) : null;
+    const modalEditarMiembro = modalEditarMiembroEl ? new bootstrap.Modal(modalEditarMiembroEl) : null;
+    const modalEliminarMiembro = modalEliminarMiembroEl ? new bootstrap.Modal(modalEliminarMiembroEl) : null;
 
     function peticion(url, method, body = null) {
         const opciones = {
@@ -41,24 +33,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!response.ok || data.success === false) {
                 if (data.errors) {
-                    const primerError =
-                        Object.values(data.errors).flat()[0];
-
-                    throw new Error(
-                        primerError ||
-                        data.mensaje ||
-                        data.message ||
-                        'Ocurrió un error al procesar la solicitud.'
-                    );
+                    const primerError = Object.values(data.errors).flat()[0];
+                    throw new Error(primerError || data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
                 }
-
-                throw new Error(
-                    data.mensaje ||
-                    data.message ||
-                    'Ocurrió un error al procesar la solicitud.'
-                );
+                throw new Error(data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
             }
-
             return data;
         });
     }
@@ -70,19 +49,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function mostrarError(error) {
-        window.showToast(
-            'error',
-            error.message
-        );
+        window.showToast('error', error.message);
     }
 
     function escapeHtml(valor) {
-        const div =
-            document.createElement('div');
-
-        div.textContent =
-            valor ?? '';
-
+        const div = document.createElement('div');
+        div.textContent = valor ?? '';
         return div.innerHTML;
     }
 
@@ -105,40 +77,23 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function crearDireccionTexto(miembro) {
-        const direccion =
-            miembro.direccion;
+        const direccion = miembro.direccion;
 
         if (!direccion) {
             return '<span class="text-secondary">Sin dirección</span>';
         }
-
-        let texto =
-            escapeHtml(direccion.calle) +
-            ' ' +
-            escapeHtml(direccion.numero_exterior);
+        let texto = escapeHtml(direccion.calle) + ' ' + escapeHtml(direccion.numero_exterior);
 
         if (direccion.numero_interior) {
-            texto +=
-                ' Int. ' +
-                escapeHtml(direccion.numero_interior);
+            texto += ' Int. ' + escapeHtml(direccion.numero_interior);
         }
-
-        texto +=
-            ' <span class="text-secondary">— ' +
-            escapeHtml(direccion.colonia) +
-            ', ' +
-            escapeHtml(direccion.codigo_postal) +
-            '</span>';
-
+        texto += ' <span class="text-secondary">— ' + escapeHtml(direccion.colonia) + ', ' + escapeHtml(direccion.codigo_postal) + '</span>';
         return texto;
     }
 
     function crearAccionesMiembro(miembro, urls) {
-        let html =
-            '<div class="miembro-actions">';
-
-        const acciones =
-            window.accionesMiembros || [];
+        let html = '<div class="miembro-actions">';
+        const acciones = window.accionesMiembros || [];
 
         acciones.forEach(function (accion) {
 
@@ -202,47 +157,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     (accion.icono || '<i class="fa-solid fa-trash"></i>') +
                     '</button>';
             }
-
         });
 
-        html +=
-            '</div>';
-
+        html += '</div>';
         return html;
     }
 
     function crearFilaMiembro(miembro, urls = null) {
-        const fila =
-            document.createElement('tr');
+        const fila = document.createElement('tr');
 
-        const urlsMiembro =
-            urls || {
-                update: `/miembros/${miembro.id}`,
-                delete: `/miembros/${miembro.id}`,
-            };
+        const urlsMiembro = urls || { update: `/miembros/${miembro.id}`, delete: `/miembros/${miembro.id}` };
 
         fila.innerHTML = `
-        <td>
-            ${escapeHtml(nombreCompleto(miembro))}
-        </td>
-
-        <td>
-            ${escapeHtml(miembro.telefono || '—')}
-        </td>
-
-        <td>
-            ${escapeHtml(miembro.email || '—')}
-        </td>
-
-        <td>
-            ${crearDireccionTexto(miembro)}
-        </td>
-
-        <td class="text-end px-4">
-            ${crearAccionesMiembro(miembro, urlsMiembro)}
-        </td>
-    `;
-
+        <td>${escapeHtml(nombreCompleto(miembro))}</td>
+        <td>${escapeHtml(miembro.telefono || '—')}</td>
+        <td>${escapeHtml(miembro.email || '—')}</td>
+        <td>${crearDireccionTexto(miembro)}</td>
+        <td class="text-end px-4">${crearAccionesMiembro(miembro, urlsMiembro)}</td>
+        `;
         return fila;
     }
 
@@ -341,17 +273,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!tablaMiembros) {
             return;
         }
-
-        const fila =
-            crearFilaMiembro(
-                miembro,
-                urls
-            );
-
-        tablaMiembros.row
-            .add(fila)
-            .draw(false);
-
+        const fila = crearFilaMiembro(miembro, urls);
+        tablaMiembros.row.add(fila).draw(false);
         ajustarTodasLasFilas();
         tablaMiembros.columns.adjust();
     }
@@ -361,64 +284,30 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        tablaMiembros
-            .rows()
+        tablaMiembros.rows()
             .every(function () {
-
-                const fila =
-                    this.node();
+                const fila = this.node();
 
                 if (!fila) {
                     return;
                 }
 
-                const boton =
-                    fila.querySelector(
-                        '.miembro-action-btn'
-                    );
+                const boton = fila.querySelector('.miembro-action-btn');
 
-                if (
-                    boton &&
-                    boton.dataset.id ===
-                    String(miembro.id)
-                ) {
-                    const datos =
-                        this.data();
+                if (boton && boton.dataset.id === String(miembro.id)) {
+                    const datos = this.data();
 
-                    datos[0] =
-                        escapeHtml(
-                            nombreCompleto(miembro)
-                        );
+                    datos[0] = escapeHtml(nombreCompleto(miembro));
+                    datos[1] = escapeHtml(miembro.telefono || '—');
+                    datos[2] = escapeHtml(miembro.email || '—');
+                    datos[3] = crearDireccionTexto(miembro);
+                    datos[4] = crearAccionesMiembro(miembro, urls);
 
-                    datos[1] =
-                        escapeHtml(
-                            miembro.telefono || '—'
-                        );
-
-                    datos[2] =
-                        escapeHtml(
-                            miembro.email || '—'
-                        );
-
-                    datos[3] =
-                        crearDireccionTexto(
-                            miembro
-                        );
-
-                    datos[4] =
-                        crearAccionesMiembro(
-                            miembro,
-                            urls
-                        );
-
-                    this.data(
-                        datos
-                    );
+                    this.data(datos);
                 }
             });
 
         tablaMiembros.draw(false);
-
         ajustarTodasLasFilas();
         tablaMiembros.columns.adjust();
     }
@@ -432,50 +321,32 @@ document.addEventListener('DOMContentLoaded', function () {
             .rows()
             .every(function () {
 
-                const fila =
-                    this.node();
+                const fila = this.node();
 
                 if (!fila) {
                     return;
                 }
 
-                const boton =
-                    fila.querySelector(
-                        '.miembro-action-btn'
-                    );
+                const boton = fila.querySelector('.miembro-action-btn');
 
-                if (
-                    boton &&
-                    boton.dataset.id ===
-                    String(id)
-                ) {
+                if (boton && boton.dataset.id === String(id)) {
                     this.remove();
                 }
             });
 
         tablaMiembros.draw(false);
-
         ajustarTodasLasFilas();
     }
 
     let datosOriginalesEditar = null;
-
-    const MENSAJE_SIN_CAMBIOS =
-        'No hubo cambios para actualizar.';
-
-    const modalEditar =
-        document.getElementById(
-            'modalEditarMiembro'
-        );
+    const MENSAJE_SIN_CAMBIOS = 'No hubo cambios para actualizar.';
+    const modalEditar = document.getElementById('modalEditarMiembro');
 
     if (modalEditar) {
         modalEditar.addEventListener(
             'show.bs.modal',
             function (event) {
-
-                const button =
-                    event.relatedTarget;
-
+                const button = event.relatedTarget;
                 datosOriginalesEditar = null;
 
                 if (!button) {
@@ -491,126 +362,53 @@ document.addEventListener('DOMContentLoaded', function () {
                     direccion_id: (button.dataset.direccionId || '').trim(),
                 };
 
-                document.getElementById(
-                    'editar_id'
-                ).value =
-                    button.dataset.id;
-
-                document.getElementById(
-                    'editar_nombre'
-                ).value =
-                    button.dataset.nombre || '';
-
-                document.getElementById(
-                    'editar_apellido_paterno'
-                ).value =
-                    button.dataset.apellidoPaterno || '';
-
-                document.getElementById(
-                    'editar_apellido_materno'
-                ).value =
-                    button.dataset.apellidoMaterno || '';
-
-                document.getElementById(
-                    'editar_telefono'
-                ).value =
-                    button.dataset.telefono || '';
-
-                document.getElementById(
-                    'editar_email'
-                ).value =
-                    button.dataset.email || '';
-
-                document.getElementById(
-                    'editar_direccion_id'
-                ).value =
-                    button.dataset.direccionId || '';
-
-                document.getElementById(
-                    'formEditarMiembro'
-                ).setAttribute(
-                    'action',
-                    button.dataset.url
-                );
+                document.getElementById('editar_id').value = button.dataset.id;
+                document.getElementById('editar_nombre').value = button.dataset.nombre || '';
+                document.getElementById('editar_apellido_paterno').value = button.dataset.apellidoPaterno || '';
+                document.getElementById('editar_apellido_materno').value = button.dataset.apellidoMaterno || '';
+                document.getElementById('editar_telefono').value = button.dataset.telefono || '';
+                document.getElementById('editar_email').value = button.dataset.email || '';
+                document.getElementById('editar_direccion_id').value = button.dataset.direccionId || '';
+                document.getElementById('formEditarMiembro').setAttribute('action',button.dataset.url);
             }
         );
     }
 
-    const modalEliminar =
-        document.getElementById(
-            'modalEliminarMiembro'
-        );
+    const modalEliminar = document.getElementById('modalEliminarMiembro');
 
     if (modalEliminar) {
         modalEliminar.addEventListener(
             'show.bs.modal',
             function (event) {
 
-                const button =
-                    event.relatedTarget;
+                const button = event.relatedTarget;
 
                 if (!button) {
                     return;
                 }
 
-                document.getElementById(
-                    'eliminar_id'
-                ).value =
-                    button.dataset.id;
-
-                document.getElementById(
-                    'eliminar_nombre'
-                ).textContent =
-                    button.dataset.name;
-
-                document.getElementById(
-                    'formEliminarMiembro'
-                ).setAttribute(
-                    'action',
-                    button.dataset.url
-                );
+                document.getElementById('eliminar_id').value = button.dataset.id;
+                document.getElementById('eliminar_nombre').textContent = button.dataset.name;
+                document.getElementById('formEliminarMiembro').setAttribute('action',button.dataset.url);
             }
         );
     }
 
-    function enviarFormulario(
-        form,
-        modal,
-        mensajePorDefecto
-    ) {
-        const botonSubmit =
-            form.querySelector(
-                'button[type="submit"]'
-            );
-
-        const textoOriginal =
-            botonSubmit?.innerHTML;
+    function enviarFormulario(form, modal, mensajePorDefecto) {
+        const botonSubmit = form.querySelector('button[type="submit"]');
+        const textoOriginal = botonSubmit?.innerHTML;
 
         if (botonSubmit) {
             botonSubmit.disabled = true;
-
-            botonSubmit.innerHTML =
-                '<span class="spinner-border spinner-border-sm me-2"></span>' +
-                'Guardando...';
+            botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
         }
 
-        const formData =
-            new FormData(form);
+        const formData = new FormData(form);
 
-        return peticion(
-            form.action,
-            'POST',
-            formData
-        )
+        return peticion(form.action, 'POST', formData)
             .then((data) => {
-
                 cerrarModal(modal);
-
-                window.showToast(
-                    'success',
-                    data.mensaje ||
-                    mensajePorDefecto
-                );
+                window.showToast('success', data.mensaje || mensajePorDefecto);
 
                 return data;
             })
@@ -618,37 +416,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (botonSubmit) {
                     botonSubmit.disabled = false;
-
-                    botonSubmit.innerHTML =
-                        textoOriginal;
+                    botonSubmit.innerHTML = textoOriginal;
                 }
             });
     }
 
-    const formNuevoMiembro =
-        document.getElementById(
-            'formNuevoMiembro'
-        );
+    const formNuevoMiembro = document.getElementById('formNuevoMiembro');
 
     if (formNuevoMiembro) {
         formNuevoMiembro.addEventListener(
             'submit',
             function (event) {
-
                 event.preventDefault();
 
-                enviarFormulario(
-                    formNuevoMiembro,
-                    modalNuevoMiembro,
-                    'Miembro creado correctamente.'
-                )
+                enviarFormulario(formNuevoMiembro, modalNuevoMiembro, 'Miembro creado correctamente.')
                     .then((data) => {
-
                         agregarMiembroATabla(
                             data.miembro,
                             data.urls
                         );
-
                         formNuevoMiembro.reset();
                     })
                     .catch(mostrarError);
@@ -656,16 +442,12 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    const formEditarMiembro =
-        document.getElementById(
-            'formEditarMiembro'
-        );
+    const formEditarMiembro = document.getElementById('formEditarMiembro');
 
     if (formEditarMiembro) {
         formEditarMiembro.addEventListener(
             'submit',
             function (event) {
-
                 event.preventDefault();
 
                 const campos =
@@ -678,63 +460,39 @@ document.addEventListener('DOMContentLoaded', function () {
                         'direccion_id'
                     ];
 
-                const valoresActuales =
-                    {};
+                const valoresActuales = {};
 
                 campos.forEach(function (campo) {
 
                     let input;
 
                     if (campo === 'direccion_id') {
-                        input =
-                            document.getElementById(
-                                'editar_direccion_id'
-                            );
+                        input = document.getElementById('editar_direccion_id');
                     } else {
-                        input =
-                            document.getElementById(
-                                'editar_' + campo
-                            );
+                        input = document.getElementById('editar_' + campo);
                     }
 
-                    valoresActuales[campo] =
-                        input
-                            ? input.value.trim()
-                            : '';
+                    valoresActuales[campo] = input ? input.value.trim() : '';
                 });
 
-                const sinCambios =
-                    datosOriginalesEditar &&
-                    campos.every(function (campo) {
+                const sinCambios = datosOriginalesEditar && campos.every(function (campo) {
                         return (
-                            valoresActuales[campo] ===
-                            datosOriginalesEditar[campo]
+                            valoresActuales[campo] === datosOriginalesEditar[campo]
                         );
                     });
 
                 if (sinCambios) {
-                    window.showToast(
-                        'info',
-                        MENSAJE_SIN_CAMBIOS
-                    );
-
+                    window.showToast('info', MENSAJE_SIN_CAMBIOS);
                     return;
                 }
 
-                enviarFormulario(
-                    formEditarMiembro,
-                    modalEditarMiembro,
-                    'Miembro actualizado correctamente.'
-                )
+                enviarFormulario(formEditarMiembro, modalEditarMiembro, 'Miembro actualizado correctamente.')
                     .then((data) => {
-
                         actualizarMiembroEnTabla(
                             data.miembro,
                             {
-                                update:
-                                    `/miembros/${data.miembro.id}`,
-                                delete:
-                                    `/miembros/${data.miembro.id}`,
+                                update: `/miembros/${data.miembro.id}`,
+                                delete: `/miembros/${data.miembro.id}`,
                             }
                         );
                     })
@@ -743,30 +501,17 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    const formEliminarMiembro =
-        document.getElementById(
-            'formEliminarMiembro'
-        );
+    const formEliminarMiembro = document.getElementById('formEliminarMiembro');
 
     if (formEliminarMiembro) {
-        formEliminarMiembro.addEventListener(
-            'submit',
+        formEliminarMiembro.addEventListener('submit',
             function (event) {
 
                 event.preventDefault();
+                const id = document.getElementById('eliminar_id').value;
 
-                const id =
-                    document.getElementById(
-                        'eliminar_id'
-                    ).value;
-
-                enviarFormulario(
-                    formEliminarMiembro,
-                    modalEliminarMiembro,
-                    'Miembro eliminado correctamente.'
-                )
+                enviarFormulario(formEliminarMiembro, modalEliminarMiembro, 'Miembro eliminado correctamente.')
                     .then((data) => {
-
                         eliminarMiembroDeTabla(
                             data.id || id
                         );
@@ -776,49 +521,31 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-
-    // ---- Crear / vincular usuario de acceso ----
-    const modalUsuarioMiembroEl =
-        document.getElementById('modalUsuarioMiembro');
-
-    const formUsuarioMiembro =
-        document.getElementById('formUsuarioMiembro');
+    const modalUsuarioMiembroEl = document.getElementById('modalUsuarioMiembro');
+    const formUsuarioMiembro = document.getElementById('formUsuarioMiembro');
 
     if (modalUsuarioMiembroEl && formUsuarioMiembro) {
-        const modalUsuarioMiembro =
-            new bootstrap.Modal(modalUsuarioMiembroEl);
-
-        const bloqueCrear =
-            document.getElementById('usuario_bloque_crear');
-
-        const bloqueVincular =
-            document.getElementById('usuario_bloque_vincular');
-
+        const modalUsuarioMiembro = new bootstrap.Modal(modalUsuarioMiembroEl);
+        const bloqueCrear = document.getElementById('usuario_bloque_crear');
+        const bloqueVincular = document.getElementById('usuario_bloque_vincular');
         const politica = window.politicaPassword || {};
         const passwordMinimo = parseInt(politica.min, 10) || 8;
         const passwordComplejo = !!politica.complex;
-
         let botonOrigen = null;
 
         function modoActual() {
-            const marcado = formUsuarioMiembro.querySelector(
-                'input[name="modo"]:checked'
-            );
+            const marcado = formUsuarioMiembro.querySelector('input[name="modo"]:checked');
 
             if (marcado) {
                 return marcado.value;
             }
 
-            const oculto = formUsuarioMiembro.querySelector(
-                'input[name="modo"][type="hidden"]'
-            );
-
+            const oculto = formUsuarioMiembro.querySelector('input[name="modo"][type="hidden"]');
             return oculto ? oculto.value : 'crear';
         }
 
         function aplicarModo() {
             const vincular = modoActual() === 'vincular';
-
             bloqueCrear.classList.toggle('d-none', vincular);
 
             if (bloqueVincular) {
@@ -830,9 +557,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!input) {
                 return;
             }
-
             input.classList.toggle('is-invalid', !!texto);
-
             const error = input.parentElement.querySelector('.invalid-feedback');
 
             if (error) {
@@ -842,7 +567,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function limpiarFormularioUsuario() {
             formUsuarioMiembro.reset();
-
             formUsuarioMiembro
                 .querySelectorAll('.is-invalid')
                 .forEach(function (input) {
@@ -860,16 +584,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         modalUsuarioMiembroEl.addEventListener('show.bs.modal', function (event) {
             botonOrigen = event.relatedTarget;
-
             limpiarFormularioUsuario();
 
             if (!botonOrigen) {
                 return;
             }
-
-            document.getElementById('usuario_miembro_nombre').textContent =
-                botonOrigen.dataset.name || 'este miembro';
-
+            document.getElementById('usuario_miembro_nombre').textContent = botonOrigen.dataset.name || 'este miembro';
             formUsuarioMiembro.setAttribute('action', botonOrigen.dataset.url);
         });
 
@@ -909,10 +629,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (password.value.length < passwordMinimo) {
                 mensajeClave = 'La contraseña debe tener al menos ' + passwordMinimo + ' caracteres.';
-            } else if (
-                passwordComplejo &&
-                !(/\p{Ll}/u.test(password.value) && /\p{Lu}/u.test(password.value) && /\d/.test(password.value))
-            ) {
+            } else if ( passwordComplejo && !(/\p{Ll}/u.test(password.value) && /\p{Lu}/u.test(password.value) && /\d/.test(password.value))) {
                 mensajeClave = 'La contraseña debe incluir una mayúscula, una minúscula y un número.';
             }
 
@@ -928,7 +645,6 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 marcarError(confirmacion, '');
             }
-
             return valido;
         }
 
@@ -949,9 +665,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         return;
                     }
 
-                    // El botón pasa a "ya tiene usuario"
-                    botonOrigen.className =
-                        'btn btn-sm btn-success miembro-action-btn miembro-usuario-btn';
+                    botonOrigen.className = 'btn btn-sm btn-success miembro-action-btn miembro-usuario-btn';
                     botonOrigen.disabled = true;
                     botonOrigen.title = 'Ya tiene usuario';
                     botonOrigen.dataset.tieneUsuario = '1';
@@ -962,6 +676,5 @@ document.addEventListener('DOMContentLoaded', function () {
                 .catch(mostrarError);
         });
     }
-
     ajustarTodasLasFilas();
 });

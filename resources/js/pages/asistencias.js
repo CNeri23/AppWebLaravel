@@ -7,18 +7,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfTokenElement ? csrfTokenElement.content : '';
-
     const urlBuscar = app.dataset.urlBuscar || '';
     const urlRegistrar = app.dataset.urlRegistrar || '';
     const incluyeHoy = app.dataset.incluyeHoy === '1';
     const puedeAnular = app.dataset.puedeAnular === '1';
     const iconoAnular = app.dataset.iconoAnular || '<i class="fa-regular fa-trash-can"></i>';
-
     const formBuscar = document.getElementById('formBuscarAsistencia');
     const inputBusqueda = document.getElementById('asistenciaBusqueda');
     const listaResultados = document.getElementById('asistenciaResultados');
     const panelResultado = document.getElementById('asistenciaResultado');
-
     const kpiEntradas = document.getElementById('kpiEntradas');
     const kpiMiembros = document.getElementById('kpiMiembros');
     const kpiDenegadas = document.getElementById('kpiDenegadas');
@@ -28,14 +25,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let numeroBusqueda = 0;
     let registrando = false;
 
-    // ------------------------------------------------------------------
-    // Utilidades
-    // ------------------------------------------------------------------
-
     function escapeHtml(valor) {
         const div = document.createElement('div');
         div.textContent = valor ?? '';
-
         return div.innerHTML;
     }
 
@@ -53,19 +45,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Colores de las alertas según el tema (claro/oscuro) actual de la app
     function temaSwal() {
         const cuerpo = getComputedStyle(document.body);
         const referencia = document.querySelector('.modal-content');
-
-        let fondo = referencia
-            ? getComputedStyle(referencia).backgroundColor
-            : cuerpo.backgroundColor;
+        let fondo = referencia ? getComputedStyle(referencia).backgroundColor : cuerpo.backgroundColor;
 
         if (!fondo || fondo === 'transparent' || fondo === 'rgba(0, 0, 0, 0)') {
             fondo = cuerpo.backgroundColor;
         }
-
         return { background: fondo, color: cuerpo.color };
     }
 
@@ -147,20 +134,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Ocurrió un error al procesar la solicitud.'
                 );
             }
-
             return data;
         });
     }
-
-    // ------------------------------------------------------------------
-    // Tabla
-    // ------------------------------------------------------------------
 
     function inicializarDataTable() {
         if (!window.DataTable) {
             return;
         }
-
         const columnas = puedeAnular ? 6 : 5;
 
         dataTable = new DataTable('#tablaAsistencias', {
@@ -189,10 +170,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 zeroRecords: 'No se encontraron registros',
                 emptyTable: 'No hay asistencias en este periodo',
                 paginate: {
-                    first: 'Primero',
-                    previous: 'Anterior',
-                    next: 'Siguiente',
-                    last: 'Último'
+                    first: '<i class="fa-solid fa-angles-left"></i>',
+                    previous: '<i class="fa-solid fa-angle-left"></i>',
+                    next: '<i class="fa-solid fa-angle-right"></i>',
+                    last: '<i class="fa-solid fa-angles-right"></i>'
                 }
             },
             layout: {
@@ -200,8 +181,55 @@ document.addEventListener('DOMContentLoaded', function () {
                 topEnd: 'search',
                 bottomStart: 'info',
                 bottomEnd: 'paging'
+            },
+            initComplete: function () {
+                configurarTooltipsPaginacion();
+            },
+
+            drawCallback: function () {
+                configurarTooltipsPaginacion();
             }
         });
+
+        function configurarTooltipsPaginacion() {
+            const paginacion = document.querySelector(
+                '#tablaLogs_wrapper .dt-paging'
+            );
+
+            if (!paginacion) {
+                return;
+            }
+
+            const botones = paginacion.querySelectorAll('button');
+
+            botones.forEach(function (button) {
+                const icono = button.querySelector('i');
+
+                if (!icono) {
+                    return;
+                }
+
+                if (icono.classList.contains('fa-angles-left')) {
+                    button.setAttribute('title', 'Primera página');
+                    button.setAttribute('aria-label', 'Primera página');
+                }
+
+                if (icono.classList.contains('fa-angle-left')) {
+                    button.setAttribute('title', 'Página anterior');
+                    button.setAttribute('aria-label', 'Página anterior');
+                }
+
+                if (icono.classList.contains('fa-angle-right')) {
+                    button.setAttribute('title', 'Página siguiente');
+                    button.setAttribute('aria-label', 'Página siguiente');
+                }
+
+                if (icono.classList.contains('fa-angles-right')) {
+                    button.setAttribute('title', 'Última página');
+                    button.setAttribute('aria-label', 'Última página');
+                }
+            });
+        }
     }
 
     function crearFila(registro) {
@@ -214,9 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const resultado = registro.permitido
             ? '<span class="badge rounded-pill text-bg-success">Permitido</span>'
             : '<span class="badge rounded-pill text-bg-danger">Denegado</span>' +
-            (registro.motivo
-                ? '<div class="small text-secondary mt-1">' + escapeHtml(registro.motivo) + '</div>'
-                : '');
+            (registro.motivo ? '<div class="small text-secondary mt-1">' + escapeHtml(registro.motivo) + '</div>' : '');
 
         const acciones = puedeAnular
             ? '<td class="text-center"><div class="asistencia-actions">' +
@@ -236,9 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '</td>' +
             '<td>' +
             '<div class="fw-semibold">' + escapeHtml(registro.nombre) + '</div>' +
-            (registro.email
-                ? '<div class="small text-secondary">' + escapeHtml(registro.email) + '</div>'
-                : '') +
+            (registro.email ? '<div class="small text-secondary">' + escapeHtml(registro.email) + '</div>' : '') +
             '</td>' +
             '<td>' + escapeHtml(registro.plan || '—') + '</td>' +
             '<td>' + resultado + '</td>' +
@@ -248,7 +272,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return fila;
     }
 
-    // Recalcula los contadores a partir de lo que hay en la tabla
     function actualizarResumen() {
         if (!dataTable) {
             return;
@@ -285,10 +308,6 @@ document.addEventListener('DOMContentLoaded', function () {
             kpiDenegadas.textContent = denegadas;
         }
     }
-
-    // ------------------------------------------------------------------
-    // Búsqueda y registro de entrada
-    // ------------------------------------------------------------------
 
     function limpiarResultados() {
         if (!listaResultados) {
@@ -407,7 +426,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!texto) {
             numeroBusqueda++;
             limpiarResultados();
-
             return Promise.resolve();
         }
 
@@ -415,7 +433,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return peticion(urlBuscar + '?q=' + encodeURIComponent(texto))
             .then(function (data) {
-                // Se ignora si ya hay una búsqueda más reciente
                 if (esta !== numeroBusqueda) {
                     return;
                 }
@@ -526,10 +543,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-
-    // ------------------------------------------------------------------
-    // Anular un registro
-    // ------------------------------------------------------------------
 
     document.getElementById('tablaAsistencias').addEventListener('click', function (evento) {
         const boton = evento.target.closest('.btn-anular-asistencia');

@@ -16,27 +16,27 @@
     --cancel-fg: #374151;
 }
 
-.glass-toast {
+.toast {
     --tc-rgb: 37, 99, 235;
     --ti-rgb: 29, 78, 216;
 }
 
-.glass-toast-success {
+.toast-success {
     --tc-rgb: 22, 163, 74;
     --ti-rgb: 21, 128, 61;
 }
 
-.glass-toast-error {
+.toast-error {
     --tc-rgb: 220, 53, 69;
     --ti-rgb: 185, 28, 28;
 }
 
-.glass-toast-warning {
+.toast-warning {
     --tc-rgb: 217, 119, 6;
     --ti-rgb: 180, 83, 9;
 }
 
-.glass-toast-info {
+.toast-info {
     --tc-rgb: 37, 99, 235;
     --ti-rgb: 29, 78, 216;
 }
@@ -63,7 +63,7 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
     padding: 22px 26px !important;
 }
 
-.swal2-popup.glass-toast {
+.swal2-popup.toast {
     --toast-surface: var(--ts,
             color-mix(in srgb,
                 rgb(var(--tc-rgb)) var(--toast-tint),
@@ -90,47 +90,47 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
     overflow: hidden;
 }
 
-.swal2-popup.glass-toast .swal2-icon {
+.swal2-popup .swal2-icon {
     order: 1;
     flex: 0 0 auto;
     margin: 0 !important;
 }
 
-.swal2-popup.glass-toast .swal2-icon.swal2-success {
+.swal2-popup.toast .swal2-icon.swal2-success {
     border-color: rgb(var(--ti-rgb));
     color: rgb(var(--ti-rgb));
 }
 
-.swal2-popup.glass-toast .swal2-icon.swal2-success .swal2-success-ring {
+.swal2-popup.toast .swal2-icon.swal2-success .swal2-success-ring {
     border-color: rgb(var(--ti-rgb));
 }
 
-.swal2-popup.glass-toast .swal2-icon.swal2-success [class^="swal2-success-line"] {
+.swal2-popup.toast .swal2-icon.swal2-success [class^="swal2-success-line"] {
     background-color: rgb(var(--ti-rgb));
 }
 
-.swal2-popup.glass-toast .swal2-icon.swal2-success [class^="swal2-success-circular-line"],
-.swal2-popup.glass-toast .swal2-icon.swal2-success .swal2-success-fix {
+.swal2-popup.toast .swal2-icon.swal2-success [class^="swal2-success-circular-line"],
+.swal2-popup.toast .swal2-icon.swal2-success .swal2-success-fix {
     background: var(--toast-surface) !important;
 }
 
-.swal2-popup.glass-toast .swal2-icon.swal2-error {
+.swal2-popup.toast .swal2-icon.swal2-error {
     border-color: rgb(var(--ti-rgb));
     color: rgb(var(--ti-rgb));
 }
 
-.swal2-popup.glass-toast .swal2-icon.swal2-error [class^="swal2-x-mark-line"] {
+.swal2-popup.toast .swal2-icon.swal2-error [class^="swal2-x-mark-line"] {
     background-color: rgb(var(--ti-rgb));
 }
 
-.swal2-popup.glass-toast .swal2-icon.swal2-warning,
-.swal2-popup.glass-toast .swal2-icon.swal2-info,
-.swal2-popup.glass-toast .swal2-icon.swal2-question {
+.swal2-popup.toast .swal2-icon.swal2-warning,
+.swal2-popup.toast .swal2-icon.swal2-info,
+.swal2-popup.toast .swal2-icon.swal2-question {
     border-color: rgb(var(--ti-rgb));
     color: rgb(var(--ti-rgb));
 }
 
-.swal2-popup.glass-toast .swal2-title.glass-toast-title {
+.swal2-popup.toast .swal2-title.toast-title {
     order: 2;
     flex: 1 1 auto;
     min-width: 0;
@@ -168,7 +168,7 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
     opacity: 1;
 }
 
-.swal2-popup.glass-toast .swal2-timer-progress-bar-container {
+.swal2-popup.toast .swal2-timer-progress-bar-container {
     right: 0;
     bottom: 0;
     left: 0;
@@ -177,18 +177,18 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
     background: rgba(var(--tc-rgb), 0.25);
 }
 
-.swal2-popup.glass-toast .swal-toast-progress {
+.swal2-popup.toast .swal-toast-progress {
     height: 100% !important;
     border-radius: 0;
     background: rgb(var(--tc-rgb)) !important;
     opacity: 1 !important;
 }
 
-.glass-toast-show {
+.toast-show {
     animation: toast-in 0.45s cubic-bezier(0.22, 1.1, 0.36, 1) both;
 }
 
-.glass-toast-hide {
+.toast-hide {
     animation: toast-out 0.28s cubic-bezier(0.4, 0, 1, 1) both;
 }
 
@@ -217,15 +217,15 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
 }
 
 @media (max-width: 575.98px) {
-    .swal2-popup.glass-toast {
+    .swal2-popup.toast {
         width: calc(100vw - 32px) !important;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
 
-    .glass-toast-show,
-    .glass-toast-hide {
+    .toast-show,
+    .toast-hide {
         animation-duration: 0.01ms !important;
     }
 }

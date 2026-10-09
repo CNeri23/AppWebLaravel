@@ -6,18 +6,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalNuevaDireccionEl = document.getElementById('modalNuevaDireccion');
     const modalEditarDireccionEl = document.getElementById('modalEditarDireccion');
     const modalEliminarDireccionEl = document.getElementById('modalEliminarDireccion');
-
-    const modalNuevaDireccion = modalNuevaDireccionEl
-        ? new bootstrap.Modal(modalNuevaDireccionEl)
-        : null;
-
-    const modalEditarDireccion = modalEditarDireccionEl
-        ? new bootstrap.Modal(modalEditarDireccionEl)
-        : null;
-
-    const modalEliminarDireccion = modalEliminarDireccionEl
-        ? new bootstrap.Modal(modalEliminarDireccionEl)
-        : null;
+    const modalNuevaDireccion = modalNuevaDireccionEl ? new bootstrap.Modal(modalNuevaDireccionEl) : null;
+    const modalEditarDireccion = modalEditarDireccionEl ? new bootstrap.Modal(modalEditarDireccionEl) : null;
+    const modalEliminarDireccion = modalEliminarDireccionEl ? new bootstrap.Modal(modalEliminarDireccionEl) : null;
 
     function peticion(url, method, body = null) {
         const opciones = {
@@ -40,22 +31,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!response.ok || data.success === false) {
                 if (data.errors) {
-                    const primerError =
-                        Object.values(data.errors).flat()[0];
+                    const primerError = Object.values(data.errors).flat()[0];
 
-                    throw new Error(
-                        primerError ||
-                        data.mensaje ||
-                        data.message ||
-                        'Ocurrió un error al procesar la solicitud.'
-                    );
+                    throw new Error(primerError || data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
                 }
 
-                throw new Error(
-                    data.mensaje ||
-                    data.message ||
-                    'Ocurrió un error al procesar la solicitud.'
-                );
+                throw new Error(data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
             }
 
             return data;
@@ -76,12 +57,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function escapeHtml(valor) {
-        const div =
-            document.createElement('div');
-
-        div.textContent =
-            valor ?? '';
-
+        const div = document.createElement('div');
+        div.textContent = valor ?? '';
         return div.innerHTML;
     }
 
@@ -94,33 +71,20 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function descripcionDireccion(direccion) {
-        let texto =
-            direccion.calle +
-            ' ' +
-            direccion.numero_exterior;
+        let texto = direccion.calle + ' ' + direccion.numero_exterior;
 
         if (direccion.numero_interior) {
-            texto +=
-                ' Int. ' +
-                direccion.numero_interior;
+            texto += ' Int. ' +  direccion.numero_interior;
         }
 
-        texto +=
-            ', ' +
-            direccion.colonia;
-
+        texto +=', ' + direccion.colonia;
         return texto;
     }
 
     function crearAccionesDireccion(direccion, urls) {
-        let html =
-            '<div class="direccion-actions">';
-
-        const acciones =
-            window.accionesDirecciones || [];
-
+        let html = '<div class="direccion-actions">';
+        const acciones = window.accionesDirecciones || [];
         acciones.forEach(function (accion) {
-
             if (accion.slug === 'direcciones.editar') {
 
                 html +=
@@ -146,18 +110,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             else if (accion.slug === 'direcciones.eliminar') {
 
-                const personasAsignadas =
-                    Number(direccion.personas_count || 0);
-
-                const disabled =
-                    personasAsignadas > 0
-                        ? ' disabled'
-                        : '';
-
-                const titulo =
-                    personasAsignadas > 0
-                        ? 'No se puede eliminar: dirección asignada'
-                        : accion.nombre;
+                const personasAsignadas = Number(direccion.personas_count || 0);
+                const disabled = personasAsignadas > 0 ? ' disabled' : '';
+                const titulo = personasAsignadas > 0 ? 'No se puede eliminar: dirección asignada' : accion.nombre;
 
                 html +=
                     '<button type="button" ' +
@@ -173,75 +128,28 @@ document.addEventListener('DOMContentLoaded', function () {
                     (accion.icono || '<i class="fa-solid fa-trash"></i>') +
                     '</button>';
             }
-
         });
 
-        html +=
-            '</div>';
-
+        html += '</div>';
         return html;
     }
 
     function crearFilaDireccion(direccion, urls = null) {
-        const fila =
-            document.createElement('tr');
-
-        const urlsDireccion =
-            urls || {
-                update: `/direcciones/${direccion.id}`,
-                delete: `/direcciones/${direccion.id}`,
-            };
-
-        const personasAsignadas =
-            Number(direccion.personas_count || 0);
-
+        const fila = document.createElement('tr');
+        const urlsDireccion = urls || {update: `/direcciones/${direccion.id}`, delete: `/direcciones/${direccion.id}`};
+        const personasAsignadas = Number(direccion.personas_count || 0);
         fila.innerHTML = `
-    <td>
-        ${escapeHtml(direccion.calle)}
-    </td>
-
-    <td>
-        ${escapeHtml(direccion.numero_exterior)}
-    </td>
-
-    <td>
-        ${escapeHtml(direccion.numero_interior || '—')}
-    </td>
-
-    <td>
-        ${escapeHtml(direccion.colonia)}
-    </td>
-
-    <td>
-        ${escapeHtml(direccion.codigo_postal)}
-    </td>
-
-    <td>
-        ${escapeHtml(direccion.municipio)}
-    </td>
-
-    <td>
-        ${escapeHtml(direccion.estado)}
-    </td>
-
-    <td>
-        ${escapeHtml(direccion.pais)}
-    </td>
-
-    <td class="text-center">
-        ${personasAsignadas > 0
-                ? '<span class="badge text-bg-primary">' +
-                personasAsignadas +
-                '</span>'
-                : '<span class="badge text-bg-secondary">0</span>'
-            }
-    </td>
-
-    <td class="text-end px-4">
-        ${crearAccionesDireccion(direccion, urlsDireccion)}
-    </td>
-`;
-
+            <td>${escapeHtml(direccion.calle)}</td>
+            <td>${escapeHtml(direccion.numero_exterior)}</td>
+            <td>${escapeHtml(direccion.numero_interior || '—')}</td>
+            <td>${escapeHtml(direccion.colonia)}</td>
+            <td>${escapeHtml(direccion.codigo_postal)}</td>
+            <td>${escapeHtml(direccion.municipio)}</td>
+            <td>${escapeHtml(direccion.estado)}</td>
+            <td>${escapeHtml(direccion.pais)}</td>
+            <td class="text-center">${personasAsignadas > 0 ? '<span class="badge text-bg-primary">' + personasAsignadas + '</span>' : '<span class="badge text-bg-secondary">0</span>' }</td>
+            <td class="text-end px-4">${crearAccionesDireccion(direccion, urlsDireccion)}</td>
+        `;
         return fila;
     }
 
@@ -261,10 +169,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     emptyTable: 'No hay direcciones registradas',
 
                     paginate: {
-                        first: 'Primero',
-                        previous: 'Anterior',
-                        next: 'Siguiente',
-                        last: 'Último'
+                        first: '<i class="fa-solid fa-angles-left"></i>',
+                        previous: '<i class="fa-solid fa-angle-left"></i>',
+                        next: '<i class="fa-solid fa-angle-right"></i>',
+                        last: '<i class="fa-solid fa-angles-right"></i>'
                     }
                 },
 
@@ -299,9 +207,55 @@ document.addEventListener('DOMContentLoaded', function () {
                     topEnd: 'search',
                     bottomStart: 'info',
                     bottomEnd: 'paging'
+                },
+
+                initComplete: function () {
+                    configurarTooltipsPaginacion();
+                },
+
+                drawCallback: function () {
+                    configurarTooltipsPaginacion();
                 }
             }
         );
+    }
+
+    function configurarTooltipsPaginacion() {
+        const paginacion = document.querySelector('#tablaLogs_wrapper .dt-paging');
+
+        if (!paginacion) {
+            return;
+        }
+
+        const botones = paginacion.querySelectorAll('button');
+
+        botones.forEach(function (button) {
+            const icono = button.querySelector('i');
+
+            if (!icono) {
+                return;
+            }
+
+            if (icono.classList.contains('fa-angles-left')) {
+                button.setAttribute('title', 'Primera página');
+                button.setAttribute('aria-label', 'Primera página');
+            }
+
+            if (icono.classList.contains('fa-angle-left')) {
+                button.setAttribute('title', 'Página anterior');
+                button.setAttribute('aria-label', 'Página anterior');
+            }
+
+            if (icono.classList.contains('fa-angle-right')) {
+                button.setAttribute('title', 'Página siguiente');
+                button.setAttribute('aria-label', 'Página siguiente');
+            }
+
+            if (icono.classList.contains('fa-angles-right')) {
+                button.setAttribute('title', 'Última página');
+                button.setAttribute('aria-label', 'Última página');
+            }
+        });
     }
 
     function ajustarFila(fila) {
@@ -309,8 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const celdas =
-            fila.children;
+        const celdas = fila.children;
 
         if (celdas.length < 10) {
             return;
@@ -355,17 +308,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!tablaDirecciones) {
             return;
         }
-
-        const fila =
-            crearFilaDireccion(
-                direccion,
-                urls
-            );
-
-        tablaDirecciones.row
-            .add(fila)
-            .draw(false);
-
+        const fila = crearFilaDireccion(direccion, urls );
+        tablaDirecciones.row.add(fila).draw(false);
         ajustarTodasLasFilas();
         tablaDirecciones.columns.adjust();
     }
@@ -379,92 +323,36 @@ document.addEventListener('DOMContentLoaded', function () {
             .rows()
             .every(function () {
 
-                const fila =
-                    this.node();
+                const fila = this.node();
 
                 if (!fila) {
                     return;
                 }
 
-                const boton =
-                    fila.querySelector(
-                        '.direccion-action-btn'
-                    );
+                const boton = fila.querySelector('.direccion-action-btn');
 
-                if (
-                    boton &&
-                    boton.dataset.id ===
-                    String(direccion.id)
+                if (boton && boton.dataset.id === String(direccion.id)
                 ) {
-                    const datos =
-                        this.data();
+                    const datos = this.data();
 
-                    datos[0] =
-                        escapeHtml(
-                            direccion.calle
-                        );
+                    datos[0] = escapeHtml(direccion.calle);
+                    datos[1] = escapeHtml(direccion.numero_exterior);
+                    datos[2] = escapeHtml(direccion.numero_interior || '—');
+                    datos[3] = escapeHtml(direccion.colonia);
+                    datos[4] = escapeHtml(direccion.codigo_postal);
+                    datos[5] = escapeHtml(direccion.municipio);
+                    datos[6] = escapeHtml(direccion.estado);
+                    datos[7] = escapeHtml(direccion.pais);
 
-                    datos[1] =
-                        escapeHtml(
-                            direccion.numero_exterior
-                        );
+                    const personasAsignadas = Number(direccion.personas_count || 0);
+                    datos[8] = personasAsignadas > 0 ? '<span class="badge text-bg-primary">' + personasAsignadas + '</span>' : '<span class="badge text-bg-secondary">0</span>';
+                    datos[9] = crearAccionesDireccion(direccion, urls);
 
-                    datos[2] =
-                        escapeHtml(
-                            direccion.numero_interior || '—'
-                        );
-
-                    datos[3] =
-                        escapeHtml(
-                            direccion.colonia
-                        );
-
-                    datos[4] =
-                        escapeHtml(
-                            direccion.codigo_postal
-                        );
-
-                    datos[5] =
-                        escapeHtml(
-                            direccion.municipio
-                        );
-
-                    datos[6] =
-                        escapeHtml(
-                            direccion.estado
-                        );
-
-                    datos[7] =
-                        escapeHtml(
-                            direccion.pais
-                        );
-
-                    const personasAsignadas =
-                        Number(
-                            direccion.personas_count || 0
-                        );
-
-                    datos[8] =
-                        personasAsignadas > 0
-                            ? '<span class="badge text-bg-primary">' +
-                            personasAsignadas +
-                            '</span>'
-                            : '<span class="badge text-bg-secondary">0</span>';
-
-                    datos[9] =
-                        crearAccionesDireccion(
-                            direccion,
-                            urls
-                        );
-
-                    this.data(
-                        datos
-                    );
+                    this.data(datos);
                 }
             });
 
         tablaDirecciones.draw(false);
-
         ajustarTodasLasFilas();
         tablaDirecciones.columns.adjust();
     }
@@ -478,49 +366,34 @@ document.addEventListener('DOMContentLoaded', function () {
             .rows()
             .every(function () {
 
-                const fila =
-                    this.node();
+                const fila = this.node();
 
                 if (!fila) {
                     return;
                 }
 
-                const boton =
-                    fila.querySelector(
-                        '.direccion-action-btn'
-                    );
+                const boton = fila.querySelector('.direccion-action-btn');
 
-                if (
-                    boton &&
-                    boton.dataset.id ===
-                    String(id)
-                ) {
+                if (boton && boton.dataset.id ===  String(id)) {
                     this.remove();
                 }
             });
 
         tablaDirecciones.draw(false);
-
         ajustarTodasLasFilas();
     }
 
     let datosOriginalesEditar = null;
 
-    const MENSAJE_SIN_CAMBIOS =
-        'No hubo cambios para actualizar.';
-
-    const modalEditar =
-        document.getElementById(
-            'modalEditarDireccion'
-        );
+    const MENSAJE_SIN_CAMBIOS = 'No hubo cambios para actualizar.';
+    const modalEditar = document.getElementById('modalEditarDireccion');
 
     if (modalEditar) {
         modalEditar.addEventListener(
             'show.bs.modal',
             function (event) {
 
-                const button =
-                    event.relatedTarget;
+                const button = event.relatedTarget;
 
                 datosOriginalesEditar = null;
 
@@ -539,82 +412,33 @@ document.addEventListener('DOMContentLoaded', function () {
                     pais: (button.dataset.pais || '').trim()
                 };
 
-                document.getElementById(
-                    'editar_id'
-                ).value =
-                    button.dataset.id;
-
-                document.getElementById(
-                    'editar_calle'
-                ).value =
-                    button.dataset.calle || '';
-
-                document.getElementById(
-                    'editar_numero_exterior'
-                ).value =
-                    button.dataset.numeroExterior || '';
-
-                document.getElementById(
-                    'editar_numero_interior'
-                ).value =
-                    button.dataset.numeroInterior || '';
-
-                document.getElementById(
-                    'editar_colonia'
-                ).value =
-                    button.dataset.colonia || '';
-
-                document.getElementById(
-                    'editar_codigo_postal'
-                ).value =
-                    button.dataset.codigoPostal || '';
-
-                document.getElementById(
-                    'editar_municipio'
-                ).value =
-                    button.dataset.municipio || '';
-
-                document.getElementById(
-                    'editar_estado'
-                ).value =
-                    button.dataset.estado || '';
-
-                document.getElementById(
-                    'editar_pais'
-                ).value =
-                    button.dataset.pais || '';
-
-                document.getElementById(
-                    'formEditarDireccion'
-                ).setAttribute(
-                    'action',
-                    button.dataset.url
-                );
+                document.getElementById('editar_id').value = button.dataset.id;
+                document.getElementById('editar_calle').value = button.dataset.calle || '';
+                document.getElementById('editar_numero_exterior').value = button.dataset.numeroExterior || '';
+                document.getElementById('editar_numero_interior').value = button.dataset.numeroInterior || '';
+                document.getElementById('editar_colonia').value = button.dataset.colonia || '';
+                document.getElementById('editar_codigo_postal').value = button.dataset.codigoPostal || '';
+                document.getElementById('editar_municipio').value = button.dataset.municipio || '';
+                document.getElementById('editar_estado').value = button.dataset.estado || '';
+                document.getElementById('editar_pais').value = button.dataset.pais || '';
+                document.getElementById('formEditarDireccion').setAttribute('action', button.dataset.url);
             }
         );
     }
 
-    const modalEliminar =
-        document.getElementById(
-            'modalEliminarDireccion'
-        );
+    const modalEliminar = document.getElementById('modalEliminarDireccion');
 
     if (modalEliminar) {
         modalEliminar.addEventListener(
             'show.bs.modal',
             function (event) {
-
-                const button =
-                    event.relatedTarget;
+                const button = event.relatedTarget;
 
                 if (!button) {
                     return;
                 }
 
-                const personasAsignadas =
-                    Number(
-                        button.dataset.personasCount || 0
-                    );
+                const personasAsignadas = Number(button.dataset.personasCount || 0);
 
                 if (personasAsignadas > 0) {
                     event.preventDefault();
@@ -637,127 +461,63 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                document.getElementById(
-                    'eliminar_id'
-                ).value =
-                    button.dataset.id;
-
-                document.getElementById(
-                    'eliminar_nombre'
-                ).textContent =
-                    button.dataset.name;
-
-                document.getElementById(
-                    'formEliminarDireccion'
-                ).setAttribute(
-                    'action',
-                    button.dataset.url
-                );
+                document.getElementById('eliminar_id').value = button.dataset.id;
+                document.getElementById('eliminar_nombre').textContent = button.dataset.name;
+                document.getElementById('formEliminarDireccion').setAttribute('action',button.dataset.url);
             }
         );
     }
 
-    function enviarFormulario(
-        form,
-        modal,
-        mensajePorDefecto
-    ) {
-        const botonSubmit =
-            form.querySelector(
-                'button[type="submit"]'
-            );
-
-        const textoOriginal =
-            botonSubmit?.innerHTML;
+    function enviarFormulario(form, modal, mensajePorDefecto) {
+        const botonSubmit = form.querySelector('button[type="submit"]');
+        const textoOriginal = botonSubmit?.innerHTML;
 
         if (botonSubmit) {
             botonSubmit.disabled = true;
-
-            botonSubmit.innerHTML =
-                '<span class="spinner-border spinner-border-sm me-2"></span>' +
-                'Guardando...';
+            botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
         }
 
-        const formData =
-            new FormData(form);
+        const formData = new FormData(form);
 
-        return peticion(
-            form.action,
-            'POST',
-            formData
-        )
+        return peticion(form.action,'POST', formData)
             .then((data) => {
-
                 cerrarModal(modal);
-
-                window.showToast(
-                    'success',
-                    data.mensaje ||
-                    mensajePorDefecto
-                );
-
+                window.showToast('success', data.mensaje || mensajePorDefecto);
                 return data;
             })
             .finally(() => {
-
                 if (botonSubmit) {
                     botonSubmit.disabled = false;
-
-                    botonSubmit.innerHTML =
-                        textoOriginal;
+                    botonSubmit.innerHTML = textoOriginal;
                 }
             });
     }
 
-    const formNuevaDireccion =
-        document.getElementById(
-            'formNuevaDireccion'
-        );
+    const formNuevaDireccion = document.getElementById('formNuevaDireccion');
 
     if (formNuevaDireccion) {
-        formNuevaDireccion.addEventListener(
-            'submit',
+        formNuevaDireccion.addEventListener('submit',
             function (event) {
 
                 event.preventDefault();
 
-                enviarFormulario(
-                    formNuevaDireccion,
-                    modalNuevaDireccion,
-                    'Dirección creada correctamente.'
-                )
+                enviarFormulario(formNuevaDireccion, modalNuevaDireccion, 'Dirección creada correctamente.')
                     .then((data) => {
-
-                        agregarDireccionATabla(
-                            data.direccion,
-                            data.urls
-                        );
-
+                        agregarDireccionATabla(data.direccion, data.urls);
                         formNuevaDireccion.reset();
+                        const pais = document.getElementById('pais');
 
-                        const pais =
-                            document.getElementById(
-                                'pais'
-                            );
-
-                        if (pais) {
-                            pais.value =
-                                'México';
-                        }
+                        if (pais) {pais.value = 'México';}
                     })
                     .catch(mostrarError);
             }
         );
     }
 
-    const formEditarDireccion =
-        document.getElementById(
-            'formEditarDireccion'
-        );
+    const formEditarDireccion = document.getElementById('formEditarDireccion');
 
     if (formEditarDireccion) {
-        formEditarDireccion.addEventListener(
-            'submit',
+        formEditarDireccion.addEventListener('submit',
             function (event) {
 
                 event.preventDefault();
@@ -774,54 +534,30 @@ document.addEventListener('DOMContentLoaded', function () {
                         'pais'
                     ];
 
-                const valoresActuales =
-                    {};
+                const valoresActuales = {};
 
                 campos.forEach(function (campo) {
 
-                    const input =
-                        document.getElementById(
-                            'editar_' + campo
-                        );
-
-                    valoresActuales[campo] =
-                        input
-                            ? input.value.trim()
-                            : '';
+                    const input = document.getElementById('editar_' + campo);
+                    valoresActuales[campo] = input ? input.value.trim() : '';
                 });
 
-                const sinCambios =
-                    datosOriginalesEditar &&
-                    campos.every(function (campo) {
-                        return (
-                            valoresActuales[campo] ===
-                            datosOriginalesEditar[campo]
-                        );
-                    });
+                const sinCambios = datosOriginalesEditar && campos.every(function (campo) {
+                    return (valoresActuales[campo] === datosOriginalesEditar[campo]);
+                });
 
                 if (sinCambios) {
-                    window.showToast(
-                        'info',
-                        MENSAJE_SIN_CAMBIOS
-                    );
-
+                    window.showToast('info', MENSAJE_SIN_CAMBIOS);
                     return;
                 }
 
-                enviarFormulario(
-                    formEditarDireccion,
-                    modalEditarDireccion,
-                    'Dirección actualizada correctamente.'
-                )
+                enviarFormulario(formEditarDireccion, modalEditarDireccion, 'Dirección actualizada correctamente.')
                     .then((data) => {
-
                         actualizarDireccionEnTabla(
                             data.direccion,
                             {
-                                update:
-                                    `/direcciones/${data.direccion.id}`,
-                                delete:
-                                    `/direcciones/${data.direccion.id}`,
+                                update: `/direcciones/${data.direccion.id}`,
+                                delete: `/direcciones/${data.direccion.id}`,
                             }
                         );
                     })
@@ -830,38 +566,20 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    const formEliminarDireccion =
-        document.getElementById(
-            'formEliminarDireccion'
-        );
+    const formEliminarDireccion = document.getElementById('formEliminarDireccion');
 
     if (formEliminarDireccion) {
-        formEliminarDireccion.addEventListener(
-            'submit',
+        formEliminarDireccion.addEventListener('submit',
             function (event) {
-
                 event.preventDefault();
-
-                const id =
-                    document.getElementById(
-                        'eliminar_id'
-                    ).value;
-
-                enviarFormulario(
-                    formEliminarDireccion,
-                    modalEliminarDireccion,
-                    'Dirección eliminada correctamente.'
-                )
+                const id = document.getElementById('eliminar_id').value;
+                enviarFormulario(formEliminarDireccion, modalEliminarDireccion, 'Dirección eliminada correctamente.')
                     .then((data) => {
-
-                        eliminarDireccionDeTabla(
-                            data.id || id
-                        );
+                        eliminarDireccionDeTabla(data.id || id);
                     })
                     .catch(mostrarError);
             }
         );
     }
-
     ajustarTodasLasFilas();
 });

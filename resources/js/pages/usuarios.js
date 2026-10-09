@@ -9,26 +9,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalPasswordUsuarioEl = document.getElementById('modalPasswordUsuario');
     const modalRolesUsuarioEl = document.getElementById('modalRolesUsuario');
     const modalEliminarUsuarioEl = document.getElementById('modalEliminarUsuario');
-
-    const modalNuevoUsuario = modalNuevoUsuarioEl
-        ? new bootstrap.Modal(modalNuevoUsuarioEl)
-        : null;
-
-    const modalEditarUsuario = modalEditarUsuarioEl
-        ? new bootstrap.Modal(modalEditarUsuarioEl)
-        : null;
-
-    const modalPasswordUsuario = modalPasswordUsuarioEl
-        ? new bootstrap.Modal(modalPasswordUsuarioEl)
-        : null;
-
-    const modalRolesUsuario = modalRolesUsuarioEl
-        ? new bootstrap.Modal(modalRolesUsuarioEl)
-        : null;
-
-    const modalEliminarUsuario = modalEliminarUsuarioEl
-        ? new bootstrap.Modal(modalEliminarUsuarioEl)
-        : null;
+    const modalNuevoUsuario = modalNuevoUsuarioEl ? new bootstrap.Modal(modalNuevoUsuarioEl) : null;
+    const modalEditarUsuario = modalEditarUsuarioEl ? new bootstrap.Modal(modalEditarUsuarioEl) : null;
+    const modalPasswordUsuario = modalPasswordUsuarioEl ? new bootstrap.Modal(modalPasswordUsuarioEl) : null;
+    const modalRolesUsuario = modalRolesUsuarioEl ? new bootstrap.Modal(modalRolesUsuarioEl) : null;
+    const modalEliminarUsuario = modalEliminarUsuarioEl ? new bootstrap.Modal(modalEliminarUsuarioEl) : null;
 
     function peticion(url, method, body = null) {
         const opciones = {
@@ -51,28 +36,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!response.ok || data.success === false) {
                 if (data.errors) {
-                    const primerError =
-                        Object.values(data.errors).flat()[0];
-
-                    const error = new Error(
-                        primerError ||
-                        data.mensaje ||
-                        data.message ||
-                        'Ocurrió un error al procesar la solicitud.'
-                    );
-
+                    const primerError = Object.values(data.errors).flat()[0];
+                    const error = new Error(primerError || data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
                     error.errors = data.errors;
-
                     throw error;
                 }
-
-                throw new Error(
-                    data.mensaje ||
-                    data.message ||
-                    'Ocurrió un error al procesar la solicitud.'
+                throw new Error(data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.'
                 );
             }
-
             return data;
         });
     }
@@ -84,14 +55,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function mostrarError(error) {
-        window.showToast(
-            'error',
-            error.message
-        );
+        window.showToast('error', error.message);
     }
 
-    // Marca cada campo con el error que devolvió el servidor; si no hay
-    // campo para el error, lo muestra como aviso.
     function mostrarErroresForm(form, error) {
         if (!error || !error.errors || !form) {
             mostrarError(error);
@@ -102,24 +68,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         Object.keys(error.errors).forEach(function (campo) {
             const nombre = campo.split('.')[0];
-
             const input = form.querySelector('[name="' + nombre + '"]');
 
             if (!input || input.type === 'checkbox') {
                 return;
             }
-
             input.classList.add('is-invalid');
-
             const aviso = input.parentElement.querySelector('.invalid-feedback');
 
             if (aviso) {
                 aviso.textContent = error.errors[campo][0];
             }
-
             primero = primero || input;
         });
-
         if (primero) {
             primero.focus();
         } else {
@@ -131,11 +92,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!form) {
             return;
         }
-
         form.querySelectorAll('.is-invalid').forEach(function (input) {
             input.classList.remove('is-invalid');
         });
-
         form.querySelectorAll('.invalid-feedback').forEach(function (aviso) {
             if (!aviso.id || !/password/.test(aviso.id)) {
                 aviso.textContent = '';
@@ -150,10 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const cuerpo = getComputedStyle(document.body);
         const referencia = document.querySelector('.modal-content');
-
-        let fondo = referencia
-            ? getComputedStyle(referencia).backgroundColor
-            : cuerpo.backgroundColor;
+        let fondo = referencia ? getComputedStyle(referencia).backgroundColor : cuerpo.backgroundColor;
 
         if (!fondo || fondo === 'transparent' || fondo === 'rgba(0, 0, 0, 0)') {
             fondo = cuerpo.backgroundColor;
@@ -204,28 +160,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Política de contraseña de Configuración > Seguridad (la imprime index.blade.php)
     const politicaPassword = window.politicaPassword || {};
     const passwordMinimo = parseInt(politicaPassword.min, 10) || 8;
     const passwordComplejo = !!politicaPassword.complex;
 
     function mensajePassword(valor) {
         if (valor.length < passwordMinimo) {
-            return 'La contraseña debe tener al menos ' +
-                passwordMinimo + ' caracteres.';
+            return 'La contraseña debe tener al menos ' + passwordMinimo + ' caracteres.';
         }
 
-        if (
-            passwordComplejo &&
-            !(
-                /\p{Ll}/u.test(valor) &&
-                /\p{Lu}/u.test(valor) &&
-                /\d/.test(valor)
-            )
-        ) {
+        if (passwordComplejo && !(/\p{Ll}/u.test(valor) && /\p{Lu}/u.test(valor) && /\d/.test(valor))) {
             return 'La contraseña debe incluir al menos una mayúscula, una minúscula y un número.';
         }
-
         return '';
     }
 
@@ -233,7 +179,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!input) {
             return;
         }
-
         input.classList.remove('is-valid');
         input.classList.toggle('is-invalid', !!texto);
 
@@ -252,7 +197,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Enlaza un par contraseña / confirmación con la política
     function enlazarPassword(idPassword, idConfirmacion, idErrorPassword, idErrorConfirmacion) {
         const password = document.getElementById(idPassword);
         const confirmacion = document.getElementById(idConfirmacion);
@@ -273,11 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 limpiarCampo(confirmacion, errorConfirmacion);
                 confirmacion.classList.add('is-valid');
             } else {
-                errorCampo(
-                    confirmacion,
-                    errorConfirmacion,
-                    'Las contraseñas no coinciden.'
-                );
+                errorCampo(confirmacion, errorConfirmacion, 'Las contraseñas no coinciden.');
             }
         }
 
@@ -313,33 +253,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         return {
-            // true si todo está bien; si no, marca el error y enfoca el campo
             validar: function () {
-                const mensaje = password.value === ''
-                    ? 'La contraseña es obligatoria.'
-                    : mensajePassword(password.value);
+                const mensaje = password.value === '' ? 'La contraseña es obligatoria.' : mensajePassword(password.value);
 
                 if (mensaje) {
                     errorCampo(password, errorPassword, mensaje);
                     password.focus();
-
                     return false;
                 }
 
                 if (confirmacion && confirmacion.value !== password.value) {
-                    errorCampo(
-                        confirmacion,
-                        errorConfirmacion,
-                        'Las contraseñas no coinciden.'
-                    );
+                    errorCampo(confirmacion, errorConfirmacion, 'Las contraseñas no coinciden.');
                     confirmacion.focus();
-
                     return false;
                 }
-
                 return true;
             },
-
             limpiar: function () {
                 limpiarCampo(password, errorPassword);
                 limpiarCampo(confirmacion, errorConfirmacion);
@@ -347,19 +276,8 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    const politicaNuevo = enlazarPassword(
-        'password',
-        'password_confirmation',
-        'password-error',
-        'password-confirmation-error'
-    );
-
-    const politicaCambio = enlazarPassword(
-        'password_nueva',
-        'password_nueva_confirmation',
-        'password-nueva-error',
-        'password-nueva-confirmation-error'
-    );
+    const politicaNuevo = enlazarPassword('password', 'password_confirmation', 'password-error', 'password-confirmation-error');
+    const politicaCambio = enlazarPassword('password_nueva', 'password_nueva_confirmation', 'password-nueva-error','password-nueva-confirmation-error');
 
     if (modalNuevoUsuarioEl && politicaNuevo) {
         modalNuevoUsuarioEl.addEventListener(
@@ -376,12 +294,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function escapeHtml(valor) {
-        const div =
-            document.createElement('div');
-
-        div.textContent =
-            valor ?? '';
-
+        const div = document.createElement('div');
+        div.textContent = valor ?? '';
         return div.innerHTML;
     }
 
@@ -394,16 +308,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function crearAccionesUsuario(usuario, urls) {
-        let html =
-            '<div class="usuario-actions">';
-
-        const acciones =
-            window.accionesUsuarios || [];
-
+        let html = '<div class="usuario-actions">';
+        const acciones = window.accionesUsuarios || [];
         acciones.forEach(function (accion) {
 
             if (accion.slug === 'usuarios.editar') {
-
                 html +=
                     '<button type="button" ' +
                     'class="btn btn-sm btn-outline-primary usuario-action-btn" ' +
@@ -424,9 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     '</button>';
 
             }
-
             else if (accion.slug === 'usuarios.toggle') {
-
                 html +=
                     '<button type="button" ' +
                     'class="usuario-toggle-btn btn-estado-usuario ' +
@@ -443,9 +350,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     '</span>' +
                     '</button>';
             }
-
             else if (accion.slug === 'usuarios.password') {
-
                 html +=
                     '<button type="button" ' +
                     'class="btn btn-sm btn-outline-warning usuario-action-btn" ' +
@@ -458,15 +363,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     (accion.icono || '<i class="fa-solid fa-key"></i>') +
                     '</button>';
             }
-
             else if (accion.slug === 'usuarios.roles') {
-
-                const roles =
-                    usuario.roles
-                        ? usuario.roles
-                            .map((rol) => rol.id)
-                            .join(',')
-                        : '';
+                const roles = usuario.roles ? usuario.roles.map((rol) => rol.id).join(',') : '';
 
                 html +=
                     '<button type="button" ' +
@@ -481,9 +379,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     (accion.icono || '<i class="fa-solid fa-user-shield"></i>') +
                     '</button>';
             }
-
             else if (accion.slug === 'usuarios.eliminar') {
-
                 html +=
                     '<button type="button" ' +
                     'class="btn btn-sm btn-outline-danger usuario-action-btn" ' +
@@ -496,27 +392,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     (accion.icono || '<i class="fa-solid fa-trash"></i>') +
                     '</button>';
             }
-
         });
-
-        html +=
-            '</div>';
-
+        html += '</div>';
         return html;
     }
 
     function formatearFecha(valor) {
-        const fecha =
-            valor
-                ? new Date(valor)
-                : null;
+        const fecha = valor ? new Date(valor) : null;
 
         if (!fecha || isNaN(fecha.getTime())) {
             return '';
         }
-
         const dos = (n) => String(n).padStart(2, '0');
-
         return dos(fecha.getDate()) + '/' +
             dos(fecha.getMonth() + 1) + '/' +
             fecha.getFullYear() + ' ' +
@@ -532,7 +419,6 @@ document.addEventListener('DOMContentLoaded', function () {
         ].filter(Boolean).join(' ').trim() || '—';
     }
 
-    // Las 6 columnas de la tabla, en HTML
     function celdasUsuario(usuario, urls) {
         const urlsUsuario =
             urls || {
@@ -547,9 +433,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '<span class="fw-semibold">' + escapeHtml(usuario.username) + '</span>',
             escapeHtml(nombreCompletoUsuario(usuario)),
             escapeHtml(usuario.email || '—'),
-            usuario.activo
-                ? '<span class="badge rounded-pill text-bg-success">Activo</span>'
-                : '<span class="badge rounded-pill text-bg-secondary">Inactivo</span>',
+            usuario.activo ? '<span class="badge rounded-pill text-bg-success">Activo</span>' : '<span class="badge rounded-pill text-bg-secondary">Inactivo</span>',
             '<span class="text-secondary">' + formatearFecha(usuario.created_at) + '</span>',
             crearAccionesUsuario(usuario, urlsUsuario),
         ];
@@ -613,11 +497,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!tablaUsuarios) {
             return;
         }
-
-        tablaUsuarios.row
-            .add(celdasUsuario(usuario, urls))
-            .draw(false);
-
+        tablaUsuarios.row.add(celdasUsuario(usuario, urls)).draw(false);
         tablaUsuarios.columns.adjust();
     }
 
@@ -626,33 +506,19 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        tablaUsuarios
-            .rows()
+        tablaUsuarios.rows()
             .every(function () {
-
-                const fila =
-                    this.node();
+                const fila = this.node();
 
                 if (!fila) {
                     return;
                 }
+                const boton = fila.querySelector('.usuario-action-btn');
 
-                const boton =
-                    fila.querySelector(
-                        '.usuario-action-btn'
-                    );
-
-                if (
-                    boton &&
-                    boton.dataset.id ===
-                    String(usuario.id)
-                ) {
-                    this.data(
-                        celdasUsuario(usuario, urls)
-                    );
+                if (boton && boton.dataset.id === String(usuario.id)) {
+                    this.data(celdasUsuario(usuario, urls));
                 }
             });
-
         tablaUsuarios.draw(false);
         tablaUsuarios.columns.adjust();
     }
@@ -662,42 +528,21 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        tablaUsuarios
-            .rows()
+        tablaUsuarios.rows()
             .every(function () {
-
-                const fila =
-                    this.node();
+                const fila = this.node();
 
                 if (!fila) {
                     return;
                 }
+                const boton = fila.querySelector('.usuario-action-btn');
 
-                const boton =
-                    fila.querySelector(
-                        '.usuario-action-btn'
-                    );
-
-                if (
-                    boton &&
-                    boton.dataset.id ===
-                    String(usuario.id)
-                ) {
-                    const roles =
-                        usuario.roles
-                            ? usuario.roles
-                                .map((rol) => rol.id)
-                                .join(',')
-                            : '';
-
-                    const botonRoles =
-                        fila.querySelector(
-                            '[data-bs-target="#modalRolesUsuario"]'
-                        );
+                if (boton && boton.dataset.id === String(usuario.id)) {
+                    const roles = usuario.roles ? usuario.roles.map((rol) => rol.id).join(',') : '';
+                    const botonRoles = fila.querySelector('[data-bs-target="#modalRolesUsuario"]');
 
                     if (botonRoles) {
-                        botonRoles.dataset.roles =
-                            roles;
+                        botonRoles.dataset.roles = roles;
                     }
                 }
             });
@@ -708,52 +553,31 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        tablaUsuarios
-            .rows()
+        tablaUsuarios.rows()
             .every(function () {
-
-                const fila =
-                    this.node();
+                const fila = this.node();
 
                 if (!fila) {
                     return;
                 }
+                const boton = fila.querySelector('.usuario-action-btn');
 
-                const boton =
-                    fila.querySelector(
-                        '.usuario-action-btn'
-                    );
-
-                if (
-                    boton &&
-                    boton.dataset.id ===
-                    String(id)
-                ) {
+                if (boton && boton.dataset.id === String(id)) {
                     this.remove();
                 }
             });
-
         tablaUsuarios.draw(false);
     }
 
-    // Valores con los que se abrió cada modal, para detectar si hubo cambios
     let datosOriginalesEditar = null;
     let rolesOriginales = null;
-
     const MENSAJE_SIN_CAMBIOS = 'No hubo cambios para actualizar.';
-
-    const modalEditar =
-        document.getElementById(
-            'modalEditarUsuario'
-        );
+    const modalEditar = document.getElementById('modalEditarUsuario');
 
     if (modalEditar) {
-        modalEditar.addEventListener(
-            'show.bs.modal',
+        modalEditar.addEventListener('show.bs.modal',
             function (event) {
-                const button =
-                    event.relatedTarget;
-
+                const button = event.relatedTarget;
                 datosOriginalesEditar = null;
 
                 if (!button) {
@@ -761,7 +585,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 const d = button.dataset;
-
                 datosOriginalesEditar = {
                     username: (d.username || '').trim(),
                     nombre: (d.nombre || '').trim(),
@@ -783,228 +606,108 @@ document.addEventListener('DOMContentLoaded', function () {
                 limpiarErroresForm(
                     document.getElementById('formEditarUsuario')
                 );
-
-                document.getElementById(
-                    'formEditarUsuario'
-                ).setAttribute(
-                    'action',
-                    button.dataset.url
-                );
+                document.getElementById('formEditarUsuario').setAttribute( 'action',  button.dataset.url);
             }
         );
     }
 
-    const modalPassword =
-        document.getElementById(
-            'modalPasswordUsuario'
-        );
+    const modalPassword = document.getElementById('modalPasswordUsuario');
 
     if (modalPassword) {
-        modalPassword.addEventListener(
-            'show.bs.modal',
+        modalPassword.addEventListener('show.bs.modal',
             function (event) {
-                const button =
-                    event.relatedTarget;
+                const button = event.relatedTarget;
 
                 if (!button) {
                     return;
                 }
-
-                document.getElementById(
-                    'password_usuario_id'
-                ).value =
-                    button.dataset.id;
-
-                document.getElementById(
-                    'password_usuario_nombre'
-                ).textContent =
-                    button.dataset.name;
-
-                document.getElementById(
-                    'password_nueva'
-                ).value = '';
-
-                document.getElementById(
-                    'password_nueva_confirmation'
-                ).value = '';
-
-                document.getElementById(
-                    'formPasswordUsuario'
-                ).setAttribute(
-                    'action',
-                    button.dataset.url
-                );
+                document.getElementById('password_usuario_id').value = button.dataset.id;
+                document.getElementById('password_usuario_nombre').textContent = button.dataset.name;
+                document.getElementById('password_nueva').value = '';
+                document.getElementById('password_nueva_confirmation').value = '';
+                document.getElementById('formPasswordUsuario').setAttribute('action', button.dataset.url);
             }
         );
     }
 
-    const modalRoles =
-        document.getElementById(
-            'modalRolesUsuario'
-        );
+    const modalRoles = document.getElementById('modalRolesUsuario');
 
     if (modalRoles) {
-        modalRoles.addEventListener(
-            'show.bs.modal',
+        modalRoles.addEventListener('show.bs.modal',
             function (event) {
-                const button =
-                    event.relatedTarget;
-
+                const button = event.relatedTarget;
                 rolesOriginales = null;
 
                 if (!button) {
                     return;
                 }
+                const roles = button.dataset.roles ? button.dataset.roles.split(',') : [];
+                rolesOriginales = roles.filter(Boolean).sort().join(',');
 
-                const roles =
-                    button.dataset.roles
-                        ? button.dataset.roles.split(',')
-                        : [];
-
-                rolesOriginales =
-                    roles
-                        .filter(Boolean)
-                        .sort()
-                        .join(',');
-
-                document.getElementById(
-                    'roles_usuario_id'
-                ).value =
-                    button.dataset.id;
-
-                document.getElementById(
-                    'roles_usuario_nombre'
-                ).textContent =
-                    button.dataset.name;
-
-                document
-                    .querySelectorAll(
-                        '.rol-usuario-checkbox'
-                    )
+                document.getElementById('roles_usuario_id').value = button.dataset.id;
+                document.getElementById('roles_usuario_nombre').textContent = button.dataset.name;
+                document.querySelectorAll('.rol-usuario-checkbox')
                     .forEach(function (checkbox) {
-                        checkbox.checked =
-                            roles.includes(
-                                checkbox.value
-                            );
+                        checkbox.checked = roles.includes(checkbox.value);
                     });
-
-                document.getElementById(
-                    'formRolesUsuario'
-                ).setAttribute(
-                    'action',
-                    button.dataset.url
-                );
+                document.getElementById('formRolesUsuario').setAttribute('action', button.dataset.url);
             }
         );
     }
 
-    const modalEliminar =
-        document.getElementById(
-            'modalEliminarUsuario'
-        );
+    const modalEliminar = document.getElementById('modalEliminarUsuario');
 
     if (modalEliminar) {
-        modalEliminar.addEventListener(
-            'show.bs.modal',
+        modalEliminar.addEventListener('show.bs.modal',
             function (event) {
-                const button =
-                    event.relatedTarget;
+                const button = event.relatedTarget;
 
                 if (!button) {
                     return;
                 }
-
-                document.getElementById(
-                    'eliminar_id'
-                ).value =
-                    button.dataset.id;
-
-                document.getElementById(
-                    'eliminar_nombre'
-                ).textContent =
-                    button.dataset.name;
-
-                document.getElementById(
-                    'formEliminarUsuario'
-                ).setAttribute(
-                    'action',
-                    button.dataset.url
-                );
+                document.getElementById('eliminar_id').value = button.dataset.id;
+                document.getElementById('eliminar_nombre').textContent = button.dataset.name;
+                document.getElementById('formEliminarUsuario').setAttribute('action', button.dataset.url);
             }
         );
     }
 
-    function enviarFormulario(
-        form,
-        modal,
-        mensajePorDefecto
-    ) {
-        const botonSubmit =
-            form.querySelector(
-                'button[type="submit"]'
-            );
-
-        const textoOriginal =
-            botonSubmit?.innerHTML;
+    function enviarFormulario(form, modal, mensajePorDefecto) {
+        const botonSubmit = form.querySelector('button[type="submit"]');
+        const textoOriginal = botonSubmit?.innerHTML;
 
         if (botonSubmit) {
             botonSubmit.disabled = true;
-
-            botonSubmit.innerHTML =
-                '<span class="spinner-border spinner-border-sm me-2"></span>' +
-                'Guardando...';
+            botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
         }
+        const formData = new FormData(form);
 
-        const formData =
-            new FormData(form);
-
-        return peticion(
-            form.action,
-            'POST',
-            formData
-        )
+        return peticion(form.action, 'POST', formData)
             .then((data) => {
                 cerrarModal(modal);
-
-                window.showToast(
-                    'success',
-                    data.mensaje ||
-                    mensajePorDefecto
-                );
-
+                window.showToast('success', data.mensaje || mensajePorDefecto);
                 return data;
             })
             .finally(() => {
                 if (botonSubmit) {
                     botonSubmit.disabled = false;
-
-                    botonSubmit.innerHTML =
-                        textoOriginal;
+                    botonSubmit.innerHTML = textoOriginal;
                 }
             });
     }
 
-    const formNuevoUsuario =
-        document.getElementById(
-            'formNuevoUsuario'
-        );
+    const formNuevoUsuario = document.getElementById('formNuevoUsuario');
 
     if (formNuevoUsuario) {
-        formNuevoUsuario.addEventListener(
-            'submit',
+        formNuevoUsuario.addEventListener('submit',
             function (event) {
                 event.preventDefault();
-
                 limpiarErroresForm(formNuevoUsuario);
 
                 if (politicaNuevo && !politicaNuevo.validar()) {
                     return;
                 }
-
-                enviarFormulario(
-                    formNuevoUsuario,
-                    modalNuevoUsuario,
-                    'Usuario creado correctamente.'
+                enviarFormulario(formNuevoUsuario, modalNuevoUsuario, 'Usuario creado correctamente.'
                 )
                     .then((data) => {
                         agregarUsuarioATabla(
@@ -1021,20 +724,13 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    const formEditarUsuario =
-        document.getElementById(
-            'formEditarUsuario'
-        );
+    const formEditarUsuario = document.getElementById('formEditarUsuario');
 
     if (formEditarUsuario) {
-        formEditarUsuario.addEventListener(
-            'submit',
+        formEditarUsuario.addEventListener('submit',
             function (event) {
                 event.preventDefault();
-
-                const valor = (id) =>
-                    document.getElementById(id).value.trim();
-
+                const valor = (id) => document.getElementById(id).value.trim();
                 const actuales = {
                     username: valor('editar_username'),
                     nombre: valor('editar_nombre'),
@@ -1044,32 +740,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     email: valor('editar_email'),
                 };
 
-                if (
-                    datosOriginalesEditar &&
-                    Object.keys(actuales).every(function (campo) {
+                if (datosOriginalesEditar && Object.keys(actuales).every(function (campo) {
                         return actuales[campo] === datosOriginalesEditar[campo];
                     })
                 ) {
-                    window.showToast(
-                        'info',
-                        MENSAJE_SIN_CAMBIOS
-                    );
-
+                    window.showToast('info', MENSAJE_SIN_CAMBIOS);
                     return;
                 }
 
                 limpiarErroresForm(formEditarUsuario);
-
-                enviarFormulario(
-                    formEditarUsuario,
-                    modalEditarUsuario,
-                    'Datos del usuario actualizados correctamente.'
-                )
+                enviarFormulario(formEditarUsuario, modalEditarUsuario, 'Datos del usuario actualizados correctamente.')
                     .then((data) => {
-                        actualizarUsuarioEnTabla(
-                            data.usuario,
-                            data.urls
-                        );
+                        actualizarUsuarioEnTabla(data.usuario, data.urls);
                     })
                     .catch(function (error) {
                         mostrarErroresForm(formEditarUsuario, error);
@@ -1078,108 +760,58 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    const formPasswordUsuario =
-        document.getElementById(
-            'formPasswordUsuario'
-        );
+    const formPasswordUsuario = document.getElementById('formPasswordUsuario');
 
     if (formPasswordUsuario) {
-        formPasswordUsuario.addEventListener(
-            'submit',
+        formPasswordUsuario.addEventListener('submit',
             function (event) {
                 event.preventDefault();
-
                 if (politicaCambio && !politicaCambio.validar()) {
                     return;
                 }
-
-                enviarFormulario(
-                    formPasswordUsuario,
-                    modalPasswordUsuario,
-                    'Contraseña actualizada correctamente.'
-                ).catch(mostrarError);
+                enviarFormulario(formPasswordUsuario, modalPasswordUsuario, 'Contraseña actualizada correctamente.')
+                .catch(mostrarError);
             }
         );
     }
 
-    const formRolesUsuario =
-        document.getElementById(
-            'formRolesUsuario'
-        );
+    const formRolesUsuario = document.getElementById('formRolesUsuario');
 
     if (formRolesUsuario) {
-        formRolesUsuario.addEventListener(
-            'submit',
+        formRolesUsuario.addEventListener('submit',
             function (event) {
                 event.preventDefault();
-
                 const rolesSeleccionados =
-                    Array.from(
-                        formRolesUsuario.querySelectorAll(
-                            '.rol-usuario-checkbox:checked'
-                        )
-                    )
+                    Array.from(formRolesUsuario.querySelectorAll('.rol-usuario-checkbox:checked'))
                         .map(function (checkbox) {
                             return checkbox.value;
                         })
                         .sort()
                         .join(',');
 
-                if (
-                    rolesOriginales !== null &&
-                    rolesSeleccionados === rolesOriginales
-                ) {
-                    window.showToast(
-                        'info',
-                        MENSAJE_SIN_CAMBIOS
-                    );
-
+                if (rolesOriginales !== null && rolesSeleccionados === rolesOriginales) {
+                    window.showToast('info', MENSAJE_SIN_CAMBIOS);
                     return;
                 }
-
-                enviarFormulario(
-                    formRolesUsuario,
-                    modalRolesUsuario,
-                    'Roles del usuario actualizados correctamente.'
-                )
+                enviarFormulario(formRolesUsuario, modalRolesUsuario, 'Roles del usuario actualizados correctamente.')
                     .then((data) => {
-                        actualizarRolesEnTabla(
-                            data.usuario
-                        );
+                        actualizarRolesEnTabla(data.usuario);
                     })
                     .catch(mostrarError);
             }
         );
     }
 
-    const formEliminarUsuario =
-        document.getElementById(
-            'formEliminarUsuario'
-        );
+    const formEliminarUsuario = document.getElementById('formEliminarUsuario');
 
     if (formEliminarUsuario) {
-        formEliminarUsuario.addEventListener(
-            'submit',
+        formEliminarUsuario.addEventListener('submit',
             function (event) {
                 event.preventDefault();
-
-                const id =
-                    document.getElementById(
-                        'formEliminarUsuario'
-                    )
-                        .querySelector(
-                            'input[name="id"]'
-                        )?.value;
-
-                enviarFormulario(
-                    formEliminarUsuario,
-                    modalEliminarUsuario,
-                    'Usuario eliminado correctamente.'
-                )
+                const id = document.getElementById('formEliminarUsuario').querySelector('input[name="id"]')?.value;
+                enviarFormulario(formEliminarUsuario, modalEliminarUsuario, 'Usuario eliminado correctamente.')
                     .then((data) => {
-                        eliminarUsuarioDeTabla(
-                            data.id || id
-                        );
+                        eliminarUsuarioDeTabla(data.id || id);
                     })
                     .catch(mostrarError);
             }
@@ -1190,16 +822,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!form) {
             return;
         }
-
         form.addEventListener('input', function (event) {
             const input = event.target;
 
             if (!input.classList.contains('is-invalid') || /password/.test(input.name)) {
                 return;
             }
-
             input.classList.remove('is-invalid');
-
             const aviso = input.parentElement.querySelector('.invalid-feedback');
 
             if (aviso) {
@@ -1214,7 +843,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Activar / desactivar usuario
     if (tablaUsuarios) {
         document.querySelector('#tablaUsuarios').addEventListener('click', function (event) {
             const boton = event.target.closest('.btn-estado-usuario');
@@ -1222,12 +850,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!boton || boton.disabled) {
                 return;
             }
-
             const activar = boton.dataset.activo !== '1';
-
             const ejecutar = function () {
                 boton.disabled = true;
-
                 const cuerpo = new FormData();
                 cuerpo.append('_method', 'PUT');
                 cuerpo.append('activo', activar ? '1' : '0');
@@ -1235,7 +860,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 peticion(boton.dataset.url, 'POST', cuerpo)
                     .then(function (data) {
                         window.showToast('success', data.mensaje);
-
                         actualizarUsuarioEnTabla(data.usuario, data.urls);
                     })
                     .catch(function (error) {

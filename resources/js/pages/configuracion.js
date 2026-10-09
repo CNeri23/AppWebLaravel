@@ -18,17 +18,8 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    const estilosClaros = [
-        'white',
-        'mist',
-        'sky',
-    ];
-
-    const estilosOscuros = [
-        'graphite',
-        'charcoal',
-        'black',
-    ];
+    const estilosClaros = ['white', 'mist', 'sky',];
+    const estilosOscuros = ['graphite', 'charcoal', 'black',];
 
     let guardando = false;
     let guardadoPendiente = false;
@@ -45,9 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (body instanceof FormData) {
             opciones.body = body;
         } else if (body) {
-            opciones.headers['Content-Type'] =
-                'application/json';
-
+            opciones.headers['Content-Type'] = 'application/json';
             opciones.body = body;
         }
 
@@ -60,34 +49,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     const primerError =
                         Object.values(data.errors).flat()[0];
 
-                    throw new Error(
-                        primerError ||
-                        data.mensaje ||
-                        data.message ||
-                        'Ocurrió un error al procesar la solicitud.'
+                    throw new Error(primerError || data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.'
                     );
                 }
-
-                throw new Error(
-                    data.mensaje ||
-                    data.message ||
-                    'Ocurrió un error al procesar la solicitud.'
+                throw new Error(data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.'
                 );
             }
-
             return data;
         });
     }
 
     function obtenerModoActual() {
-        const tema =
-            document.documentElement.getAttribute(
-                'data-bs-theme'
-            );
-
-        return tema === 'dark'
-            ? 'dark'
-            : 'light';
+        const tema = document.documentElement.getAttribute('data-bs-theme');
+        return tema === 'dark' ? 'dark' : 'light';
     }
 
     function obtenerDatosFormulario(nombreCampo = null) {
@@ -96,151 +70,87 @@ document.addEventListener('DOMContentLoaded', function () {
         datos.append('_method', 'PUT');
 
         if (nombreCampo) {
-            const campo =
-                formulario.querySelector(
-                    `[name="${nombreCampo}"]:checked`
-                ) ||
-                formulario.querySelector(
-                    `[name="${nombreCampo}"]`
-                );
+            const campo = formulario.querySelector(`[name="${nombreCampo}"]:checked`) || formulario.querySelector(`[name="${nombreCampo}"]`);
 
             if (campo) {
-                if (
-                    campo.type === 'radio' ||
-                    campo.type === 'checkbox'
-                ) {
+                if (campo.type === 'radio' || campo.type === 'checkbox') {
                     if (campo.checked) {
-                        datos.append(
-                            campo.name,
-                            campo.type === 'checkbox'
-                                ? (campo.checked ? '1' : '0')
-                                : campo.value
-                        );
+                        datos.append(campo.name, campo.type === 'checkbox' ? (campo.checked ? '1' : '0') : campo.value);
                     }
                 } else if (campo.type === 'file') {
                     if (campo.files[0]) {
-                        datos.append(
-                            campo.name,
-                            campo.files[0]
-                        );
+                        datos.append(campo.name, campo.files[0]);
                     }
                 } else {
-                    datos.append(
-                        campo.name,
-                        campo.value
-                    );
+                    datos.append(campo.name, campo.value);
                 }
             }
-
             return datos;
         }
-
         return new FormData(formulario);
     }
 
     function aplicarTemaInmediatamente(estilo) {
-        const html =
-            document.documentElement;
+        const html = document.documentElement;
 
         if (estilosClaros.includes(estilo)) {
-            html.setAttribute(
-                'data-light-theme-style',
-                estilo
-            );
-
+            html.setAttribute('data-light-theme-style', estilo);
             return;
         }
 
         if (estilosOscuros.includes(estilo)) {
-            html.setAttribute(
-                'data-dark-theme-style',
-                estilo
-            );
+            html.setAttribute('data-dark-theme-style', estilo);
         }
     }
 
     function actualizarSeleccionTema(estilo) {
         if (estilosClaros.includes(estilo)) {
-            const estiloClaro =
-                formulario.querySelector(
-                    `input[name="light_theme_style"][value="${estilo}"]`
-                );
+            const estiloClaro = formulario.querySelector(`input[name="light_theme_style"][value="${estilo}"]`);
 
             if (estiloClaro) {
                 estiloClaro.checked = true;
             }
-
-            aplicarTemaInmediatamente(
-                estilo
-            );
-
+            aplicarTemaInmediatamente(estilo);
             return;
         }
 
         if (estilosOscuros.includes(estilo)) {
-            const estiloOscuro =
-                formulario.querySelector(
-                    `input[name="dark_theme_style"][value="${estilo}"]`
-                );
+            const estiloOscuro = formulario.querySelector(`input[name="dark_theme_style"][value="${estilo}"]`);
 
             if (estiloOscuro) {
                 estiloOscuro.checked = true;
             }
-
-            aplicarTemaInmediatamente(
-                estilo
-            );
+            aplicarTemaInmediatamente(estilo);
         }
     }
 
     function guardarConfiguracion(nombreCampo = null) {
         if (guardando) {
             guardadoPendiente = nombreCampo;
-
             return;
         }
 
         guardando = true;
 
-        peticion(
-            formulario.action ||
-            window.location.href,
-            'POST',
-            obtenerDatosFormulario(nombreCampo)
-        )
+        peticion(formulario.action || window.location.href, 'POST', obtenerDatosFormulario(nombreCampo))
             .then((data) => {
-                if (
-                    data.settings &&
-                    typeof window.aplicarConfiguracionGlobal === 'function'
+                if (data.settings && typeof window.aplicarConfiguracionGlobal === 'function'
                 ) {
-                    window.aplicarConfiguracionGlobal(
-                        data.settings
-                    );
+                    window.aplicarConfiguracionGlobal(data.settings);
                 }
-
-                window.showToast(
-                    'success',
-                    data.mensaje
+                window.showToast('success', data.mensaje
                 );
             })
             .catch((error) => {
-                window.showToast(
-                    'error',
-                    error.message
-                );
+                window.showToast('error', error.message);
             })
             .finally(() => {
                 guardando = false;
 
                 if (guardadoPendiente) {
-                    const campoPendiente =
-                        guardadoPendiente;
-
+                    const campoPendiente = guardadoPendiente;
                     guardadoPendiente = false;
-
-                    guardarConfiguracion(
-                        campoPendiente
-                    );
+                    guardarConfiguracion(campoPendiente);
                 }
             });
     }
@@ -254,19 +164,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         lector.onload = function (evento) {
             logoPreview.innerHTML = '';
-
-            const imagen =
-                document.createElement('img');
-
-            imagen.src =
-                evento.target.result;
-
-            imagen.alt =
-                'Vista previa del logotipo';
-
+            const imagen = document.createElement('img');
+            imagen.src = evento.target.result;
+            imagen.alt = 'Vista previa del logotipo';
             logoPreview.appendChild(imagen);
         };
-
         lector.readAsDataURL(archivo);
     }
 
@@ -274,9 +176,7 @@ document.addEventListener('DOMContentLoaded', function () {
         logoInput.addEventListener('change', function () {
             const archivo = this.files[0];
 
-            mostrarNombreLogo(
-                archivo ? archivo.name : TEXTO_SIN_ARCHIVO
-            );
+            mostrarNombreLogo(archivo ? archivo.name : TEXTO_SIN_ARCHIVO);
 
             if (!archivo) {
                 return;
@@ -286,11 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.value = '';
                 mostrarNombreLogo(TEXTO_SIN_ARCHIVO);
 
-                window.showToast(
-                    'error',
-                    'El archivo seleccionado no es una imagen válida.'
-                );
-
+                window.showToast('error', 'El archivo seleccionado no es una imagen válida.');
                 return;
             }
 
@@ -298,76 +194,46 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.value = '';
                 mostrarNombreLogo(TEXTO_SIN_ARCHIVO);
 
-                window.showToast(
-                    'error',
-                    'El logotipo no puede superar los 2 MB.'
-                );
-
+                window.showToast('error', 'El logotipo no puede superar los 2 MB.');
                 return;
             }
-
             actualizarVistaLogo(archivo);
-
             guardarConfiguracion('logo');
         });
     }
 
-    const estilosTema =
-        formulario.querySelectorAll(
-            'input[name="light_theme_style"], ' +
-            'input[name="dark_theme_style"]'
-        );
+    const estilosTema = formulario.querySelectorAll('input[name="light_theme_style"], ' + 'input[name="dark_theme_style"]');
 
     estilosTema.forEach(function (campo) {
         campo.addEventListener('change', function () {
             if (!this.checked) {
                 return;
             }
-
-            actualizarSeleccionTema(
-                this.value
-            );
-
-            guardarConfiguracion(
-                this.name
-            );
+            actualizarSeleccionTema(this.value);
+            guardarConfiguracion(this.name);
         });
     });
 
-    // El modo claro / oscuro siempre refleja el tema que se está mostrando
-    // (incluido lo que se elija con el interruptor de la barra superior).
     function sincronizarModoConTema() {
-        const radio = formulario.querySelector(
-            `input[name="theme_mode"][value="${obtenerModoActual()}"]`
-        );
+        const radio = formulario.querySelector(`input[name="theme_mode"][value="${obtenerModoActual()}"]` );
 
         if (radio && !radio.checked) {
             radio.checked = true;
         }
     }
-
     sincronizarModoConTema();
+    document.addEventListener('ironpulse:theme-changed', sincronizarModoConTema);
 
-    document.addEventListener(
-        'ironpulse:theme-changed',
-        sincronizarModoConTema
-    );
-
-    formulario
-        .querySelectorAll('input[name="theme_mode"]')
+    formulario.querySelectorAll('input[name="theme_mode"]')
         .forEach(function (campo) {
             campo.addEventListener('change', function () {
                 if (!this.checked) {
                     return;
                 }
-
                 if (typeof window.cambiarTemaManual === 'function') {
                     window.cambiarTemaManual(this.value);
                 }
-
-                guardarConfiguracion(
-                    this.name
-                );
+                guardarConfiguracion(this.name);
             });
         });
 
@@ -388,27 +254,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    const nombreSistema =
-        document.getElementById('system_name');
+    const nombreSistema = document.getElementById('system_name');
 
     if (nombreSistema) {
         nombreSistema.addEventListener('blur', function () {
             if (!this.value.trim()) {
                 return;
             }
-
-            guardarConfiguracion(
-                this.name
-            );
+            guardarConfiguracion(this.name);
         });
     }
 
-
-    // ---------------------------------------------------------------
-    // Datos del negocio y Seguridad: cada campo se guarda solo, con Enter o
-    // con la palomita dentro del input; los interruptores, al cambiarlos.
-    // Cada guardado muestra su propio mensaje.
-    // ---------------------------------------------------------------
     function inicializarCampos(tarjeta) {
         if (!tarjeta) {
             return;
@@ -416,11 +272,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function limpiarError(campo) {
             campo.classList.remove('is-invalid');
-
             const contenedor = campo.closest('.config-field');
-            const mensaje = contenedor
-                ? contenedor.querySelector('.invalid-feedback')
-                : null;
+            const mensaje = contenedor ? contenedor.querySelector('.invalid-feedback') : null;
 
             if (mensaje) {
                 mensaje.remove();
@@ -429,16 +282,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function mostrarError(campo, texto) {
             limpiarError(campo);
-
             campo.classList.add('is-invalid');
-
             const mensaje = document.createElement('div');
 
             mensaje.className = 'invalid-feedback d-block';
             mensaje.textContent = texto;
 
             const referencia = campo.closest('.config-input') || campo;
-
             referencia.insertAdjacentElement('afterend', mensaje);
         }
 
@@ -463,20 +313,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const error = new Error(
                     (data.errors[nombre] || Object.values(data.errors).flat())[0]
                 );
-
                 error.validacion = true;
-
                 throw error;
             }
 
             if (!response.ok || data.success === false) {
-                throw new Error(
-                    data.mensaje ||
-                    data.message ||
-                    'Ocurrió un error al guardar el cambio.'
-                );
+                throw new Error(data.mensaje || data.message || 'Ocurrió un error al guardar el cambio.');
             }
-
             return data;
         }
 
@@ -487,18 +330,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function aplicarGlobal(nombre, settings) {
-            if (
-                nombre === 'session_timeout' &&
-                settings &&
-                typeof window.aplicarConfiguracionGlobal === 'function'
-            ) {
-                window.aplicarConfiguracionGlobal({
-                    session_timeout: settings.session_timeout,
-                });
+            if (nombre === 'session_timeout' && settings && typeof window.aplicarConfiguracionGlobal === 'function') {
+                window.aplicarConfiguracionGlobal({session_timeout: settings.session_timeout,});
             }
         }
 
-        // ---- Campos de texto y número (Enter o palomita) ----
         tarjeta.querySelectorAll('.config-input').forEach(function (envoltura) {
             const campo = envoltura.querySelector('.form-control');
             const boton = envoltura.querySelector('.config-input-save');
@@ -524,9 +360,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 enCurso = true;
-
                 const icono = boton.innerHTML;
-
                 boton.disabled = true;
                 boton.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
 
@@ -534,16 +368,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 try {
                     const data = await enviar(campo.name, esperado());
-
-                    if (
-                        data.settings &&
-                        Object.prototype.hasOwnProperty.call(data.settings, campo.name)
-                    ) {
+                    if (data.settings && Object.prototype.hasOwnProperty.call(data.settings, campo.name)) {
                         campo.value = data.settings[campo.name] ?? '';
                     }
 
                     guardado = campo.value;
-
                     campo.classList.add('is-saved');
 
                     setTimeout(function () {
@@ -579,13 +408,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const esArea = campo.tagName === 'TEXTAREA';
 
-                if (
-                    evento.key === 'Enter' &&
-                    (!esArea || !evento.shiftKey)
-                ) {
+                if (evento.key === 'Enter' && (!esArea || !evento.shiftKey)) {
                     evento.preventDefault();
                     guardar();
-
                     return;
                 }
 
@@ -595,28 +420,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     refrescar();
                 }
             });
-
             boton.addEventListener('click', guardar);
-
             refrescar();
         });
 
-        // ---- Interruptores: se guardan al cambiar ----
         tarjeta.querySelectorAll('.form-switch input[type="checkbox"]').forEach(function (interruptor) {
             interruptor.addEventListener('change', async function () {
                 const nuevo = interruptor.checked;
-
                 interruptor.disabled = true;
 
                 try {
                     const data = await enviar(interruptor.name, nuevo ? '1' : '0');
-
                     aplicarGlobal(interruptor.name, data.settings);
-
                     window.showToast('success', data.mensaje);
                 } catch (error) {
                     interruptor.checked = !nuevo;
-
                     window.showToast('error', mensajeDeError(error));
                 } finally {
                     interruptor.disabled = false;
@@ -624,7 +442,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
-
     inicializarCampos(document.getElementById('formNegocio'));
     inicializarCampos(document.getElementById('formSeguridad'));
 });

@@ -268,7 +268,6 @@
         background-color 0.2s ease;
 }
 
-/* Los botones de visibilidad quedan dentro del campo y reservan espacio para el icono de validación. */
 #modalCambiarPassword .password-input-group {
     position: relative;
     display: block;
@@ -431,7 +430,6 @@
     }
 }
 
-/* Tarjeta principal del perfil: jerarquía visual y ficha de datos completa. */
 .profile-header-card {
     border: 1px solid var(--border-color) !important;
     border-radius: 18px;

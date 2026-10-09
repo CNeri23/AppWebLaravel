@@ -1,86 +1,30 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const csrfTokenElement =
-        document.querySelector('meta[name="csrf-token"]');
+    const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
+    const csrfToken = csrfTokenElement ? csrfTokenElement.content : '';
+    const modalEditarPerfilEl = document.getElementById('modalEditarPerfil');
+    const modalCambiarPasswordEl = document.getElementById('modalCambiarPassword');
+    const modalFotoPerfilEl = document.getElementById('modalFotoPerfil');
+    const modalEditarPerfil = modalEditarPerfilEl ? new bootstrap.Modal(modalEditarPerfilEl) : null;
+    const modalCambiarPassword = modalCambiarPasswordEl ? new bootstrap.Modal(modalCambiarPasswordEl) : null;
+    const modalFotoPerfil = modalFotoPerfilEl ? new bootstrap.Modal(modalFotoPerfilEl): null;
 
-    const csrfToken =
-        csrfTokenElement
-            ? csrfTokenElement.content
-            : '';
-
-    const modalEditarPerfilEl =
-        document.getElementById('modalEditarPerfil');
-
-    const modalCambiarPasswordEl =
-        document.getElementById('modalCambiarPassword');
-
-    const modalFotoPerfilEl =
-        document.getElementById('modalFotoPerfil');
-
-    const modalEditarPerfil =
-        modalEditarPerfilEl
-            ? new bootstrap.Modal(modalEditarPerfilEl)
-            : null;
-
-    const modalCambiarPassword =
-        modalCambiarPasswordEl
-            ? new bootstrap.Modal(modalCambiarPasswordEl)
-            : null;
-
-    const modalFotoPerfil =
-        modalFotoPerfilEl
-            ? new bootstrap.Modal(modalFotoPerfilEl)
-            : null;
-
-    const formEditarPerfil =
-        document.getElementById('formEditarPerfil');
-
-    const formCambiarPassword =
-        document.getElementById('formCambiarPassword');
-
-    const formFotoPerfil =
-        document.getElementById('formFotoPerfil');
-
-    const btnGuardarPerfil =
-        document.getElementById('btnGuardarPerfil');
-
-    const btnCambiarPassword =
-        document.getElementById('btnCambiarPassword');
-
-    const btnGuardarFoto =
-        document.getElementById('btnGuardarFoto');
-
-    const btnEliminarFoto =
-        document.getElementById('btnEliminarFoto');
-
-    const profileName =
-        document.getElementById('profileName');
-
-    const profileEmail =
-        document.getElementById('profileEmail');
-
-    const profileUsername =
-        document.getElementById('profileUsername');
-
-    const profileInfoEmail =
-        document.getElementById('profileInfoEmail');
-
-    const profileDetailName =
-        document.getElementById('profileDetailName');
-
-    const profileDetailUsername =
-        document.getElementById('profileDetailUsername');
-
-    const profileDetailEmail =
-        document.getElementById('profileDetailEmail');
-
-    const profileDetailPhone =
-        document.getElementById('profileDetailPhone');
-
-    const profileImageInput =
-        document.getElementById('profile_image');
-
-    const photoPreview =
-        document.getElementById('photoPreview');
+    const formEditarPerfil = document.getElementById('formEditarPerfil');
+    const formCambiarPassword = document.getElementById('formCambiarPassword');
+    const formFotoPerfil = document.getElementById('formFotoPerfil');
+    const btnGuardarPerfil = document.getElementById('btnGuardarPerfil');
+    const btnCambiarPassword = document.getElementById('btnCambiarPassword');
+    const btnGuardarFoto = document.getElementById('btnGuardarFoto');
+    const btnEliminarFoto = document.getElementById('btnEliminarFoto');
+    const profileName = document.getElementById('profileName');
+    const profileEmail = document.getElementById('profileEmail');
+    const profileUsername = document.getElementById('profileUsername');
+    const profileInfoEmail = document.getElementById('profileInfoEmail');
+    const profileDetailName = document.getElementById('profileDetailName');
+    const profileDetailUsername = document.getElementById('profileDetailUsername');
+    const profileDetailEmail = document.getElementById('profileDetailEmail');
+    const profileDetailPhone = document.getElementById('profileDetailPhone');
+    const profileImageInput = document.getElementById('profile_image');
+    const photoPreview = document.getElementById('photoPreview');
 
     function peticion(url, method, body = null) {
         const opciones = {
@@ -95,11 +39,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (body instanceof FormData) {
             opciones.body = body;
         } else if (body) {
-            opciones.headers['Content-Type'] =
-                'application/json';
-
-            opciones.body =
-                JSON.stringify(body);
+            opciones.headers['Content-Type'] = 'application/json';
+            opciones.body = JSON.stringify(body);
         }
 
         return fetch(url, opciones)
@@ -109,45 +50,25 @@ document.addEventListener('DOMContentLoaded', function () {
                         .json()
                         .catch(() => ({}));
 
-                if (
-                    !response.ok ||
-                    data.success === false
-                ) {
-                    const primerError =
-                        data.errors
-                            ? Object.values(data.errors).flat()[0]
-                            : null;
-
-                    const error = new Error(
-                        primerError ||
-                        data.mensaje ||
-                        data.message ||
-                        'Ocurrió un error al procesar la solicitud.'
-                    );
+                if (!response.ok || data.success === false) {
+                    const primerError = data.errors ? Object.values(data.errors).flat()[0] : null;
+                    const error = new Error(primerError || data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
 
                     if (data.errors) {
                         error.errors = data.errors;
                     }
-
                     throw error;
                 }
-
                 return data;
             });
     }
 
     function mostrarError(error) {
-        window.showToast(
-            'error',
-            error.message
-        );
+        window.showToast('error', error.message);
     }
 
     function mostrarExito(mensaje) {
-        window.showToast(
-            'success',
-            mensaje
-        );
+        window.showToast('success', mensaje);
     }
 
     function limpiarErrores(formulario) {
@@ -170,25 +91,15 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    function mostrarErrores(
-        formulario,
-        errores
-    ) {
+    function mostrarErrores(formulario, errores) {
         if (!formulario || !errores) {
             return;
         }
 
         Object.keys(errores).forEach(
             function (campo) {
-                const input =
-                    formulario.querySelector(
-                        '[name="' + campo + '"]'
-                    );
-
-                const error =
-                    document.getElementById(
-                        obtenerIdError(campo)
-                    );
+                const input = formulario.querySelector('[name="' + campo + '"]');
+                const error = document.getElementById(obtenerIdError(campo));
 
                 if (input) {
                     input.classList.add(
@@ -196,13 +107,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     );
                 }
 
-                if (
-                    error &&
-                    errores[campo] &&
-                    errores[campo].length
-                ) {
-                    error.textContent =
-                        errores[campo][0];
+                if (error && errores[campo] && errores[campo].length) {
+                    error.textContent = errores[campo][0];
                 }
             }
         );
@@ -218,45 +124,28 @@ document.addEventListener('DOMContentLoaded', function () {
             email: 'perfil-email-error',
             current_password: 'current-password-error',
             password: 'profile-password-error',
-            password_confirmation:
-                'profile-password-confirmation-error',
-            profile_image:
-                'profile-image-error',
+            password_confirmation: 'profile-password-confirmation-error',
+            profile_image: 'profile-image-error',
         };
 
-        return (
-            ids[campo] ||
-            campo.replaceAll('_', '-') +
-            '-error'
-        );
+        return (ids[campo] || campo.replaceAll('_', '-') + '-error');
     }
 
-    function cambiarEstadoBoton(
-        boton,
-        cargando,
-        textoCargando
-    ) {
+    function cambiarEstadoBoton(boton, cargando, textoCargando) {
         if (!boton) {
             return;
         }
 
         if (cargando) {
             if (!boton.dataset.htmlOriginal) {
-                boton.dataset.htmlOriginal =
-                    boton.innerHTML;
+                boton.dataset.htmlOriginal = boton.innerHTML;
             }
-
             boton.disabled = true;
-
-            boton.innerHTML =
-                '<span class="spinner-border spinner-border-sm me-2"></span>' +
-                (textoCargando || 'Guardando...');
+            boton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + (textoCargando || 'Guardando...');
         } else {
             boton.disabled = false;
-
             if (boton.dataset.htmlOriginal) {
-                boton.innerHTML =
-                    boton.dataset.htmlOriginal;
+                boton.innerHTML = boton.dataset.htmlOriginal;
             }
         }
     }
@@ -267,230 +156,98 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function formatearFecha(
-        fecha
-    ) {
+    function formatearFecha(fecha) {
         if (!fecha) {
             return '';
         }
+        const fechaObjeto = new Date(fecha);
 
-        const fechaObjeto =
-            new Date(fecha);
-
-        if (
-            isNaN(
-                fechaObjeto.getTime()
-            )
-        ) {
+        if (isNaN(fechaObjeto.getTime())) {
             return '';
         }
+        const dia = String(fechaObjeto.getDate()).padStart(2, '0');
+        const mes = String(fechaObjeto.getMonth() + 1).padStart(2, '0');
+        const año = fechaObjeto.getFullYear();
+        const horas = String(fechaObjeto.getHours()).padStart(2, '0');
+        const minutos = String(fechaObjeto.getMinutes()).padStart(2, '0');
 
-        const dia =
-            String(
-                fechaObjeto.getDate()
-            ).padStart(2, '0');
-
-        const mes =
-            String(
-                fechaObjeto.getMonth() + 1
-            ).padStart(2, '0');
-
-        const año =
-            fechaObjeto.getFullYear();
-
-        const horas =
-            String(
-                fechaObjeto.getHours()
-            ).padStart(2, '0');
-
-        const minutos =
-            String(
-                fechaObjeto.getMinutes()
-            ).padStart(2, '0');
-
-        return (
-            dia +
-            '/' +
-            mes +
-            '/' +
-            año +
-            ' ' +
-            horas +
-            ':' +
-            minutos
-        );
+        return (dia + '/' + mes + '/' + año + ' ' + horas + ':' + minutos);
     }
 
-    function tiempoRelativo(
-        fecha
-    ) {
+    function tiempoRelativo(fecha) {
         if (!fecha) {
             return 'Sin información';
         }
+        const fechaObjeto = new Date(fecha);
 
-        const fechaObjeto =
-            new Date(fecha);
-
-        if (
-            isNaN(
-                fechaObjeto.getTime()
-            )
-        ) {
+        if (isNaN(fechaObjeto.getTime())) {
             return 'Sin información';
         }
-
-        const ahora =
-            new Date();
-
-        const diferencia =
-            Math.floor(
-                (
-                    ahora.getTime() -
-                    fechaObjeto.getTime()
-                ) / 1000
-            );
+        const ahora = new Date();
+        const diferencia = Math.floor((ahora.getTime() - fechaObjeto.getTime()) / 1000);
 
         if (diferencia < 10) {
             return 'Hace unos segundos';
         }
 
         if (diferencia < 60) {
-            return (
-                'Hace ' +
-                diferencia +
-                ' segundos'
-            );
+            return ('Hace ' + diferencia + ' segundos');
         }
-
-        const minutos =
-            Math.floor(
-                diferencia / 60
-            );
+        const minutos = Math.floor(diferencia / 60);
 
         if (minutos < 60) {
-            return (
-                'Hace ' +
-                minutos +
-                (
-                    minutos === 1
-                        ? ' minuto'
-                        : ' minutos'
-                )
-            );
+            return ('Hace ' + minutos + (minutos === 1 ? ' minuto' : ' minutos'));
         }
-
-        const horas =
-            Math.floor(
-                minutos / 60
-            );
+        const horas = Math.floor(minutos / 60);
 
         if (horas < 24) {
-            return (
-                'Hace ' +
-                horas +
-                (
-                    horas === 1
-                        ? ' hora'
-                        : ' horas'
-                )
-            );
+            return ('Hace ' + horas + (horas === 1 ? ' hora' : ' horas'));
         }
-
-        const dias =
-            Math.floor(
-                horas / 24
-            );
+        const dias = Math.floor(horas / 24);
 
         if (dias < 30) {
-            return (
-                'Hace ' +
-                dias +
-                (
-                    dias === 1
-                        ? ' día'
-                        : ' días'
-                )
-            );
+            return ('Hace ' + dias +(dias === 1 ? ' día' : ' días'));
         }
-
-        const meses =
-            Math.floor(
-                dias / 30
-            );
+        const meses = Math.floor(dias / 30);
 
         if (meses < 12) {
-            return (
-                'Hace ' +
-                meses +
-                (
-                    meses === 1
-                        ? ' mes'
-                        : ' meses'
-                )
-            );
+            return ('Hace ' + meses +(meses === 1 ? ' mes' : ' meses'));
         }
-
-        const años =
-            Math.floor(
-                meses / 12
-            );
-
-        return (
-            'Hace ' +
-            años +
-            (
-                años === 1
-                    ? ' año'
-                    : ' años'
-            )
+        const años = Math.floor(meses / 12);
+        return ('Hace ' + años + ( años === 1 ? ' año' : ' años')
         );
     }
 
-    function actualizarFechaActividad(
-        fecha
-    ) {
-        const elementos =
-            document.querySelectorAll(
-                '[data-profile-updated]'
-            );
+    function actualizarFechaActividad(fecha) {
+        const elementos = document.querySelectorAll('[data-profile-updated]');
 
         elementos.forEach(
             function (elemento) {
-                elemento.dataset.profileUpdated =
-                    fecha;
-
-                elemento.textContent =
-                    tiempoRelativo(fecha);
+                elemento.dataset.profileUpdated = fecha;
+                elemento.textContent = tiempoRelativo(fecha);
             }
         );
     }
 
-    function actualizarInformacionPerfil(
-        usuario
-    ) {
+    function actualizarInformacionPerfil(usuario) {
         if (!usuario) {
             return;
         }
 
         if (profileName) {
-            profileName.textContent =
-                usuario.name;
+            profileName.textContent = usuario.name;
         }
 
         if (profileUsername && usuario.username) {
-            profileUsername.textContent =
-                '@' + usuario.username;
+            profileUsername.textContent = '@' + usuario.username;
         }
 
         if (profileEmail) {
-            profileEmail.innerHTML =
-                '<i class="fa-solid fa-envelope me-1"></i> ' +
-                escapeHtml(usuario.email);
+            profileEmail.innerHTML = '<i class="fa-solid fa-envelope me-1"></i> ' + escapeHtml(usuario.email);
         }
 
         if (profileInfoEmail) {
-            profileInfoEmail.textContent =
-                usuario.email || 'No registrado';
+            profileInfoEmail.textContent = usuario.email || 'No registrado';
         }
 
         if (profileDetailName) {
@@ -520,70 +277,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function reemplazarAvatarElemento(
-        id,
-        claseBase,
-        clasePlaceholder,
-        imagenUrl,
-        inicial
-    ) {
-        const elemento =
-            document.getElementById(id);
+    function reemplazarAvatarElemento(id, claseBase, clasePlaceholder, imagenUrl, inicial) {
+        const elemento = document.getElementById(id);
 
         if (!elemento) {
             return;
         }
 
         if (imagenUrl) {
-            const imagen =
-                document.createElement(
-                    'img'
-                );
-
-            imagen.src =
-                imagenUrl;
-
-            imagen.alt =
-                'Foto de perfil';
-
-            imagen.className =
-                claseBase;
-
-            imagen.id =
-                id;
-
+            const imagen = document.createElement('img');
+            imagen.src = imagenUrl;
+            imagen.alt = 'Foto de perfil';
+            imagen.className = claseBase;
+            imagen.id = id;
             elemento.replaceWith(
                 imagen
             );
-
             return;
         }
 
-        const placeholder =
-            document.createElement(
-                'div'
-            );
-
-        placeholder.className =
-            claseBase +
-            (clasePlaceholder ? ' ' + clasePlaceholder : '');
-
-        placeholder.id =
-            id;
-
-        placeholder.textContent =
-            inicial || '';
-
-        elemento.replaceWith(
-            placeholder
-        );
+        const placeholder = document.createElement('div');
+        placeholder.className = claseBase + (clasePlaceholder ? ' ' + clasePlaceholder : '');
+        placeholder.id = id;
+        placeholder.textContent = inicial || '';
+        elemento.replaceWith(placeholder);
     }
 
-    function actualizarAvatar(
-        imagenUrl,
-        inicial
-    ) {
-        // Avatar grande de esta página.
+    function actualizarAvatar(imagenUrl, inicial) {
         reemplazarAvatarElemento(
             'profileAvatar',
             'profile-avatar',
@@ -591,9 +311,6 @@ document.addEventListener('DOMContentLoaded', function () {
             imagenUrl,
             inicial
         );
-
-        // Avatar del menú de usuario en el topbar, para que no quede
-        // desincronizado con la foto recién subida/eliminada.
         reemplazarAvatarElemento(
             'topbarUserAvatar',
             'user-avatar',
@@ -603,88 +320,39 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    function actualizarPreview(
-        imagenUrl,
-        inicial
-    ) {
-        const preview =
-            document.getElementById(
-                'photoPreview'
-            );
+    function actualizarPreview(imagenUrl, inicial ) {
+        const preview = document.getElementById('photoPreview');
 
         if (!preview) {
             return;
         }
 
         if (imagenUrl) {
-            if (
-                preview.tagName ===
-                'IMG'
-            ) {
-                preview.src =
-                    imagenUrl;
-
+            if (preview.tagName === 'IMG') {
+                preview.src = imagenUrl;
                 return;
             }
-
-            const imagen =
-                document.createElement(
-                    'img'
-                );
-
-            imagen.src =
-                imagenUrl;
-
-            imagen.alt =
-                'Foto de perfil';
-
-            imagen.id =
-                'photoPreview';
-
-            preview.replaceWith(
-                imagen
-            );
-
+            const imagen = document.createElement('img');
+            imagen.src = imagenUrl;
+            imagen.alt = 'Foto de perfil';
+            imagen.id = 'photoPreview';
+            preview.replaceWith(imagen);
             return;
         }
 
-        const placeholder =
-            document.createElement(
-                'div'
-            );
-
-        placeholder.className =
-            'profile-photo-preview-placeholder';
-
-        placeholder.id =
-            'photoPreview';
-
-        placeholder.textContent =
-            inicial || '';
-
-        preview.replaceWith(
-            placeholder
-        );
+        const placeholder = document.createElement('div');
+        placeholder.className = 'profile-photo-preview-placeholder';
+        placeholder.id = 'photoPreview';
+        placeholder.textContent = inicial || '';
+        preview.replaceWith(placeholder);
     }
 
-    function escapeHtml(
-        valor
-    ) {
-        const div =
-            document.createElement(
-                'div'
-            );
-
-        div.textContent =
-            valor ?? '';
-
+    function escapeHtml(valor) {
+        const div = document.createElement('div');
+        div.textContent = valor ?? '';
         return div.innerHTML;
     }
 
-    // Reglas espejo de las validaciones del ProfileController (Laravel).
-    // La unicidad de email y la verificación de current_password solo
-    // puede validarlas el backend; aquí solo se valida lo verificable
-    // en el cliente para dar feedback inmediato.
     const validadores = {
         username: function (valor) {
             valor = valor.trim();
@@ -704,7 +372,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!/^[A-Za-z0-9._-]+$/.test(valor)) {
                 return 'Solo letras, números, punto, guion y guion bajo (sin espacios).';
             }
-
             return '';
         },
         nombre: function (valor) {
@@ -717,7 +384,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (valor.length > 100) {
                 return 'El nombre no puede superar los 100 caracteres.';
             }
-
             return '';
         },
         apellido_paterno: function (valor) {
@@ -730,21 +396,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (valor.length > 100) {
                 return 'El apellido paterno no puede superar los 100 caracteres.';
             }
-
             return '';
         },
         apellido_materno: function (valor) {
             if (valor.trim().length > 100) {
                 return 'El apellido materno no puede superar los 100 caracteres.';
             }
-
             return '';
         },
         telefono: function (valor) {
             if (valor.trim().length > 30) {
                 return 'El teléfono no puede superar los 30 caracteres.';
             }
-
             return '';
         },
         email: function (valor) {
@@ -757,48 +420,33 @@ document.addEventListener('DOMContentLoaded', function () {
             if (valor.length > 255) {
                 return 'El correo electrónico no puede superar los 255 caracteres.';
             }
-
-            const patronEmail =
-                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const patronEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
             if (!patronEmail.test(valor)) {
                 return 'Ingresa un correo electrónico válido.';
             }
-
             return '';
         },
         current_password: function (valor) {
             if (!valor) {
                 return 'La contraseña actual es obligatoria.';
             }
-
             return '';
         },
         password: function (valor) {
             if (!valor) {
                 return 'La nueva contraseña es obligatoria.';
             }
-
-            // Política de Configuración > Seguridad (la imprime index.blade.php)
             const politica = window.politicaPassword || {};
             const minimo = parseInt(politica.min, 10) || 8;
 
             if (valor.length < minimo) {
-                return 'La nueva contraseña debe tener al menos ' +
-                    minimo + ' caracteres.';
+                return 'La nueva contraseña debe tener al menos ' + minimo + ' caracteres.';
             }
 
-            if (
-                politica.complex &&
-                !(
-                    /\p{Ll}/u.test(valor) &&
-                    /\p{Lu}/u.test(valor) &&
-                    /\d/.test(valor)
-                )
-            ) {
+            if (politica.complex && !(/\p{Ll}/u.test(valor) && /\p{Lu}/u.test(valor) && /\d/.test(valor))) {
                 return 'La contraseña debe incluir al menos una mayúscula, una minúscula y un número.';
             }
-
             return '';
         },
         password_confirmation: function (valor, formulario) {
@@ -806,42 +454,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 return 'Confirma la nueva contraseña.';
             }
 
-            const nueva =
-                formulario.querySelector(
-                    '[name="password"]'
-                );
+            const nueva = formulario.querySelector('[name="password"]');
 
             if (nueva && valor !== nueva.value) {
                 return 'Las contraseñas no coinciden.';
             }
-
             return '';
         },
     };
 
-    function validarCampo(
-        formulario,
-        campo
-    ) {
-        const input =
-            formulario.querySelector(
-                '[name="' + campo + '"]'
-            );
-
-        const validador =
-            validadores[campo];
+    function validarCampo(formulario, campo) {
+        const input = formulario.querySelector('[name="' + campo + '"]');
+        const validador = validadores[campo];
 
         if (!input || !validador) {
             return true;
         }
-
-        const mensaje =
-            validador(input.value, formulario);
-
-        const error =
-            document.getElementById(
-                obtenerIdError(campo)
-            );
+        const mensaje = validador(input.value, formulario);
+        const error = document.getElementById(obtenerIdError(campo));
 
         if (mensaje) {
             input.classList.add('is-invalid');
@@ -849,7 +479,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (error) {
                 error.textContent = mensaje;
             }
-
             return false;
         }
 
@@ -858,126 +487,70 @@ document.addEventListener('DOMContentLoaded', function () {
         if (error) {
             error.textContent = '';
         }
-
         return true;
     }
 
-    function validarFormulario(
-        formulario,
-        campos
-    ) {
+    function validarFormulario(formulario, campos) {
         let esValido = true;
-
         campos.forEach(function (campo) {
             if (!validarCampo(formulario, campo)) {
                 esValido = false;
             }
         });
-
         return esValido;
     }
 
-    function activarValidacionEnTiempoReal(
-        formulario,
-        campos
-    ) {
+    function activarValidacionEnTiempoReal(formulario, campos) {
         if (!formulario) {
             return;
         }
-
         campos.forEach(function (campo) {
-            const input =
-                formulario.querySelector(
-                    '[name="' + campo + '"]'
-                );
+            const input = formulario.querySelector('[name="' + campo + '"]');
 
             if (!input) {
                 return;
             }
-
             input.addEventListener('input', function () {
                 validarCampo(formulario, campo);
 
-                // Si cambia la nueva contraseña, revalida también
-                // la confirmación para mantenerlas sincronizadas.
                 if (campo === 'password') {
-                    const confirmacion =
-                        formulario.querySelector(
-                            '[name="password_confirmation"]'
-                        );
+                    const confirmacion = formulario.querySelector('[name="password_confirmation"]');
 
-                    if (confirmacion && confirmacion.value) {
-                        validarCampo(
-                            formulario,
-                            'password_confirmation'
-                        );
+                    if (confirmacion && confirmacion.value) {validarCampo(formulario, 'password_confirmation');
                     }
                 }
             });
-
             input.addEventListener('blur', function () {
                 validarCampo(formulario, campo);
             });
         });
     }
 
-    // Helper genérico: evita repetir en cada form el mismo bloque
-    // de preventDefault + limpiar errores + validar + spinner del
-    // botón + fetch + éxito/error/finally.
     function configurarEnvioFormulario(opciones) {
-        const {
-            formulario,
-            boton,
-            campos,
-            textoCargando,
-            antesDeEnviar,
-            alExito,
-        } = opciones;
+        const {formulario, boton, campos, textoCargando, antesDeEnviar, alExito,} = opciones;
 
         if (!formulario) {
             return;
         }
 
-        formulario.addEventListener(
-            'submit',
+        formulario.addEventListener('submit',
             function (event) {
                 event.preventDefault();
-
                 limpiarErrores(formulario);
 
-                if (
-                    campos &&
-                    !validarFormulario(formulario, campos)
-                ) {
-                    window.showToast(
-                        'error',
-                        'Corrige los campos marcados antes de continuar.'
-                    );
-
+                if (campos && !validarFormulario(formulario, campos)) {
+                    window.showToast('error', 'Corrige los campos marcados antes de continuar.');
                     return;
                 }
 
-                if (
-                    typeof antesDeEnviar === 'function' &&
-                    antesDeEnviar(formulario) === false
-                ) {
+                if (typeof antesDeEnviar === 'function' && antesDeEnviar(formulario) === false) {
                     return;
                 }
 
-                cambiarEstadoBoton(
-                    boton,
-                    true,
-                    textoCargando
-                );
+                cambiarEstadoBoton(boton, true, textoCargando);
+                const formData = new FormData(formulario);
 
-                const formData =
-                    new FormData(formulario);
-
-                peticion(
-                    formulario.action,
-                    'POST',
-                    formData
-                )
+                peticion(formulario.action, 'POST', formData)
                     .then(function (data) {
                         if (typeof alExito === 'function') {
                             alExito(data);
@@ -985,19 +558,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     })
                     .catch(function (error) {
                         if (error.errors) {
-                            mostrarErrores(
-                                formulario,
-                                error.errors
-                            );
+                            mostrarErrores(formulario, error.errors);
                         }
 
                         mostrarError(error);
                     })
                     .finally(function () {
-                        cambiarEstadoBoton(
-                            boton,
-                            false
-                        );
+                        cambiarEstadoBoton(boton, false);
                     });
             }
         );
@@ -1006,71 +573,36 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener(
         'click',
         function (event) {
-            const toggle =
-                event.target.closest(
-                    '.toggle-password'
-                );
+            const toggle = event.target.closest('.toggle-password');
 
             if (!toggle) {
                 return;
             }
-
-            const targetId =
-                toggle.dataset.passwordTarget;
-
-            const input =
-                document.getElementById(
-                    targetId
-                );
+            const targetId = toggle.dataset.passwordTarget;
+            const input = document.getElementById(targetId);
 
             if (!input) {
                 return;
             }
+            const icon = toggle.querySelector('i');
 
-            const icon =
-                toggle.querySelector(
-                    'i'
-                );
-
-            if (
-                input.type ===
-                'password'
-            ) {
-                input.type =
-                    'text';
+            if (input.type === 'password') {
+                input.type = 'text';
 
                 if (icon) {
-                    icon.classList.remove(
-                        'fa-eye'
-                    );
-
-                    icon.classList.add(
-                        'fa-eye-slash'
-                    );
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
                 }
-
-                toggle.setAttribute(
-                    'aria-label',
-                    'Ocultar contraseña'
-                );
+                toggle.setAttribute('aria-label', 'Ocultar contraseña');
             } else {
-                input.type =
-                    'password';
+                input.type = 'password';
 
                 if (icon) {
-                    icon.classList.remove(
-                        'fa-eye-slash'
-                    );
-
-                    icon.classList.add(
-                        'fa-eye'
-                    );
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
                 }
 
-                toggle.setAttribute(
-                    'aria-label',
-                    'Mostrar contraseña'
-                );
+                toggle.setAttribute('aria-label', 'Mostrar contraseña');
             }
         }
     );
@@ -1079,9 +611,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modalEditarPerfilEl.addEventListener(
             'show.bs.modal',
             function () {
-                limpiarErrores(
-                    formEditarPerfil
-                );
+                limpiarErrores(formEditarPerfil);
             }
         );
     }
@@ -1090,9 +620,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modalCambiarPasswordEl.addEventListener(
             'show.bs.modal',
             function () {
-                limpiarErrores(
-                    formCambiarPassword
-                );
+                limpiarErrores(formCambiarPassword);
             }
         );
 
@@ -1101,10 +629,7 @@ document.addEventListener('DOMContentLoaded', function () {
             function () {
                 if (formCambiarPassword) {
                     formCambiarPassword.reset();
-
-                    limpiarErrores(
-                        formCambiarPassword
-                    );
+                    limpiarErrores(formCambiarPassword);
                 }
             }
         );
@@ -1114,9 +639,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modalFotoPerfilEl.addEventListener(
             'show.bs.modal',
             function () {
-                limpiarErrores(
-                    formFotoPerfil
-                );
+                limpiarErrores(formFotoPerfil);
             }
         );
 
@@ -1124,13 +647,9 @@ document.addEventListener('DOMContentLoaded', function () {
             'hidden.bs.modal',
             function () {
                 if (profileImageInput) {
-                    profileImageInput.value =
-                        '';
+                    profileImageInput.value = '';
                 }
-
-                limpiarErrores(
-                    formFotoPerfil
-                );
+                limpiarErrores(formFotoPerfil);
             }
         );
     }
@@ -1145,18 +664,12 @@ document.addEventListener('DOMContentLoaded', function () {
         ['current_password', 'password', 'password_confirmation']
     );
 
-    if (
-        profileImageInput
-    ) {
+    if (profileImageInput) {
         profileImageInput.addEventListener(
             'change',
             function () {
-                limpiarErrores(
-                    formFotoPerfil
-                );
-
-                const archivo =
-                    this.files[0];
+                limpiarErrores(formFotoPerfil);
+                const archivo = this.files[0];
 
                 if (!archivo) {
                     return;
@@ -1168,51 +681,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     'image/webp'
                 ];
 
-                if (
-                    !tiposPermitidos.includes(
-                        archivo.type
-                    )
-                ) {
-                    this.value =
-                        '';
-
-                    window.showToast(
-                        'error',
-                        'La imagen debe ser JPG, JPEG, PNG o WEBP.'
-                    );
-
+                if (!tiposPermitidos.includes(archivo.type)) {
+                    this.value = '';
+                    window.showToast('error', 'La imagen debe ser JPG, JPEG, PNG o WEBP.');
                     return;
                 }
 
-                if (
-                    archivo.size >
-                    2 * 1024 * 1024
-                ) {
-                    this.value =
-                        '';
-
-                    window.showToast(
-                        'error',
-                        'La imagen no puede superar los 2 MB.'
-                    );
-
+                if (archivo.size > 2 * 1024 * 1024) {
+                    this.value = '';
+                    window.showToast('error', 'La imagen no puede superar los 2 MB.');
                     return;
                 }
-
-                const lector =
-                    new FileReader();
-
-                lector.onload =
-                    function (event) {
-                        actualizarPreview(
-                            event.target.result,
-                            ''
-                        );
-                    };
-
-                lector.readAsDataURL(
-                    archivo
-                );
+                const lector = new FileReader();
+                lector.onload = function (event) {actualizarPreview(event.target.result, '');};
+                lector.readAsDataURL(archivo);
             }
         );
     }
@@ -1230,38 +712,20 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             if (sinCambios) {
-                window.showToast(
-                    'info',
-                    'No hubo cambios para actualizar.'
-                );
-
+                window.showToast('info', 'No hubo cambios para actualizar.');
                 return false;
             }
-
             return true;
         },
         alExito: function (data) {
-            actualizarInformacionPerfil(
-                data.usuario
-            );
-
-            // Sincroniza los valores "originales" para que la próxima
-            // vez que se abra el modal, la comparación de cambios use
-            // los datos ya guardados.
+            actualizarInformacionPerfil(data.usuario);
             formEditarPerfil
                 .querySelectorAll('input[name]')
                 .forEach(function (input) {
                     input.defaultValue = input.value;
                 });
-
-            cerrarModal(
-                modalEditarPerfil
-            );
-
-            mostrarExito(
-                data.mensaje ||
-                'Perfil actualizado correctamente.'
-            );
+            cerrarModal(modalEditarPerfil);
+            mostrarExito(data.mensaje || 'Perfil actualizado correctamente.');
         },
     });
 
@@ -1271,25 +735,12 @@ document.addEventListener('DOMContentLoaded', function () {
         campos: ['current_password', 'password', 'password_confirmation'],
         textoCargando: 'Guardando...',
         alExito: function (data) {
-            if (
-                data.usuario &&
-                data.usuario.updated_at
-            ) {
-                actualizarFechaActividad(
-                    data.usuario.updated_at
-                );
+            if (data.usuario && data.usuario.updated_at) {
+                actualizarFechaActividad(data.usuario.updated_at);
             }
-
-            cerrarModal(
-                modalCambiarPassword
-            );
-
+            cerrarModal(modalCambiarPassword);
             formCambiarPassword.reset();
-
-            mostrarExito(
-                data.mensaje ||
-                'Contraseña actualizada correctamente.'
-            );
+            mostrarExito(data.mensaje || 'Contraseña actualizada correctamente.');
         },
     });
 
@@ -1298,55 +749,23 @@ document.addEventListener('DOMContentLoaded', function () {
         boton: btnGuardarFoto,
         textoCargando: 'Subiendo...',
         antesDeEnviar: function () {
-            if (
-                !profileImageInput ||
-                !profileImageInput.files.length
-            ) {
-                window.showToast(
-                    'error',
-                    'Selecciona una imagen.'
-                );
-
+            if (!profileImageInput || !profileImageInput.files.length) {
+                window.showToast('error', 'Selecciona una imagen.');
                 return false;
             }
-
             return true;
         },
+
         alExito: function (data) {
-            const usuario =
-                data.usuario;
+            const usuario =data.usuario;
+            actualizarAvatar(data.imagen, usuario?.name ? usuario.name.charAt(0).toUpperCase() : '');
+            actualizarPreview(data.imagen, '' );
 
-            actualizarAvatar(
-                data.imagen,
-                usuario?.name
-                    ? usuario.name
-                        .charAt(0)
-                        .toUpperCase()
-                    : ''
-            );
-
-            actualizarPreview(
-                data.imagen,
-                ''
-            );
-
-            if (
-                usuario &&
-                usuario.updated_at
-            ) {
-                actualizarFechaActividad(
-                    usuario.updated_at
-                );
+            if (usuario && usuario.updated_at) {
+                actualizarFechaActividad(usuario.updated_at);
             }
-
-            cerrarModal(
-                modalFotoPerfil
-            );
-
-            mostrarExito(
-                data.mensaje ||
-                'Foto de perfil actualizada correctamente.'
-            );
+            cerrarModal(modalFotoPerfil);
+            mostrarExito(data.mensaje || 'Foto de perfil actualizada correctamente.');
         },
     });
 
@@ -1354,18 +773,13 @@ document.addEventListener('DOMContentLoaded', function () {
         btnEliminarFoto.addEventListener(
             'click',
             function () {
-                const boton =
-                    this;
-
-                const url =
-                    boton.dataset.url;
+                const boton = this;
+                const url = boton.dataset.url;
 
                 if (!url) {
                     return;
                 }
-
-                const temaOscuro =
-                    document.documentElement.getAttribute('data-bs-theme') === 'dark';
+                const temaOscuro = document.documentElement.getAttribute('data-bs-theme') === 'dark';
 
                 Swal.fire({
                     icon: 'warning',
@@ -1394,69 +808,26 @@ document.addEventListener('DOMContentLoaded', function () {
                         return;
                     }
 
-                    cambiarEstadoBoton(
-                        boton,
-                        true,
-                        'Eliminando...'
-                    );
-
-                    peticion(
-                        url,
-                        'DELETE'
-                    )
+                    cambiarEstadoBoton(boton, true, 'Eliminando...');
+                    peticion(url, 'DELETE')
                         .then(function (data) {
-                            const usuario =
-                                data.usuario;
+                            const usuario = data.usuario;
+                            const inicial = usuario?.name ? usuario.name.charAt(0).toUpperCase() : profileName ?.textContent.trim().charAt(0).toUpperCase();
 
-                            const inicial =
-                                usuario?.name
-                                    ? usuario.name
-                                        .charAt(0)
-                                        .toUpperCase()
-                                    : profileName
-                                        ?.textContent
-                                        .trim()
-                                        .charAt(0)
-                                        .toUpperCase();
+                            actualizarAvatar(null, inicial);
+                            actualizarPreview(null, inicial);
 
-                            actualizarAvatar(
-                                null,
-                                inicial
-                            );
-
-                            actualizarPreview(
-                                null,
-                                inicial
-                            );
-
-                            if (
-                                usuario &&
-                                usuario.updated_at
-                            ) {
-                                actualizarFechaActividad(
-                                    usuario.updated_at
-                                );
+                            if (usuario && usuario.updated_at) {
+                                actualizarFechaActividad(usuario.updated_at);
                             }
-
-                            cerrarModal(
-                                modalFotoPerfil
-                            );
-
-                            mostrarExito(
-                                data.mensaje ||
-                                'Foto de perfil eliminada correctamente.'
-                            );
+                            cerrarModal(modalFotoPerfil);
+                            mostrarExito(data.mensaje || 'Foto de perfil eliminada correctamente.');
                         })
                         .catch(function (error) {
-                            mostrarError(
-                                error
-                            );
+                            mostrarError(error);
                         })
                         .finally(function () {
-                            cambiarEstadoBoton(
-                                boton,
-                                false
-                            );
+                            cambiarEstadoBoton(boton, false);
                         });
                 });
             }
@@ -1465,15 +836,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setInterval(
         function () {
-            document
-                .querySelectorAll(
-                    '[data-profile-updated]'
-                )
+            document.querySelectorAll('[data-profile-updated]')
                 .forEach(function (elemento) {
-                    elemento.textContent =
-                        tiempoRelativo(
-                            elemento.dataset.profileUpdated
-                        );
+                    elemento.textContent =tiempoRelativo(elemento.dataset.profileUpdated);
                 });
         },
         10000

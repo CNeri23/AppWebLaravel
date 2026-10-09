@@ -195,7 +195,6 @@
     display: none;
 }
 
-/* Brillo suave y borde especular (igual que 32.4 del layout) */
 .context-menu::before {
     content: "";
     position: absolute;
@@ -243,6 +242,7 @@
         opacity: 0;
         transform: scale(0.97) translateY(-2px);
     }
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -305,7 +305,7 @@
     background-color: rgba(15, 23, 42, 0.1);
 }
 
-.tree-node.expanded > .tree-children {
+.tree-node.expanded>.tree-children {
     display: block;
 }
 
@@ -360,6 +360,7 @@
         opacity: 0;
         transform: translateY(-4px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -389,7 +390,7 @@
     color: #d97706;
 }
 
-.tree-child-node.expanded > .action-children {
+.tree-child-node.expanded>.action-children {
     display: block;
     animation: treeChildrenIn 0.16s ease;
 }
@@ -644,11 +645,6 @@
     color: #f59e0b;
 }
 
-/* =====================================================================
-   TREEVIEW - conectores (un único sistema para los 3 niveles)
-   Cada nodo dibuja su "codo" (::before) y la línea que continúa hacia
-   el siguiente hermano (::after). Sin líneas punteadas ni parches.
-   ===================================================================== */
 .modulos-treeview {
     --tree-line: rgba(47, 113, 170, 0.28);
     --tree-elbow: 18px;
@@ -667,9 +663,17 @@
     width: 100%;
 }
 
-.tree-node        { --row-center: 25px; }
-.tree-child-node  { --row-center: 21px; }
-.action-tree-node { --row-center: 18px; }
+.tree-node {
+    --row-center: 25px;
+}
+
+.tree-child-node {
+    --row-center: 21px;
+}
+
+.action-tree-node {
+    --row-center: 18px;
+}
 
 .tree-node::before,
 .tree-child-node::before,
@@ -707,8 +711,6 @@
     display: none;
 }
 
-/* Contenedores de hijos: la línea vertical nace en el centro de la
-   carpeta del padre (módulo: 26px, submódulo: 23px). */
 .tree-children,
 .action-children {
     position: relative;
@@ -716,8 +718,13 @@
     padding-left: var(--tree-elbow);
 }
 
-.tree-children   { margin-left: 26px; }
-.action-children { margin-left: 23px; }
+.tree-children {
+    margin-left: 26px;
+}
+
+.action-children {
+    margin-left: 23px;
+}
 
 .tree-subfolder {
     width: 30px;
@@ -731,12 +738,6 @@
     font-size: 13px;
 }
 
-
-/* =====================================================================
-   FIX - ícono de la ficha seleccionada al hacer hover
-   Las reglas de hover pintaban el ícono del mismo color que el fondo
-   sólido de la ficha (azul sobre azul / ámbar sobre ámbar).
-   ===================================================================== */
 .tree-item.selected.tree-item:hover .tree-folder,
 .tree-item.selected.tree-item:hover .tree-subfolder,
 .tree-item.selected.tree-item:hover .tree-action-folder {
@@ -749,7 +750,6 @@
     color: #0f172a;
 }
 
-/* Scroll interno para los modales de alta y edición de módulos, submódulos y acciones. */
 #modalNuevoModulo .modal-body,
 #modalEditarModulo .modal-body,
 #modalNuevoSubmodulo .modal-body,
