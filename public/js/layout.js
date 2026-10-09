@@ -2,26 +2,42 @@
     try {
         var raiz = document.documentElement;
         var modo = raiz.dataset.themeMode || 'light';
+        var estiloClaro = raiz.dataset.lightThemeStyle || 'white';
+        var estiloOscuro = raiz.dataset.darkThemeStyle || 'graphite';
 
         if (raiz.dataset.themeGuest === 'true') {
             try {
-                var temaGuardado = localStorage.getItem('ironpulse-login-theme');
+                var preferenciasGuardadas = JSON.parse(
+                    localStorage.getItem('ironpulse-user-theme-preferences') || 'null'
+                );
 
-                if (temaGuardado === 'dark' || temaGuardado === 'light') {
-                    modo = temaGuardado;
+                if (preferenciasGuardadas) {
+                    if (preferenciasGuardadas.theme_mode === 'dark' ||
+                        preferenciasGuardadas.theme_mode === 'light') {
+                        modo = preferenciasGuardadas.theme_mode;
+                    }
+
+                    if (['white', 'mist', 'sky'].includes(preferenciasGuardadas.light_theme_style)) {
+                        estiloClaro = preferenciasGuardadas.light_theme_style;
+                    }
+
+                    if (['graphite', 'charcoal', 'black'].includes(preferenciasGuardadas.dark_theme_style)) {
+                        estiloOscuro = preferenciasGuardadas.dark_theme_style;
+                    }
                 }
             } catch (e) { }
         }
 
         var tema = modo === 'dark' ? 'dark' : 'light';
 
+        raiz.setAttribute('data-theme-mode', tema);
+        raiz.setAttribute('data-light-theme-style', estiloClaro);
+        raiz.setAttribute('data-dark-theme-style', estiloOscuro);
         raiz.setAttribute('data-bs-theme', tema);
 
         raiz.setAttribute(
             'data-theme-style',
-            tema === 'dark'
-                ? (raiz.dataset.darkThemeStyle || 'graphite')
-                : (raiz.dataset.lightThemeStyle || 'white')
+            tema === 'dark' ? estiloOscuro : estiloClaro
         );
     } catch (e) { }
 })();
@@ -30,23 +46,48 @@ document.addEventListener('DOMContentLoaded', function () {
     const html = document.documentElement;
 
     const themeSwitch = document.getElementById('themeSwitch');
-    const loginThemeToggle = document.getElementById('loginThemeToggle');
-    const toggleTema = themeSwitch || loginThemeToggle;
-    const esTemaDeInvitado = Boolean(loginThemeToggle);
+    const esTemaDeInvitado = html.dataset.themeGuest === 'true';
 
     let themeMode = html.dataset.themeMode || 'light';
+    let lightThemeStyle = html.dataset.lightThemeStyle || 'white';
+    let darkThemeStyle = html.dataset.darkThemeStyle || 'graphite';
 
     if (esTemaDeInvitado) {
         try {
-            const temaGuardado = localStorage.getItem('ironpulse-login-theme');
+            const preferenciasGuardadas = JSON.parse(
+                localStorage.getItem('ironpulse-user-theme-preferences') || 'null'
+            );
 
-            if (temaGuardado === 'dark' || temaGuardado === 'light') {
-                themeMode = temaGuardado;
+            if (preferenciasGuardadas) {
+                if (preferenciasGuardadas.theme_mode === 'dark' ||
+                    preferenciasGuardadas.theme_mode === 'light') {
+                    themeMode = preferenciasGuardadas.theme_mode;
+                }
+
+                if (['white', 'mist', 'sky'].includes(preferenciasGuardadas.light_theme_style)) {
+                    lightThemeStyle = preferenciasGuardadas.light_theme_style;
+                }
+
+                if (['graphite', 'charcoal', 'black'].includes(preferenciasGuardadas.dark_theme_style)) {
+                    darkThemeStyle = preferenciasGuardadas.dark_theme_style;
+                }
             }
         } catch (e) { }
     }
-    let lightThemeStyle = html.dataset.lightThemeStyle || 'white';
-    let darkThemeStyle = html.dataset.darkThemeStyle || 'graphite';
+
+    function guardarPreferenciasTemaLocalmente() {
+        if (esTemaDeInvitado) {
+            return;
+        }
+
+        try {
+            localStorage.setItem('ironpulse-user-theme-preferences', JSON.stringify({
+                theme_mode: themeMode,
+                light_theme_style: lightThemeStyle,
+                dark_theme_style: darkThemeStyle,
+            }));
+        } catch (e) { }
+    }
 
     function obtenerEstiloPredeterminado(theme) {
         return theme === 'dark'
@@ -111,20 +152,20 @@ document.addEventListener('DOMContentLoaded', function () {
             estiloActual
         );
 
-        if (toggleTema) {
-            toggleTema.setAttribute(
+        if (themeSwitch) {
+            themeSwitch.setAttribute(
                 'aria-checked',
                 theme === 'dark' ? 'true' : 'false'
             );
 
-            toggleTema.setAttribute(
+            themeSwitch.setAttribute(
                 'aria-label',
                 theme === 'dark'
                     ? 'Cambiar a modo claro'
                     : 'Cambiar a modo oscuro'
             );
 
-            toggleTema.title =
+            themeSwitch.title =
                 theme === 'dark'
                     ? 'Cambiar a modo claro'
                     : 'Cambiar a modo oscuro';
@@ -548,6 +589,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     applyThemeMode(themeMode);
 
+    guardarPreferenciasTemaLocalmente();
+
     applyAccentColor(html.dataset.accentColor);
 
     configurarSesion(html.dataset.sessionTimeout);
@@ -567,10 +610,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             if (esTemaDeInvitado) {
-                try {
-                    localStorage.setItem('ironpulse-login-theme', themeMode);
-                } catch (e) { }
-
                 return;
             }
 
@@ -608,6 +647,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 applyTheme(themeMode);
             }
+
+            guardarPreferenciasTemaLocalmente();
 
             if (typeof window.mostrarAviso === 'function') {
                 window.mostrarAviso(
@@ -665,13 +706,13 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        if (!toggleTema) {
+        if (!themeSwitch) {
             guardarYAplicar(siguiente);
 
             return;
         }
 
-        const caja = toggleTema.getBoundingClientRect();
+        const caja = themeSwitch.getBoundingClientRect();
         const x = caja.left + caja.width / 2;
         const y = caja.top + caja.height / 2;
 
@@ -739,9 +780,10 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
         applyTheme(themeMode);
+        guardarPreferenciasTemaLocalmente();
     });
 
-    toggleTema?.addEventListener('click', function () {
+    themeSwitch?.addEventListener('click', function () {
         const actual =
             html.getAttribute('data-bs-theme');
 
