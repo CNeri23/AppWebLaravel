@@ -104,13 +104,17 @@
 
                                 @elseif ($accion->slug === 'usuarios.toggle')
                                 <button type="button"
-                                    class="btn btn-sm usuario-action-btn btn-estado-usuario {{ $usuario->activo ? 'btn-outline-secondary' : 'btn-outline-success' }}"
-                                    title="{{ $usuario->activo ? 'Desactivar' : 'Activar' }}"
+                                    class="usuario-toggle-btn btn-estado-usuario {{ $usuario->activo ? 'activo' : 'inactivo' }}"
+                                    title="{{ $usuario->activo ? 'Desactivar usuario' : 'Activar usuario' }}"
+                                    data-tooltip="{{ $usuario->activo ? 'Desactivar usuario' : 'Activar usuario' }}"
                                     data-id="{{ $usuario->id }}"
                                     data-name="{{ $usuario->username }}"
                                     data-activo="{{ $usuario->activo ? 1 : 0 }}"
+                                    aria-pressed="{{ $usuario->activo ? 'true' : 'false' }}"
                                     data-url="{{ route('usuarios.estado', $usuario) }}">
-                                    <i class="fa-solid {{ $usuario->activo ? 'fa-toggle-on' : 'fa-toggle-off' }}"></i>
+                                    <span class="usuario-toggle-track">
+                                        <span class="usuario-toggle-thumb"></span>
+                                    </span>
                                 </button>
 
                                 @elseif ($accion->slug === 'usuarios.password')
