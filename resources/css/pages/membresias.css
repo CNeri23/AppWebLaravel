@@ -116,6 +116,8 @@
     color: #000 !important;
 }
 #tablaMembresias .membresia-action-btn:has(.fa-pen),
+#tablaMembresias .membresia-action-btn:has(.fa-pen-to-square),
+#tablaMembresias .membresia-action-btn:has(.fa-pencil),
 #tablaMembresias .membresia-action-btn.btn-editar-membresia {
     border-color: #0d6efd !important;
     background: #0d6efd !important;
