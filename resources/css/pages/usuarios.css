@@ -84,3 +84,92 @@
     z-index: 1;
     background: var(--bs-modal-bg);
 }
+
+.usuario-toggle-btn {
+    position: relative;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 36px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.usuario-toggle-btn:hover {
+    background: rgba(0, 122, 255, 0.08);
+}
+
+.usuario-toggle-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.18);
+}
+
+.usuario-toggle-btn:disabled {
+    cursor: wait;
+}
+
+.usuario-toggle-track {
+    position: relative;
+    display: block;
+    width: 34px;
+    height: 20px;
+    border-radius: 999px;
+    background: var(--bs-secondary-bg);
+    border: 1px solid var(--bs-border-color);
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.usuario-toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.usuario-toggle-btn.activo .usuario-toggle-track {
+    background: var(--bs-success);
+    border-color: var(--bs-success);
+}
+
+.usuario-toggle-btn.activo .usuario-toggle-thumb {
+    transform: translateX(14px);
+}
+
+.usuario-toggle-btn.inactivo .usuario-toggle-track {
+    background: var(--bs-secondary-bg);
+    border-color: var(--bs-border-color);
+}
+
+.usuario-toggle-btn.inactivo .usuario-toggle-thumb {
+    transform: translateX(0);
+}
+
+.usuario-toggle-btn.procesando {
+    pointer-events: none;
+}
+
+.usuario-toggle-btn.procesando .usuario-toggle-track {
+    opacity: 0.6;
+}
+
+.usuario-toggle-btn.procesando .usuario-toggle-thumb {
+    opacity: 0.8;
+}
