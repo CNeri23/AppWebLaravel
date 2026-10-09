@@ -132,35 +132,19 @@ class UserController extends Controller
         $datos = $request->validate([
             'username' => $servicio->reglasUsername($usuario->id),
             ...$servicio->reglasPersona($usuario->persona?->id),
-            'activo' => ['nullable', 'boolean'],
         ], [
             ...$servicio->mensajesUsername(),
             ...$servicio->mensajesPersona(),
         ]);
 
-        $activo = $request->boolean('activo');
-
-        if (!$activo && $usuario->id === auth()->id()) {
-            return response()->json([
-                'success' => false,
-                'mensaje' => 'No puedes desactivar tu propia cuenta.',
-            ], 422);
-        }
-
         $cambios = [];
 
-        DB::transaction(function () use ($usuario, $datos, $activo, &$cambios) {
+        DB::transaction(function () use ($usuario, $datos, &$cambios) {
             if ($usuario->username !== $datos['username']) {
                 $cambios[] = 'Usuario: "' . $usuario->username . '" → "' . $datos['username'] . '"';
             }
 
-            if ($usuario->activo !== $activo) {
-                $cambios[] = 'Estado: ' . ($usuario->activo ? 'Activo' : 'Inactivo') .
-                    ' → ' . ($activo ? 'Activo' : 'Inactivo');
-            }
-
             $usuario->username = $datos['username'];
-            $usuario->activo = $activo;
             $usuario->save();
 
             $persona = $usuario->persona ?? new \App\Models\Persona(['usuario_id' => $usuario->id]);
