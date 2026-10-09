@@ -182,3 +182,25 @@
         min-width: 850px;
     }
 }
+
+/* Colores de acciones de la tabla: Editar y Eliminar. */
+#tablaPlanes .plan-action-btn:has(.fa-pen-to-square) {
+    border-color: #0d6efd !important;
+    background: #0d6efd !important;
+    color: #fff !important;
+}
+#tablaPlanes .plan-action-btn:has(.fa-pen-to-square):hover {
+    border-color: #0a58ca !important;
+    background: #0a58ca !important;
+    color: #fff !important;
+}
+#tablaPlanes .plan-action-btn:has(.fa-trash-can) {
+    border-color: #dc3545 !important;
+    background: #dc3545 !important;
+    color: #fff !important;
+}
+#tablaPlanes .plan-action-btn:has(.fa-trash-can):hover {
+    border-color: #b02a37 !important;
+    background: #b02a37 !important;
+    color: #fff !important;
+}
