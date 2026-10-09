@@ -163,7 +163,7 @@
 
 {{-- MODAL NUEVO USUARIO --}}
 <div class="modal fade" id="modalNuevoUsuario" tabindex="-1" aria-labelledby="modalNuevoUsuarioLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalNuevoUsuarioLabel">
@@ -201,13 +201,6 @@
                             name="password_confirmation" placeholder="Confirma la contraseña" required
                             autocomplete="new-password">
                         <div class="invalid-feedback" id="password-confirmation-error"></div>
-                    </div>
-
-                    <div class="form-check form-switch mb-4">
-                        <input class="form-check-input" type="checkbox" role="switch" id="nuevo_activo" name="activo"
-                            value="1" checked>
-                        <label class="form-check-label" for="nuevo_activo">Usuario activo</label>
-                        <div class="form-text">Si está inactivo no podrá iniciar sesión.</div>
                     </div>
 
                     <h6 class="fw-semibold mb-3"><i class="fa-solid fa-user me-2"></i>Datos personales</h6>
@@ -308,13 +301,6 @@
                         <input type="text" class="form-control" id="editar_username" name="username" maxlength="50"
                             placeholder="Ej. juan.perez" required>
                         <div class="invalid-feedback" id="editar-username-error"></div>
-                    </div>
-
-                    <div class="form-check form-switch mb-4">
-                        <input class="form-check-input" type="checkbox" role="switch" id="editar_activo" name="activo"
-                            value="1">
-                        <label class="form-check-label" for="editar_activo">Usuario activo</label>
-                        <div class="form-text">Si está inactivo no podrá iniciar sesión.</div>
                     </div>
 
                     <h6 class="fw-semibold mb-3"><i class="fa-solid fa-user me-2"></i>Datos personales</h6>
