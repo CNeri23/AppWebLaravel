@@ -55,7 +55,7 @@
                 </thead>
 
                 <tbody>
-                    @forelse ($direcciones as $direccion)
+                    @foreach ($direcciones as $direccion)
                     <tr>
                         <td>
                             {{ $direccion->calle }}
@@ -137,7 +137,7 @@
                             </div>
                         </td>
                     </tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
             </table>
         </div>
