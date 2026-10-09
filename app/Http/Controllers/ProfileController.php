@@ -16,7 +16,7 @@ class ProfileController extends Controller
 {
     public function index(SystemSettings $settings, PasswordPolicy $politica)
     {
-        $usuario = Auth::user()->load('roles');
+        $usuario = Auth::user()->load(['roles', 'persona.direccion', 'persona.tipos']);
 
         $puedeVerLogs = $usuario->permissions()
             ->contains(function ($permiso) {
