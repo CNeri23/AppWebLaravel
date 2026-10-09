@@ -197,6 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const csrfToken = csrfTokenElement ? csrfTokenElement.content : '';
 
     let dataTable = null;
+    let observacionesOriginales = null;
 
     const modalNuevo = document.getElementById('modalNuevaMembresia');
     const modalEditar = document.getElementById('modalEditarMembresia');
@@ -2190,6 +2191,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
             evento.preventDefault();
 
+            const observacionesActuales =
+                String(
+                    document.getElementById('editar_observaciones')?.value || ''
+                ).trim();
+
+            if (observacionesActuales === (observacionesOriginales ?? '')) {
+                window.showToast(
+                    'info',
+                    'No hubo cambios para actualizar.'
+                );
+
+                return;
+            }
+
             const boton =
                 formEditar.querySelector(
                     'button[type="submit"]'
@@ -2569,6 +2584,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         observaciones;
                 }
 
+                observacionesOriginales =
+                    String(observaciones || '').trim();
+
                 if (formEditar) {
                     formEditar.action =
                         url;
@@ -2806,6 +2824,8 @@ document.addEventListener('DOMContentLoaded', function () {
     modalEditar?.addEventListener(
         'hidden.bs.modal',
         function () {
+
+            observacionesOriginales = null;
 
             resetFormulario(
                 formEditar
