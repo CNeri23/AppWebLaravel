@@ -137,15 +137,6 @@
                             </div>
                         </td>
                     </tr>
-                    @empty
-                    <tr>
-                        <td colspan="10" class="text-center py-5">
-                            <div class="text-secondary">
-                                <i class="fa-solid fa-location-dot fa-2x mb-3"></i>
-                                <p class="mb-0">No hay direcciones registradas.</p>
-                            </div>
-                        </td>
-                    </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -170,10 +161,6 @@
                 @csrf
 
                 <div class="modal-body">
-                    <h6 class="fw-semibold mb-3">
-                        <i class="fa-solid fa-location-dot me-2"></i>
-                        Datos de la dirección
-                    </h6>
 
                     <div class="row g-3">
 
@@ -279,10 +266,6 @@
 
                     <input type="hidden" id="editar_id" name="id">
 
-                    <h6 class="fw-semibold mb-3">
-                        <i class="fa-solid fa-location-dot me-2"></i>
-                        Datos de la dirección
-                    </h6>
 
                     <div class="row g-3">
 
