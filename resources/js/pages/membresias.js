@@ -259,11 +259,35 @@ document.addEventListener('DOMContentLoaded', function () {
             reverseButtons: true,
             confirmButtonText: textoConfirmar,
             cancelButtonText: 'Cancelar',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
             buttonsStyling: false,
             heightAuto: false,
             customClass: {
                 confirmButton: claseConfirmar + ' mx-1',
                 cancelButton: 'btn btn-secondary mx-1'
+            },
+            didOpen: function (popup) {
+                const contenedor = Swal.getContainer();
+
+                if (contenedor) {
+                    contenedor.addEventListener('click', function (evento) {
+                        if (evento.target === contenedor) {
+                            popup.animate(
+                                [
+                                    { transform: 'translateX(0)' },
+                                    { transform: 'translateX(-8px)' },
+                                    { transform: 'translateX(8px)' },
+                                    { transform: 'translateX(-6px)' },
+                                    { transform: 'translateX(6px)' },
+                                    { transform: 'translateX(0)' }
+                                ],
+                                { duration: 300, easing: 'ease-in-out' }
+                            );
+                        }
+                    }, true);
+                }
             }
         }).then(function (resultado) {
             return resultado.isConfirmed;
@@ -293,11 +317,35 @@ document.addEventListener('DOMContentLoaded', function () {
             reverseButtons: true,
             confirmButtonText: 'Imprimir',
             cancelButtonText: 'Cancelar',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
             buttonsStyling: false,
             heightAuto: false,
             customClass: {
                 confirmButton: 'btn btn-primary mx-1',
                 cancelButton: 'btn btn-secondary mx-1'
+            },
+            didOpen: function (popup) {
+                const contenedor = Swal.getContainer();
+
+                if (contenedor) {
+                    contenedor.addEventListener('click', function (evento) {
+                        if (evento.target === contenedor) {
+                            popup.animate(
+                                [
+                                    { transform: 'translateX(0)' },
+                                    { transform: 'translateX(-8px)' },
+                                    { transform: 'translateX(8px)' },
+                                    { transform: 'translateX(-6px)' },
+                                    { transform: 'translateX(6px)' },
+                                    { transform: 'translateX(0)' }
+                                ],
+                                { duration: 300, easing: 'ease-in-out' }
+                            );
+                        }
+                    }, true);
+                }
             }
         }).then(function (resultado) {
             if (resultado.isConfirmed) {
