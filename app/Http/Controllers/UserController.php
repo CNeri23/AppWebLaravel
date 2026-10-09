@@ -114,13 +114,7 @@ class UserController extends Controller
             'success' => true,
             'mensaje' => 'Usuario creado correctamente.',
             'usuario' => $servicio->presentar($usuario),
-            'urls' => [
-                'update' => route('usuarios.update', $usuario),
-                'estado' => route('usuarios.estado', $usuario),
-                'password' => route('usuarios.password', $usuario),
-                'roles' => route('usuarios.roles', $usuario),
-                'delete' => route('usuarios.destroy', $usuario),
-            ],
+            'urls' => $this->urls($usuario),
         ]);
     }
 
@@ -335,4 +329,14 @@ class UserController extends Controller
         ]);
     }
 
+    private function urls(User $usuario): array
+    {
+        return [
+            'update' => route('usuarios.update', $usuario),
+            'estado' => route('usuarios.estado', $usuario),
+            'password' => route('usuarios.password', $usuario),
+            'roles' => route('usuarios.roles', $usuario),
+            'delete' => route('usuarios.destroy', $usuario),
+        ];
+    }
 }
