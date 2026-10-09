@@ -256,3 +256,57 @@ html[data-bs-theme] .plan-actions .btn:has(.fa-user-shield):hover,
 html[data-bs-theme] .plan-actions .btn:has(.fa-user-check):hover,
 html[data-bs-theme] .plan-actions .btn:has(.fa-shield-halved):hover,
 html[data-bs-theme] .plan-actions .btn:has(.bi-shield-lock):hover { color: #fff !important; border-color: #198754 !important; background-color: #198754 !important; }
+
+ 
+/* Acciones con relleno permanente para mantener consistencia visual en las tablas. */
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-eye),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.bi-eye) {
+    color: #fff !important;
+    background-color: #0dcaf0 !important;
+    border-color: #0dcaf0 !important;
+}
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-pen),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-pen-to-square),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-pencil),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-edit),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-user-pen),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.bi-pencil),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn[class*="btn-editar"] {
+    color: #fff !important;
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+}
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-trash),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-trash-can),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-ban),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.bi-trash),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn[class*="btn-eliminar"],
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn[class*="btn-cancelar"] {
+    color: #fff !important;
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-arrows-rotate),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-rotate),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn[class*="btn-renovar"] {
+    color: #fff !important;
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+}
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-key),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.bi-key) {
+    color: #212529 !important;
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+}
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-user-shield),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-user-check),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.fa-shield-halved),
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:has(.bi-shield-lock) {
+    color: #fff !important;
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+}
+html[data-bs-theme] #tablaPlanes .plan-action-btn, .plan-actions .btn:is(:hover, :focus-visible) {
+    filter: brightness(.9);
+}
