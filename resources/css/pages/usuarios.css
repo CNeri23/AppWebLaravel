@@ -173,3 +173,45 @@
 .usuario-toggle-btn.procesando .usuario-toggle-thumb {
     opacity: 0.8;
 }
+
+/* Colores de acciones de la tabla: Editar, contraseña, roles y Eliminar. */
+#tablaUsuarios .usuario-action-btn:has(.fa-pen) {
+    border-color: #0d6efd !important;
+    background: #0d6efd !important;
+    color: #fff !important;
+}
+#tablaUsuarios .usuario-action-btn:has(.fa-pen):hover {
+    border-color: #0a58ca !important;
+    background: #0a58ca !important;
+    color: #fff !important;
+}
+#tablaUsuarios .usuario-action-btn:has(.fa-key) {
+    border-color: #ffc107 !important;
+    background: #ffc107 !important;
+    color: #212529 !important;
+}
+#tablaUsuarios .usuario-action-btn:has(.fa-key):hover {
+    border-color: #ffca2c !important;
+    background: #ffca2c !important;
+    color: #212529 !important;
+}
+#tablaUsuarios .usuario-action-btn:has(.fa-user-shield) {
+    border-color: #198754 !important;
+    background: #198754 !important;
+    color: #fff !important;
+}
+#tablaUsuarios .usuario-action-btn:has(.fa-user-shield):hover {
+    border-color: #146c43 !important;
+    background: #146c43 !important;
+    color: #fff !important;
+}
+#tablaUsuarios .usuario-action-btn:has(.fa-trash) {
+    border-color: #dc3545 !important;
+    background: #dc3545 !important;
+    color: #fff !important;
+}
+#tablaUsuarios .usuario-action-btn:has(.fa-trash):hover {
+    border-color: #b02a37 !important;
+    background: #b02a37 !important;
+    color: #fff !important;
+}
