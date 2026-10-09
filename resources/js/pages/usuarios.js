@@ -169,6 +169,9 @@ document.addEventListener('DOMContentLoaded', function () {
             reverseButtons: true,
             confirmButtonText: opciones.textoConfirmar,
             cancelButtonText: 'Cancelar',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
             buttonsStyling: false,
             heightAuto: false,
             customClass: {
