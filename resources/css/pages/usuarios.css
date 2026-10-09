@@ -36,3 +36,17 @@
     overflow-x: auto;
     overflow-y: hidden;
 }
+
+#modalNuevoUsuario .usuario-modal,
+#modalEditarUsuario .usuario-modal {
+    width: calc(100% - 2rem);
+    max-width: 680px;
+}
+
+@media (max-width: 575.98px) {
+    #modalNuevoUsuario .usuario-modal,
+    #modalEditarUsuario .usuario-modal {
+        width: auto;
+        max-width: none;
+    }
+}
