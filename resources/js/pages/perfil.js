@@ -64,6 +64,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const profileInfoEmail =
         document.getElementById('profileInfoEmail');
 
+    const profileDetailName =
+        document.getElementById('profileDetailName');
+
+    const profileDetailUsername =
+        document.getElementById('profileDetailUsername');
+
+    const profileDetailEmail =
+        document.getElementById('profileDetailEmail');
+
+    const profileDetailPhone =
+        document.getElementById('profileDetailPhone');
+
     const profileImageInput =
         document.getElementById('profile_image');
 
@@ -478,7 +490,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (profileInfoEmail) {
             profileInfoEmail.textContent =
-                usuario.email;
+                usuario.email || 'No registrado';
+        }
+
+        if (profileDetailName) {
+            profileDetailName.textContent = [
+                usuario.nombre,
+                usuario.apellido_paterno,
+                usuario.apellido_materno
+            ].filter(Boolean).join(' ') || usuario.name || 'No registrado';
+        }
+
+        if (profileDetailUsername && usuario.username) {
+            profileDetailUsername.textContent = '@' + usuario.username;
+        }
+
+        if (profileDetailEmail) {
+            profileDetailEmail.textContent = usuario.email || 'No registrado';
+        }
+
+        if (profileDetailPhone) {
+            profileDetailPhone.textContent = usuario.telefono || 'No registrado';
         }
 
         if (usuario.updated_at) {
