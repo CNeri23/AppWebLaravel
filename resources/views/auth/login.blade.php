@@ -1,9 +1,11 @@
 @php
     $systemSettings = app(\App\Services\SystemSettings::class)->all();
 
-    $themeMode = $systemSettings['theme_mode'] ?? 'light';
-    $lightThemeStyle = $systemSettings['light_theme_style'] ?? 'white';
-    $darkThemeStyle = $systemSettings['dark_theme_style'] ?? 'graphite';
+    // Antes de autenticar no existe una preferencia de tema asociada a un usuario.
+    // El login utiliza un tema inicial temporal; después del acceso se aplica la preferencia personal.
+    $themeMode = 'light';
+    $lightThemeStyle = 'white';
+    $darkThemeStyle = 'graphite';
     $accentColor = $systemSettings['accent_color'] ?? 'orange';
     $systemName = $systemSettings['system_name'] ?? 'IronPulse';
 
