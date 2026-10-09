@@ -244,18 +244,6 @@
                         </div>
                     </div>
 
-                    @if ($roles->isNotEmpty())
-                    <label class="form-label fw-semibold">Roles (opcional)</label>
-                    <div class="border rounded p-3">
-                        @foreach ($roles as $rol)
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="roles[]" value="{{ $rol->id }}"
-                                id="nuevo_rol_{{ $rol->id }}">
-                            <label class="form-check-label" for="nuevo_rol_{{ $rol->id }}">{{ $rol->name }}</label>
-                        </div>
-                        @endforeach
-                    </div>
-                    @endif
                 </div>
 
                 <div class="modal-footer">
