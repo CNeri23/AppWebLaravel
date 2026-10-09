@@ -133,19 +133,18 @@
                                 @foreach ($accionesCajas as $accion)
                                     @if ($accion->slug === 'cajas.editar')
                                         <button type="button"
-                                            class="btn btn-sm {{ $caja->activo ? 'btn-outline-danger' : 'btn-outline-success' }} caja-action-btn"
-                                            title="{{ $caja->activo ? 'Desactivar' : 'Activar' }}"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#modalEstadoCaja"
+                                            class="usuario-toggle-btn caja-toggle-btn {{ $caja->activo ? 'activo' : 'inactivo' }}"
+                                            title="{{ $caja->activo ? 'Desactivar caja' : 'Activar caja' }}"
+                                            data-tooltip="{{ $caja->activo ? 'Desactivar caja' : 'Activar caja' }}"
+                                            aria-label="{{ $caja->activo ? 'Desactivar caja' : 'Activar caja' }}"
+                                            aria-pressed="{{ $caja->activo ? 'true' : 'false' }}"
                                             data-id="{{ $caja->id }}"
-                                            data-nombre="{{ $caja->nombre }}"
+                                            data-name="{{ $caja->nombre }}"
                                             data-activo="{{ $caja->activo ? 1 : 0 }}"
                                             data-url="{{ route('cajas.estado', $caja) }}">
-                                            @if ($caja->activo)
-                                                <i class="fa-solid fa-toggle-off"></i>
-                                            @else
-                                                <i class="fa-solid fa-toggle-on"></i>
-                                            @endif
+                                            <span class="usuario-toggle-track">
+                                                <span class="usuario-toggle-thumb"></span>
+                                            </span>
                                         </button>
                                     @endif
                                 @endforeach
