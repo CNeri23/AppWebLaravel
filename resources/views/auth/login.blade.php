@@ -81,16 +81,6 @@
 <body>
     <div id="toastStack" class="toast-stack"></div>
     <div class="login-page">
-        <button type="button" class="theme-switch login-theme-switch" id="loginThemeToggle"
-            aria-label="Cambiar tema" title="Cambiar tema">
-            <span class="theme-switch-track">
-                <span class="theme-switch-thumb">
-                    <i class="fa-solid fa-sun theme-switch-sun"></i>
-                    <i class="fa-solid fa-moon theme-switch-moon"></i>
-                </span>
-            </span>
-        </button>
-
         <div class="login-form-side">
             <div class="login-form-wrap">
                 <div class="auth-form-stage" id="authFormStage" data-initial-panel="{{ $authPanel ?? 'login' }}"
