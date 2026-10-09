@@ -2,6 +2,17 @@
     try {
         var raiz = document.documentElement;
         var modo = raiz.dataset.themeMode || 'light';
+
+        if (raiz.dataset.themeGuest === 'true') {
+            try {
+                var temaGuardado = localStorage.getItem('ironpulse-login-theme');
+
+                if (temaGuardado === 'dark' || temaGuardado === 'light') {
+                    modo = temaGuardado;
+                }
+            } catch (e) { }
+        }
+
         var tema = modo === 'dark' ? 'dark' : 'light';
 
         raiz.setAttribute('data-bs-theme', tema);
@@ -19,8 +30,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const html = document.documentElement;
 
     const themeSwitch = document.getElementById('themeSwitch');
+    const loginThemeToggle = document.getElementById('loginThemeToggle');
+    const toggleTema = themeSwitch || loginThemeToggle;
+    const esTemaDeInvitado = Boolean(loginThemeToggle);
 
     let themeMode = html.dataset.themeMode || 'light';
+
+    if (esTemaDeInvitado) {
+        try {
+            const temaGuardado = localStorage.getItem('ironpulse-login-theme');
+
+            if (temaGuardado === 'dark' || temaGuardado === 'light') {
+                themeMode = temaGuardado;
+            }
+        } catch (e) { }
+    }
     let lightThemeStyle = html.dataset.lightThemeStyle || 'white';
     let darkThemeStyle = html.dataset.darkThemeStyle || 'graphite';
 
@@ -87,13 +111,20 @@ document.addEventListener('DOMContentLoaded', function () {
             estiloActual
         );
 
-        if (themeSwitch) {
-            themeSwitch.setAttribute(
+        if (toggleTema) {
+            toggleTema.setAttribute(
                 'aria-checked',
                 theme === 'dark' ? 'true' : 'false'
             );
 
-            themeSwitch.title =
+            toggleTema.setAttribute(
+                'aria-label',
+                theme === 'dark'
+                    ? 'Cambiar a modo claro'
+                    : 'Cambiar a modo oscuro'
+            );
+
+            toggleTema.title =
                 theme === 'dark'
                     ? 'Cambiar a modo claro'
                     : 'Cambiar a modo oscuro';
@@ -535,6 +566,14 @@ document.addEventListener('DOMContentLoaded', function () {
         applyTheme(tema);
 
         try {
+            if (esTemaDeInvitado) {
+                try {
+                    localStorage.setItem('ironpulse-login-theme', themeMode);
+                } catch (e) { }
+
+                return;
+            }
+
             const respuesta =
                 await guardarPreferenciasTema({
                     theme_mode: themeMode,
@@ -626,13 +665,13 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        if (!themeSwitch) {
+        if (!toggleTema) {
             guardarYAplicar(siguiente);
 
             return;
         }
 
-        const caja = themeSwitch.getBoundingClientRect();
+        const caja = toggleTema.getBoundingClientRect();
         const x = caja.left + caja.width / 2;
         const y = caja.top + caja.height / 2;
 
@@ -702,7 +741,7 @@ document.addEventListener('DOMContentLoaded', function () {
         applyTheme(themeMode);
     });
 
-    themeSwitch?.addEventListener('click', function () {
+    toggleTema?.addEventListener('click', function () {
         const actual =
             html.getAttribute('data-bs-theme');
 
