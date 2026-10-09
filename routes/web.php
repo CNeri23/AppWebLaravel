@@ -324,7 +324,7 @@ Route::middleware('auth')->group(function () {
         ->name('modulos.destroy');
 
     Route::patch('/modulos/{modulo}/toggle', [ModuloController::class, 'toggle'])
-        ->middleware('permiso:accion,modulos.activar')
+        ->middleware('permiso:accion,modulos.toggle')
         ->name('modulos.toggle');
 
     Route::patch('/modulos/{modulo}/reordenar', [ModuloController::class, 'reorder'])
@@ -346,7 +346,7 @@ Route::middleware('auth')->group(function () {
         ->name('submodulos.destroy');
 
     Route::patch('/submodulos/{submodulo}/toggle', [SubmoduloController::class, 'toggle'])
-        ->middleware('permiso:accion,submodulos.activar')
+        ->middleware('permiso:accion,submodulos.toggle')
         ->name('submodulos.toggle');
 
     Route::patch('/submodulos/{submodulo}/reordenar', [SubmoduloController::class, 'reorder'])
