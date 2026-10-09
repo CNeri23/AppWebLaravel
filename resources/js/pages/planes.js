@@ -795,10 +795,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 snapshot.precio;
 
             if (!hayCambios) {
-                cerrarModal(
-                    modalEditar
-                );
-
                 window.showToast(
                     'info',
                     'No hubo cambios para actualizar.'
