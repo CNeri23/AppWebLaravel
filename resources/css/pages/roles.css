@@ -217,15 +217,6 @@
         padding-left: 42px;
     }
 }
-
-/* Colores de acciones de la tabla: Editar, Permisos y Eliminar. */
-#tablaRoles .rol-action-btn:has(.fa-pen),
-#tablaRoles .rol-action-btn:has(.fa-pen-to-square),
-#tablaRoles .rol-action-btn:has(.fa-pencil) {
-    border-color: #0d6efd !important;
-    background: #0d6efd !important;
-    color: #fff !important;
-}
 #tablaRoles .rol-action-btn:has(.fa-pen):hover,
 #tablaRoles .rol-action-btn:has(.fa-pen-to-square):hover,
 #tablaRoles .rol-action-btn:has(.fa-pencil):hover {
@@ -233,19 +224,9 @@
     background: #0a58ca !important;
     color: #fff !important;
 }
-#tablaRoles .rol-action-btn:has(.fa-key) {
-    border-color: #198754 !important;
-    background: #198754 !important;
-    color: #fff !important;
-}
 #tablaRoles .rol-action-btn:has(.fa-key):hover {
     border-color: #146c43 !important;
     background: #146c43 !important;
-    color: #fff !important;
-}
-#tablaRoles .rol-action-btn:has(.fa-trash) {
-    border-color: #dc3545 !important;
-    background: #dc3545 !important;
     color: #fff !important;
 }
 #tablaRoles .rol-action-btn:has(.fa-trash):hover {
