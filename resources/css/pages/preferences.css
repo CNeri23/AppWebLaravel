@@ -463,10 +463,11 @@
     justify-content: center;
     width: 13px;
     height: 11px;
-    border: 1px solid var(--preview-border);
+    border: 1px solid transparent;
     border-radius: 4px;
-    background: var(--preview-surface);
-    color: var(--preview-muted);
+    background: var(--gym);
+    color: var(--on-gym, #ffffff);
+    box-shadow: 0 1px 3px color-mix(in srgb, var(--gym) 22%, transparent);
 }
 
 .theme-preview-action i {
@@ -605,6 +606,7 @@
 
 .theme-preview-chart span:nth-child(6) {
     height: 88%;
+    background: var(--gym);
 }
 
 .theme-preview-chart span:nth-child(7) {
