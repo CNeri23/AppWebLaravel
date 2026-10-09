@@ -6,8 +6,8 @@
     </script>
 
     <div class="profile-header-card card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <div class="d-flex flex-column flex-md-row align-items-center gap-4">
+        <div class="card-body p-4 p-lg-5">
+            <div class="profile-hero d-flex flex-column flex-lg-row align-items-center align-items-lg-start gap-4">
 
                 <div class="profile-avatar-wrapper">
                     @if ($usuario->profile_image)
@@ -25,60 +25,130 @@
                     </button>
                 </div>
 
-                <div class="grow flex-grow-1 text-center text-md-start">
-                    <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-2 mb-1">
-                        <h2 class="fw-bold mb-0" id="profileName">
-                            {{ $usuario->name }}
-                        </h2>
+                <div class="grow flex-grow-1 text-center text-lg-start">
+                    <span class="profile-eyebrow">
+                        <i class="fa-solid fa-id-card me-2"></i>
+                        Mi cuenta
+                    </span>
 
-                        <span class="text-secondary align-self-md-end" id="profileUsername">
-                            &#64;{{ $usuario->username }}
-                        </span>
-
-                        <span class="badge text-bg-success profile-status-badge">
-                            <i class="fa-solid fa-circle me-1"></i>
-                            Activa
-                        </span>
+                    <div class="d-flex flex-column flex-lg-row align-items-center align-items-lg-baseline gap-2 mb-2">
+                        <h2 class="profile-display-name fw-bold mb-0" id="profileName">{{ $usuario->name }}</h2>
+                        <span class="text-secondary" id="profileUsername">&#64;{{ $usuario->username }}</span>
                     </div>
 
-                    <p class="text-secondary mb-2" id="profileEmail">
-                        <i class="fa-solid fa-envelope me-1"></i>
-                        {{ $usuario->email }}
-                    </p>
+                    <div class="d-flex flex-wrap justify-content-center justify-content-lg-start align-items-center gap-2">
+                        <span class="badge {{ $usuario->activo ? 'text-bg-success' : 'text-bg-secondary' }} profile-status-badge">
+                            <i class="fa-solid fa-circle me-1"></i>
+                            {{ $usuario->activo ? 'Cuenta activa' : 'Cuenta inactiva' }}
+                        </span>
 
-                    <div class="d-flex flex-wrap justify-content-center justify-content-md-start gap-2">
                         @forelse ($usuario->roles as $rol)
-                            <span class="badge bg-primary-subtle text-primary">
-                                <i class="fa-solid fa-shield-halved me-1"></i>
-                                {{ $rol->name }}
+                            <span class="badge bg-primary-subtle text-primary profile-role-badge">
+                                <i class="fa-solid fa-shield-halved me-1"></i>{{ $rol->name }}
                             </span>
                         @empty
-                            <span class="badge bg-secondary-subtle text-secondary">
-                                Sin rol asignado
-                            </span>
+                            <span class="badge bg-secondary-subtle text-secondary profile-role-badge">Sin rol asignado</span>
                         @endforelse
-
-                        <span class="text-secondary small d-flex align-items-center">
-                            <i class="fa-regular fa-calendar me-1"></i>
-                            Miembro desde {{ $usuario->created_at?->timezone($zonaHoraria)->format($formatoFecha) }}
-                        </span>
                     </div>
                 </div>
 
                 <div class="profile-actions">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#modalEditarPerfil">
-                        <i class="fa-solid fa-user-pen me-2"></i>
-                        Editar perfil
+                        <i class="fa-solid fa-user-pen me-2"></i>Editar perfil
                     </button>
 
                     <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
                         data-bs-target="#modalCambiarPassword">
-                        <i class="fa-solid fa-key me-2"></i>
-                        Cambiar contraseña
+                        <i class="fa-solid fa-key me-2"></i>Cambiar contraseña
                     </button>
                 </div>
+            </div>
 
+            <div class="profile-details-divider"></div>
+
+            <div class="profile-details-heading">
+                <div>
+                    <h5 class="fw-bold mb-1">Información personal</h5>
+                    <p class="text-secondary mb-0">Datos asociados a tu cuenta de IronPulse.</p>
+                </div>
+                <span class="profile-account-id">ID #{{ $usuario->id }}</span>
+            </div>
+
+            <div class="profile-details-grid">
+                <div class="profile-detail-item">
+                    <span class="profile-detail-icon"><i class="fa-solid fa-user"></i></span>
+                    <div class="profile-detail-content">
+                        <span class="profile-info-label">Nombre completo</span>
+                        <span class="profile-info-value">{{ $usuario->persona?->nombre_completo ?: 'No registrado' }}</span>
+                    </div>
+                </div>
+
+                <div class="profile-detail-item">
+                    <span class="profile-detail-icon"><i class="fa-solid fa-at"></i></span>
+                    <div class="profile-detail-content">
+                        <span class="profile-info-label">Nombre de usuario</span>
+                        <span class="profile-info-value">{{ '@' . $usuario->username }}</span>
+                    </div>
+                </div>
+
+                <div class="profile-detail-item">
+                    <span class="profile-detail-icon"><i class="fa-solid fa-envelope"></i></span>
+                    <div class="profile-detail-content">
+                        <span class="profile-info-label">Correo electrónico</span>
+                        <span class="profile-info-value">{{ $usuario->persona?->email ?: 'No registrado' }}</span>
+                    </div>
+                </div>
+
+                <div class="profile-detail-item">
+                    <span class="profile-detail-icon"><i class="fa-solid fa-phone"></i></span>
+                    <div class="profile-detail-content">
+                        <span class="profile-info-label">Teléfono</span>
+                        <span class="profile-info-value">{{ $usuario->persona?->telefono ?: 'No registrado' }}</span>
+                    </div>
+                </div>
+
+                <div class="profile-detail-item">
+                    <span class="profile-detail-icon"><i class="fa-solid fa-location-dot"></i></span>
+                    <div class="profile-detail-content">
+                        <span class="profile-info-label">Dirección</span>
+                        <span class="profile-info-value">
+                            @if ($direccion = $usuario->persona?->direccion)
+                                {{ collect([$direccion->calle, trim(($direccion->numero_exterior ?? '') . ' ' . ($direccion->numero_interior ? 'Int. ' . $direccion->numero_interior : '')), $direccion->colonia, $direccion->codigo_postal, $direccion->municipio, $direccion->estado, $direccion->pais])->filter()->implode(', ') }}
+                            @else
+                                No registrada
+                            @endif
+                        </span>
+                    </div>
+                </div>
+
+                <div class="profile-detail-item">
+                    <span class="profile-detail-icon"><i class="fa-solid fa-users"></i></span>
+                    <div class="profile-detail-content">
+                        <span class="profile-info-label">Tipo de persona</span>
+                        <span class="profile-info-value">
+                            {{ $usuario->persona?->tipos?->pluck('nombre')->filter()->implode(', ') ?: 'No especificado' }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="profile-detail-item">
+                    <span class="profile-detail-icon"><i class="fa-regular fa-calendar-plus"></i></span>
+                    <div class="profile-detail-content">
+                        <span class="profile-info-label">Fecha de registro</span>
+                        <span class="profile-info-value">{{ $usuario->created_at?->timezone($zonaHoraria)->format($formatoFecha . ' ' . $formatoHora) ?: 'No disponible' }}</span>
+                    </div>
+                </div>
+
+                <div class="profile-detail-item">
+                    <span class="profile-detail-icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                    <div class="profile-detail-content">
+                        <span class="profile-info-label">Última actualización</span>
+                        <span class="profile-info-value" data-profile-updated="{{ $usuario->updated_at?->toIso8601String() }}">
+                            {{ $usuario->updated_at?->timezone($zonaHoraria)->format($formatoFecha . ' ' . $formatoHora) ?: 'No disponible' }}
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
