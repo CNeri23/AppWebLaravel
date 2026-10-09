@@ -5,9 +5,6 @@ window.showToast = function (tipo, mensaje) {
         tipo = 'info';
     }
 
-    const temaOscuro =
-        document.documentElement.getAttribute('data-bs-theme') === 'dark';
-
     Swal.fire({
         toast: true,
         position: 'bottom-end',

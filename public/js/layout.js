@@ -12,8 +12,7 @@
                 );
 
                 if (preferenciasGuardadas) {
-                    if (preferenciasGuardadas.theme_mode === 'dark' ||
-                        preferenciasGuardadas.theme_mode === 'light') {
+                    if (preferenciasGuardadas.theme_mode === 'dark' || preferenciasGuardadas.theme_mode === 'light') {
                         modo = preferenciasGuardadas.theme_mode;
                     }
 
@@ -34,20 +33,14 @@
         raiz.setAttribute('data-light-theme-style', estiloClaro);
         raiz.setAttribute('data-dark-theme-style', estiloOscuro);
         raiz.setAttribute('data-bs-theme', tema);
-
-        raiz.setAttribute(
-            'data-theme-style',
-            tema === 'dark' ? estiloOscuro : estiloClaro
-        );
+        raiz.setAttribute('data-theme-style', tema === 'dark' ? estiloOscuro : estiloClaro);
     } catch (e) { }
 })();
 
 document.addEventListener('DOMContentLoaded', function () {
     const html = document.documentElement;
-
     const themeSwitch = document.getElementById('themeSwitch');
     const esTemaDeInvitado = html.dataset.themeGuest === 'true';
-
     let themeMode = html.dataset.themeMode || 'light';
     let lightThemeStyle = html.dataset.lightThemeStyle || 'white';
     let darkThemeStyle = html.dataset.darkThemeStyle || 'graphite';
@@ -59,8 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
             if (preferenciasGuardadas) {
-                if (preferenciasGuardadas.theme_mode === 'dark' ||
-                    preferenciasGuardadas.theme_mode === 'light') {
+                if (preferenciasGuardadas.theme_mode === 'dark' || preferenciasGuardadas.theme_mode === 'light') {
                     themeMode = preferenciasGuardadas.theme_mode;
                 }
 
@@ -90,25 +82,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function obtenerEstiloPredeterminado(theme) {
-        return theme === 'dark'
-            ? 'graphite'
-            : 'white';
+        return theme === 'dark' ? 'graphite' : 'white';
     }
 
     function esEstiloClaro(style) {
-        return [
-            'white',
-            'mist',
-            'sky',
-        ].includes(style);
+        return ['white', 'mist', 'sky',].includes(style);
     }
 
     function esEstiloOscuro(style) {
-        return [
-            'graphite',
-            'charcoal',
-            'black',
-        ].includes(style);
+        return ['graphite', 'charcoal', 'black',].includes(style);
     }
 
     function obtenerEstiloParaTema(theme) {
@@ -116,23 +98,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (esEstiloOscuro(darkThemeStyle)) {
                 return darkThemeStyle;
             }
-
             return 'graphite';
         }
 
         if (esEstiloClaro(lightThemeStyle)) {
             return lightThemeStyle;
         }
-
         return 'white';
     }
 
     function applyTheme(theme) {
-        const estiloClaroActual =
-            html.getAttribute('data-light-theme-style');
-
-        const estiloOscuroActual =
-            html.getAttribute('data-dark-theme-style');
+        const estiloClaroActual = html.getAttribute('data-light-theme-style');
+        const estiloOscuroActual = html.getAttribute('data-dark-theme-style');
 
         if (esEstiloClaro(estiloClaroActual)) {
             lightThemeStyle = estiloClaroActual;
@@ -141,42 +118,19 @@ document.addEventListener('DOMContentLoaded', function () {
         if (esEstiloOscuro(estiloOscuroActual)) {
             darkThemeStyle = estiloOscuroActual;
         }
-
         html.setAttribute('data-bs-theme', theme);
-
-        const estiloActual =
-            obtenerEstiloParaTema(theme);
-
-        html.setAttribute(
-            'data-theme-style',
-            estiloActual
-        );
+        const estiloActual = obtenerEstiloParaTema(theme);
+        html.setAttribute('data-theme-style', estiloActual);
 
         if (themeSwitch) {
-            themeSwitch.setAttribute(
-                'aria-checked',
-                theme === 'dark' ? 'true' : 'false'
-            );
-
-            themeSwitch.setAttribute(
-                'aria-label',
-                theme === 'dark'
-                    ? 'Cambiar a modo claro'
-                    : 'Cambiar a modo oscuro'
-            );
-
-            themeSwitch.title =
-                theme === 'dark'
-                    ? 'Cambiar a modo claro'
-                    : 'Cambiar a modo oscuro';
+            themeSwitch.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
+            themeSwitch.setAttribute('aria-label', theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+            themeSwitch.title = theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
         }
 
         document.dispatchEvent(
             new CustomEvent('ironpulse:theme-changed', {
-                detail: {
-                    theme,
-                    style: estiloActual,
-                },
+                detail: { theme, style: estiloActual, },
             })
         );
     }
@@ -185,64 +139,39 @@ document.addEventListener('DOMContentLoaded', function () {
         if (mode !== 'light' && mode !== 'dark') {
             mode = 'light';
         }
-
         themeMode = mode;
-
-        html.setAttribute(
-            'data-theme-mode',
-            themeMode
-        );
-
+        html.setAttribute('data-theme-mode', themeMode);
         applyTheme(themeMode);
     }
 
     function applyThemeStyle(style) {
         if (!style) {
             applyTheme(themeMode);
-
             return;
         }
 
         if (esEstiloClaro(style)) {
             lightThemeStyle = style;
-
-            html.setAttribute(
-                'data-light-theme-style',
-                lightThemeStyle
-            );
+            html.setAttribute('data-light-theme-style', lightThemeStyle);
         }
 
         if (esEstiloOscuro(style)) {
             darkThemeStyle = style;
-
-            html.setAttribute(
-                'data-dark-theme-style',
-                darkThemeStyle
-            );
+            html.setAttribute('data-dark-theme-style', darkThemeStyle);
         }
-
         applyTheme(themeMode);
     }
 
     function applyThemeStyles(lightStyle, darkStyle) {
         if (esEstiloClaro(lightStyle)) {
             lightThemeStyle = lightStyle;
-
-            html.setAttribute(
-                'data-light-theme-style',
-                lightThemeStyle
-            );
+            html.setAttribute('data-light-theme-style', lightThemeStyle);
         }
 
         if (esEstiloOscuro(darkStyle)) {
             darkThemeStyle = darkStyle;
-
-            html.setAttribute(
-                'data-dark-theme-style',
-                darkThemeStyle
-            );
+            html.setAttribute('data-dark-theme-style', darkThemeStyle);
         }
-
         applyTheme(themeMode);
     }
 
@@ -250,11 +179,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!color) {
             return;
         }
-
-        html.setAttribute(
-            'data-accent-color',
-            color
-        );
+        html.setAttribute('data-accent-color', color);
     }
 
     function applySystemName(systemName) {
@@ -262,25 +187,19 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        document
-            .querySelectorAll('.sidebar-brand-text')
+        document.querySelectorAll('.sidebar-brand-text')
             .forEach(elemento => {
                 elemento.textContent = systemName;
             });
-
         const titulo = document.querySelector('title');
 
-        if (
-            titulo &&
-            !titulo.dataset.customTitle
-        ) {
+        if (titulo && !titulo.dataset.customTitle) {
             titulo.textContent = systemName;
         }
     }
 
     function applyLogo(logoPath, systemName) {
-        const brandIcon =
-            document.querySelector('.sidebar-brand-icon');
+        const brandIcon = document.querySelector('.sidebar-brand-icon');
 
         if (!brandIcon) {
             return;
@@ -288,39 +207,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (logoPath) {
             brandIcon.innerHTML = '';
-
-            const imagen =
-                document.createElement('img');
-
-            imagen.src =
-                '/storage/' + logoPath;
-
-            imagen.alt =
-                systemName || 'Logotipo';
-
+            const imagen = document.createElement('img');
+            imagen.src = '/storage/' + logoPath;
+            imagen.alt = systemName || 'Logotipo';
             brandIcon.appendChild(imagen);
-
             return;
         }
-
-        brandIcon.innerHTML =
-            '<i class="fa-solid fa-heart-pulse"></i>';
+        brandIcon.innerHTML = '<i class="fa-solid fa-heart-pulse"></i>';
     }
 
     async function guardarPreferenciasTema(preferencias) {
-        const csrf =
-            document.querySelector(
-                'meta[name="csrf-token"]'
-            )?.getAttribute('content');
+        const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
         if (!csrf) {
-            throw new Error(
-                'No fue posible obtener el token de seguridad.'
-            );
+            throw new Error('No fue posible obtener el token de seguridad.');
         }
 
-        const response = await fetch(
-            '/preferencias/tema',
+        const response = await fetch('/preferencias/tema',
             {
                 method: 'PUT',
                 credentials: 'same-origin',
@@ -333,7 +236,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: JSON.stringify(preferencias),
             }
         );
-
         let data = null;
 
         try {
@@ -341,12 +243,8 @@ document.addEventListener('DOMContentLoaded', function () {
         } catch (e) { }
 
         if (!response.ok || !data?.success) {
-            throw new Error(
-                data?.mensaje ||
-                'No fue posible guardar las preferencias del tema.'
-            );
+            throw new Error(data?.mensaje || 'No fue posible guardar las preferencias del tema.');
         }
-
         return data;
     }
 
@@ -362,13 +260,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (redirigiendoSesion) {
             return;
         }
-
         redirigiendoSesion = true;
-
         const base = html.dataset.loginUrl || '/login';
-
-        window.location.href =
-            base + (base.includes('?') ? '&' : '?') + 'expirada=1';
+        window.location.href = base + (base.includes('?') ? '&' : '?') + 'expirada=1';
     }
 
     function actividadCompartida() {
@@ -384,7 +278,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 ultima = guardada;
             }
         } catch (e) { }
-
         return ultima;
     }
 
@@ -418,9 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!minutosSesion) {
             return;
         }
-
         const ahora = Date.now();
-
         ultimaActividad = ahora;
 
         if (ahora - ultimaEscritura > 5000) {
@@ -438,32 +329,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function configurarSesion(minutos) {
         minutosSesion = Math.max(0, parseInt(minutos, 10) || 0);
-
         html.dataset.sessionTimeout = String(minutosSesion);
-
         clearInterval(temporizadorSesion);
         temporizadorSesion = null;
 
         if (!minutosSesion) {
             return;
         }
-
         ultimaActividad = Date.now();
         ultimoPing = ultimaActividad;
         ultimaEscritura = 0;
-
         registrarActividad();
-
         temporizadorSesion = setInterval(revisarSesion, 5000);
     }
 
     [
-        'mousemove',
-        'mousedown',
-        'keydown',
-        'scroll',
-        'wheel',
-        'touchstart',
+        'mousemove', 'mousedown', 'keydown', 'scroll', 'wheel', 'touchstart',
     ].forEach(function (evento) {
         window.addEventListener(evento, registrarActividad, {
             passive: true,
@@ -489,7 +370,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (zona) {
             html.dataset.timezone = zona;
         }
-
         let hora;
 
         try {
@@ -504,13 +384,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } catch (e) {
             hora = new Date().getHours();
         }
-
-        texto.textContent =
-            hora < 12
-                ? 'Buenos días'
-                : hora < 19
-                    ? 'Buenas tardes'
-                    : 'Buenas noches';
+        texto.textContent = hora < 12 ? 'Buenos días' : hora < 19 ? 'Buenas tardes' : 'Buenas noches';
     }
 
     window.aplicarConfiguracionGlobal = function (settings) {
@@ -518,92 +392,47 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        if (
-            Object.prototype.hasOwnProperty.call(
-                settings,
-                'timezone'
-            )
-        ) {
+        if (Object.prototype.hasOwnProperty.call(settings, 'timezone')) {
             actualizarSaludo(settings.timezone);
         }
 
-        if (
-            Object.prototype.hasOwnProperty.call(
-                settings,
-                'session_timeout'
-            )
-        ) {
+        if (Object.prototype.hasOwnProperty.call(settings, 'session_timeout')) {
             configurarSesion(settings.session_timeout);
         }
 
-        if (
-            Object.prototype.hasOwnProperty.call(
-                settings,
-                'accent_color'
-            )
-        ) {
-            applyAccentColor(
-                settings.accent_color
-            );
+        if (Object.prototype.hasOwnProperty.call(settings, 'accent_color')) {
+            applyAccentColor(settings.accent_color);
         }
 
-        if (
-            Object.prototype.hasOwnProperty.call(
-                settings,
-                'system_name'
-            )
-        ) {
-            applySystemName(
-                settings.system_name
-            );
+        if (Object.prototype.hasOwnProperty.call(settings, 'system_name')) {
+            applySystemName(settings.system_name);
         }
 
-        if (
-            Object.prototype.hasOwnProperty.call(
-                settings,
-                'logo_path'
-            )
-        ) {
-            applyLogo(
-                settings.logo_path,
-                settings.system_name ||
-                html.dataset.systemName
-            );
+        if (Object.prototype.hasOwnProperty.call(settings, 'logo_path')) {
+            applyLogo(settings.logo_path, settings.system_name || html.dataset.systemName);
         }
     };
 
     if (!esEstiloClaro(lightThemeStyle)) {
-        lightThemeStyle =
-            obtenerEstiloPredeterminado('light');
+        lightThemeStyle = obtenerEstiloPredeterminado('light');
     }
 
     if (!esEstiloOscuro(darkThemeStyle)) {
-        darkThemeStyle =
-            obtenerEstiloPredeterminado('dark');
+        darkThemeStyle = obtenerEstiloPredeterminado('dark');
     }
 
-    applyThemeStyles(
-        lightThemeStyle,
-        darkThemeStyle
-    );
-
+    applyThemeStyles(lightThemeStyle, darkThemeStyle);
     applyThemeMode(themeMode);
-
     guardarPreferenciasTemaLocalmente();
-
     applyAccentColor(html.dataset.accentColor);
-
     configurarSesion(html.dataset.sessionTimeout);
-
     actualizarSaludo();
-
     setInterval(actualizarSaludo, 60000);
 
     async function guardarYAplicar(tema) {
         const modoAnterior = themeMode;
         const estiloClaroAnterior = lightThemeStyle;
         const estiloOscuroAnterior = darkThemeStyle;
-
         themeMode = tema;
 
         applyTheme(tema);
@@ -621,109 +450,57 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
             if (respuesta.preferences) {
-                themeMode =
-                    respuesta.preferences.theme_mode;
-
-                lightThemeStyle =
-                    respuesta.preferences.light_theme_style;
-
-                darkThemeStyle =
-                    respuesta.preferences.dark_theme_style;
-
-                html.setAttribute(
-                    'data-theme-mode',
-                    themeMode
-                );
-
-                html.setAttribute(
-                    'data-light-theme-style',
-                    lightThemeStyle
-                );
-
-                html.setAttribute(
-                    'data-dark-theme-style',
-                    darkThemeStyle
-                );
-
+                themeMode = respuesta.preferences.theme_mode;
+                lightThemeStyle = respuesta.preferences.light_theme_style;
+                darkThemeStyle = respuesta.preferences.dark_theme_style;
+                html.setAttribute('data-theme-mode', themeMode);
+                html.setAttribute('data-light-theme-style', lightThemeStyle);
+                html.setAttribute('data-dark-theme-style', darkThemeStyle);
                 applyTheme(themeMode);
             }
-
             guardarPreferenciasTemaLocalmente();
 
             if (typeof window.mostrarAviso === 'function') {
-                window.mostrarAviso(
-                    respuesta.mensaje ||
-                    'El tema se actualizó correctamente.',
-                    'success'
-                );
+                window.mostrarAviso(respuesta.mensaje || 'El tema se actualizó correctamente.', 'success');
             }
         } catch (error) {
             themeMode = modoAnterior;
             lightThemeStyle = estiloClaroAnterior;
             darkThemeStyle = estiloOscuroAnterior;
 
-            html.setAttribute(
-                'data-theme-mode',
-                themeMode
-            );
-
-            html.setAttribute(
-                'data-light-theme-style',
-                lightThemeStyle
-            );
-
-            html.setAttribute(
-                'data-dark-theme-style',
-                darkThemeStyle
-            );
+            html.setAttribute('data-theme-mode', themeMode);
+            html.setAttribute('data-light-theme-style', lightThemeStyle);
+            html.setAttribute('data-dark-theme-style', darkThemeStyle);
 
             applyTheme(themeMode);
-
             if (typeof window.mostrarAviso === 'function') {
-                window.mostrarAviso(
-                    error.message ||
-                    'No fue posible actualizar el tema.',
-                    'danger'
-                );
+                window.mostrarAviso(error.message || 'No fue posible actualizar el tema.', 'danger');
             }
         }
     }
 
     function cambiarTema(siguiente) {
-        const reducirMovimiento = window
-            .matchMedia('(prefers-reduced-motion: reduce)')
-            .matches;
+        const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         if (!document.startViewTransition || reducirMovimiento) {
             html.classList.add('theme-switching');
-
             guardarYAplicar(siguiente);
-
             setTimeout(function () {
                 html.classList.remove('theme-switching');
             }, 450);
-
             return;
         }
 
         if (!themeSwitch) {
             guardarYAplicar(siguiente);
-
             return;
         }
 
         const caja = themeSwitch.getBoundingClientRect();
         const x = caja.left + caja.width / 2;
         const y = caja.top + caja.height / 2;
-
-        const radio = Math.hypot(
-            Math.max(x, window.innerWidth - x),
-            Math.max(y, window.innerHeight - y)
-        );
-
-        const transicion = document.startViewTransition(function () {
-            guardarYAplicar(siguiente);
-        });
+        const radio = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+        const transicion = document.startViewTransition(function () { guardarYAplicar(siguiente); });
 
         transicion.ready.then(function () {
             html.animate(
@@ -747,13 +524,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('ironpulse:preferences-updated', function (event) {
         const preferencias = event.detail || {};
 
-        if (
-            preferencias.theme_mode !== 'light' &&
-            preferencias.theme_mode !== 'dark'
-        ) {
+        if (preferencias.theme_mode !== 'light' && preferencias.theme_mode !== 'dark') {
             return;
         }
-
         themeMode = preferencias.theme_mode;
 
         if (esEstiloClaro(preferencias.light_theme_style)) {
@@ -763,35 +536,16 @@ document.addEventListener('DOMContentLoaded', function () {
         if (esEstiloOscuro(preferencias.dark_theme_style)) {
             darkThemeStyle = preferencias.dark_theme_style;
         }
-
-        html.setAttribute(
-            'data-theme-mode',
-            themeMode
-        );
-
-        html.setAttribute(
-            'data-light-theme-style',
-            lightThemeStyle
-        );
-
-        html.setAttribute(
-            'data-dark-theme-style',
-            darkThemeStyle
-        );
-
+        html.setAttribute('data-theme-mode', themeMode);
+        html.setAttribute('data-light-theme-style', lightThemeStyle);
+        html.setAttribute('data-dark-theme-style', darkThemeStyle);
         applyTheme(themeMode);
         guardarPreferenciasTemaLocalmente();
     });
 
     themeSwitch?.addEventListener('click', function () {
-        const actual =
-            html.getAttribute('data-bs-theme');
-
-        cambiarTema(
-            actual === 'dark'
-                ? 'light'
-                : 'dark'
-        );
+        const actual = html.getAttribute('data-bs-theme');
+        cambiarTema(actual === 'dark' ? 'light' : 'dark');
     });
 
     const sidebar = document.getElementById('appSidebar');
@@ -837,9 +591,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const CURVA_SUBMENU = 'cubic-bezier(0.32, 0.72, 0, 1)';
 
     function reducirMovimiento() {
-        return window
-            .matchMedia('(prefers-reduced-motion: reduce)')
-            .matches;
+        return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     }
 
     function limpiarEstilosSubmenu(submenu) {
@@ -858,39 +610,27 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         clearTimeout(submenu._timer);
-
         button.setAttribute('aria-expanded', 'false');
-
         const visible = submenu.classList.contains('show');
 
         if (!animar || !visible || reducirMovimiento()) {
             submenu.classList.remove('show');
             submenu.classList.remove('collapsing');
-
             limpiarEstilosSubmenu(submenu);
-
             return;
         }
 
         submenu.style.height = submenu.offsetHeight + 'px';
         submenu.style.overflow = 'hidden';
-
         submenu.getBoundingClientRect();
-
-        submenu.style.transition =
-            `height ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}, ` +
-            `padding ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}, ` +
-            `margin ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}`;
-
+        submenu.style.transition = `height ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}, ` + `padding ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}, ` + `margin ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}`;
         submenu.style.height = '0px';
         submenu.style.paddingTop = '0px';
         submenu.style.paddingBottom = '0px';
         submenu.style.marginTop = '0px';
         submenu.style.marginBottom = '0px';
-
         submenu._timer = setTimeout(function () {
             submenu.classList.remove('show');
-
             limpiarEstilosSubmenu(submenu);
         }, DURACION_SUBMENU + 30);
     }
@@ -899,32 +639,22 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!submenu) {
             return;
         }
-
         clearTimeout(submenu._timer);
-
         button.setAttribute('aria-expanded', 'true');
-
         const yaVisible = submenu.classList.contains('show');
 
         if (!animar || yaVisible && !submenu.style.height || reducirMovimiento()) {
             submenu.classList.remove('collapsing');
             submenu.classList.add('show');
-
             limpiarEstilosSubmenu(submenu);
-
             submenu.style.height = 'auto';
             submenu.style.overflow = 'visible';
-
             return;
         }
-
         const desdeAltura = yaVisible ? submenu.offsetHeight : 0;
-
         submenu.classList.add('show');
         limpiarEstilosSubmenu(submenu);
-
         const alto = submenu.scrollHeight;
-
         submenu.style.overflow = 'hidden';
         submenu.style.height = desdeAltura + 'px';
 
@@ -934,23 +664,15 @@ document.addEventListener('DOMContentLoaded', function () {
             submenu.style.marginTop = '0px';
             submenu.style.marginBottom = '0px';
         }
-
         submenu.getBoundingClientRect();
-
-        submenu.style.transition =
-            `height ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}, ` +
-            `padding ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}, ` +
-            `margin ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}`;
-
+        submenu.style.transition = `height ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}, ` + `padding ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}, ` + `margin ${DURACION_SUBMENU}ms ${CURVA_SUBMENU}`;
         submenu.style.height = alto + 'px';
         submenu.style.paddingTop = '';
         submenu.style.paddingBottom = '';
         submenu.style.marginTop = '';
         submenu.style.marginBottom = '';
-
         submenu._timer = setTimeout(function () {
             limpiarEstilosSubmenu(submenu);
-
             submenu.style.height = 'auto';
             submenu.style.overflow = 'visible';
         }, DURACION_SUBMENU + 30);
@@ -958,38 +680,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function cerrarTodosLosSubmenus() {
         const sidebarGroups = obtenerGruposSidebar();
-
         sidebarGroups.forEach(button => {
             const submenu = obtenerSubmenu(button);
-
             cerrarSubmenu(button, submenu);
         });
     }
 
     function inicializarGruposSidebar() {
         const sidebarGroups = obtenerGruposSidebar();
-
         sidebarGroups.forEach(button => {
             button.removeAttribute('data-bs-toggle');
-
             button.addEventListener('click', function (event) {
                 event.preventDefault();
-
                 const submenu = obtenerSubmenu(button);
 
                 if (!submenu) {
                     return;
                 }
 
-                if (
-                    sidebar.classList.contains('collapsed') &&
-                    !esMovil()
-                ) {
+                if (sidebar.classList.contains('collapsed') && !esMovil()) {
                     setCollapsed(false);
                     abrirSubmenu(button, submenu);
                     return;
                 }
-
                 const abierto = submenu.classList.contains('show');
 
                 if (abierto) {
@@ -1021,26 +734,16 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!sidebarMenu) {
             return;
         }
-
         const modulosAbiertos = [];
-
-        sidebar.querySelectorAll(
-            '.sidebar-group-toggle[data-modulo-id]'
+        sidebar.querySelectorAll('.sidebar-group-toggle[data-modulo-id]'
         ).forEach(button => {
             const submenu = obtenerSubmenu(button);
 
-            if (
-                submenu &&
-                submenu.classList.contains('show')
-            ) {
-                modulosAbiertos.push(
-                    button.dataset.moduloId
-                );
+            if (submenu && submenu.classList.contains('show')) {
+                modulosAbiertos.push(button.dataset.moduloId);
             }
         });
-
-        const estabaColapsado =
-            sidebar.classList.contains('collapsed');
+        const estabaColapsado = sidebar.classList.contains('collapsed');
 
         try {
             const response = await fetch(
@@ -1056,44 +759,25 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
             if (!response.ok) {
-                throw new Error(
-                    'No fue posible actualizar el menú lateral.'
-                );
+                throw new Error('No fue posible actualizar el menú lateral.');
             }
-
             const html = await response.text();
-
-            const documento =
-                new DOMParser().parseFromString(
-                    html,
-                    'text/html'
-                );
-
-            const nuevoSidebarMenu =
-                documento.querySelector('.sidebar-menu');
+            const documento = new DOMParser().parseFromString(html, 'text/html');
+            const nuevoSidebarMenu = documento.querySelector('.sidebar-menu');
 
             if (!nuevoSidebarMenu) {
-                throw new Error(
-                    'No fue posible encontrar el menú lateral.'
-                );
+                throw new Error('No fue posible encontrar el menú lateral.');
             }
-
-            sidebarMenu.innerHTML =
-                nuevoSidebarMenu.innerHTML;
-
+            sidebarMenu.innerHTML = nuevoSidebarMenu.innerHTML;
             inicializarGruposSidebar();
 
             modulosAbiertos.forEach(moduloId => {
-                const button = sidebar.querySelector(
-                    `.sidebar-group-toggle[data-modulo-id="${moduloId}"]`
-                );
+                const button = sidebar.querySelector(`.sidebar-group-toggle[data-modulo-id="${moduloId}"]`);
 
                 if (!button) {
                     return;
                 }
-
-                const submenu =
-                    obtenerSubmenu(button);
+                const submenu = obtenerSubmenu(button);
 
                 if (submenu) {
                     abrirSubmenu(button, submenu);
@@ -1102,28 +786,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (estabaColapsado) {
                 sidebar.classList.add('collapsed');
-                document.body.classList.add(
-                    'sidebar-collapsed'
-                );
+                document.body.classList.add('sidebar-collapsed');
             }
-
             actualizarTitulos(estabaColapsado);
-
         } catch (error) {
-            console.error(
-                'Error al actualizar el sidebar:',
-                error
-            );
+            console.error('Error al actualizar el sidebar:', error);
         }
     };
 
     inicializarGruposSidebar();
 
     function actualizarTitulos(collapsed) {
-        sidebar
-            .querySelectorAll(
-                '.sidebar-link[data-label], .sidebar-group-toggle[data-label]'
-            )
+        sidebar.querySelectorAll('.sidebar-link[data-label], .sidebar-group-toggle[data-label]')
             .forEach(elemento => {
                 if (collapsed) {
                     elemento.title = elemento.dataset.label;
@@ -1139,16 +813,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!activo) {
             return;
         }
-
         const submenu = activo.closest('.sidebar-submenu');
 
         if (!submenu) {
             return;
         }
-
-        const button = sidebar.querySelector(
-            `.sidebar-group-toggle[data-bs-target="#${submenu.id}"]`
-        );
+        const button = sidebar.querySelector(`.sidebar-group-toggle[data-bs-target="#${submenu.id}"]`);
 
         if (button) {
             abrirSubmenu(button, submenu);
@@ -1157,22 +827,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function setCollapsed(collapsed) {
         sidebar.classList.toggle('collapsed', collapsed);
-
-        document.body.classList.toggle(
-            'sidebar-collapsed',
-            collapsed
-        );
-
-        sidebarToggleBtn?.setAttribute(
-            'aria-expanded',
-            collapsed ? 'false' : 'true'
-        );
-
-        localStorage.setItem(
-            'sidebar-collapsed',
-            collapsed ? '1' : '0'
-        );
-
+        document.body.classList.toggle('sidebar-collapsed', collapsed);
+        sidebarToggleBtn?.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+        localStorage.setItem('sidebar-collapsed', collapsed ? '1' : '0');
         actualizarTitulos(collapsed);
 
         if (collapsed) {
@@ -1183,9 +840,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (window.matchMedia('(min-width: 992px)').matches) {
-        const guardado =
-            localStorage.getItem('sidebar-collapsed') === '1';
-
+        const guardado = localStorage.getItem('sidebar-collapsed') === '1';
         setCollapsed(guardado);
     }
 
@@ -1194,10 +849,7 @@ document.addEventListener('DOMContentLoaded', function () {
             toggleMobileSidebar();
             return;
         }
-
-        const estaColapsado =
-            sidebar.classList.contains('collapsed');
-
+        const estaColapsado = sidebar.classList.contains('collapsed');
         setCollapsed(!estaColapsado);
     });
 
@@ -1206,28 +858,16 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('resize', function () {
         const anchoActual = window.innerWidth;
 
-        if (
-            anchoAnterior >= 992 &&
-            anchoActual < 992
-        ) {
+        if (anchoAnterior >= 992 && anchoActual < 992) {
             sidebar.classList.remove('collapsed');
-            document.body.classList.remove(
-                'sidebar-collapsed'
-            );
-
+            document.body.classList.remove('sidebar-collapsed');
             cerrarTodosLosSubmenus();
         }
 
-        if (
-            anchoAnterior < 992 &&
-            anchoActual >= 992
-        ) {
-            const guardado =
-                localStorage.getItem('sidebar-collapsed') === '1';
-
+        if (anchoAnterior < 992 && anchoActual >= 992) {
+            const guardado = localStorage.getItem('sidebar-collapsed') === '1';
             setCollapsed(guardado);
         }
-
         anchoAnterior = anchoActual;
     });
 });

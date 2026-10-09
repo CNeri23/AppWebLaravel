@@ -10,23 +10,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         params.delete('expirada');
-
         const resto = params.toString();
-
-        window.history.replaceState(
-            {},
-            '',
-            window.location.pathname +
-            (resto ? '?' + resto : '') +
-            window.location.hash
-        );
+        window.history.replaceState({}, '', window.location.pathname + (resto ? '?' + resto : '') + window.location.hash);
 
         setTimeout(function () {
             if (typeof window.showToast === 'function') {
-                window.showToast(
-                    'error',
-                    'Tu sesión expiró por inactividad. Inicia sesión de nuevo.'
-                );
+                window.showToast('error', 'Tu sesión expiró por inactividad. Inicia sesión de nuevo.');
             }
         }, 300);
     })();
@@ -37,38 +26,20 @@ document.addEventListener('DOMContentLoaded', function () {
         if (params.get('desactivada') !== '1') {
             return;
         }
-
         params.delete('desactivada');
-
         const resto = params.toString();
-
-        window.history.replaceState(
-            {},
-            '',
-            window.location.pathname +
-            (resto ? '?' + resto : '') +
-            window.location.hash
-        );
+        window.history.replaceState({}, '', window.location.pathname + (resto ? '?' + resto : '') + window.location.hash);
 
         setTimeout(function () {
             if (typeof window.showToast === 'function') {
-                window.showToast(
-                    'error',
-                    'Tu cuenta está desactivada. Contacta al administrador.'
-                );
+                window.showToast('error', 'Tu cuenta está desactivada. Contacta al administrador.');
             }
         }, 300);
     })();
 
     (function iniciarEscenaGym() {
-        const sinMovimiento = window.matchMedia(
-            '(prefers-reduced-motion: reduce)'
-        ).matches;
-
-        const formato = function (n) {
-            return n.toLocaleString('es-MX');
-        };
-
+        const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const formato = function (n) {return n.toLocaleString('es-MX');};
         const destacar = function (el) {
             el.classList.remove('is-tick');
             void el.offsetWidth;
@@ -82,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 el.textContent = formato(destino);
                 return;
             }
-
             el.textContent = '0';
 
             setTimeout(function () {
@@ -92,14 +62,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 function paso(ahora) {
                     const t = Math.min((ahora - inicio) / duracion, 1);
                     const suave = 1 - Math.pow(1 - t, 3);
-
                     el.textContent = formato(Math.round(destino * suave));
 
                     if (t < 1) {
                         requestAnimationFrame(paso);
                     }
                 }
-
                 requestAnimationFrame(paso);
 
                 if (el.hasAttribute('data-live')) {
@@ -143,42 +111,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const panels = document.querySelectorAll('.auth-panel');
     const authLinks = document.querySelectorAll('[data-auth-target]');
-
     const PANEL_KEY = 'authCurrentPanel';
+    const panelInicialServidor = authFormStage.dataset.initialPanel || 'login';
 
-    const panelInicialServidor =
-        authFormStage.dataset.initialPanel || 'login';
-
-    let panelActual =
-        panelInicialServidor !== 'login'
-            ? panelInicialServidor
-            : localStorage.getItem(PANEL_KEY) || 'login';
-
+    let panelActual = panelInicialServidor !== 'login' ? panelInicialServidor : localStorage.getItem(PANEL_KEY) || 'login';
     let cambiandoPanel = false;
 
-    const passwordMinimo =
-        parseInt(authFormStage.dataset.passwordMin, 10) || 8;
-
-    const passwordComplejo =
-        authFormStage.dataset.passwordComplex === '1';
+    const passwordMinimo = parseInt(authFormStage.dataset.passwordMin, 10) || 8;
+    const passwordComplejo = authFormStage.dataset.passwordComplex === '1';
 
     function mensajePassword(valor) {
         if (valor.length < passwordMinimo) {
-            return 'La contraseña debe tener al menos ' +
-                passwordMinimo + ' caracteres.';
+            return 'La contraseña debe tener al menos ' + passwordMinimo + ' caracteres.';
         }
 
-        if (
-            passwordComplejo &&
-            !(
-                /\p{Ll}/u.test(valor) &&
-                /\p{Lu}/u.test(valor) &&
-                /\d/.test(valor)
-            )
-        ) {
+        if (passwordComplejo && !(/\p{Ll}/u.test(valor) && /\p{Lu}/u.test(valor) && /\d/.test(valor))) {
             return 'La contraseña debe incluir al menos una mayúscula, una minúscula y un número.';
         }
-
         return '';
     }
 
@@ -192,7 +141,6 @@ document.addEventListener('DOMContentLoaded', function () {
             errorDiv.textContent = '';
             return;
         }
-
         const mensaje = mensajePassword(input.value);
 
         if (!mensaje) {
@@ -201,7 +149,6 @@ document.addEventListener('DOMContentLoaded', function () {
             errorDiv.textContent = '';
             return;
         }
-
         input.classList.remove('is-valid');
 
         if (alSalir || input.classList.contains('is-invalid')) {
@@ -211,8 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (authFormStage.dataset.registrationEnabled === '0') {
-        document
-            .querySelectorAll('[data-auth-target="register"], [data-register-only]')
+        document.querySelectorAll('[data-auth-target="register"], [data-register-only]')
             .forEach(function (elemento) {
                 elemento.hidden = true;
                 elemento.style.display = 'none';
@@ -238,11 +184,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!panel) {
             return;
         }
-
         panel.querySelectorAll('.form-control').forEach(function (input) {
             input.classList.remove('is-invalid', 'is-valid');
         });
-
         panel.querySelectorAll('.invalid-feedback').forEach(function (error) {
             error.textContent = '';
         });
@@ -250,13 +194,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function activarPanelInicial() {
         panels.forEach(function (panel) {
-            panel.classList.remove(
-                'auth-panel-active',
-                'auth-panel-enter',
-                'auth-panel-exit'
-            );
+            panel.classList.remove('auth-panel-active', 'auth-panel-enter', 'auth-panel-exit');
         });
-
         let panelInicial = obtenerPanel(panelActual);
 
         if (!panelInicial) {
@@ -267,14 +206,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!panelInicial) {
             return;
         }
-
         panelInicial.classList.add('auth-panel-active');
-
         localStorage.setItem(PANEL_KEY, panelActual);
-
-        const primerInput = panelInicial.querySelector(
-            'input:not([type="hidden"])'
-        );
+        const primerInput = panelInicial.querySelector('input:not([type="hidden"])');
 
         if (primerInput && panelActual !== 'login') {
             setTimeout(function () {
@@ -294,44 +228,26 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!panelActualElement || !nuevoPanel) {
             return;
         }
-
         cambiandoPanel = true;
-
         limpiarErroresPanel(panelActualElement);
         limpiarErroresPanel(nuevoPanel);
 
-        nuevoPanel.classList.remove(
-            'auth-panel-active',
-            'auth-panel-enter'
-        );
-
+        nuevoPanel.classList.remove('auth-panel-active', 'auth-panel-enter');
         panelActualElement.classList.remove('auth-panel-enter');
         panelActualElement.classList.add('auth-panel-exit');
 
         setTimeout(function () {
-            panelActualElement.classList.remove(
-                'auth-panel-active',
-                'auth-panel-exit'
-            );
-
-            nuevoPanel.classList.add(
-                'auth-panel-active',
-                'auth-panel-enter'
-            );
-
+            panelActualElement.classList.remove('auth-panel-active', 'auth-panel-exit');
+            nuevoPanel.classList.add('auth-panel-active', 'auth-panel-enter');
             panelActual = nombre;
 
             if (guardar) {
                 localStorage.setItem(PANEL_KEY, panelActual);
             }
-
             setTimeout(function () {
                 nuevoPanel.classList.remove('auth-panel-enter');
                 cambiandoPanel = false;
-
-                const primerInput = nuevoPanel.querySelector(
-                    'input:not([type="hidden"])'
-                );
+                const primerInput = nuevoPanel.querySelector('input:not([type="hidden"])');
 
                 if (primerInput) {
                     primerInput.focus();
@@ -348,15 +264,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Campo de usuario del login (se conservan los nombres de variable originales)
     const emailInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const emailError = document.getElementById('username-error');
     const passwordError = document.getElementById('password-error');
     const rememberInput = document.getElementById('remember');
-
     const REMEMBER_KEY = 'loginRememberedUsername';
-
     const emailGuardado = localStorage.getItem(REMEMBER_KEY);
 
     if (emailGuardado && rememberInput && emailInput) {
@@ -366,11 +279,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (panelActual === 'login' && emailInput) {
         setTimeout(function () {
-            const correoRecordado =
-                rememberInput &&
-                rememberInput.checked &&
-                emailInput.value.trim() !== '';
-
+            const correoRecordado = rememberInput && rememberInput.checked && emailInput.value.trim() !== '';
             if (correoRecordado && passwordInput) {
                 passwordInput.focus();
             } else {
@@ -404,18 +313,14 @@ document.addEventListener('DOMContentLoaded', function () {
             emailInput.classList.remove('is-valid');
             emailInput.classList.add('is-invalid');
             emailError.textContent = errors.username[0];
-
-            primerCampoInvalido =
-                primerCampoInvalido || emailInput;
+            primerCampoInvalido = primerCampoInvalido || emailInput;
         }
 
         if (errors.password && passwordInput && passwordError) {
             passwordInput.classList.remove('is-valid');
             passwordInput.classList.add('is-invalid');
             passwordError.textContent = errors.password[0];
-
-            primerCampoInvalido =
-                primerCampoInvalido || passwordInput;
+            primerCampoInvalido = primerCampoInvalido || passwordInput;
         }
 
         if (primerCampoInvalido) {
@@ -466,25 +371,15 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!input || !icon) {
                 return;
             }
-
             const seVaAMostrar = input.type === 'password';
-
             input.type = seVaAMostrar ? 'text' : 'password';
-
             icon.classList.toggle('fa-eye', !seVaAMostrar);
             icon.classList.toggle('fa-eye-slash', seVaAMostrar);
-
-            button.setAttribute(
-                'aria-label',
-                seVaAMostrar
-                    ? 'Ocultar contraseña'
-                    : 'Mostrar contraseña'
-            );
+            button.setAttribute('aria-label', seVaAMostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
         });
     });
 
-    const togglePasswordBtn =
-        document.getElementById('togglePassword');
+    const togglePasswordBtn = document.getElementById('togglePassword');
 
     if (togglePasswordBtn && passwordInput) {
         togglePasswordBtn.dataset.passwordTarget = 'password';
@@ -492,18 +387,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     formLogin.addEventListener('submit', function (event) {
         event.preventDefault();
-
         limpiarErroresLogin();
 
-        const botonSubmit =
-            formLogin.querySelector('button[type="submit"]');
-
+        const botonSubmit = formLogin.querySelector('button[type="submit"]');
         const textoOriginal = botonSubmit.innerHTML;
-
         botonSubmit.disabled = true;
-        botonSubmit.innerHTML =
-            '<span class="spinner-border spinner-border-sm me-2"></span>Ingresando...';
-
+        botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Ingresando...';
         const formData = new FormData(formLogin);
 
         fetch(formLogin.action, {
@@ -525,40 +414,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 if (!response.ok || data.success === false) {
-                    window.showToast(
-                        'error',
-                        data.mensaje ||
-                        'Ocurrió un error al iniciar sesión.'
-                    );
+                    window.showToast('error', data.mensaje || 'Ocurrió un error al iniciar sesión.');
 
                     if (emailInput) {
                         emailInput.focus();
                     }
-
                     return;
                 }
 
                 if (rememberInput && rememberInput.checked) {
-                    localStorage.setItem(
-                        REMEMBER_KEY,
-                        emailInput.value.trim()
-                    );
+                    localStorage.setItem(REMEMBER_KEY, emailInput.value.trim());
                 } else {
                     localStorage.removeItem(REMEMBER_KEY);
                 }
-
                 localStorage.removeItem(PANEL_KEY);
 
-                setTimeout(function () {
-                    window.location.href =
-                        data.redirect || '/dashboard';
-                }, 500);
+                setTimeout(function () { window.location.href = data.redirect || '/dashboard';}, 500);
             })
             .catch(function () {
-                window.showToast(
-                    'error',
-                    'No se pudo conectar con el servidor. Intenta de nuevo.'
-                );
+                window.showToast('error', 'No se pudo conectar con el servidor. Intenta de nuevo.');
             })
             .finally(function () {
                 botonSubmit.disabled = false;
@@ -567,13 +441,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     if (formRegister) {
-        const registerUsername =
-            document.getElementById('registerUsername');
-
-        const registerEmail =
-            document.getElementById('registerEmail');
-
-        // [campo del servidor, input, div de error]
+        const registerUsername = document.getElementById('registerUsername');
+        const registerEmail = document.getElementById('registerEmail');
         const camposPersona = [
             ['username', registerUsername],
             ['nombre', document.getElementById('registerNombre')],
@@ -590,49 +459,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 ),
             };
         });
-
         const OBLIGATORIOS = {
             username: 'El usuario es obligatorio.',
             nombre: 'El nombre es obligatorio.',
             apellido_paterno: 'El apellido paterno es obligatorio.',
             email: 'El correo electrónico es obligatorio.',
         };
-
-        const registerPassword =
-            document.getElementById('registerPassword');
-
-        const registerPasswordConfirmation =
-            document.getElementById(
-                'registerPasswordConfirmation'
-            );
-
-        const registerPasswordError =
-            document.getElementById('register-password-error');
-
-        const registerPasswordConfirmationError =
-            document.getElementById('register-password-confirmation-error');
+        const registerPassword = document.getElementById('registerPassword');
+        const registerPasswordConfirmation = document.getElementById('registerPasswordConfirmation');
+        const registerPasswordError = document.getElementById('register-password-error');
+        const registerPasswordConfirmationError = document.getElementById('register-password-confirmation-error');
 
         formRegister.addEventListener('submit', function (event) {
             event.preventDefault();
-
             limpiarErroresPanel(obtenerPanel('register'));
-
             let primeroInvalido = null;
-
             camposPersona.forEach(function (campo) {
                 const valor = campo.input ? campo.input.value.trim() : '';
                 let mensaje = '';
 
                 if (!valor && OBLIGATORIOS[campo.key]) {
                     mensaje = OBLIGATORIOS[campo.key];
-                } else if (
-                    campo.key === 'username' &&
-                    valor &&
-                    (valor.length < 3 || !/^[A-Za-z0-9._-]+$/.test(valor))
-                ) {
-                    mensaje = valor.length < 3
-                        ? 'El usuario debe tener al menos 3 caracteres.'
-                        : 'Solo letras, números, punto, guion y guion bajo (sin espacios).';
+                } else if (campo.key === 'username' && valor && (valor.length < 3 || !/^[A-Za-z0-9._-]+$/.test(valor))) {
+                    mensaje = valor.length < 3 ? 'El usuario debe tener al menos 3 caracteres.' : 'Solo letras, números, punto, guion y guion bajo (sin espacios).';
                 } else if (campo.key === 'email' && valor && !campo.input.checkValidity()) {
                     mensaje = 'Ingresa un correo electrónico válido.';
                 }
@@ -646,48 +495,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (primeroInvalido) {
                 primeroInvalido.focus();
-
                 return;
             }
-
-            const mensajeClave = registerPassword
-                ? mensajePassword(registerPassword.value)
-                : '';
+            const mensajeClave = registerPassword ? mensajePassword(registerPassword.value) : '';
 
             if (mensajeClave) {
                 registerPassword.classList.add('is-invalid');
                 registerPasswordError.textContent = mensajeClave;
                 registerPassword.focus();
-
                 return;
             }
 
-            if (
-                registerPasswordConfirmation &&
-                registerPassword.value !== registerPasswordConfirmation.value
-            ) {
+            if (registerPasswordConfirmation && registerPassword.value !== registerPasswordConfirmation.value) {
                 registerPasswordConfirmation.classList.add('is-invalid');
-                registerPasswordConfirmationError.textContent =
-                    'Las contraseñas no coinciden.';
+                registerPasswordConfirmationError.textContent = 'Las contraseñas no coinciden.';
                 registerPasswordConfirmation.focus();
-
                 return;
             }
 
-            const botonSubmit =
-                formRegister.querySelector(
-                    'button[type="submit"]'
-                );
-
+            const botonSubmit = formRegister.querySelector('button[type="submit"]');
             const textoOriginal = botonSubmit.innerHTML;
-
             botonSubmit.disabled = true;
-            botonSubmit.innerHTML =
-                '<span class="spinner-border spinner-border-sm me-2"></span>Creando cuenta...';
-
-            limpiarErroresPanel(
-                obtenerPanel('register')
-            );
+            botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creando cuenta...';
+            limpiarErroresPanel(obtenerPanel('register'));
 
             const formData = new FormData(formRegister);
 
@@ -710,43 +540,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
 
                     if (!response.ok || data.success === false) {
-                        window.showToast(
-                            'error',
-                            data.mensaje ||
-                            'No se pudo crear la cuenta.'
-                        );
-
+                        window.showToast('error', data.mensaje || 'No se pudo crear la cuenta.');
                         return;
                     }
+                    window.showToast('success', data.mensaje || 'Cuenta creada correctamente.');
 
-                    window.showToast(
-                        'success',
-                        data.mensaje ||
-                        'Cuenta creada correctamente.'
-                    );
-
-                    const usuarioRegistrado =
-                        data.username ||
-                        (registerUsername
-                            ? registerUsername.value.trim().toLowerCase()
-                            : '');
-
+                    const usuarioRegistrado = data.username || (registerUsername ? registerUsername.value.trim().toLowerCase() : '');
                     formRegister.reset();
 
                     setTimeout(function () {
                         cambiarPanel('login');
-
                         if (emailInput && usuarioRegistrado) {
-                            emailInput.value =
-                                usuarioRegistrado;
+                            emailInput.value = usuarioRegistrado;
                         }
                     }, 700);
                 })
                 .catch(function () {
-                    window.showToast(
-                        'error',
-                        'No se pudo conectar con el servidor. Intenta de nuevo.'
-                    );
+                    window.showToast('error', 'No se pudo conectar con el servidor. Intenta de nuevo.');
                 })
                 .finally(function () {
                     botonSubmit.disabled = false;
@@ -756,7 +566,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function mostrarErroresRegistro(errors) {
             let primerCampoInvalido = null;
-
             const campos = camposPersona.concat([
                 {
                     key: 'password',
@@ -779,13 +588,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     campo.input.classList.add(
                         'is-invalid'
                     );
-
-                    campo.error.textContent =
-                        errors[campo.key][0];
-
-                    primerCampoInvalido =
-                        primerCampoInvalido ||
-                        campo.input;
+                    campo.error.textContent = errors[campo.key][0];
+                    primerCampoInvalido = primerCampoInvalido || campo.input;
                 }
             });
 
@@ -842,17 +646,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (formForgot) {
-        const forgotEmail =
-            document.getElementById('forgotEmail');
-
-        const forgotEmailError =
-            document.getElementById(
-                'forgot-email-error'
-            );
+        const forgotEmail = document.getElementById('forgotEmail');
+        const forgotEmailError = document.getElementById('forgot-email-error');
 
         formForgot.addEventListener('submit', function (event) {
             event.preventDefault();
-
             forgotEmail.classList.remove(
                 'is-invalid',
                 'is-valid'
@@ -860,17 +658,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             forgotEmailError.textContent = '';
 
-            const botonSubmit =
-                formForgot.querySelector(
-                    'button[type="submit"]'
-                );
-
+            const botonSubmit = formForgot.querySelector('button[type="submit"]');
             const textoOriginal = botonSubmit.innerHTML;
-
             botonSubmit.disabled = true;
-            botonSubmit.innerHTML =
-                '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
-
+            botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
             const formData = new FormData(formForgot);
 
             fetch(formForgot.action, {
@@ -891,59 +682,29 @@ document.addEventListener('DOMContentLoaded', function () {
                             forgotEmail.classList.add(
                                 'is-invalid'
                             );
-
-                            forgotEmailError.textContent =
-                                data.errors.email[0];
-
+                            forgotEmailError.textContent = data.errors.email[0];
                             forgotEmail.focus();
                         }
-
                         return;
                     }
 
                     if (!response.ok || data.success === false) {
-                        window.showToast(
-                            'error',
-                            data.mensaje ||
-                            'No se pudo enviar el correo de recuperación.'
-                        );
-
+                        window.showToast('error', data.mensaje || 'No se pudo enviar el correo de recuperación.');
                         return;
                     }
-
-                    window.showToast(
-                        'success',
-                        data.mensaje ||
-                        'Si el correo existe, recibirás las instrucciones para recuperar tu contraseña.'
-                    );
-
-                    const correoRecuperacion =
-                        forgotEmail.value.trim();
-
-                    const resetEmail =
-                        document.getElementById(
-                            'resetEmail'
-                        );
+                    window.showToast('success', data.mensaje || 'Si el correo existe, recibirás las instrucciones para recuperar tu contraseña.');
+                    const correoRecuperacion = forgotEmail.value.trim();
+                    const resetEmail = document.getElementById('resetEmail');
 
                     if (resetEmail && correoRecuperacion) {
-                        resetEmail.value =
-                            correoRecuperacion;
+                        resetEmail.value = correoRecuperacion;
                     }
-
-                    localStorage.setItem(
-                        PANEL_KEY,
-                        'reset'
-                    );
-
+                    localStorage.setItem(PANEL_KEY, 'reset');
                     cambiarPanel('reset', true);
-
                     formForgot.reset();
                 })
                 .catch(function () {
-                    window.showToast(
-                        'error',
-                        'No se pudo conectar con el servidor. Intenta de nuevo.'
-                    );
+                    window.showToast('error', 'No se pudo conectar con el servidor. Intenta de nuevo.');
                 })
                 .finally(function () {
                     botonSubmit.disabled = false;
@@ -962,31 +723,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (formResetPassword) {
-        const resetEmail =
-            document.getElementById('resetEmail');
-
-        const resetPassword =
-            document.getElementById('resetPassword');
-
-        const resetPasswordConfirmation =
-            document.getElementById(
-                'resetPasswordConfirmation'
-            );
-
-        const resetEmailError =
-            document.getElementById(
-                'reset-email-error'
-            );
-
-        const resetPasswordError =
-            document.getElementById(
-                'reset-password-error'
-            );
-
-        const resetPasswordConfirmationError =
-            document.getElementById(
-                'reset-password-confirmation-error'
-            );
+        const resetEmail = document.getElementById('resetEmail');
+        const resetPassword = document.getElementById('resetPassword');
+        const resetPasswordConfirmation = document.getElementById('resetPasswordConfirmation');
+        const resetEmailError = document.getElementById('reset-email-error');
+        const resetPasswordError = document.getElementById('reset-password-error');
+        const resetPasswordConfirmationError = document.getElementById('reset-password-confirmation-error');
 
         function mostrarErroresReset(errors) {
             let primerCampoInvalido = null;
@@ -995,41 +737,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 resetEmail.classList.add(
                     'is-invalid'
                 );
-
-                resetEmailError.textContent =
-                    errors.email[0];
-
-                primerCampoInvalido =
-                    primerCampoInvalido ||
-                    resetEmail;
+                resetEmailError.textContent = errors.email[0];
+                primerCampoInvalido = primerCampoInvalido || resetEmail;
             }
 
             if (errors.password) {
                 resetPassword.classList.add(
                     'is-invalid'
                 );
-
-                resetPasswordError.textContent =
-                    errors.password[0];
-
-                primerCampoInvalido =
-                    primerCampoInvalido ||
-                    resetPassword;
+                resetPasswordError.textContent = errors.password[0];
+                primerCampoInvalido = primerCampoInvalido || resetPassword;
             }
 
             if (errors.password_confirmation) {
                 resetPasswordConfirmation.classList.add(
                     'is-invalid'
                 );
-
-                resetPasswordConfirmationError.textContent =
-                    errors.password_confirmation[0];
-
-                primerCampoInvalido =
-                    primerCampoInvalido ||
-                    resetPasswordConfirmation;
+                resetPasswordConfirmationError.textContent = errors.password_confirmation[0];
+                primerCampoInvalido = primerCampoInvalido || resetPasswordConfirmation;
             }
-
             if (primerCampoInvalido) {
                 primerCampoInvalido.focus();
             }
@@ -1039,22 +765,15 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!resetPasswordConfirmation) {
                 return;
             }
-
-            const tieneValor =
-                resetPasswordConfirmation.value.trim() !== '';
-
-            const coincide =
-                resetPasswordConfirmation.value ===
-                resetPassword.value;
+            const tieneValor = resetPasswordConfirmation.value.trim() !== '';
+            const coincide = resetPasswordConfirmation.value === resetPassword.value;
 
             if (!tieneValor) {
                 resetPasswordConfirmation.classList.remove(
                     'is-invalid',
                     'is-valid'
                 );
-
                 resetPasswordConfirmationError.textContent = '';
-
                 return;
             }
 
@@ -1062,21 +781,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 resetPasswordConfirmation.classList.remove(
                     'is-invalid'
                 );
-
                 resetPasswordConfirmation.classList.add(
                     'is-valid'
                 );
-
                 resetPasswordConfirmationError.textContent = '';
             } else {
                 resetPasswordConfirmation.classList.remove(
                     'is-valid'
                 );
-
                 resetPasswordConfirmation.classList.add(
                     'is-invalid'
                 );
-
                 resetPasswordConfirmationError.textContent =
                     'Las contraseñas no coinciden.';
             }
@@ -1086,11 +801,7 @@ document.addEventListener('DOMContentLoaded', function () {
             resetPassword.addEventListener(
                 'input',
                 function () {
-                    validarPasswordEnVivo(
-                        resetPassword,
-                        resetPasswordError
-                    );
-
+                    validarPasswordEnVivo(resetPassword, resetPasswordError);
                     validarConfirmacionPassword();
                 }
             );
@@ -1100,11 +811,7 @@ document.addEventListener('DOMContentLoaded', function () {
             resetPassword.addEventListener(
                 'blur',
                 function () {
-                    validarPasswordEnVivo(
-                        resetPassword,
-                        resetPasswordError,
-                        true
-                    );
+                    validarPasswordEnVivo(resetPassword, resetPasswordError, true);
                 }
             );
         }
@@ -1118,83 +825,38 @@ document.addEventListener('DOMContentLoaded', function () {
             );
         }
 
-        formResetPassword.addEventListener(
-            'submit',
+        formResetPassword.addEventListener('submit',
             function (event) {
                 event.preventDefault();
-
-                limpiarErroresPanel(
-                    obtenerPanel('reset')
-                );
-
+                limpiarErroresPanel(obtenerPanel('reset'));
                 validarConfirmacionPassword();
 
-                const tokenInput =
-                    document.getElementById(
-                        'resetToken'
-                    );
+                const tokenInput = document.getElementById('resetToken');
 
-                if (
-                    !tokenInput ||
-                    !tokenInput.value.trim()
-                ) {
-                    window.showToast(
-                        'error',
-                        'Primero debes abrir el enlace que recibiste en tu correo para validar la recuperación de contraseña.'
-                    );
-
+                if (!tokenInput || !tokenInput.value.trim()) {
+                    window.showToast('error', 'Primero debes abrir el enlace que recibiste en tu correo para validar la recuperación de contraseña.');
                     return;
                 }
-
-                const mensajeClave =
-                    resetPassword.value.trim() === ''
-                        ? 'La contraseña es obligatoria.'
-                        : mensajePassword(resetPassword.value);
+                const mensajeClave = resetPassword.value.trim() === '' ? 'La contraseña es obligatoria.' : mensajePassword(resetPassword.value);
 
                 if (mensajeClave) {
-                    resetPassword.classList.add(
-                        'is-invalid'
-                    );
-
-                    resetPasswordError.textContent =
-                        mensajeClave;
-
+                    resetPassword.classList.add('is-invalid');
+                    resetPasswordError.textContent = mensajeClave;
                     resetPassword.focus();
-
                     return;
                 }
 
-                if (
-                    resetPassword.value !==
-                    resetPasswordConfirmation.value
-                ) {
-                    resetPasswordConfirmation.classList.add(
-                        'is-invalid'
-                    );
-
-                    resetPasswordConfirmationError.textContent =
-                        'Las contraseñas no coinciden.';
-
+                if (resetPassword.value !== resetPasswordConfirmation.value) {
+                    resetPasswordConfirmation.classList.add('is-invalid');
+                    resetPasswordConfirmationError.textContent ='Las contraseñas no coinciden.';
                     resetPasswordConfirmation.focus();
-
                     return;
                 }
-
-                const botonSubmit =
-                    formResetPassword.querySelector(
-                        'button[type="submit"]'
-                    );
-
-                const textoOriginal =
-                    botonSubmit.innerHTML;
-
+                const botonSubmit = formResetPassword.querySelector('button[type="submit"]');
+                const textoOriginal = botonSubmit.innerHTML;
                 botonSubmit.disabled = true;
-
-                botonSubmit.innerHTML =
-                    '<span class="spinner-border spinner-border-sm me-2"></span>Restableciendo...';
-
-                const formData =
-                    new FormData(formResetPassword);
+                botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Restableciendo...';
+                const formData = new FormData(formResetPassword);
 
                 fetch(formResetPassword.action, {
                     method: 'POST',
@@ -1212,54 +874,28 @@ document.addEventListener('DOMContentLoaded', function () {
                                 }
                             );
 
-                        if (
-                            response.status === 422 &&
-                            data.errors
-                        ) {
-                            mostrarErroresReset(
-                                data.errors
-                            );
-
+                        if (response.status === 422 && data.errors) {
+                            mostrarErroresReset(data.errors);
                             return;
                         }
 
-                        if (
-                            !response.ok ||
-                            data.success === false
-                        ) {
-                            window.showToast(
-                                'error',
-                                data.mensaje ||
-                                'No se pudo restablecer la contraseña.'
-                            );
-
+                        if (!response.ok || data.success === false) {
+                            window.showToast('error', data.mensaje || 'No se pudo restablecer la contraseña.');
                             return;
                         }
-
                         localStorage.removeItem(PANEL_KEY);
-
-                        window.showToast(
-                            'success',
-                            data.mensaje ||
-                            'Contraseña restablecida correctamente. Ya puedes iniciar sesión.'
-                        );
+                        window.showToast('success', data.mensaje ||'Contraseña restablecida correctamente. Ya puedes iniciar sesión.');
 
                         setTimeout(function () {
-                            window.location.href =
-                                data.redirect ||
-                                '/login';
+                            window.location.href =data.redirect || '/login';
                         }, 1000);
                     })
                     .catch(function () {
-                        window.showToast(
-                            'error',
-                            'No se pudo conectar con el servidor. Intenta de nuevo.'
-                        );
+                        window.showToast('error', 'No se pudo conectar con el servidor. Intenta de nuevo.');
                     })
                     .finally(function () {
                         botonSubmit.disabled = false;
-                        botonSubmit.innerHTML =
-                            textoOriginal;
+                        botonSubmit.innerHTML = textoOriginal;
                     });
             }
         );
