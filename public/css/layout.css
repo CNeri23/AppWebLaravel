@@ -1821,17 +1821,62 @@ html[data-bs-theme] .modal {
     --modal-head-bg: var(--gym);
 }
 
-/* Los botones de las tablas conservan su estilo propio, sin usar el color de acento. */
-html[data-bs-theme] table .btn {
-    border-color: var(--bs-btn-border-color, transparent) !important;
-    background-color: var(--bs-btn-bg, transparent) !important;
-    color: var(--bs-btn-color, var(--text-main)) !important;
+/* Los botones de las tablas conservan colores semánticos uniformes, independientes del acento. */
+html[data-bs-theme] table .btn-info,
+html[data-bs-theme] table .btn-outline-info {
+    --bs-btn-color: #055160;
+    --bs-btn-bg: #0dcaf0;
+    --bs-btn-border-color: #0dcaf0;
+    --bs-btn-hover-color: #000000;
+    --bs-btn-hover-bg: #3dd5f3;
+    --bs-btn-hover-border-color: #25cff2;
+    --bs-btn-active-color: #000000;
+    --bs-btn-active-bg: #3dd5f3;
+    --bs-btn-active-border-color: #25cff2;
+    --bs-btn-disabled-color: #055160;
+    --bs-btn-disabled-bg: #0dcaf0;
+    --bs-btn-disabled-border-color: #0dcaf0;
+    border-color: #0dcaf0 !important;
+    background-color: #0dcaf0 !important;
+    color: #055160 !important;
 }
 
-html[data-bs-theme] table .btn:hover,
-html[data-bs-theme] table .btn:focus-visible {
-    border-color: var(--bs-btn-hover-border-color, var(--bs-btn-border-color, transparent)) !important;
-    background-color: var(--bs-btn-hover-bg, var(--bs-btn-bg, transparent)) !important;
-    color: var(--bs-btn-hover-color, var(--bs-btn-color, var(--text-main))) !important;
+html[data-bs-theme] table .btn-info:hover,
+html[data-bs-theme] table .btn-outline-info:hover {
+    border-color: #25cff2 !important;
+    background-color: #3dd5f3 !important;
+    color: #000000 !important;
+}
+
+html[data-bs-theme] table .btn-primary,
+html[data-bs-theme] table .btn-outline-primary,
+html[data-bs-theme] table .btn[class*="btn-editar"],
+html[data-bs-theme] table .btn[class*="btn-editar-membresia"] {
+    border-color: #0d6efd !important;
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+}
+
+html[data-bs-theme] table .btn-primary:hover,
+html[data-bs-theme] table .btn-outline-primary:hover,
+html[data-bs-theme] table .btn[class*="btn-editar"]:hover,
+html[data-bs-theme] table .btn[class*="btn-editar-membresia"]:hover {
+    border-color: #0a58ca !important;
+    background-color: #0a58ca !important;
+    color: #ffffff !important;
+}
+
+html[data-bs-theme] table .btn-danger,
+html[data-bs-theme] table .btn-outline-danger {
+    border-color: #dc3545 !important;
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+html[data-bs-theme] table .btn-danger:hover,
+html[data-bs-theme] table .btn-outline-danger:hover {
+    border-color: #b02a37 !important;
+    background-color: #b02a37 !important;
+    color: #ffffff !important;
 }
 
