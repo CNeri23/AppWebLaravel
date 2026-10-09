@@ -167,13 +167,7 @@ window.politicaPassword = @json($politicaPassword ?? []);
                 @csrf
 
                 <div class="modal-body">
-                    <h6 class="fw-semibold mb-3">
-                        <i class="fa-solid fa-user me-2"></i>
-                        Datos personales
-                    </h6>
-
                     <div class="row g-3">
-
                         <div class="col-md-4">
                             <label for="nombre" class="form-label">
                                 Nombre
@@ -276,11 +270,6 @@ window.politicaPassword = @json($politicaPassword ?? []);
 
                 <div class="modal-body">
                     <input type="hidden" id="editar_id" name="id">
-                    <h6 class="fw-semibold mb-3">
-                        <i class="fa-solid fa-user me-2"></i>
-                        Datos personales
-                    </h6>
-
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label for="editar_nombre" class="form-label">
