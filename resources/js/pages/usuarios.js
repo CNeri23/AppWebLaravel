@@ -399,6 +399,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     (accion.icono || '<i class="fa-solid fa-pen"></i>') +
                     '</button>';
 
+            }
+
+            else if (accion.slug === 'usuarios.toggle') {
+
                 html +=
                     '<button type="button" ' +
                     'class="btn btn-sm usuario-action-btn btn-estado-usuario ' +
