@@ -27,7 +27,7 @@
     </div>
 
     @if ($puedeRegistrar)
-        <div class="card border-0 shadow-sm mb-4">
+        <div class="card border-0 shadow-sm mb-4 asistencia-registro-card">
             <div class="card-body">
                 <h5 class="fw-semibold mb-3">
                     <i class="fa-solid fa-right-to-bracket me-2"></i>
@@ -61,7 +61,7 @@
 
     <div class="row g-3 mb-4">
         <div class="col-12 col-md-4">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card border-0 shadow-sm h-100 asistencia-kpi-card">
                 <div class="card-body d-flex align-items-center gap-3">
                     <div class="asistencia-kpi-icono bg-success-subtle text-success">
                         <i class="fa-solid fa-person-walking-arrow-right"></i>
@@ -106,11 +106,11 @@
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm">
+    <div class="card border-0 shadow-sm asistencia-registros-card">
         <div class="card-body">
             <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-3">
                 <div>
-                    <h5 class="fw-semibold mb-1">
+                    <h5 class="fw-semibold mb-1 asistencia-registros-titulo">
                         <i class="fa-solid fa-clock-rotate-left me-2"></i>
                         Registros
                     </h5>
@@ -118,7 +118,7 @@
                     <div class="text-secondary small">{{ $etiquetaRango }}</div>
                 </div>
 
-                <form method="GET" action="{{ route('asistencias.index') }}" class="row g-2 align-items-end">
+                <form method="GET" action="{{ route('asistencias.index') }}" class="row g-2 align-items-end asistencia-filtros">
                     <div class="col-auto">
                         <label for="filtroDesde" class="form-label small mb-1">Desde</label>
                         <input type="date" class="form-control form-control-sm" id="filtroDesde" name="desde"
