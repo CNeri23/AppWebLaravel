@@ -1038,3 +1038,19 @@ button.auth-link.link-muted {
     font-size: 0.78rem;
     line-height: 1.4;
 }
+
+.login-page .login-form-wrap:has(.auth-panel-register.auth-panel-active) {
+    max-width: 740px;
+}
+
+@media (max-width: 900px) {
+    .login-page .login-form-wrap:has(.auth-panel-register.auth-panel-active) {
+        max-width: 680px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .login-page .login-form-wrap:has(.auth-panel-register.auth-panel-active) {
+        max-width: 100%;
+    }
+}
