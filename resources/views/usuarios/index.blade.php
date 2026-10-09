@@ -187,20 +187,22 @@
                         <div class="invalid-feedback" id="username-error"></div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="password" name="password"
-                            placeholder="Ingresa la contraseña" required autocomplete="new-password">
-                        <div class="invalid-feedback" id="password-error"></div>
-                        <div class="form-text" id="password-hint">{{ $politicaPassword['descripcion'] }}</div>
-                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="password" name="password"
+                                placeholder="Ingresa la contraseña" required autocomplete="new-password">
+                            <div class="invalid-feedback" id="password-error"></div>
+                            <div class="form-text" id="password-hint">{{ $politicaPassword['descripcion'] }}</div>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="password_confirmation" class="form-label">Confirmar contraseña</label>
-                        <input type="password" class="form-control" id="password_confirmation"
-                            name="password_confirmation" placeholder="Confirma la contraseña" required
-                            autocomplete="new-password">
-                        <div class="invalid-feedback" id="password-confirmation-error"></div>
+                        <div class="col-md-6">
+                            <label for="password_confirmation" class="form-label">Confirmar contraseña</label>
+                            <input type="password" class="form-control" id="password_confirmation"
+                                name="password_confirmation" placeholder="Confirma la contraseña" required
+                                autocomplete="new-password">
+                            <div class="invalid-feedback" id="password-confirmation-error"></div>
+                        </div>
                     </div>
 
                     <h6 class="fw-semibold mb-3"><i class="fa-solid fa-user me-2"></i>Datos personales</h6>
