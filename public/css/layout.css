@@ -1768,3 +1768,56 @@ html[data-bs-theme] .modal-content .form-select:focus {
         animation-iteration-count: 1 !important;
     }
 }
+
+/* El color de acento se aplica a los controles principales de toda la aplicación. */
+html[data-bs-theme] {
+    --color-primary: var(--gym);
+    --color-primary-dark: var(--gym-strong);
+    --color-primary-soft: var(--gym-soft);
+    --gym-fill: var(--gym);
+}
+
+/* Botones de acción: conservar los botones destructivos en rojo. */
+html[data-bs-theme] .btn-primary,
+html[data-bs-theme] .btn-success,
+html[data-bs-theme] .btn-info,
+html[data-bs-theme] .btn-warning,
+html[data-bs-theme] .btn-outline-primary,
+html[data-bs-theme] .btn-agregar,
+html[data-bs-theme] .btn-add,
+html[data-bs-theme] .btn-crear,
+html[data-bs-theme] .btn-guardar,
+html[data-bs-theme] .btn-save {
+    border-color: transparent;
+    background-color: var(--gym);
+    color: var(--on-gym, #ffffff);
+}
+
+html[data-bs-theme] .btn-primary:hover,
+html[data-bs-theme] .btn-success:hover,
+html[data-bs-theme] .btn-info:hover,
+html[data-bs-theme] .btn-warning:hover,
+html[data-bs-theme] .btn-outline-primary:hover,
+html[data-bs-theme] .btn-agregar:hover,
+html[data-bs-theme] .btn-add:hover,
+html[data-bs-theme] .btn-crear:hover,
+html[data-bs-theme] .btn-guardar:hover,
+html[data-bs-theme] .btn-save:hover {
+    border-color: transparent;
+    background-color: var(--gym-strong);
+    color: var(--on-gym, #ffffff);
+}
+
+/* La acción de eliminar mantiene siempre su tratamiento de peligro. */
+html[data-bs-theme] .btn-danger,
+html[data-bs-theme] .btn-danger:hover,
+html[data-bs-theme] .btn-outline-danger:hover {
+    border-color: var(--danger-fill);
+    background-color: var(--danger-fill);
+    color: #ffffff;
+}
+
+html[data-bs-theme] .modal {
+    --modal-head-bg: var(--gym);
+}
+
