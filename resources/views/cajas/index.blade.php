@@ -44,7 +44,7 @@
                         <th>Estado</th>
                         <th>Sesión actual</th>
                         <th>Usuario</th>
-                        <th class="text-end px-4">Acciones</th>
+                        <th class="text-center px-4">Acciones</th>
                     </tr>
                 </thead>
 
@@ -101,7 +101,7 @@
                             @endif
                         </td>
 
-                        <td class="text-end px-4">
+                        <td class="text-center px-4">
                             <div class="caja-actions">
 
                                 @foreach ($accionesCajas as $accion)
