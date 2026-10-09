@@ -335,7 +335,7 @@
                                 Contraseña actual
                             </label>
 
-                            <div class="input-group">
+                            <div class="input-group password-input-group">
                                 <input type="password" class="form-control" id="current_password" name="current_password"
                                     autocomplete="current-password" required>
 
@@ -353,7 +353,7 @@
                                 Nueva contraseña
                             </label>
 
-                            <div class="input-group">
+                            <div class="input-group password-input-group">
                                 <input type="password" class="form-control" id="profile_password" name="password"
                                     autocomplete="new-password" minlength="{{ $politicaPassword['min'] }}" required>
 
@@ -375,7 +375,7 @@
                                 Confirmar nueva contraseña
                             </label>
 
-                            <div class="input-group">
+                            <div class="input-group password-input-group">
                                 <input type="password" class="form-control" id="profile_password_confirmation"
                                     name="password_confirmation" autocomplete="new-password" required>
 
