@@ -945,67 +945,112 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
 
             if (toggle) {
-                const id =
-                    toggle.dataset.id;
+                const id = toggle.dataset.id;
+                const activo = toggle.dataset.activo === '1';
 
-                if (
-                    !id ||
-                    toggle.disabled
-                ) {
+                if (!id || toggle.disabled) {
                     return;
                 }
 
-                toggle.disabled =
-                    true;
+                function ejecutarCambioEstado() {
+                    toggle.disabled = true;
+                    toggle.classList.add('procesando');
 
-                toggle.classList.add(
-                    'procesando'
-                );
-
-                peticion(
-                    '/planes/' +
-                    encodeURIComponent(id) +
-                    '/toggle',
-                    'POST',
-                    new FormData()
-                )
-                    .then(function (data) {
-
-                        actualizarPlanEnTabla(
-                            data.plan
-                        );
-
-                        mostrarExito(
-                            data.mensaje ||
-                            'Estado del plan actualizado correctamente.'
-                        );
-                    })
-                    .catch(
-                        mostrarError
+                    peticion(
+                        '/planes/' + encodeURIComponent(id) + '/toggle',
+                        'POST',
+                        new FormData()
                     )
-                    .finally(function () {
+                        .then(function (data) {
+                            actualizarPlanEnTabla(data.plan);
 
-                        const fila =
-                            buscarFilaPorId(
-                                id
+                            mostrarExito(
+                                data.mensaje ||
+                                'Estado del plan actualizado correctamente.'
                             );
+                        })
+                        .catch(mostrarError)
+                        .finally(function () {
+                            const fila = buscarFilaPorId(id);
 
-                        if (fila) {
-                            const toggleActual =
-                                fila.querySelector(
-                                    '.plan-toggle-btn'
-                                );
+                            if (fila) {
+                                const toggleActual = fila.querySelector('.plan-toggle-btn');
 
-                            if (toggleActual) {
-                                toggleActual.disabled =
-                                    false;
-
-                                toggleActual.classList.remove(
-                                    'procesando'
-                                );
+                                if (toggleActual) {
+                                    toggleActual.disabled = false;
+                                    toggleActual.classList.remove('procesando');
+                                }
                             }
+                        });
+                }
+
+                if (!activo) {
+                    ejecutarCambioEstado();
+                    return;
+                }
+
+                if (!window.Swal) {
+                    if (window.confirm('¿Desactivar plan?')) {
+                        ejecutarCambioEstado();
+                    }
+                    return;
+                }
+
+                const cuerpo = getComputedStyle(document.body);
+                const referencia = document.querySelector('.modal-content');
+                let fondo = referencia
+                    ? getComputedStyle(referencia).backgroundColor
+                    : cuerpo.backgroundColor;
+
+                if (!fondo || fondo === 'transparent' || fondo === 'rgba(0, 0, 0, 0)') {
+                    fondo = cuerpo.backgroundColor;
+                }
+
+                Swal.fire({
+                    background: fondo,
+                    color: cuerpo.color,
+                    icon: 'warning',
+                    title: '¿Desactivar plan?',
+                    text: 'El plan "' + (toggle.closest('tr')?.dataset.nombre || '') + '" quedará inactivo.',
+                    showCancelButton: true,
+                    reverseButtons: true,
+                    confirmButtonText: 'Desactivar',
+                    cancelButtonText: 'Cancelar',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                    buttonsStyling: false,
+                    heightAuto: false,
+                    customClass: {
+                        confirmButton: 'btn btn-danger mx-1',
+                        cancelButton: 'btn btn-secondary mx-1'
+                    },
+                    didOpen: function (popup) {
+                        const contenedor = Swal.getContainer();
+
+                        if (contenedor) {
+                            contenedor.addEventListener('click', function (evento) {
+                                if (evento.target === contenedor) {
+                                    popup.animate(
+                                        [
+                                            { transform: 'translateX(0)' },
+                                            { transform: 'translateX(-8px)' },
+                                            { transform: 'translateX(8px)' },
+                                            { transform: 'translateX(-6px)' },
+                                            { transform: 'translateX(6px)' },
+                                            { transform: 'translateX(0)' }
+                                        ],
+                                        { duration: 300, easing: 'ease-in-out' }
+                                    );
+                                }
+                            }, true);
                         }
-                    });
+                    }
+                }).then(function (resultado) {
+                    if (resultado.isConfirmed) {
+                        ejecutarCambioEstado();
+                    }
+                });
 
                 return;
             }
