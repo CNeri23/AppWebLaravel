@@ -673,18 +673,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const modalRoles = document.getElementById('modalRolesUsuario');
+    let superadministradorBloqueadoParaUsuario = false;
 
     if (modalRoles) {
         modalRoles.addEventListener('show.bs.modal',
             function (event) {
                 const button = event.relatedTarget;
                 rolesOriginales = null;
+                superadministradorBloqueadoParaUsuario = false;
 
                 if (!button) {
                     return;
                 }
                 const roles = button.dataset.roles ? button.dataset.roles.split(',') : [];
                 rolesOriginales = roles.filter(Boolean).sort().join(',');
+                superadministradorBloqueadoParaUsuario =
+                    window.cantidadSuperadministradores <= 1 &&
+                    window.rolSuperadministradorId !== null &&
+                    roles.includes(String(window.rolSuperadministradorId));
 
                 document.getElementById('roles_usuario_id').value = button.dataset.id;
                 document.getElementById('roles_usuario_nombre').textContent = button.dataset.name;
@@ -695,6 +701,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('formRolesUsuario').setAttribute('action', button.dataset.url);
             }
         );
+
+        modalRoles.querySelectorAll('.rol-usuario-checkbox').forEach(function (checkbox) {
+            checkbox.addEventListener('change', function () {
+                if (
+                    superadministradorBloqueadoParaUsuario &&
+                    checkbox.value === String(window.rolSuperadministradorId) &&
+                    !checkbox.checked
+                ) {
+                    checkbox.checked = true;
+                    window.showToast(
+                        'warning',
+                        'No puedes quitar el rol Superadministrador porque es el único usuario que lo tiene asignado. Asigna primero ese rol a otro usuario.'
+                    );
+                }
+            });
+        });
     }
 
     const modalEliminar = document.getElementById('modalEliminarUsuario');
