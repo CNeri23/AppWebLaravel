@@ -16,6 +16,10 @@ class Role extends Model
         'description',
     ];
 
+    protected $casts = [
+        'is_superadmin' => 'boolean',
+    ];
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
