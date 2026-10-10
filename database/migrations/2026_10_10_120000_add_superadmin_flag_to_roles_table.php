@@ -22,13 +22,40 @@ return new class extends Migration
                 ->where('id', $rol->id)
                 ->update(['is_superadmin' => true]);
         } else {
-            DB::table('roles')->insert([
+            $id = DB::table('roles')->insertGetId([
                 'name' => 'Superadministrador',
                 'description' => 'Rol reservado para administrar los permisos de otros roles.',
                 'is_superadmin' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
+            $rol = (object) ['id' => $id];
+        }
+
+        // Copia los permisos de Administrador para que el nuevo rol sea funcional.
+        $administrador = DB::table('roles')
+            ->where('name', 'Administrador')
+            ->first();
+
+        if ($administrador) {
+            DB::table('role_permissions')
+                ->where('role_id', $rol->id)
+                ->delete();
+
+            $permisos = DB::table('role_permissions')
+                ->where('role_id', $administrador->id)
+                ->get(['permission_type', 'permission_id']);
+
+            foreach ($permisos as $permiso) {
+                DB::table('role_permissions')->insert([
+                    'role_id' => $rol->id,
+                    'permission_type' => $permiso->permission_type,
+                    'permission_id' => $permiso->permission_id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
     }
 
