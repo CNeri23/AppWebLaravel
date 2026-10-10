@@ -98,7 +98,7 @@
                                         'orange' => ['name' => 'Naranja', 'color' => '#ff9500'],
                                         'purple' => ['name' => 'Morado', 'color' => '#af52de'],
                                         'red' => ['name' => 'Rojo', 'color' => '#ff3b30'],
-                                        'rosa' => ['name' => 'Rosa', 'color' => '#d63384'],
+                                        'azul_oscuro' => ['name' => 'Azul oscuro', 'color' => '#1d4ed8'],
                                         'indigo' => ['name' => 'Índigo', 'color' => '#5856d6'],
                                         'petroleo' => ['name' => 'Petróleo', 'color' => '#0f766e'],
                                     ];
