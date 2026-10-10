@@ -250,6 +250,11 @@
     );
 }
 
+.accent-option input:focus-visible + .accent-content {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
 .accent-option input:checked + .accent-content {
     border-color: var(--bs-primary);
     background: color-mix(
@@ -267,9 +272,9 @@
 }
 
 .accent-dot {
-    width: 14px;
-    height: 14px;
-    flex: 0 0 14px;
+    width: 15px;
+    height: 15px;
+    flex: 0 0 15px;
     border-radius: 50%;
     background: var(--accent-preview);
     box-shadow:
