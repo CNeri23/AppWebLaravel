@@ -93,12 +93,11 @@
                             <div class="accent-grid">
                                 @php
                                     $accentColors = [
-                                        'blue' => ['name' => 'Azul', 'color' => '#007aff'],
+                                        'blue' => ['name' => 'Azul', 'color' => '#2563eb'],
                                         'green' => ['name' => 'Verde', 'color' => '#34c759'],
                                         'orange' => ['name' => 'Naranja', 'color' => '#ff9500'],
                                         'purple' => ['name' => 'Morado', 'color' => '#af52de'],
                                         'red' => ['name' => 'Rojo', 'color' => '#ff3b30'],
-                                        'azul_oscuro' => ['name' => 'Azul oscuro', 'color' => '#1d4ed8'],
                                         'indigo' => ['name' => 'Índigo', 'color' => '#5856d6'],
                                         'petroleo' => ['name' => 'Petróleo', 'color' => '#0f766e'],
                                     ];
