@@ -62,6 +62,7 @@ class SystemSettingsController extends Controller
         'login_ip_lockout_minutes' => 'configuracion.bloqueo_ip',
         'registration_enabled' => 'configuracion.registro_publico',
     ];
+
     private const CLAVES_BOOLEANAS = [
         'password_complexity',
         'registration_enabled',
