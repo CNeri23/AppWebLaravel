@@ -352,6 +352,26 @@
                             <small>Tiempo de espera tras superar los intentos.</small>
                         </div>
 
+                        <div class="config-field">
+                            <label for="max_login_attempts_ip">Intentos fallidos máximos por IP</label>
+                            <div class="config-input"><input type="number" id="max_login_attempts_ip" name="max_login_attempts_ip"
+                                    class="form-control" value="{{ $settings['max_login_attempts_ip'] }}" min="5" max="1000"
+                                    step="1" inputmode="numeric"><button type="button" class="config-input-save" hidden
+                                    aria-label="Guardar cambio" title="Guardar (Enter)"><i
+                                        class="fa-solid fa-check"></i></button></div>
+                            <small>Entre 5 y 1000 intentos fallidos desde una misma IP.</small>
+                        </div>
+
+                        <div class="config-field">
+                            <label for="login_ip_window_seconds">Ventana del límite por IP (segundos)</label>
+                            <div class="config-input"><input type="number" id="login_ip_window_seconds" name="login_ip_window_seconds"
+                                    class="form-control" value="{{ $settings['login_ip_window_seconds'] }}" min="10" max="3600"
+                                    step="1" inputmode="numeric"><button type="button" class="config-input-save" hidden
+                                    aria-label="Guardar cambio" title="Guardar (Enter)"><i
+                                        class="fa-solid fa-check"></i></button></div>
+                            <small>Entre 10 y 3600 segundos (1 minuto a 1 hora).</small>
+                        </div>
+
                         <div class="config-field config-field-full config-switch">
                             <div class="config-switch-text">
                                 <label for="password_complexity">Exigir contraseñas robustas</label>
