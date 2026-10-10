@@ -32,6 +32,7 @@ class SystemSettingsController extends Controller
         'lockout_minutes',
         'max_login_attempts_ip',
         'login_ip_window_seconds',
+        'login_ip_lockout_minutes',
         'registration_enabled',
     ];
 
@@ -120,6 +121,7 @@ class SystemSettingsController extends Controller
             'lockout_minutes' => ['sometimes', 'required', 'integer', 'between:1,60'],
             'max_login_attempts_ip' => ['sometimes', 'required', 'integer', 'between:5,1000'],
             'login_ip_window_seconds' => ['sometimes', 'required', 'integer', 'between:10,3600'],
+            'login_ip_lockout_minutes' => ['sometimes', 'required', 'integer', 'between:1,1440'],
             'registration_enabled' => ['sometimes', 'required', 'boolean'],
         ], [
             'system_name.required' => 'El nombre del sistema es obligatorio.',
@@ -181,6 +183,9 @@ class SystemSettingsController extends Controller
             'login_ip_window_seconds.required' => 'La ventana de tiempo por IP es obligatoria.',
             'login_ip_window_seconds.integer' => 'La ventana de tiempo por IP debe ser un número entero.',
             'login_ip_window_seconds.between' => 'La ventana de tiempo por IP debe estar entre 10 y 3600 segundos.',
+            'login_ip_lockout_minutes.required' => 'Los minutos de bloqueo por IP son obligatorios.',
+            'login_ip_lockout_minutes.integer' => 'Los minutos de bloqueo por IP deben ser un número entero.',
+            'login_ip_lockout_minutes.between' => 'El bloqueo por IP debe estar entre 1 y 1440 minutos.',
         ]);
 
         foreach (self::CLAVES_NEGOCIO as $clave) {
@@ -299,6 +304,7 @@ class SystemSettingsController extends Controller
             'lockout_minutes' => 'El tiempo de bloqueo se actualizó correctamente.',
             'max_login_attempts_ip' => 'El límite de intentos por IP se actualizó correctamente.',
             'login_ip_window_seconds' => 'La ventana de tiempo por IP se actualizó correctamente.',
+            'login_ip_lockout_minutes' => 'El tiempo de bloqueo por IP se actualizó correctamente.',
             'registration_enabled' => 'La configuración de registro se actualizó correctamente.',
         ];
 
