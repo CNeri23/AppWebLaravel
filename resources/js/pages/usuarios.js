@@ -857,8 +857,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     window.showToast('info', MENSAJE_SIN_CAMBIOS);
                     return;
                 }
+                const superadminId = window.rolSuperadministradorId;
+                const teniaSuperadmin = superadminId !== null &&
+                    rolesOriginales !== null &&
+                    rolesOriginales.split(',').includes(String(superadminId));
+                const tendraSuperadmin = superadminId !== null &&
+                    rolesSeleccionados.split(',').includes(String(superadminId));
+
                 enviarFormulario(formRolesUsuario, modalRolesUsuario, 'Roles del usuario actualizados correctamente.')
                     .then((data) => {
+                        if (teniaSuperadmin !== tendraSuperadmin) {
+                            const cantidadActual = Number(window.cantidadSuperadministradores) || 0;
+                            window.cantidadSuperadministradores = Math.max(
+                                0,
+                                cantidadActual + (tendraSuperadmin ? 1 : -1)
+                            );
+                        }
+
                         actualizarRolesEnTabla(data.usuario);
                     })
                     .catch(mostrarError);
