@@ -1111,7 +1111,7 @@ html.theme-switching *::after {
 
 .sidebar-link.active,
 .sidebar-link.active:hover {
-    background: var(--nav-active);
+    background: var(--nav-hover);
     color: var(--nav-text-strong);
     font-weight: 700;
 }
@@ -1239,12 +1239,20 @@ html.theme-switching *::after {
 }
 
 .sidebar-sublink > i:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex: 0 0 auto;
-    width: 20px;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    background: var(--nav-chip);
     color: var(--nav-muted);
     font-size: 11px;
     text-align: center;
-    transition: color 0.17s ease;
+    transition:
+        background 0.17s ease,
+        color 0.17s ease;
 }
 
 .sidebar-sublink > span {
@@ -1274,7 +1282,8 @@ html.theme-switching *::after {
 
 .sidebar-sublink.active > i:first-child,
 .sidebar-sublink.active:hover > i:first-child {
-    color: var(--gym);
+    background: var(--gym);
+    color: var(--on-gym);
 }
 
 .sidebar-sublink::before {
