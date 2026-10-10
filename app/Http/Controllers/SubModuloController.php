@@ -8,14 +8,14 @@ class SubmoduloController extends Controller
 {
     public function store(Request $request, Modulo $modulo)
     {
-        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:submodulos,slug'], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150'], 'ruta' => ['nullable', 'string', 'max:150'], 'orden' => ['required', 'integer', 'min:0'],]);
+        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:submodulos,slug'], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'], 'ruta' => ['nullable', 'string', 'max:150'], 'orden' => ['required', 'integer', 'min:0'],]);
         $submodulo = $modulo->submodulos()->create($datos);
         AuditLogService::log('SUBMODULOS', 'CREAR_SUBMODULO', 'Se creó el submódulo "' . $submodulo->nombre . '" en el módulo "' . $modulo->nombre . '".', $submodulo);
         return response()->json(['success' => true, 'mensaje' => 'Submódulo creado correctamente.', 'submodulo' => $submodulo,]);
     }
     public function update(Request $request, Submodulo $submodulo)
     {
-        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:submodulos,slug,' . $submodulo->id,], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150'], 'ruta' => ['nullable', 'string', 'max:150'], 'orden' => ['required', 'integer', 'min:0'],]);
+        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:submodulos,slug,' . $submodulo->id,], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'], 'ruta' => ['nullable', 'string', 'max:150'], 'orden' => ['required', 'integer', 'min:0'],]);
         $cambios = [];
         foreach ($datos as $campo => $valorNuevo) {
             $valorAnterior = $submodulo->getOriginal($campo);
