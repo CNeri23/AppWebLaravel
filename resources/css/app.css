@@ -13,6 +13,7 @@
 @import './pages/ticket.css';
 @import './pages/preferences.css';
 @import './pages/logs.css';
+@import './pages/responsive-tables.css';
 
 @import 'tailwindcss';
 
