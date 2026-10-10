@@ -246,6 +246,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     camposAutomaticos.forEach(function (campo) {
         campo.addEventListener('change', function () {
+            if (this.name === 'accent_color' && typeof window.aplicarConfiguracionGlobal === 'function') {
+                window.aplicarConfiguracionGlobal({ accent_color: this.value });
+            }
+
             guardarConfiguracion(
                 this.name
             );
