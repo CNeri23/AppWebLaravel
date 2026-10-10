@@ -91,7 +91,7 @@
                                                     @break
 
                                                 @case('roles.permisos')
-                                                    @if (!$rolesDelUsuario->contains((int) $rol->id) || ($esSuperadministrador && !$rol->is_superadmin))
+                                                    @if (!$rol->is_superadmin && (!$rolesDelUsuario->contains((int) $rol->id) || $esSuperadministrador))
                                                     <button
                                                         type="button"
                                                         class="btn btn-sm btn-outline-success rol-action-btn"
