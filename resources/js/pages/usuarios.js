@@ -131,6 +131,10 @@ document.addEventListener('DOMContentLoaded', function () {
             buttonsStyling: false,
             heightAuto: false,
             customClass: {
+                popup: 'ip-confirmation-popup',
+                icon: 'ip-confirmation-icon',
+                title: 'ip-confirmation-title',
+                actions: 'ip-confirmation-actions',
                 confirmButton: 'btn btn-danger mx-1',
                 cancelButton: 'btn btn-secondary mx-1'
             },
