@@ -996,24 +996,89 @@ html[data-bs-theme="dark"] .theme-switch:not(.is-light) .theme-switch-moon,
     transform: rotate(0deg) scale(1);
 }
 
-/* Revelado circular moderno del tema, inspirado en las transiciones de sistemas móviles. */
+/* Cambio de tema con profundidad 3D: la interfaz se inclina y entra como una superficie. */
+::view-transition-group(root) {
+    perspective: 1600px;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+
 ::view-transition-old(root) {
-    animation: none;
     z-index: 1;
+    animation: theme-screen-out 420ms cubic-bezier(0.4, 0, 1, 1) both;
 }
 
 ::view-transition-new(root) {
     z-index: 2;
-    animation: theme-reveal 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: theme-screen-in 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@keyframes theme-reveal {
+@keyframes theme-screen-out {
     from {
-        clip-path: circle(0 at var(--theme-origin-x, 50%) var(--theme-origin-y, 50%));
+        opacity: 1;
+        transform: perspective(1600px) rotateY(0deg) scale(1);
+        filter: brightness(1);
     }
 
     to {
-        clip-path: circle(150vmax at var(--theme-origin-x, 50%) var(--theme-origin-y, 50%));
+        opacity: 0;
+        transform: perspective(1600px) rotateY(-7deg) translateX(-2.5%) scale(0.965);
+        filter: brightness(0.82);
+    }
+}
+
+@keyframes theme-screen-in {
+    from {
+        opacity: 0;
+        transform: perspective(1600px) rotateY(8deg) translateX(3%) scale(0.965);
+        filter: brightness(1.18);
+    }
+
+    to {
+        opacity: 1;
+        transform: perspective(1600px) rotateY(0deg) translateX(0) scale(1);
+        filter: brightness(1);
+    }
+}
+
+/* Alterna la dirección para que cada modo tenga su propio sentido de profundidad. */
+html[data-theme-transition-direction="light"]::view-transition-old(root) {
+    animation-name: theme-screen-out-reverse;
+}
+
+html[data-theme-transition-direction="light"]::view-transition-new(root) {
+    animation-name: theme-screen-in-reverse;
+}
+
+@keyframes theme-screen-out-reverse {
+    from {
+        opacity: 1;
+        transform: perspective(1600px) rotateY(0deg) scale(1);
+        filter: brightness(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: perspective(1600px) rotateY(7deg) translateX(2.5%) scale(0.965);
+        filter: brightness(0.82);
+    }
+}
+
+@keyframes theme-screen-in-reverse {
+    from {
+        opacity: 0;
+        transform: perspective(1600px) rotateY(-8deg) translateX(-3%) scale(0.965);
+        filter: brightness(1.18);
+    }
+
+    to {
+        opacity: 1;
+        transform: perspective(1600px) rotateY(0deg) translateX(0) scale(1);
+        filter: brightness(1);
     }
 }
 
