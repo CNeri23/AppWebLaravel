@@ -306,11 +306,11 @@ html[data-bs-theme="dark"][data-accent-color="petroleo"] {
 }
 
 html[data-bs-theme="dark"][data-accent-color="petroleo"] {
-    --gym: #2dd4bf;
-    --gym-strong: #5eead4;
-    --gym-soft: rgba(45, 212, 191, 0.18);
-    --on-gym: #073b36;
-    --nav-active: rgba(45, 212, 191, 0.18);
+    --gym: #0f766e;
+    --gym-strong: #115e59;
+    --gym-soft: rgba(15, 118, 110, 0.14);
+    --on-gym: #ffffff;
+    --nav-active: rgba(15, 118, 110, 0.14);
 }
 
 html[data-bs-theme="dark"][data-theme-style="graphite"] {
