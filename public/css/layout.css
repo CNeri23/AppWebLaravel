@@ -996,134 +996,129 @@ html[data-bs-theme="dark"] .theme-switch:not(.is-light) .theme-switch-moon,
     transform: rotate(0deg) scale(1);
 }
 
-/* Transición de tema con profundidad 3D: la página anterior retrocede hacia el
-   fondo (se aleja, se inclina y se oscurece) mientras la nueva emerge como una
-   tarjeta que se asienta con esquinas redondeadas y sombra. Al pasar a oscuro la
-   nueva sube desde abajo; al volver a claro baja desde arriba. Se activa solo
-   durante el cambio con theme-depth-dark / theme-depth-light. */
+/* Transición premium 3D: la vista saliente gira en perspectiva y la nueva
+   entra desde el lado opuesto como un panel físico. La dirección cambia según
+   el tema para que el movimiento se sienta conectado con el cambio visual. */
 html.theme-depth-dark::view-transition {
-    background: #050506;
+    background: #050608;
 }
 
 html.theme-depth-light::view-transition {
-    background: #c9d0db;
+    background: #d9dee7;
 }
 
 html.theme-depth-dark::view-transition-image-pair(root),
 html.theme-depth-light::view-transition-image-pair(root) {
-    perspective: 1800px;
+    perspective: 1500px;
     perspective-origin: 50% 50%;
+    transform-style: preserve-3d;
 }
 
 html.theme-depth-dark::view-transition-old(root),
 html.theme-depth-dark::view-transition-new(root),
 html.theme-depth-light::view-transition-old(root),
 html.theme-depth-light::view-transition-new(root) {
-    animation-duration: 1.05s;
+    animation-duration: 0.9s;
     animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
     animation-fill-mode: both;
-    mix-blend-mode: normal;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    mix-blend-mode: normal;
 }
 
 html.theme-depth-dark::view-transition-old(root) {
-    transform-origin: 50% 0%;
-    animation-name: theme-depth-out-up;
+    transform-origin: left center;
+    animation-name: theme-3d-out-left;
 }
 
 html.theme-depth-dark::view-transition-new(root) {
-    transform-origin: 50% 100%;
-    animation-name: theme-depth-in-up;
+    transform-origin: right center;
+    animation-name: theme-3d-in-right;
 }
 
 html.theme-depth-light::view-transition-old(root) {
-    transform-origin: 50% 100%;
-    animation-name: theme-depth-out-down;
+    transform-origin: right center;
+    animation-name: theme-3d-out-right;
 }
 
 html.theme-depth-light::view-transition-new(root) {
-    transform-origin: 50% 0%;
-    animation-name: theme-depth-in-down;
+    transform-origin: left center;
+    animation-name: theme-3d-in-left;
 }
 
-@keyframes theme-depth-out-up {
+@keyframes theme-3d-out-left {
     0% {
         opacity: 1;
-        transform: translate3d(0, 0, 0) rotateX(0deg) scale(1);
+        transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
         filter: brightness(1) blur(0);
-    }
-
-    70% {
-        opacity: 0.55;
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
     }
 
     100% {
         opacity: 0;
-        transform: translate3d(0, -3%, -280px) rotateX(-9deg) scale(0.96);
-        filter: brightness(0.55) blur(3px);
+        transform: translate3d(-4%, 0, -100px) rotateY(-11deg) scale(0.965);
+        filter: brightness(0.58) blur(1.5px);
+        box-shadow: 24px 0 70px rgba(0, 0, 0, 0.28);
     }
 }
 
-@keyframes theme-depth-in-up {
+@keyframes theme-3d-in-right {
     0% {
         opacity: 0;
-        transform: translate3d(0, 9%, 0) rotateX(13deg) scale(0.94);
-        border-radius: 32px;
-        box-shadow: 0 -40px 90px rgba(0, 0, 0, 0.5);
-        filter: blur(2px);
+        transform: translate3d(5%, 0, -130px) rotateY(15deg) scale(0.955);
+        filter: brightness(0.72) blur(2px);
+        border-radius: 22px;
+        box-shadow: -30px 0 85px rgba(0, 0, 0, 0.36);
     }
 
-    35% {
+    38% {
         opacity: 1;
     }
 
     100% {
         opacity: 1;
-        transform: translate3d(0, 0, 0) rotateX(0deg) scale(1);
+        transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+        filter: brightness(1) blur(0);
         border-radius: 0;
         box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-        filter: blur(0);
     }
 }
 
-@keyframes theme-depth-out-down {
+@keyframes theme-3d-out-right {
     0% {
         opacity: 1;
-        transform: translate3d(0, 0, 0) rotateX(0deg) scale(1);
+        transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
         filter: brightness(1) blur(0);
-    }
-
-    70% {
-        opacity: 0.55;
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
     }
 
     100% {
         opacity: 0;
-        transform: translate3d(0, 3%, -280px) rotateX(9deg) scale(0.96);
-        filter: brightness(0.55) blur(3px);
+        transform: translate3d(4%, 0, -100px) rotateY(11deg) scale(0.965);
+        filter: brightness(1.12) blur(1.5px);
+        box-shadow: -24px 0 70px rgba(15, 26, 29, 0.16);
     }
 }
 
-@keyframes theme-depth-in-down {
+@keyframes theme-3d-in-left {
     0% {
         opacity: 0;
-        transform: translate3d(0, -9%, 0) rotateX(-13deg) scale(0.94);
-        border-radius: 32px;
-        box-shadow: 0 40px 90px rgba(15, 26, 29, 0.35);
-        filter: blur(2px);
+        transform: translate3d(-5%, 0, -130px) rotateY(-15deg) scale(0.955);
+        filter: brightness(1.08) blur(2px);
+        border-radius: 22px;
+        box-shadow: 30px 0 85px rgba(15, 26, 29, 0.22);
     }
 
-    35% {
+    38% {
         opacity: 1;
     }
 
     100% {
         opacity: 1;
-        transform: translate3d(0, 0, 0) rotateX(0deg) scale(1);
+        transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+        filter: brightness(1) blur(0);
         border-radius: 0;
         box-shadow: 0 0 0 rgba(15, 26, 29, 0);
-        filter: blur(0);
     }
 }
 
