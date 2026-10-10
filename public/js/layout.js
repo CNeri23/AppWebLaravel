@@ -178,7 +178,24 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!color) {
             return;
         }
-        html.setAttribute('data-accent-color', color);
+
+        // Compatibilidad con instalaciones que todavía guardan el antiguo color neutro.
+        const coloresCompatibles = {
+            neutral: 'indigo',
+            blue: 'blue',
+            green: 'green',
+            orange: 'orange',
+            purple: 'purple',
+            red: 'red',
+            cyan: 'cyan',
+            indigo: 'indigo',
+        };
+
+        const colorAplicable = coloresCompatibles[color];
+
+        if (colorAplicable) {
+            html.setAttribute('data-accent-color', colorAplicable);
+        }
     }
 
     function applySystemName(systemName) {
