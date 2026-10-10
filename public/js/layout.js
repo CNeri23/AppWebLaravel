@@ -533,11 +533,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             if (puedeRevelar && themeSwitch) {
-                const rect = themeSwitch.getBoundingClientRect();
-                html.style.setProperty('--theme-origin-x', `${rect.left + rect.width / 2}px`);
-                html.style.setProperty('--theme-origin-y', `${rect.top + rect.height / 2}px`);
+                html.dataset.themeTransitionDirection = siguiente;
 
-                // La nueva apariencia se expande desde el botón; el contenido no se desliza.
+                // La interfaz completa gira sutilmente en 3D y vuelve a entrar con profundidad.
                 const transicion = document.startViewTransition(() => {
                     guardado = guardarYAplicar(siguiente);
                 });
