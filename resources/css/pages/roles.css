@@ -486,3 +486,66 @@ html[data-bs-theme] .rol-actions .btn-outline-secondary:focus-visible {
     border-color: #6c757d !important;
     background-color: #6c757d !important;
 }
+
+/* ===== Paginación con iconos (igual que logs) ===== */
+#tablaRoles_wrapper .dt-paging button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+}
+
+#tablaRoles_wrapper .dt-paging button i {
+    font-size: 11px;
+    line-height: 1;
+}
+
+/* ===== Tarjetas en móvil (igual que logs) ===== */
+@media (max-width: 767.98px) {
+    /* ajustarFila() en roles.js pone width en línea (27%, 33%...) y encogía las celdas */
+    #tablaRoles.responsive-cards-table tbody td {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        text-align: left !important;
+        grid-template-columns: 92px minmax(0, 1fr);
+    }
+
+    /* px-4 de Bootstrap (!important) sangraba la celda de acciones dentro de la tarjeta */
+    #tablaRoles.responsive-cards-table tbody td.px-4 {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    #tablaRoles.responsive-cards-table tbody td:first-child {
+        padding-top: 0;
+        font-weight: 600;
+    }
+
+    #tablaRoles_wrapper {
+        width: 100%;
+    }
+
+    #tablaRoles_wrapper .dt-paging {
+        margin-top: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    #tablaRoles.responsive-cards-table tbody td {
+        grid-template-columns: 82px minmax(0, 1fr);
+    }
+
+    #tablaRoles_wrapper .dt-paging button {
+        min-width: 30px;
+        height: 30px;
+        padding: 0 7px;
+    }
+
+    #tablaRoles_wrapper .dt-paging button i {
+        font-size: 10px;
+    }
+}

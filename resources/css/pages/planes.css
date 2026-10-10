@@ -178,9 +178,6 @@
         max-width: 220px;
     }
 
-    #tablaPlanes {
-        min-width: 850px;
-    }
 }
 
 #tablaPlanes .plan-action-btn:has(.fa-pen-to-square):hover {
@@ -453,4 +450,73 @@ html[data-bs-theme] .plan-actions .btn-outline-secondary:focus-visible {
     color: #fff !important;
     border-color: #6c757d !important;
     background-color: #6c757d !important;
+}
+
+/* ===== Paginación con iconos (igual que logs) ===== */
+#tablaPlanes_wrapper .dt-paging button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+}
+
+#tablaPlanes_wrapper .dt-paging button i {
+    font-size: 11px;
+    line-height: 1;
+}
+
+/* ===== Tarjetas en móvil (igual que logs) ===== */
+@media (max-width: 767.98px) {
+    #tablaPlanes_wrapper {
+        width: 100%;
+    }
+
+    #tablaPlanes.responsive-cards-table tbody td {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        grid-template-columns: 92px minmax(0, 1fr);
+    }
+
+    /* Anula el centrado de desktop (nth-child y .text-center) salvo en Acciones */
+    #tablaPlanes.responsive-cards-table tbody td:not([data-label="Acciones"]) {
+        text-align: left !important;
+    }
+
+    #tablaPlanes.responsive-cards-table tbody td:first-child {
+        padding-top: 0;
+        font-weight: 600;
+    }
+
+    #tablaPlanes .plan-descripcion {
+        display: block;
+        max-width: 100%;
+    }
+
+    #tablaPlanes .plan-estado-text {
+        min-width: 0;
+    }
+
+    #tablaPlanes_wrapper .dt-paging {
+        margin-top: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    #tablaPlanes.responsive-cards-table tbody td {
+        grid-template-columns: 82px minmax(0, 1fr);
+    }
+
+    #tablaPlanes_wrapper .dt-paging button {
+        min-width: 30px;
+        height: 30px;
+        padding: 0 7px;
+    }
+
+    #tablaPlanes_wrapper .dt-paging button i {
+        font-size: 10px;
+    }
 }

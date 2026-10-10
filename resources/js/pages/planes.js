@@ -329,6 +329,36 @@ document.addEventListener('DOMContentLoaded', function () {
         window.showToast('success', mensaje);
     }
 
+    function configurarTooltipsPaginacion() {
+        const paginacion = document.querySelector('#tablaPlanes_wrapper .dt-paging, #tablaPlanes_wrapper .dataTables_paginate');
+
+        if (!paginacion) {
+            return;
+        }
+
+        const titulos = {
+            'fa-angles-left': 'Primera página',
+            'fa-angle-left': 'Página anterior',
+            'fa-angle-right': 'Página siguiente',
+            'fa-angles-right': 'Última página'
+        };
+
+        paginacion.querySelectorAll('button, a').forEach(function (boton) {
+            const icono = boton.querySelector('i');
+
+            if (!icono) {
+                return;
+            }
+
+            Object.keys(titulos).forEach(function (clase) {
+                if (icono.classList.contains(clase)) {
+                    boton.setAttribute('title', titulos[clase]);
+                    boton.setAttribute('aria-label', titulos[clase]);
+                }
+            });
+        });
+    }
+
     function inicializarDataTable() {
         if (!window.DataTable &&!window.jQuery) {
             return;
@@ -350,10 +380,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             emptyTable: 'No hay planes registrados',
 
                             paginate: {
-                                first: 'Primero',
-                                previous: 'Anterior',
-                                next: 'Siguiente',
-                                last: 'Último'
+                                first: '<i class="fa-solid fa-angles-left"></i>',
+                                previous: '<i class="fa-solid fa-angle-left"></i>',
+                                next: '<i class="fa-solid fa-angle-right"></i>',
+                                last: '<i class="fa-solid fa-angles-right"></i>'
                             }
                         },
 
@@ -382,7 +412,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             topEnd: 'search',
                             bottomStart: 'info',
                             bottomEnd: 'paging'
-                        }
+                        },
+
+                        initComplete: configurarTooltipsPaginacion,
+                        drawCallback: configurarTooltipsPaginacion
                     }
                 );
 
@@ -421,12 +454,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         emptyTable: 'No hay planes registrados',
 
                         paginate: {
-                            first: 'Primero',
-                            previous: 'Anterior',
-                            next: 'Siguiente',
-                            last: 'Último'
+                            first: '<i class="fa-solid fa-angles-left"></i>',
+                                previous: '<i class="fa-solid fa-angle-left"></i>',
+                                next: '<i class="fa-solid fa-angle-right"></i>',
+                                last: '<i class="fa-solid fa-angles-right"></i>'
                         }
-                    }
+                    },
+
+                    initComplete: configurarTooltipsPaginacion,
+                    drawCallback: configurarTooltipsPaginacion
                 });
         }
     }

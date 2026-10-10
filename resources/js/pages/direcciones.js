@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function configurarTooltipsPaginacion() {
-        const paginacion = document.querySelector('#tablaLogs_wrapper .dt-paging');
+        const paginacion = document.querySelector('#tablaDirecciones_wrapper .dt-paging');
 
         if (!paginacion) {
             return;

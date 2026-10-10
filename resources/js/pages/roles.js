@@ -50,10 +50,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 emptyTable: 'No hay roles registrados',
 
                 paginate: {
-                    first: 'Primero',
-                    previous: 'Anterior',
-                    next: 'Siguiente',
-                    last: 'Último'
+                    first: '<i class="fa-solid fa-angles-left"></i>',
+                    previous: '<i class="fa-solid fa-angle-left"></i>',
+                    next: '<i class="fa-solid fa-angle-right"></i>',
+                    last: '<i class="fa-solid fa-angles-right"></i>'
                 }
             },
 
@@ -82,7 +82,45 @@ document.addEventListener('DOMContentLoaded', function () {
                 topEnd: 'search',
                 bottomStart: 'info',
                 bottomEnd: 'paging'
+            },
+
+            initComplete: function () {
+                configurarTooltipsPaginacion();
+            },
+
+            drawCallback: function () {
+                configurarTooltipsPaginacion();
             }
+        });
+    }
+
+    function configurarTooltipsPaginacion() {
+        const paginacion = document.querySelector('#tablaRoles_wrapper .dt-paging');
+
+        if (!paginacion) {
+            return;
+        }
+
+        const titulos = {
+            'fa-angles-left': 'Primera página',
+            'fa-angle-left': 'Página anterior',
+            'fa-angle-right': 'Página siguiente',
+            'fa-angles-right': 'Última página'
+        };
+
+        paginacion.querySelectorAll('button').forEach(function (button) {
+            const icono = button.querySelector('i');
+
+            if (!icono) {
+                return;
+            }
+
+            Object.keys(titulos).forEach(function (clase) {
+                if (icono.classList.contains(clase)) {
+                    button.setAttribute('title', titulos[clase]);
+                    button.setAttribute('aria-label', titulos[clase]);
+                }
+            });
         });
     }
 

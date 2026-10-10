@@ -192,9 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     'data-url="/cajas/' + escapeAttribute(caja.id) + '">' +
                     (accion.icono || '<i class="fa-solid fa-pen"></i>') +
                     '</button>';
-            }
-
-            if (accion.slug === 'cajas.ver') {
+            } else if (accion.slug === 'cajas.ver') {
                 html +=
                     '<a href="/sesiones-caja?caja_id=' +
                     encodeURIComponent(caja.id) + '" ' +
@@ -202,11 +200,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     'title="' + escapeAttribute(accion.nombre) + '">' +
                     (accion.icono || '<i class="fa-regular fa-eye"></i>') +
                     '</a>';
-            }
-        });
-
-        if (tieneAccion('cajas.editar')) {
-            html +=
+            } else if (accion.slug === 'cajas.toggle') {
+                html +=
                 '<button type="button" ' +
                 'class="usuario-toggle-btn caja-toggle-btn ' +
                 (caja.activo ? 'activo' : 'inactivo') + '" ' +
@@ -222,7 +217,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 '<span class="usuario-toggle-thumb"></span>' +
                 '</span>' +
                 '</button>';
-        }
+            }
+        });
 
         html += '</div>';
 
@@ -417,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function configurarTooltipsPaginacion() {
             const paginacion = document.querySelector(
-                '#tablaLogs_wrapper .dt-paging'
+                '#tablaCajas_wrapper .dt-paging'
             );
 
             if (!paginacion) {
@@ -511,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const boton = fila.querySelector(
-                '.caja-action-btn[data-id="' + id + '"]'
+                '.caja-action-btn[data-id="' + id + '"], .caja-toggle-btn[data-id="' + id + '"]'
             );
 
             if (boton) {

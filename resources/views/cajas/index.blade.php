@@ -103,9 +103,7 @@
 
                         <td class="text-center px-4">
                             <div class="caja-actions">
-
                                 @foreach ($accionesCajas as $accion)
-
                                     @if ($accion->slug === 'cajas.editar')
                                         <button type="button"
                                             class="btn btn-sm btn-outline-primary caja-action-btn"
@@ -118,20 +116,13 @@
                                             data-url="{{ route('cajas.update', $caja) }}">
                                             {!! $accion->icono ?: '<i class="fa-solid fa-pen"></i>' !!}
                                         </button>
-
                                     @elseif ($accion->slug === 'cajas.ver')
                                         <a href="{{ route('cajas.sesiones.index', ['caja_id' => $caja->id]) }}"
                                             class="btn btn-sm btn-outline-info caja-action-btn"
                                             title="{{ $accion->nombre }}">
                                             {!! $accion->icono ?: '<i class="fa-regular fa-eye"></i>' !!}
                                         </a>
-
-                                    @endif
-
-                                @endforeach
-
-                                @foreach ($accionesCajas as $accion)
-                                    @if ($accion->slug === 'cajas.editar')
+                                    @elseif ($accion->slug === 'cajas.toggle')
                                         <button type="button"
                                             class="usuario-toggle-btn caja-toggle-btn {{ $caja->activo ? 'activo' : 'inactivo' }}"
                                             title="{{ $caja->activo ? 'Desactivar caja' : 'Activar caja' }}"
@@ -148,7 +139,6 @@
                                         </button>
                                     @endif
                                 @endforeach
-
                             </div>
                         </td>
                     </tr>

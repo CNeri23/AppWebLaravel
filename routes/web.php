@@ -236,7 +236,7 @@ Route::middleware('auth')->group(function () {
         ->name('cajas.update');
 
     Route::patch('/cajas/{caja}/estado', [CajaController::class, 'cambiarEstado'])
-        ->middleware('permiso:accion,cajas.editar')
+        ->middleware('permiso:accion,cajas.toggle')
         ->name('cajas.estado');
 
     // Rutas sesiones de caja

@@ -380,3 +380,70 @@ html[data-bs-theme] .caja-actions .btn-outline-secondary:focus-visible {
     border-color: #6c757d !important;
     background-color: #6c757d !important;
 }
+
+
+/* ===== Paginación con iconos (igual que logs) ===== */
+#tablaCajas_wrapper .dt-paging button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+}
+
+#tablaCajas_wrapper .dt-paging button i {
+    font-size: 11px;
+    line-height: 1;
+}
+
+/* ===== Tarjetas en móvil (igual que logs) ===== */
+@media (max-width: 767.98px) {
+    #tablaCajas_wrapper {
+        width: 100%;
+    }
+
+    /* ajustarFila() en el JS pone width en línea y encogía las celdas */
+    #tablaCajas.responsive-cards-table tbody td {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        grid-template-columns: 92px minmax(0, 1fr);
+    }
+
+    /* Anula text-center / text-end / px-4 de desktop salvo en Acciones */
+    #tablaCajas.responsive-cards-table tbody td:not([data-label="Acciones"]) {
+        text-align: left !important;
+    }
+
+    #tablaCajas.responsive-cards-table tbody td[class*="px-"] {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    #tablaCajas.responsive-cards-table tbody td:first-child {
+        padding-top: 0;
+        font-weight: 600;
+    }
+
+    #tablaCajas_wrapper .dt-paging {
+        margin-top: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    #tablaCajas.responsive-cards-table tbody td {
+        grid-template-columns: 82px minmax(0, 1fr);
+    }
+
+    #tablaCajas_wrapper .dt-paging button {
+        min-width: 30px;
+        height: 30px;
+        padding: 0 7px;
+    }
+
+    #tablaCajas_wrapper .dt-paging button i {
+        font-size: 10px;
+    }
+}
