@@ -26,6 +26,11 @@ class RoleController extends Controller
             ->map(fn ($id) => (int) $id)
             ->values();
 
+        $esSuperadministrador = $this->esSuperadministrador(auth()->user());
+        $rolSuperadministradorId = (int) (Role::query()
+            ->where('is_superadmin', true)
+            ->value('id') ?? 0);
+
         $submoduloRoles = Submodulo::with([
             'acciones' => function ($query) {
                 $query
@@ -56,7 +61,9 @@ class RoleController extends Controller
         return view('roles.index', compact(
             'roles',
             'accionesRoles',
-            'rolesDelUsuario'
+            'rolesDelUsuario',
+            'esSuperadministrador',
+            'rolSuperadministradorId'
         ));
     }
 
@@ -99,6 +106,13 @@ class RoleController extends Controller
             'name' => ['required', 'string', 'max:100', 'unique:roles,name,' . $rol->id],
             'description' => ['nullable', 'string', 'max:255'],
         ]);
+
+        if ($rol->is_superadmin && $datos['name'] !== $rol->name) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'El nombre del rol Superadministrador está reservado y no se puede cambiar.',
+            ], 422);
+        }
 
         $nombreAnterior = $rol->name;
         $descripcionAnterior = $rol->description;
@@ -150,6 +164,13 @@ class RoleController extends Controller
 
     public function destroy(Role $rol)
     {
+        if ($rol->is_superadmin) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'El rol Superadministrador está reservado y no se puede eliminar.',
+            ], 422);
+        }
+
         $nombre = $rol->name;
         $descripcion = $rol->description;
         $id = $rol->id;
@@ -174,10 +195,10 @@ class RoleController extends Controller
 
     public function permisos(Role $rol)
     {
-        if ($this->usuarioTieneRol(auth()->user(), $rol)) {
+        if (!$this->puedeAdministrarPermisosDeRol(auth()->user(), $rol)) {
             return response()->json([
                 'success' => false,
-                'mensaje' => 'No puedes consultar ni administrar los permisos de un rol que tienes asignado.',
+                'mensaje' => 'No puedes consultar ni administrar los permisos de este rol.',
             ], 403);
         }
 
@@ -218,10 +239,10 @@ class RoleController extends Controller
 
     public function actualizarPermisos(Request $request, Role $rol)
     {
-        if ($this->usuarioTieneRol($request->user(), $rol)) {
+        if (!$this->puedeAdministrarPermisosDeRol($request->user(), $rol)) {
             return response()->json([
                 'success' => false,
-                'mensaje' => 'Por seguridad, no puedes modificar los permisos de un rol que tienes asignado.',
+                'mensaje' => 'Por seguridad, no puedes modificar los permisos de este rol.',
             ], 403);
         }
 
@@ -340,12 +361,29 @@ class RoleController extends Controller
     }
 
     /**
-     * Evita que un usuario amplíe sus privilegios modificando uno de sus roles.
+     * Solo Superadministrador puede administrar roles que también tiene asignados,
+     * excepto su propio rol privilegiado.
      */
+    private function puedeAdministrarPermisosDeRol($usuario, Role $rol): bool
+    {
+        if (!$this->usuarioTieneRol($usuario, $rol)) {
+            return true;
+        }
+
+        return $this->esSuperadministrador($usuario) && !$rol->is_superadmin;
+    }
+
     private function usuarioTieneRol($usuario, Role $rol): bool
     {
         return $usuario->roles()
             ->where('roles.id', $rol->id)
+            ->exists();
+    }
+
+    private function esSuperadministrador($usuario): bool
+    {
+        return $usuario->roles()
+            ->where('roles.is_superadmin', true)
             ->exists();
     }
 }
