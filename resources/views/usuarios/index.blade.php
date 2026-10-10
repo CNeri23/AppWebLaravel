@@ -119,18 +119,6 @@
                                     </span>
                                 </button>
 
-                                @elseif ($accion->slug === 'usuarios.password')
-                                <button type="button"
-                                    class="btn btn-sm btn-outline-warning usuario-action-btn"
-                                    title="{{ $accion->nombre }}"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modalPasswordUsuario"
-                                    data-id="{{ $usuario->id }}"
-                                    data-name="{{ $usuario->name }}"
-                                    data-url="{{ route('usuarios.password', $usuario) }}">
-                                    {!! $accion->icono ?: '<i class="fa-solid fa-key"></i>' !!}
-                                </button>
-
                                 @elseif ($accion->slug === 'usuarios.roles')
                                 <button type="button"
                                     class="btn btn-sm btn-outline-success usuario-action-btn"
@@ -338,82 +326,6 @@
                                 placeholder="example@domain.com" required>
                             <div class="invalid-feedback" id="editar-email-error"></div>
                         </div>
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        Cancelar
-                    </button>
-
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa-solid fa-floppy-disk me-2"></i>
-                        Guardar
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-{{-- MODAL CAMBIAR CONTRASEÑA --}}
-<div class="modal fade" id="modalPasswordUsuario" tabindex="-1" aria-labelledby="modalPasswordUsuarioLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalPasswordUsuarioLabel">
-                    <i class="fa-solid fa-key me-2"></i>
-                    Cambiar contraseña
-                </h5>
-
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-
-            <form method="POST" id="formPasswordUsuario" novalidate autocomplete="off">
-                @csrf
-                @method('PUT')
-
-                <div class="modal-body">
-
-                    <input type="hidden" id="password_usuario_id" name="id">
-
-                    <div class="alert alert-light border mb-3">
-                        <div class="d-flex gap-2">
-                            <i class="fa-solid fa-circle-info text-primary mt-1"></i>
-
-                            <div>
-                                <div class="fw-semibold">Cambiar contraseña</div>
-
-                                <small class="text-secondary">
-                                    Estás cambiando la contraseña del usuario
-                                    <strong id="password_usuario_nombre">
-                                        este usuario
-                                    </strong>.
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password_nueva" class="form-label">Nueva contraseña</label>
-
-                        <input type="password" class="form-control @error('password') is-invalid @enderror"
-                            id="password_nueva" name="password" required>
-
-                        <div class="invalid-feedback" id="password-nueva-error">@error('password'){{ $message }}@enderror</div>
-                        <div class="form-text" id="password-nueva-hint">{{ $politicaPassword['descripcion'] }}</div>
-                    </div>
-
-                    <div>
-                        <label for="password_nueva_confirmation" class="form-label">
-                            Confirmar nueva contraseña
-                        </label>
-
-                        <input type="password" class="form-control" id="password_nueva_confirmation"
-                            name="password_confirmation" required>
-
-                        <div class="invalid-feedback" id="password-nueva-confirmation-error"></div>
                     </div>
 
                 </div>
