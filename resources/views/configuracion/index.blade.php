@@ -1,10 +1,16 @@
 @extends('layouts.app')
 @section('content')
 
+    @php
+        $puedeConfigurar = fn (string $slug): bool => app(\\App\\Services\\PermissionService::class)
+            ->tieneAccionPorSlug(auth()->user(), $slug);
+    @endphp
+
     <div class="container-fluid py-4 configuracion-page">
         <form id="formConfiguracion" enctype="multipart/form-data">
             <div class="configuracion-grid">
-                <section class="config-card">
+                @if (($puedeConfigurar('configuracion.nombre') || $puedeConfigurar('configuracion.logotipo')))
+                    <section class="config-card">
                     <div class="config-card-header">
                         <div class="config-card-icon">
                             <i class="fa-solid fa-gear"></i>
@@ -17,6 +23,7 @@
                     </div>
 
                     <div class="config-card-body">
+                        @if ($puedeConfigurar('configuracion.nombre'))
                         <div class="config-field">
                             <label for="system_name">Nombre del sistema</label>
                             <input type="text" id="system_name" name="system_name" class="form-control"
@@ -26,7 +33,9 @@
                                 Este nombre se utilizará en las diferentes áreas del sistema.
                             </small>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.logotipo'))
                         <div class="config-field">
                             <label for="logo">Logotipo</label>
 
@@ -57,10 +66,13 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
                     </div>
                 </section>
+                    @endif
 
-                <section class="config-card">
+                @if ($puedeConfigurar('configuracion.apariencia'))
+                    <section class="config-card">
 
                     <div class="config-card-header">
                         <div class="config-card-icon">
@@ -74,6 +86,7 @@
                     </div>
 
                     <div class="config-card-body">
+                        @if ($puedeConfigurar('configuracion.apariencia'))
                         <div class="config-field">
                             <label>Color de acento</label>
 
@@ -110,10 +123,13 @@
                                 estados activos e indicadores.
                             </small>
                         </div>
+                        @endif
                     </div>
                 </section>
+                    @endif
 
-                <section class="config-card">
+                @if (($puedeConfigurar('configuracion.moneda') || $puedeConfigurar('configuracion.zona_horaria') || $puedeConfigurar('configuracion.formato_fecha') || $puedeConfigurar('configuracion.formato_hora')))
+                    <section class="config-card">
 
                     <div class="config-card-header">
                         <div class="config-card-icon">
@@ -128,7 +144,8 @@
 
                     <div class="config-card-body">
                         <div class="regional-grid">
-                            <div class="config-field">
+                            @if ($puedeConfigurar('configuracion.moneda'))
+                        <div class="config-field">
                                 <label for="currency">Moneda</label>
 
                                 <select id="currency" name="currency" class="form-select">
@@ -145,8 +162,10 @@
                                     </option>
                                 </select>
                             </div>
+                        @endif
 
-                            <div class="config-field">
+                            @if ($puedeConfigurar('configuracion.zona_horaria'))
+                        <div class="config-field">
                                 <label for="timezone">Zona horaria</label>
 
                                 <select id="timezone" name="timezone" class="form-select">
@@ -179,8 +198,10 @@
                                     </option>
                                 </select>
                             </div>
+                        @endif
 
-                            <div class="config-field">
+                            @if ($puedeConfigurar('configuracion.formato_fecha'))
+                        <div class="config-field">
                                 <label for="date_format">Formato de fecha</label>
 
                                 <select id="date_format" name="date_format" class="form-select">
@@ -197,8 +218,10 @@
                                     </option>
                                 </select>
                             </div>
+                        @endif
 
-                            <div class="config-field">
+                            @if ($puedeConfigurar('configuracion.formato_hora'))
+                        <div class="config-field">
                                 <label for="time_format">Formato de hora</label>
 
                                 <select id="time_format" name="time_format" class="form-select">
@@ -211,13 +234,16 @@
                                     </option>
                                 </select>
                             </div>
+                        @endif
                         </div>
                     </div>
                 </section>
+                    @endif
             </div>
         </form>
 
         <div class="configuracion-extra">
+            @if (($puedeConfigurar('configuracion.negocio_nombre') || $puedeConfigurar('configuracion.negocio_rfc') || $puedeConfigurar('configuracion.negocio_direccion') || $puedeConfigurar('configuracion.negocio_telefono') || $puedeConfigurar('configuracion.negocio_correo') || $puedeConfigurar('configuracion.negocio_sitio_web') || $puedeConfigurar('configuracion.negocio_horario')))
             <div id="formNegocio" class="config-card config-card-flex" data-autosave>
                 <div class="config-card-header">
                     <div class="config-card-icon">
@@ -232,6 +258,7 @@
 
                 <div class="config-card-body">
                     <div class="config-form-grid">
+                        @if ($puedeConfigurar('configuracion.negocio_nombre'))
                         <div class="config-field config-field-full">
                             <label for="business_name">Razón social o nombre comercial</label>
                             <div class="config-input"><input type="text" id="business_name" name="business_name"
@@ -239,7 +266,9 @@
                                     type="button" class="config-input-save" hidden aria-label="Guardar cambio"
                                     title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.negocio_rfc'))
                         <div class="config-field">
                             <label for="business_rfc">RFC</label>
                             <div class="config-input"><input type="text" id="business_rfc" name="business_rfc"
@@ -248,7 +277,9 @@
                                     aria-label="Guardar cambio" title="Guardar (Enter)"><i
                                         class="fa-solid fa-check"></i></button></div>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.negocio_telefono'))
                         <div class="config-field">
                             <label for="business_phone">Teléfono</label>
                             <div class="config-input"><input type="tel" id="business_phone" name="business_phone"
@@ -257,7 +288,9 @@
                                     aria-label="Guardar cambio" title="Guardar (Enter)"><i
                                         class="fa-solid fa-check"></i></button></div>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.negocio_correo'))
                         <div class="config-field">
                             <label for="business_email">Correo de contacto</label>
                             <div class="config-input"><input type="email" id="business_email" name="business_email"
@@ -266,7 +299,9 @@
                                     hidden aria-label="Guardar cambio" title="Guardar (Enter)"><i
                                         class="fa-solid fa-check"></i></button></div>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.negocio_sitio_web'))
                         <div class="config-field">
                             <label for="business_website">Sitio web</label>
                             <div class="config-input"><input type="url" id="business_website" name="business_website"
@@ -275,7 +310,9 @@
                                     hidden aria-label="Guardar cambio" title="Guardar (Enter)"><i
                                         class="fa-solid fa-check"></i></button></div>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.negocio_direccion'))
                         <div class="config-field config-field-full">
                             <label for="business_address">Dirección</label>
                             <div class="config-input"><input type="text" id="business_address" name="business_address"
@@ -283,7 +320,9 @@
                                     type="button" class="config-input-save" hidden aria-label="Guardar cambio"
                                     title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.negocio_horario'))
                         <div class="config-field config-field-full">
                             <label for="business_schedule">Horario de atención</label>
                             <div class="config-input config-input-area"><textarea id="business_schedule"
@@ -292,11 +331,14 @@
                                     type="button" class="config-input-save" hidden aria-label="Guardar cambio"
                                     title="Guardar (Enter)"><i class="fa-solid fa-check"></i></button></div>
                         </div>
+                        @endif
                     </div>
                 </div>
 
             </div>
+            @endif
 
+            @if (($puedeConfigurar('configuracion.tiempo_sesion') || $puedeConfigurar('configuracion.longitud_password') || $puedeConfigurar('configuracion.intentos_login') || $puedeConfigurar('configuracion.bloqueo_usuario') || $puedeConfigurar('configuracion.intentos_ip') || $puedeConfigurar('configuracion.ventana_ip') || $puedeConfigurar('configuracion.bloqueo_ip') || $puedeConfigurar('configuracion.complejidad_password') || $puedeConfigurar('configuracion.registro_publico')))
             <div id="formSeguridad" class="config-card config-card-flex" data-autosave>
                 <div class="config-card-header">
                     <div class="config-card-icon">
@@ -311,6 +353,7 @@
 
                 <div class="config-card-body">
                     <div class="config-form-grid">
+                        @if ($puedeConfigurar('configuracion.tiempo_sesion'))
                         <div class="config-field">
                             <label for="session_timeout">Cierre de sesión por inactividad (minutos)</label>
                             <div class="config-input"><input type="number" id="session_timeout" name="session_timeout"
@@ -320,7 +363,9 @@
                                         class="fa-solid fa-check"></i></button></div>
                             <small>0 = desactivado. Mínimo 5 minutos.</small>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.longitud_password'))
                         <div class="config-field">
                             <label for="password_min_length">Longitud mínima de contraseña</label>
                             <div class="config-input"><input type="number" id="password_min_length"
@@ -331,7 +376,9 @@
                                         class="fa-solid fa-check"></i></button></div>
                             <small>Entre 8 y 32 caracteres.</small>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.intentos_login'))
                         <div class="config-field">
                             <label for="max_login_attempts">Intentos fallidos permitidos</label>
                             <div class="config-input"><input type="number" id="max_login_attempts" name="max_login_attempts"
@@ -341,7 +388,9 @@
                                         class="fa-solid fa-check"></i></button></div>
                             <small>Entre 3 y 10 antes de bloquear el acceso.</small>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.bloqueo_usuario'))
                         <div class="config-field">
                             <label for="lockout_minutes">Minutos de bloqueo</label>
                             <div class="config-input"><input type="number" id="lockout_minutes" name="lockout_minutes"
@@ -351,7 +400,9 @@
                                         class="fa-solid fa-check"></i></button></div>
                             <small>Tiempo de espera tras superar los intentos.</small>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.intentos_ip'))
                         <div class="config-field">
                             <label for="max_login_attempts_ip">Intentos fallidos máximos por IP</label>
                             <div class="config-input"><input type="number" id="max_login_attempts_ip" name="max_login_attempts_ip"
@@ -361,7 +412,9 @@
                                         class="fa-solid fa-check"></i></button></div>
                             <small>Entre 5 y 1000 intentos fallidos desde una misma IP.</small>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.ventana_ip'))
                         <div class="config-field">
                             <label for="login_ip_window_seconds">Ventana del límite por IP (segundos)</label>
                             <div class="config-input"><input type="number" id="login_ip_window_seconds" name="login_ip_window_seconds"
@@ -371,7 +424,9 @@
                                         class="fa-solid fa-check"></i></button></div>
                             <small>Entre 10 y 3600 segundos (1 minuto a 1 hora).</small>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.bloqueo_ip'))
                         <div class="config-field">
                             <label for="login_ip_lockout_minutes">Duración del bloqueo por IP (minutos)</label>
                             <div class="config-input"><input type="number" id="login_ip_lockout_minutes" name="login_ip_lockout_minutes"
@@ -381,7 +436,9 @@
                                         class="fa-solid fa-check"></i></button></div>
                             <small>Entre 1 y 1440 minutos. Este tiempo es independiente del bloqueo por usuario.</small>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.complejidad_password'))
                         <div class="config-field config-field-full config-switch">
                             <div class="config-switch-text">
                                 <label for="password_complexity">Exigir contraseñas robustas</label>
@@ -394,7 +451,9 @@
                                     name="password_complexity" value="1" {{ $settings['password_complexity'] ? 'checked' : '' }}>
                             </div>
                         </div>
+                        @endif
 
+                        @if ($puedeConfigurar('configuracion.registro_publico'))
                         <div class="config-field config-field-full config-switch">
                             <div class="config-switch-text">
                                 <label for="registration_enabled">Permitir registro público</label>
@@ -408,10 +467,12 @@
                                     name="registration_enabled" value="1" {{ $settings['registration_enabled'] ? 'checked' : '' }}>
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
 
             </div>
+            @endif
         </div>
     </div>
 
