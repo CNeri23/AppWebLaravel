@@ -279,7 +279,42 @@ class UserController extends Controller
             ->pluck('name')
             ->toArray();
 
-        $usuario->roles()->sync($roles);
+        DB::transaction(function () use ($usuario, $roles) {
+            $rolSuperadministrador = Role::query()
+                ->where('is_superadmin', true)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$rolSuperadministrador) {
+                $usuario->roles()->sync($roles);
+
+                return;
+            }
+
+            $teniaSuperadministrador = $usuario->roles()
+                ->where('roles.id', $rolSuperadministrador->id)
+                ->exists();
+
+            $conservaSuperadministrador = in_array(
+                (int) $rolSuperadministrador->id,
+                array_map('intval', $roles),
+                true
+            );
+
+            if ($teniaSuperadministrador && !$conservaSuperadministrador) {
+                $cantidadSuperadministradores = DB::table('role_user')
+                    ->where('role_id', $rolSuperadministrador->id)
+                    ->count();
+
+                abort_if(
+                    $cantidadSuperadministradores <= 1,
+                    422,
+                    'No puedes quitar el rol Superadministrador porque eres el único usuario que lo tiene asignado. Asigna primero ese rol a otro usuario.'
+                );
+            }
+
+            $usuario->roles()->sync($roles);
+        });
 
         $rolesAnterioresTexto = !empty($rolesAnteriores)
             ? implode(', ', $rolesAnteriores)
