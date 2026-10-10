@@ -32,6 +32,8 @@
 <script>
     window.accionesUsuarios = @json($accionesUsuariosJs);
     window.politicaPassword = @json($politicaPassword);
+    window.rolSuperadministradorId = @json(optional($roles->firstWhere('is_superadmin', true))->id);
+    window.cantidadSuperadministradores = @json($usuarios->filter(fn ($usuario) => $usuario->roles->contains(fn ($rol) => (bool) $rol->is_superadmin))->count());
 </script>
 
 <div class="card border-0 shadow-sm">
