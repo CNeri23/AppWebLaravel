@@ -996,7 +996,28 @@ html[data-bs-theme="dark"] .theme-switch:not(.is-light) .theme-switch-moon,
     transform: rotate(0deg) scale(1);
 }
 
-/* Transición de color nativa: sin capturas de pantalla ni efectos de entrada. */
+/* Revelado circular moderno del tema, inspirado en las transiciones de sistemas móviles. */
+::view-transition-old(root) {
+    animation: none;
+    z-index: 1;
+}
+
+::view-transition-new(root) {
+    z-index: 2;
+    animation: theme-reveal 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes theme-reveal {
+    from {
+        clip-path: circle(0 at var(--theme-origin-x, 50%) var(--theme-origin-y, 50%));
+    }
+
+    to {
+        clip-path: circle(150vmax at var(--theme-origin-x, 50%) var(--theme-origin-y, 50%));
+    }
+}
+
+/* Alternativa para navegadores sin View Transitions. */
 html.theme-switching *,
 html.theme-switching *::before,
 html.theme-switching *::after {
