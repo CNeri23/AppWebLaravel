@@ -104,6 +104,8 @@ class SystemSettingsController extends Controller
                     'red',
                     'cyan',
                     'indigo',
+                    'petroleo',
+                    'petroleo',
                 ]),
             ],
 
