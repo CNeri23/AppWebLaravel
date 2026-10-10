@@ -1,0 +1,145 @@
+/* Tablas adaptables: en móviles cada registro se presenta como una tarjeta. */
+@media (max-width: 767.98px) {
+    .table-responsive table.responsive-cards-table {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        border-collapse: separate !important;
+        border-spacing: 0;
+    }
+
+    .table-responsive table.responsive-cards-table thead {
+        display: none !important;
+    }
+
+    .table-responsive table.responsive-cards-table tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .table-responsive table.responsive-cards-table tbody tr {
+        display: block;
+        width: 100%;
+        margin: 0 0 12px;
+        padding: 14px;
+        border: 1px solid var(--bs-border-color);
+        border-radius: 14px;
+        background: var(--bs-body-bg);
+        box-shadow: 0 5px 16px rgba(15, 26, 29, 0.05), 0 1px 4px rgba(15, 26, 29, 0.03);
+        transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+    }
+
+    .table-responsive table.responsive-cards-table tbody tr:last-child {
+        margin-bottom: 0;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td {
+        display: grid;
+        grid-template-columns: minmax(82px, 30%) minmax(0, 1fr);
+        align-items: start;
+        gap: 10px;
+        width: 100%;
+        padding: 8px 0;
+        border: 0 !important;
+        color: var(--bs-body-color);
+        font-size: 13px;
+        line-height: 1.45;
+        white-space: normal !important;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td::before {
+        content: attr(data-label);
+        color: var(--bs-secondary-color);
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.45;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td + td {
+        border-top: 1px solid var(--bs-border-color) !important;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td:last-child {
+        padding-bottom: 0;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td:only-child {
+        display: block;
+        padding: 12px 0;
+        text-align: center;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td:only-child::before {
+        content: none;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td .usuario-actions,
+    .table-responsive table.responsive-cards-table tbody td .miembro-actions,
+    .table-responsive table.responsive-cards-table tbody td .direccion-actions,
+    .table-responsive table.responsive-cards-table tbody td .rol-actions,
+    .table-responsive table.responsive-cards-table tbody td .plan-actions,
+    .table-responsive table.responsive-cards-table tbody td .caja-actions,
+    .table-responsive table.responsive-cards-table tbody td .membresia-actions,
+    .table-responsive table.responsive-cards-table tbody td .asistencia-actions {
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-width: 0;
+    }
+
+    .table-responsive:has(table.responsive-cards-table) {
+        overflow: visible !important;
+    }
+
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 12px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        width: 100%;
+    }
+
+    .dataTables_wrapper .dataTables_filter label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        margin-top: 12px;
+        font-size: 12px;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        margin-top: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .table-responsive table.responsive-cards-table tbody tr {
+        padding: 13px;
+        border-radius: 13px;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td {
+        grid-template-columns: minmax(76px, 29%) minmax(0, 1fr);
+        gap: 8px;
+        font-size: 12px;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td::before {
+        font-size: 10px;
+    }
+}
