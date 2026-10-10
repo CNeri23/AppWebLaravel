@@ -62,15 +62,17 @@ class LoginController extends Controller
         $minutosBloqueo = max(1, (int) $settings->get('lockout_minutes', 5));
         $limiteIntentosIp = max(5, (int) $settings->get('max_login_attempts_ip', 30));
         $ventanaIntentosIp = max(10, (int) $settings->get('login_ip_window_seconds', 60));
+        $minutosBloqueoIp = max(1, (int) $settings->get('login_ip_lockout_minutes', 10));
 
         $ip = (string) $request->ip();
-        $claveIp = 'login-ip:' . hash('sha256', $ip);
+        $claveIp = 'login-ip-intentos:' . hash('sha256', $ip);
+        $claveBloqueoIp = 'login-ip-bloqueo:' . hash('sha256', $ip);
         $claveIntentos = 'login:' . $credentials['username'] . '|' . $ip;
         $claveBloqueo = $claveIntentos . ':bloqueo';
 
-        // Límite global: evita probar muchos nombres de usuario desde una misma IP.
-        if (RateLimiter::tooManyAttempts($claveIp, $limiteIntentosIp)) {
-            return $this->respuestaBloqueo(RateLimiter::availableIn($claveIp));
+        // El bloqueo global por IP tiene prioridad sobre cualquier bloqueo por usuario.
+        if (RateLimiter::tooManyAttempts($claveBloqueoIp, 1)) {
+            return $this->respuestaBloqueoIp(RateLimiter::availableIn($claveBloqueoIp));
         }
 
         if (RateLimiter::tooManyAttempts($claveBloqueo, 1)) {
@@ -136,22 +138,27 @@ class LoginController extends Controller
             $credentials['username'] . '", pero las credenciales no fueron correctas.'
         );
 
-        // Cada credencial incorrecta cuenta tanto para usuario + IP como para la IP global.
+        // Cada credencial incorrecta cuenta para el usuario y para la ventana global de la IP.
         RateLimiter::hit($claveIp, $ventanaIntentosIp);
         RateLimiter::hit($claveIntentos, self::VENTANA_INTENTOS);
 
         $intentosIp = RateLimiter::attempts($claveIp);
 
         if ($intentosIp >= $limiteIntentosIp) {
+            // El bloqueo por IP tiene su propio temporizador y no depende del bloqueo por usuario.
+            RateLimiter::hit($claveBloqueoIp, $minutosBloqueoIp * 60);
+            RateLimiter::clear($claveIp);
+
             AuditLogService::log(
                 module: 'autenticacion',
                 action: 'LOGIN_IP_BLOQUEADA',
-                description: 'Se limitó temporalmente el acceso desde una misma dirección IP tras superar ' .
-                    $limiteIntentosIp . ' intentos fallidos en ' .
+                description: 'Se bloqueó el acceso desde la IP durante ' .
+                    $minutosBloqueoIp . ' minutos tras alcanzar ' .
+                    $limiteIntentosIp . ' intentos fallidos dentro de una ventana de ' .
                     $ventanaIntentosIp . ' segundos.'
             );
 
-            return $this->respuestaBloqueo(RateLimiter::availableIn($claveIp));
+            return $this->respuestaBloqueoIp(RateLimiter::availableIn($claveBloqueoIp));
         }
 
         $intentos = RateLimiter::attempts($claveIntentos);
@@ -188,8 +195,20 @@ class LoginController extends Controller
 
         return response()->json([
             'success' => false,
-            'mensaje' => 'Demasiados intentos fallidos. Intenta de nuevo en ' .
+            'mensaje' => 'Demasiados intentos fallidos para este usuario. Intenta de nuevo en ' .
                 $minutos . ($minutos === 1 ? ' minuto.' : ' minutos.'),
+        ], 429);
+    }
+
+    private function respuestaBloqueoIp(int $segundos)
+    {
+        $minutos = max(1, (int) ceil($segundos / 60));
+
+        return response()->json([
+            'success' => false,
+            'mensaje' => 'IP bloqueada por demasiados intentos fallidos. Intenta de nuevo en ' .
+                $minutos . ($minutos === 1 ? ' minuto.' : ' minutos.'),
+            'tipo_bloqueo' => 'ip',
         ], 429);
     }
 
