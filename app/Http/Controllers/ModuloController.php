@@ -63,7 +63,7 @@ class ModuloController extends Controller
 
     public function store(Request $request)
     {
-        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:modulos,slug'], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150'], 'orden' => ['required', 'integer', 'min:0'],]);
+        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:modulos,slug'], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'], 'orden' => ['required', 'integer', 'min:0'],]);
 
         $modulo = Modulo::create($datos);
 
@@ -74,7 +74,7 @@ class ModuloController extends Controller
 
     public function update(Request $request, Modulo $modulo)
     {
-        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:modulos,slug,' . $modulo->id,], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150'], 'orden' => ['required', 'integer', 'min:0'],]);
+        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:modulos,slug,' . $modulo->id,], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'], 'orden' => ['required', 'integer', 'min:0'],]);
 
         $cambios = [];
 
