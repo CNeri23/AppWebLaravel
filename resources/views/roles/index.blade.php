@@ -31,6 +31,7 @@
 
     <script>
         window.accionesRoles = @json($accionesRolesJs);
+        window.rolesDelUsuario = @json($rolesDelUsuario);
     </script>
 
     <div class="card border-0 shadow-sm">
@@ -88,6 +89,7 @@
                                                     @break
 
                                                 @case('roles.permisos')
+                                                    @if (!$rolesDelUsuario->contains((int) $rol->id))
                                                     <button
                                                         type="button"
                                                         class="btn btn-sm btn-outline-success rol-action-btn"
@@ -100,6 +102,7 @@
                                                         data-save-url="{{ route('roles.actualizarPermisos', $rol) }}">
                                                         {!! $accion->icono ?: '<i class="fa-solid fa-key"></i>' !!}
                                                     </button>
+                                                    @endif
                                                     @break
 
                                                 @case('roles.eliminar')
