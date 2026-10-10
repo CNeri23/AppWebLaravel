@@ -13,7 +13,6 @@ use App\Services\UsuarioService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -230,40 +229,6 @@ class UserController extends Controller
         ]);
     }
 
-    public function updatePassword(
-        Request $request,
-        User $usuario,
-        PasswordPolicy $politica
-    )
-    {
-        $datos = $request->validate([
-            'password' => $politica->rules(),
-        ], $politica->messages());
-
-        $usuario->password = Hash::make($datos['password']);
-
-        $usuario->save();
-
-        // Si el administrador cambia su propia contraseña, conservar esta sesión actual.
-        // Las otras sesiones detectarán el cambio y recibirán un aviso al cerrarse.
-        if ((int) $request->user()->id === (int) $usuario->id) {
-            $request->session()->put('password_hash_' . \Illuminate\Support\Facades\Auth::getDefaultDriver(), $usuario->getAuthPassword());
-        }
-
-        AuditLogService::log(
-            module: 'usuarios',
-            action: 'CAMBIAR_PASSWORD',
-            description: 'Se cambió la contraseña del usuario "' .
-                $usuario->username . '".',
-            entity: $usuario
-        );
-
-        return response()->json([
-            'success' => true,
-            'mensaje' => 'Contraseña actualizada correctamente.',
-        ]);
-    }
-
     public function updateRoles(Request $request, User $usuario)
     {
         $datos = $request->validate([
@@ -441,7 +406,6 @@ class UserController extends Controller
         return [
             'update' => route('usuarios.update', $usuario),
             'estado' => route('usuarios.estado', $usuario),
-            'password' => route('usuarios.password', $usuario),
             'roles' => route('usuarios.roles', $usuario),
             'delete' => route('usuarios.destroy', $usuario),
         ];

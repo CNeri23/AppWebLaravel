@@ -90,10 +90,6 @@ Route::middleware('auth')->group(function () {
         ->middleware('permiso:accion,usuarios.editar')
         ->name('usuarios.estado');
 
-    Route::put('/usuarios/{usuario}/password', [UserController::class, 'updatePassword'])
-        ->middleware('permiso:accion,usuarios.password')
-        ->name('usuarios.password');
-
     Route::put('/usuarios/{usuario}/roles', [UserController::class, 'updateRoles'])
         ->middleware('permiso:accion,usuarios.roles')
         ->name('usuarios.roles');

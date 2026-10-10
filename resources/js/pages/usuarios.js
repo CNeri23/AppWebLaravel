@@ -6,12 +6,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const modalNuevoUsuarioEl = document.getElementById('modalNuevoUsuario');
     const modalEditarUsuarioEl = document.getElementById('modalEditarUsuario');
-    const modalPasswordUsuarioEl = document.getElementById('modalPasswordUsuario');
     const modalRolesUsuarioEl = document.getElementById('modalRolesUsuario');
     const modalEliminarUsuarioEl = document.getElementById('modalEliminarUsuario');
     const modalNuevoUsuario = modalNuevoUsuarioEl ? new bootstrap.Modal(modalNuevoUsuarioEl) : null;
     const modalEditarUsuario = modalEditarUsuarioEl ? new bootstrap.Modal(modalEditarUsuarioEl) : null;
-    const modalPasswordUsuario = modalPasswordUsuarioEl ? new bootstrap.Modal(modalPasswordUsuarioEl) : null;
     const modalRolesUsuario = modalRolesUsuarioEl ? new bootstrap.Modal(modalRolesUsuarioEl) : null;
     const modalEliminarUsuario = modalEliminarUsuarioEl ? new bootstrap.Modal(modalEliminarUsuarioEl) : null;
 
@@ -281,19 +279,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const politicaNuevo = enlazarPassword('password', 'password_confirmation', 'password-error', 'password-confirmation-error');
-    const politicaCambio = enlazarPassword('password_nueva', 'password_nueva_confirmation', 'password-nueva-error','password-nueva-confirmation-error');
 
     if (modalNuevoUsuarioEl && politicaNuevo) {
         modalNuevoUsuarioEl.addEventListener(
             'hidden.bs.modal',
             politicaNuevo.limpiar
-        );
-    }
-
-    if (modalPasswordUsuarioEl && politicaCambio) {
-        modalPasswordUsuarioEl.addEventListener(
-            'show.bs.modal',
-            politicaCambio.limpiar
         );
     }
 
@@ -352,19 +342,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     '<span class="usuario-toggle-track">' +
                     '<span class="usuario-toggle-thumb"></span>' +
                     '</span>' +
-                    '</button>';
-            }
-            else if (accion.slug === 'usuarios.password') {
-                html +=
-                    '<button type="button" ' +
-                    'class="btn btn-sm btn-outline-warning usuario-action-btn" ' +
-                    'title="' + escapeAttribute(accion.nombre) + '" ' +
-                    'data-bs-toggle="modal" ' +
-                    'data-bs-target="#modalPasswordUsuario" ' +
-                    'data-id="' + escapeAttribute(usuario.id) + '" ' +
-                    'data-name="' + escapeAttribute(usuario.username) + '" ' +
-                    'data-url="' + escapeAttribute(urls.password) + '">' +
-                    (accion.icono || '<i class="fa-solid fa-key"></i>') +
                     '</button>';
             }
             else if (accion.slug === 'usuarios.roles') {
@@ -653,25 +630,6 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    const modalPassword = document.getElementById('modalPasswordUsuario');
-
-    if (modalPassword) {
-        modalPassword.addEventListener('show.bs.modal',
-            function (event) {
-                const button = event.relatedTarget;
-
-                if (!button) {
-                    return;
-                }
-                document.getElementById('password_usuario_id').value = button.dataset.id;
-                document.getElementById('password_usuario_nombre').textContent = button.dataset.name;
-                document.getElementById('password_nueva').value = '';
-                document.getElementById('password_nueva_confirmation').value = '';
-                document.getElementById('formPasswordUsuario').setAttribute('action', button.dataset.url);
-            }
-        );
-    }
-
     const modalRoles = document.getElementById('modalRolesUsuario');
     let superadministradorBloqueadoParaUsuario = false;
 
@@ -820,21 +778,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     .catch(function (error) {
                         mostrarErroresForm(formEditarUsuario, error);
                     });
-            }
-        );
-    }
-
-    const formPasswordUsuario = document.getElementById('formPasswordUsuario');
-
-    if (formPasswordUsuario) {
-        formPasswordUsuario.addEventListener('submit',
-            function (event) {
-                event.preventDefault();
-                if (politicaCambio && !politicaCambio.validar()) {
-                    return;
-                }
-                enviarFormulario(formPasswordUsuario, modalPasswordUsuario, 'Contraseña actualizada correctamente.')
-                .catch(mostrarError);
             }
         );
     }
