@@ -116,6 +116,13 @@ class LoginController extends Controller
 
             $usuario = Auth::user();
 
+            // La sesión recién autenticada debe registrar el hash actual.
+            // Así no se confunde un login correcto con una sesión anterior revocada.
+            $request->session()->put(
+                'password_hash_' . Auth::getDefaultDriver(),
+                $usuario->getAuthPassword()
+            );
+
             AuditLogService::log(
                 module: 'autenticacion',
                 action: 'LOGIN',
