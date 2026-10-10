@@ -298,11 +298,11 @@ html[data-bs-theme="dark"][data-accent-color="indigo"] {
 }
 
 html[data-bs-theme="dark"][data-accent-color="petroleo"] {
-    --gym: #2dd4bf;
-    --gym-strong: #5eead4;
-    --gym-soft: rgba(45, 212, 191, 0.18);
-    --on-gym: #073b36;
-    --nav-active: rgba(45, 212, 191, 0.18);
+    --gym: #159a8c;
+    --gym-strong: #20b5a5;
+    --gym-soft: rgba(21, 154, 140, 0.16);
+    --on-gym: #ffffff;
+    --nav-active: rgba(21, 154, 140, 0.16);
 }
 
 html[data-bs-theme="dark"][data-accent-color="petroleo"] {
