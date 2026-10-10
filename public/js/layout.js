@@ -189,6 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
             red: 'red',
             cyan: 'cyan',
             indigo: 'indigo',
+            petroleo: 'petroleo',
         };
 
         const colorAplicable = coloresCompatibles[color];
