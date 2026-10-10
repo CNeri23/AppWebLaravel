@@ -250,6 +250,10 @@ document.addEventListener('DOMContentLoaded', function () {
             buttonsStyling: false,
             heightAuto: false,
             customClass: {
+                popup: 'ip-confirmation-popup',
+                icon: 'ip-confirmation-icon',
+                title: 'ip-confirmation-title',
+                actions: 'ip-confirmation-actions',
                 confirmButton: claseConfirmar + ' mx-1',
                 cancelButton: 'btn btn-secondary mx-1'
             },
@@ -308,6 +312,10 @@ document.addEventListener('DOMContentLoaded', function () {
             buttonsStyling: false,
             heightAuto: false,
             customClass: {
+                popup: 'ip-confirmation-popup',
+                icon: 'ip-confirmation-icon',
+                title: 'ip-confirmation-title',
+                actions: 'ip-confirmation-actions',
                 confirmButton: 'btn btn-primary mx-1',
                 cancelButton: 'btn btn-secondary mx-1'
             },
