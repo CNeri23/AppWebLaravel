@@ -681,14 +681,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function puedeAdministrarPermisosRol(rolId) {
+        const id = Number(rolId);
         const rolesDelUsuario = (window.rolesDelUsuario || []).map(Number);
 
-        if (!rolesDelUsuario.includes(Number(rolId))) {
+        if (id === Number(window.rolSuperadministradorId)) {
+            return false;
+        }
+
+        if (!rolesDelUsuario.includes(id)) {
             return true;
         }
 
-        return Boolean(window.esSuperadministrador) &&
-            Number(rolId) !== Number(window.rolSuperadministradorId);
+        return Boolean(window.esSuperadministrador);
     }
 
     function crearAccionesRol(rol, urls) {
