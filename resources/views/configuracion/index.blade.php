@@ -2,7 +2,7 @@
 @section('content')
 
     @php
-        $puedeConfigurar = fn (string $slug): bool => app(\\App\\Services\\PermissionService::class)
+        $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionService::class)
             ->tieneAccionPorSlug(auth()->user(), $slug);
     @endphp
 
