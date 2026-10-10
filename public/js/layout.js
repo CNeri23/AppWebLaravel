@@ -508,22 +508,13 @@ document.addEventListener('DOMContentLoaded', function () {
         themeSwitch.classList.toggle('is-light', siguiente !== 'dark');
     }
 
-    const RETRASO_TEMA = 160;
     let cambiandoTema = false;
 
     function cambiarTema(siguiente) {
         const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        if (!document.startViewTransition || reducirMovimiento) {
-            html.classList.add('theme-switching');
-            guardarYAplicar(siguiente);
-            setTimeout(function () {
-                html.classList.remove('theme-switching');
-            }, 450);
-            return;
-        }
-
-        if (!themeSwitch) {
+        if (!document.startViewTransition || reducirMovimiento || !themeSwitch) {
+            animarSwitchTema(siguiente);
             guardarYAplicar(siguiente);
             return;
         }
@@ -533,26 +524,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         cambiandoTema = true;
 
-        // 1) La perilla se mueve primero; 2) un instante después la página nueva emerge con profundidad 3D.
         animarSwitchTema(siguiente);
-
-        const claseProfundidad = siguiente === 'dark' ? 'theme-depth-dark' : 'theme-depth-light';
+        html.classList.add('theme-fade-transition');
 
         function terminar() {
-            html.classList.remove('theme-depth-dark', 'theme-depth-light');
+            html.classList.remove('theme-fade-transition');
             cambiandoTema = false;
         }
 
-        setTimeout(function () {
-            html.classList.add(claseProfundidad);
-
-            const transicion = document.startViewTransition(function () { guardarYAplicar(siguiente); });
+        try {
+            const transicion = document.startViewTransition(function () {
+                guardarYAplicar(siguiente);
+            });
 
             transicion.finished.then(terminar, terminar);
-        }, RETRASO_TEMA);
-
-        // Red de seguridad por si el navegador nunca resuelve la transición.
-        setTimeout(terminar, RETRASO_TEMA + 3000);
+            setTimeout(terminar, 1500);
+        } catch (error) {
+            terminar();
+            guardarYAplicar(siguiente);
+        }
     }
 
     window.cambiarTemaManual = cambiarTema;
