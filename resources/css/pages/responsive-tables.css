@@ -143,3 +143,48 @@
         font-size: 10px;
     }
 }
+
+
+/* Los controles de paginación conservan iconos, sin texto, en todas las vistas. */
+.dt-paging .dt-paging-button.first:not(:has(i)),
+.dt-paging .dt-paging-button.previous:not(:has(i)),
+.dt-paging .dt-paging-button.next:not(:has(i)),
+.dt-paging .dt-paging-button.last:not(:has(i)) {
+    position: relative;
+    font-size: 0 !important;
+}
+
+.dt-paging .dt-paging-button.first:not(:has(i))::before,
+.dt-paging .dt-paging-button.previous:not(:has(i))::before,
+.dt-paging .dt-paging-button.next:not(:has(i))::before,
+.dt-paging .dt-paging-button.last:not(:has(i))::before {
+    font-family: "Font Awesome 6 Free";
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.dt-paging .dt-paging-button.first:not(:has(i))::before {
+    content: "\\f100";
+}
+
+.dt-paging .dt-paging-button.previous:not(:has(i))::before {
+    content: "\\f104";
+}
+
+.dt-paging .dt-paging-button.next:not(:has(i))::before {
+    content: "\\f105";
+}
+
+.dt-paging .dt-paging-button.last:not(:has(i))::before {
+    content: "\\f101";
+}
+
+@media (max-width: 767.98px) {
+    .table-responsive table.responsive-cards-table:is(
+        #tablaUsuarios, #tablaMiembros, #tablaDirecciones, #tablaRoles,
+        #tablaPlanes, #tablaCajas, #tablaMembresias, #tablaAsistencias, #tablaLogs
+    ) {
+        min-width: 0 !important;
+    }
+}
