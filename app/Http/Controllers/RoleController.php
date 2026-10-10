@@ -20,6 +20,12 @@ class RoleController extends Controller
     {
         $roles = Role::orderBy('name')->get();
 
+        $rolesDelUsuario = auth()->user()
+            ->roles()
+            ->pluck('roles.id')
+            ->map(fn ($id) => (int) $id)
+            ->values();
+
         $submoduloRoles = Submodulo::with([
             'acciones' => function ($query) {
                 $query
@@ -49,7 +55,8 @@ class RoleController extends Controller
 
         return view('roles.index', compact(
             'roles',
-            'accionesRoles'
+            'accionesRoles',
+            'rolesDelUsuario'
         ));
     }
 
@@ -167,6 +174,13 @@ class RoleController extends Controller
 
     public function permisos(Role $rol)
     {
+        if ($this->usuarioTieneRol(auth()->user(), $rol)) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No puedes consultar ni administrar los permisos de un rol que tienes asignado.',
+            ], 403);
+        }
+
         $modulos = Modulo::with([
             'submodulos' => function ($query) {
                 $query
@@ -204,6 +218,13 @@ class RoleController extends Controller
 
     public function actualizarPermisos(Request $request, Role $rol)
     {
+        if ($this->usuarioTieneRol($request->user(), $rol)) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Por seguridad, no puedes modificar los permisos de un rol que tienes asignado.',
+            ], 403);
+        }
+
         $datos = $request->validate([
             'permisos' => ['present', 'array'],
 
@@ -316,5 +337,15 @@ class RoleController extends Controller
             'total_permisos' => $permisos->count(),
             'acciones_roles' => $accionesRoles,
         ]);
+    }
+
+    /**
+     * Evita que un usuario amplíe sus privilegios modificando uno de sus roles.
+     */
+    private function usuarioTieneRol($usuario, Role $rol): bool
+    {
+        return $usuario->roles()
+            ->where('roles.id', $rol->id)
+            ->exists();
     }
 }
