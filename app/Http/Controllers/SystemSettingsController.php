@@ -30,6 +30,8 @@ class SystemSettingsController extends Controller
         'password_complexity',
         'max_login_attempts',
         'lockout_minutes',
+        'max_login_attempts_ip',
+        'login_ip_window_seconds',
         'registration_enabled',
     ];
 
@@ -116,6 +118,8 @@ class SystemSettingsController extends Controller
             'password_complexity' => ['sometimes', 'required', 'boolean'],
             'max_login_attempts' => ['sometimes', 'required', 'integer', 'between:3,10'],
             'lockout_minutes' => ['sometimes', 'required', 'integer', 'between:1,60'],
+            'max_login_attempts_ip' => ['sometimes', 'required', 'integer', 'between:5,1000'],
+            'login_ip_window_seconds' => ['sometimes', 'required', 'integer', 'between:10,3600'],
             'registration_enabled' => ['sometimes', 'required', 'boolean'],
         ], [
             'system_name.required' => 'El nombre del sistema es obligatorio.',
@@ -169,6 +173,14 @@ class SystemSettingsController extends Controller
             'lockout_minutes.required' => 'Los minutos de bloqueo son obligatorios.',
             'lockout_minutes.integer' => 'Los minutos de bloqueo deben ser un número entero.',
             'lockout_minutes.between' => 'Los minutos de bloqueo deben estar entre 1 y 60.',
+
+            'max_login_attempts_ip.required' => 'El límite de intentos por IP es obligatorio.',
+            'max_login_attempts_ip.integer' => 'El límite de intentos por IP debe ser un número entero.',
+            'max_login_attempts_ip.between' => 'El límite de intentos por IP debe estar entre 5 y 1000.',
+
+            'login_ip_window_seconds.required' => 'La ventana de tiempo por IP es obligatoria.',
+            'login_ip_window_seconds.integer' => 'La ventana de tiempo por IP debe ser un número entero.',
+            'login_ip_window_seconds.between' => 'La ventana de tiempo por IP debe estar entre 10 y 3600 segundos.',
         ]);
 
         foreach (self::CLAVES_NEGOCIO as $clave) {
@@ -285,6 +297,8 @@ class SystemSettingsController extends Controller
             'password_complexity' => 'La configuración de complejidad de contraseña se actualizó correctamente.',
             'max_login_attempts' => 'El número máximo de intentos se actualizó correctamente.',
             'lockout_minutes' => 'El tiempo de bloqueo se actualizó correctamente.',
+            'max_login_attempts_ip' => 'El límite de intentos por IP se actualizó correctamente.',
+            'login_ip_window_seconds' => 'La ventana de tiempo por IP se actualizó correctamente.',
             'registration_enabled' => 'La configuración de registro se actualizó correctamente.',
         ];
 
