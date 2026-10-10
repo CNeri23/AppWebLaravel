@@ -39,6 +39,7 @@
         'red',
         'cyan',
         'indigo',
+        'petroleo',
     ], true)) {
         $accentColor = 'orange';
     }
