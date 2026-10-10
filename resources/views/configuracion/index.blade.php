@@ -101,6 +101,7 @@
                                         'cyan' => ['name' => 'Cian', 'color' => '#32ade6'],
                                         'indigo' => ['name' => 'Índigo', 'color' => '#5856d6'],
                                         'petroleo' => ['name' => 'Petróleo', 'color' => '#0f766e'],
+                                        'petroleo' => ['name' => 'Petróleo', 'color' => '#0f766e'],
                                     ];
                                 @endphp
 
