@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (typeof window.showToast === 'function') {
                 window.showToast(
                     'error',
-                    'Tu sesión se cerró porque tu contraseña fue cambiada. Contacta al Superadministrador o al Administrador para obtener acceso nuevamente. Si no solicitaste el cambio, informa de inmediato al administrador.'
+                    'Tu sesión se cerró porque tu contraseña fue cambiada.'
                 );
             }
         }, 300);
