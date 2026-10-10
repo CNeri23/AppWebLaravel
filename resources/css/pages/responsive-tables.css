@@ -165,19 +165,19 @@
 }
 
 .dt-paging .dt-paging-button.first:not(:has(i))::before {
-    content: "\\f100";
+    content: "\f100";
 }
 
 .dt-paging .dt-paging-button.previous:not(:has(i))::before {
-    content: "\\f104";
+    content: "\f104";
 }
 
 .dt-paging .dt-paging-button.next:not(:has(i))::before {
-    content: "\\f105";
+    content: "\f105";
 }
 
 .dt-paging .dt-paging-button.last:not(:has(i))::before {
-    content: "\\f101";
+    content: "\f101";
 }
 
 @media (max-width: 767.98px) {
