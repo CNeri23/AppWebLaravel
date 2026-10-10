@@ -319,6 +319,20 @@ class MiembroController extends Controller
         PasswordPolicy $politica,
         UsuarioService $servicio
     ) {
+        // Verificar que la persona pertenezca al módulo de miembros.
+        // Esta comprobación debe ejecutarse antes de crear o vincular usuarios.
+        $tipoMiembro = Tipo::where('nombre', 'Miembro')->first();
+
+        if (
+            !$tipoMiembro ||
+            !$miembro->tipos()->where('tipos.id', $tipoMiembro->id)->exists()
+        ) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'El registro indicado no pertenece al módulo de miembros.',
+            ], 404);
+        }
+
         if ($miembro->usuario_id) {
             return response()->json([
                 'success' => false,
