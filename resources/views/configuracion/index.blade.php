@@ -372,6 +372,16 @@
                             <small>Entre 10 y 3600 segundos (1 minuto a 1 hora).</small>
                         </div>
 
+                        <div class="config-field">
+                            <label for="login_ip_lockout_minutes">Duración del bloqueo por IP (minutos)</label>
+                            <div class="config-input"><input type="number" id="login_ip_lockout_minutes" name="login_ip_lockout_minutes"
+                                    class="form-control" value="{{ $settings['login_ip_lockout_minutes'] }}" min="1" max="1440"
+                                    step="1" inputmode="numeric"><button type="button" class="config-input-save" hidden
+                                    aria-label="Guardar cambio" title="Guardar (Enter)"><i
+                                        class="fa-solid fa-check"></i></button></div>
+                            <small>Entre 1 y 1440 minutos. Este tiempo es independiente del bloqueo por usuario.</small>
+                        </div>
+
                         <div class="config-field config-field-full config-switch">
                             <div class="config-switch-text">
                                 <label for="password_complexity">Exigir contraseñas robustas</label>
