@@ -138,7 +138,7 @@ class ProfileController extends Controller
 
         // Actualizar la huella de contraseña de la sesión actual para conservarla abierta.
         // Las demás sesiones detectarán la contraseña anterior y se cerrarán con un aviso.
-        $request->session()->put('password_hash', $usuario->getAuthPassword());
+        $request->session()->put('password_hash_' . Auth::getDefaultDriver(), $usuario->getAuthPassword());
 
         AuditLogService::log(
             module: 'perfil',
