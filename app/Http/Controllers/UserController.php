@@ -358,6 +358,21 @@ class UserController extends Controller
             'No tienes permiso para asignar roles a usuarios.'
         );
 
+        $esSuperadministrador = $actor->roles()
+            ->where('roles.is_superadmin', true)
+            ->exists();
+
+        $solicitaSuperadministrador = Role::query()
+            ->whereIn('id', $roleIds)
+            ->where('is_superadmin', true)
+            ->exists();
+
+        abort_if(
+            $solicitaSuperadministrador && !$esSuperadministrador,
+            403,
+            'Solo un Superadministrador puede asignar ese rol.'
+        );
+
         $permisosDelActor = RolePermission::query()
             ->whereIn('role_id', $actor->roles()->pluck('roles.id'))
             ->get(['permission_type', 'permission_id'])
