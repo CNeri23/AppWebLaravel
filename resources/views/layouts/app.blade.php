@@ -45,20 +45,6 @@
             return $modulo->submodulos->isNotEmpty();
         });
 
-    // Breadcrumb: módulo / submódulo de la ruta actual
-    $breadcrumbModulo = null;
-    $breadcrumbSubmodulo = null;
-
-    foreach ($modulosMenu as $moduloMenu) {
-        foreach ($moduloMenu->submodulos as $submoduloMenu) {
-            if ($submoduloMenu->ruta && request()->routeIs($submoduloMenu->ruta)) {
-                $breadcrumbModulo = $moduloMenu->nombre;
-                $breadcrumbSubmodulo = $submoduloMenu->nombre;
-                break 2;
-            }
-        }
-    }
-
     $primerNombre = \Illuminate\Support\Str::of($usuarioActual->name)->trim()->before(' ');
 @endphp
 
@@ -116,16 +102,6 @@
 
             <span class="sidebar-brand-text">{{ $settings['system_name'] }}</span>
         </div>
-
-        <nav class="topbar-breadcrumb" aria-label="Ubicación actual">
-            @if ($breadcrumbSubmodulo)
-                <span>{{ $breadcrumbModulo }}</span>
-                <i class="fa-solid fa-chevron-right"></i>
-                <span class="breadcrumb-current">{{ $breadcrumbSubmodulo }}</span>
-            @elseif (request()->routeIs('dashboard'))
-                <span class="breadcrumb-current">Dashboard</span>
-            @endif
-        </nav>
 
         <div class="topbar-actions">
             <span class="topbar-greeting">
