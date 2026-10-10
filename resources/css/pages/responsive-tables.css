@@ -188,3 +188,83 @@
         min-width: 0 !important;
     }
 }
+
+
+/* Ajustes de tarjetas para vistas con columnas extensas y acciones compactas. */
+@media (max-width: 767.98px) {
+    .table-responsive table.responsive-cards-table tbody td[data-label="Acciones"] {
+        display: flex !important;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 8px;
+        padding-top: 10px;
+        padding-bottom: 2px;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td[data-label="Acciones"]::before {
+        display: block;
+        width: 100%;
+        content: "Acciones";
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td[data-label="Acciones"] .usuario-actions,
+    .table-responsive table.responsive-cards-table tbody td[data-label="Acciones"] .miembro-actions,
+    .table-responsive table.responsive-cards-table tbody td[data-label="Acciones"] .direccion-actions,
+    .table-responsive table.responsive-cards-table tbody td[data-label="Acciones"] .rol-actions,
+    .table-responsive table.responsive-cards-table tbody td[data-label="Acciones"] .plan-actions,
+    .table-responsive table.responsive-cards-table tbody td[data-label="Acciones"] .caja-actions,
+    .table-responsive table.responsive-cards-table tbody td[data-label="Acciones"] .membresia-actions,
+    .table-responsive table.responsive-cards-table tbody td[data-label="Acciones"] .asistencia-actions {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center;
+        justify-content: flex-start !important;
+        flex-wrap: nowrap !important;
+        gap: 6px;
+        width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        padding: 1px 0 4px;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td[data-label="Acciones"] .btn,
+    .table-responsive table.responsive-cards-table tbody td[data-label="Acciones"] button {
+        flex: 0 0 auto !important;
+    }
+
+    .table-responsive table.responsive-cards-table#tablaCajas,
+    .table-responsive table.responsive-cards-table#tablaDirecciones,
+    .table-responsive table.responsive-cards-table#tablaMiembros,
+    .table-responsive table.responsive-cards-table#tablaRoles,
+    .table-responsive table.responsive-cards-table#tablaSesiones {
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    .table-responsive table.responsive-cards-table tbody tr {
+        table-layout: fixed;
+        box-sizing: border-box;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td > * {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td .badge {
+        justify-self: start;
+        width: fit-content;
+        max-width: 100%;
+        white-space: normal;
+    }
+
+    .table-responsive table.responsive-cards-table tbody td[data-label="Descripción"],
+    .table-responsive table.responsive-cards-table tbody td[data-label="Correo electrónico"],
+    .table-responsive table.responsive-cards-table tbody td[data-label="Dirección"] {
+        overflow-wrap: anywhere;
+    }
+}
