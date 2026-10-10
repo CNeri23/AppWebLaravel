@@ -88,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     (accion.icono || '<i class="fa-regular fa-pen-to-square"></i>') +
                     '</button>';
             }
-
             else if (accion.slug === 'planes.estado') {
                 const activo = Boolean(plan.activo);
                 html +=
@@ -106,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     '</span>' +
                     '</button>';
             }
-
             else if (accion.slug === 'planes.eliminar') {
                 html +=
                     '<button type="button" ' +
@@ -165,7 +163,6 @@ document.addEventListener('DOMContentLoaded', function () {
             <td class="text-center">${crearEstado(plan)}</td>
             <td>${crearBotonesAcciones(plan)}</td>
         `;
-
         return fila;
     }
 
@@ -418,7 +415,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         drawCallback: configurarTooltipsPaginacion
                     }
                 );
-
             return;
         }
 
@@ -749,8 +745,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     );
 
-    modalNuevo?.addEventListener(
-        'hidden.bs.modal',
+    modalNuevo?.addEventListener('hidden.bs.modal',
         function () {
             resetFormulario(
                 formNuevo
@@ -758,12 +753,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     );
 
-    modalEditar?.addEventListener(
-        'hidden.bs.modal',
+    modalEditar?.addEventListener('hidden.bs.modal',
         function () {
             planOriginalSnapshot = null;
         }
     );
-
     inicializarDataTable();
 });

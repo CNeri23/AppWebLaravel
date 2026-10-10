@@ -1,21 +1,14 @@
 @php
     $systemSettings = app(\App\Services\SystemSettings::class)->all();
-
-    // Antes de autenticar no existe una preferencia de tema asociada a un usuario.
-    // El login utiliza un tema inicial temporal; después del acceso se aplica la preferencia personal.
     $themeMode = 'light';
     $lightThemeStyle = 'white';
     $darkThemeStyle = 'graphite';
     $accentColor = $systemSettings['accent_color'] ?? 'orange';
     $systemName = $systemSettings['system_name'] ?? 'IronPulse';
-
-    $registroHabilitado = $registroHabilitado
-        ?? (bool) ($systemSettings['registration_enabled'] ?? true);
+    $registroHabilitado = $registroHabilitado ?? (bool) ($systemSettings['registration_enabled'] ?? true);
     $passwordMinimo = $passwordMinimo ?? (int) ($systemSettings['password_min_length'] ?? 8);
     $passwordComplejo = $passwordComplejo ?? (bool) ($systemSettings['password_complexity'] ?? false);
-    $passwordDescripcion = $passwordDescripcion
-        ?? ('Mínimo ' . $passwordMinimo . ' caracteres'
-            . ($passwordComplejo ? ', con mayúsculas, minúsculas y números' : '') . '.');
+    $passwordDescripcion = $passwordDescripcion ?? ('Mínimo ' . $passwordMinimo . ' caracteres' . ($passwordComplejo ? ', con mayúsculas, minúsculas y números' : '') . '.');
 
     $themeStyles = [
         'white',

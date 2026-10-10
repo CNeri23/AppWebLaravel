@@ -159,7 +159,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!archivo || !logoPreview) {
             return;
         }
-
         const lector = new FileReader();
 
         lector.onload = function (evento) {
@@ -175,7 +174,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (logoInput && logoPreview) {
         logoInput.addEventListener('change', function () {
             const archivo = this.files[0];
-
             mostrarNombreLogo(archivo ? archivo.name : TEXTO_SIN_ARCHIVO);
 
             if (!archivo) {
@@ -324,9 +322,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function mensajeDeError(error) {
-            return error instanceof TypeError
-                ? 'No se pudo conectar con el servidor. Intenta de nuevo.'
-                : error.message;
+            return error instanceof TypeError ? 'No se pudo conectar con el servidor. Intenta de nuevo.' : error.message;
         }
 
         function aplicarGlobal(nombre, settings) {
@@ -358,7 +354,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (enCurso || esperado() === guardado.trim()) {
                     return;
                 }
-
                 enCurso = true;
                 const icono = boton.innerHTML;
                 boton.disabled = true;
@@ -371,7 +366,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.settings && Object.prototype.hasOwnProperty.call(data.settings, campo.name)) {
                         campo.value = data.settings[campo.name] ?? '';
                     }
-
                     guardado = campo.value;
                     campo.classList.add('is-saved');
 
@@ -405,7 +399,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (evento.isComposing) {
                     return;
                 }
-
                 const esArea = campo.tagName === 'TEXTAREA';
 
                 if (evento.key === 'Enter' && (!esArea || !evento.shiftKey)) {

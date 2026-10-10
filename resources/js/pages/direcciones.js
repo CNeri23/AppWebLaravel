@@ -50,10 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function mostrarError(error) {
-        window.showToast(
-            'error',
-            error.message
-        );
+        window.showToast('error', error.message);
     }
 
     function escapeHtml(valor) {
@@ -74,10 +71,9 @@ document.addEventListener('DOMContentLoaded', function () {
         let texto = direccion.calle + ' ' + direccion.numero_exterior;
 
         if (direccion.numero_interior) {
-            texto += ' Int. ' +  direccion.numero_interior;
+            texto += ' Int. ' + direccion.numero_interior;
         }
-
-        texto +=', ' + direccion.colonia;
+        texto += ', ' + direccion.colonia;
         return texto;
     }
 
@@ -86,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const acciones = window.accionesDirecciones || [];
         acciones.forEach(function (accion) {
             if (accion.slug === 'direcciones.editar') {
-
                 html +=
                     '<button type="button" ' +
                     'class="btn btn-sm btn-outline-primary direccion-action-btn" ' +
@@ -107,9 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     (accion.icono || '<i class="fa-solid fa-pen"></i>') +
                     '</button>';
             }
-
             else if (accion.slug === 'direcciones.eliminar') {
-
                 const personasAsignadas = Number(direccion.personas_count || 0);
                 const disabled = personasAsignadas > 0 ? ' disabled' : '';
                 const titulo = personasAsignadas > 0 ? 'No se puede eliminar: dirección asignada' : accion.nombre;
@@ -129,14 +122,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     '</button>';
             }
         });
-
         html += '</div>';
         return html;
     }
 
     function crearFilaDireccion(direccion, urls = null) {
         const fila = document.createElement('tr');
-        const urlsDireccion = urls || {update: `/direcciones/${direccion.id}`, delete: `/direcciones/${direccion.id}`};
+        const urlsDireccion = urls || { update: `/direcciones/${direccion.id}`, delete: `/direcciones/${direccion.id}` };
         const personasAsignadas = Number(direccion.personas_count || 0);
         fila.innerHTML = `
             <td>${escapeHtml(direccion.calle)}</td>
@@ -147,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <td>${escapeHtml(direccion.municipio)}</td>
             <td>${escapeHtml(direccion.estado)}</td>
             <td>${escapeHtml(direccion.pais)}</td>
-            <td class="text-center">${personasAsignadas > 0 ? '<span class="badge text-bg-primary">' + personasAsignadas + '</span>' : '<span class="badge text-bg-secondary">0</span>' }</td>
+            <td class="text-center">${personasAsignadas > 0 ? '<span class="badge text-bg-primary">' + personasAsignadas + '</span>' : '<span class="badge text-bg-secondary">0</span>'}</td>
             <td class="text-end px-4">${crearAccionesDireccion(direccion, urlsDireccion)}</td>
         `;
         return fila;
@@ -226,7 +218,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!paginacion) {
             return;
         }
-
         const botones = paginacion.querySelectorAll('button');
 
         botones.forEach(function (button) {
@@ -308,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!tablaDirecciones) {
             return;
         }
-        const fila = crearFilaDireccion(direccion, urls );
+        const fila = crearFilaDireccion(direccion, urls);
         tablaDirecciones.row.add(fila).draw(false);
         ajustarTodasLasFilas();
         tablaDirecciones.columns.adjust();
@@ -318,11 +309,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!tablaDirecciones) {
             return;
         }
-
         tablaDirecciones
             .rows()
             .every(function () {
-
                 const fila = this.node();
 
                 if (!fila) {
@@ -365,7 +354,6 @@ document.addEventListener('DOMContentLoaded', function () {
         tablaDirecciones
             .rows()
             .every(function () {
-
                 const fila = this.node();
 
                 if (!fila) {
@@ -374,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const boton = fila.querySelector('.direccion-action-btn');
 
-                if (boton && boton.dataset.id ===  String(id)) {
+                if (boton && boton.dataset.id === String(id)) {
                     this.remove();
                 }
             });
@@ -384,15 +372,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     let datosOriginalesEditar = null;
-
     const MENSAJE_SIN_CAMBIOS = 'No hubo cambios para actualizar.';
     const modalEditar = document.getElementById('modalEditarDireccion');
 
     if (modalEditar) {
-        modalEditar.addEventListener(
-            'show.bs.modal',
+        modalEditar.addEventListener('show.bs.modal',
             function (event) {
-
                 const button = event.relatedTarget;
 
                 datosOriginalesEditar = null;
@@ -425,19 +410,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         );
     }
-
     const modalEliminar = document.getElementById('modalEliminarDireccion');
 
     if (modalEliminar) {
-        modalEliminar.addEventListener(
-            'show.bs.modal',
+        modalEliminar.addEventListener('show.bs.modal',
             function (event) {
                 const button = event.relatedTarget;
 
                 if (!button) {
                     return;
                 }
-
                 const personasAsignadas = Number(button.dataset.personasCount || 0);
 
                 if (personasAsignadas > 0) {
@@ -447,23 +429,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         modalEliminarDireccion
                     );
 
-                    window.showToast(
-                        'warning',
-                        'No se puede eliminar esta dirección porque está asignada a ' +
-                        personasAsignadas +
+                    window.showToast('warning', 'No se puede eliminar esta dirección porque está asignada a ' + personasAsignadas +
                         (
-                            personasAsignadas === 1
-                                ? ' persona.'
-                                : ' personas.'
+                            personasAsignadas === 1 ? ' persona.' : ' personas.'
                         )
                     );
-
                     return;
                 }
-
                 document.getElementById('eliminar_id').value = button.dataset.id;
                 document.getElementById('eliminar_nombre').textContent = button.dataset.name;
-                document.getElementById('formEliminarDireccion').setAttribute('action',button.dataset.url);
+                document.getElementById('formEliminarDireccion').setAttribute('action', button.dataset.url);
             }
         );
     }
@@ -476,10 +451,9 @@ document.addEventListener('DOMContentLoaded', function () {
             botonSubmit.disabled = true;
             botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
         }
-
         const formData = new FormData(form);
 
-        return peticion(form.action,'POST', formData)
+        return peticion(form.action, 'POST', formData)
             .then((data) => {
                 cerrarModal(modal);
                 window.showToast('success', data.mensaje || mensajePorDefecto);
@@ -492,7 +466,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
     }
-
     const formNuevaDireccion = document.getElementById('formNuevaDireccion');
 
     if (formNuevaDireccion) {
@@ -507,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         formNuevaDireccion.reset();
                         const pais = document.getElementById('pais');
 
-                        if (pais) {pais.value = 'México';}
+                        if (pais) { pais.value = 'México'; }
                     })
                     .catch(mostrarError);
             }
@@ -533,7 +506,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         'estado',
                         'pais'
                     ];
-
                 const valoresActuales = {};
 
                 campos.forEach(function (campo) {

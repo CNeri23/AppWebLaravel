@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalNuevoMiembroEl = document.getElementById('modalNuevoMiembro');
     const modalEditarMiembroEl = document.getElementById('modalEditarMiembro');
     const modalEliminarMiembroEl = document.getElementById('modalEliminarMiembro');
-
     const modalNuevoMiembro = modalNuevoMiembroEl ? new bootstrap.Modal(modalNuevoMiembroEl) : null;
     const modalEditarMiembro = modalEditarMiembroEl ? new bootstrap.Modal(modalEditarMiembroEl) : null;
     const modalEliminarMiembro = modalEliminarMiembroEl ? new bootstrap.Modal(modalEliminarMiembroEl) : null;
@@ -98,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function () {
         acciones.forEach(function (accion) {
 
             if (accion.slug === 'miembros.editar') {
-
                 html +=
                     '<button type="button" ' +
                     'class="btn btn-sm btn-outline-primary miembro-action-btn" ' +
@@ -118,7 +116,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             else if (accion.slug === 'miembros.usuario') {
-
                 if (miembro.usuario_id) {
                     html +=
                         '<button type="button" ' +
@@ -142,9 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         '</button>';
                 }
             }
-
             else if (accion.slug === 'miembros.eliminar') {
-
                 html +=
                     '<button type="button" ' +
                     'class="btn btn-sm btn-outline-danger miembro-action-btn" ' +
@@ -158,14 +153,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     '</button>';
             }
         });
-
         html += '</div>';
         return html;
     }
 
     function crearFilaMiembro(miembro, urls = null) {
         const fila = document.createElement('tr');
-
         const urlsMiembro = urls || { update: `/miembros/${miembro.id}`, delete: `/miembros/${miembro.id}` };
 
         fila.innerHTML = `
@@ -245,7 +238,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!paginacion) {
             return;
         }
-
         const titulos = {
             'fa-angles-left': 'Primera página',
             'fa-angle-left': 'Página anterior',
@@ -273,9 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!fila) {
             return;
         }
-
-        const celdas =
-            fila.children;
+        const celdas = fila.children;
 
         if (celdas.length < 5) {
             return;
@@ -329,7 +319,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!fila) {
                     return;
                 }
-
                 const boton = fila.querySelector('.miembro-action-btn');
 
                 if (boton && boton.dataset.id === String(miembro.id)) {
@@ -358,13 +347,11 @@ document.addEventListener('DOMContentLoaded', function () {
         tablaMiembros
             .rows()
             .every(function () {
-
                 const fila = this.node();
 
                 if (!fila) {
                     return;
                 }
-
                 const boton = fila.querySelector('.miembro-action-btn');
 
                 if (boton && boton.dataset.id === String(id)) {
@@ -411,7 +398,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         );
     }
-
     const modalEliminar = document.getElementById('modalEliminarMiembro');
 
     if (modalEliminar) {
@@ -440,7 +426,6 @@ document.addEventListener('DOMContentLoaded', function () {
             botonSubmit.disabled = true;
             botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
         }
-
         const formData = new FormData(form);
 
         return peticion(form.action, 'POST', formData)
@@ -479,7 +464,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         );
     }
-
     const formEditarMiembro = document.getElementById('formEditarMiembro');
 
     if (formEditarMiembro) {
@@ -550,15 +534,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 enviarFormulario(formEliminarMiembro, modalEliminarMiembro, 'Miembro eliminado correctamente.')
                     .then((data) => {
-                        eliminarMiembroDeTabla(
-                            data.id || id
-                        );
+                        eliminarMiembroDeTabla(data.id || id);
                     })
                     .catch(mostrarError);
             }
         );
     }
-
     const modalUsuarioMiembroEl = document.getElementById('modalUsuarioMiembro');
     const formUsuarioMiembro = document.getElementById('formUsuarioMiembro');
 

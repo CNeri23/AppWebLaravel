@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (tabla.closest('.modal')) {
             return;
         }
-
         const encabezados = Array.from(tabla.querySelectorAll('thead th')).map(function (th) {
             return th.textContent.trim().replace(/\s+/g, ' ');
         });
@@ -13,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!encabezados.length) {
             return;
         }
-
         tabla.classList.add('responsive-cards-table');
 
         function aplicarEtiquetas() {

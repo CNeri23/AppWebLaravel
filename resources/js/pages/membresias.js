@@ -127,7 +127,6 @@ function inicializarModalTicket() {
     if (!modalTicket || !contenido || !btnImprimir) {
         return;
     }
-
     let urlActual = '';
 
     function abrirTicket(url) {
@@ -173,7 +172,6 @@ function inicializarModalTicket() {
 
 document.addEventListener('DOMContentLoaded', function () {
     inicializarModalTicket();
-
     const tabla = document.getElementById('tablaMembresias');
 
     if (!tabla) {
@@ -190,7 +188,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalEditar = document.getElementById('modalEditarMembresia');
     const modalRenovar = document.getElementById('modalRenovarMembresia');
     const modalCancelar = document.getElementById('modalCancelarMembresia');
-
     const formNuevo = document.getElementById('formNuevaMembresia');
     const formEditar = document.getElementById('formEditarMembresia');
     const formRenovar = document.getElementById('formRenovarMembresia');
@@ -198,11 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const acciones = Array.isArray(window.accionesMembresias) ? window.accionesMembresias : [];
 
-    const moneda = window.monedaMembresias || {
-        codigo: 'MXN',
-        simbolo: '$',
-        tasa: 1
-    };
+    const moneda = window.monedaMembresias || { codigo: 'MXN', simbolo: '$', tasa: 1 };
 
     function tieneAccion(slug) {
         return acciones.some(function (accion) {
@@ -214,14 +207,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const cuerpo = getComputedStyle(document.body);
         const referencia = document.querySelector('.modal-content');
 
-        let fondo = referencia
-            ? getComputedStyle(referencia).backgroundColor
-            : cuerpo.backgroundColor;
+        let fondo = referencia ? getComputedStyle(referencia).backgroundColor : cuerpo.backgroundColor;
 
         if (!fondo || fondo === 'transparent' || fondo === 'rgba(0, 0, 0, 0)') {
             fondo = cuerpo.backgroundColor;
         }
-
         return { background: fondo, color: cuerpo.color };
     }
 
@@ -290,12 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
             mostrarExito(mensaje);
             return;
         }
-
-        const folio = data.ticket && data.ticket.folio
-            ? '<div class="mt-2">Folio: <strong>' +
-            escapeHtml(data.ticket.folio) +
-            '</strong></div>'
-            : '';
+        const folio = data.ticket && data.ticket.folio ? '<div class="mt-2">Folio: <strong>' + escapeHtml(data.ticket.folio) + '</strong></div>' : '';
 
         Swal.fire({
             ...temaSwal(),
@@ -375,7 +360,6 @@ document.addEventListener('DOMContentLoaded', function () {
             acciones.find(function (item) {
                 return item.slug === slug;
             });
-
         return accion && accion.icono ? accion.icono : iconoDefault;
     }
 
@@ -404,7 +388,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function formatearPrecioTabla(precio) {
         const texto = formatearPrecio(precio);
-
         return texto === '—' ? texto : texto + ' ' + (moneda.codigo || '');
     }
 
@@ -473,7 +456,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!membresia.urls || !membresia.urls.update) {
                     return;
                 }
-
                 const nombre = membresia.nombre_miembro || '';
                 const plan = membresia.plan_nombre || '';
                 const observaciones = membresia.observaciones || '';
@@ -493,13 +475,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     (accion.icono || '<i class="fa-solid fa-pen"></i>') +
                     '</button>';
             }
-
             else if (accion.slug === 'membresias.renovar' && membresia.estado !== 'cancelada') {
 
                 if (!membresia.urls || !membresia.urls.renovar) {
                     return;
                 }
-
                 const nombre = membresia.nombre_miembro || '';
                 const plan = membresia.plan_nombre || '';
 
@@ -516,7 +496,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     (accion.icono || '<i class="fa-solid fa-arrows-rotate"></i>') +
                     '</button>';
             }
-
             else if (accion.slug === 'membresias.cancelar' && membresia.estado === 'activa') {
 
                 if (!membresia.urls || !membresia.urls.cancelar
@@ -624,10 +603,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!membresia) {
             return null;
         }
-
         const nombreMiembro = obtenerNombreMiembro(membresia);
         const planNombre = obtenerNombrePlan(membresia);
-
         const membresiaNormalizada = {
             ...membresia,
 
@@ -640,7 +617,6 @@ document.addEventListener('DOMContentLoaded', function () {
             observaciones: membresia.observaciones || '',
             moneda: membresia.moneda || moneda
         };
-
         const urlsBase = urlsPorDefecto(membresia.id);
         const urlsOrigen = urls || membresia.urls || {};
 
@@ -652,7 +628,6 @@ document.addEventListener('DOMContentLoaded', function () {
             ticket: urlsOrigen.ticket || membresia.ticket_url || '',
             ticket_imprimir: urlsOrigen.ticket_imprimir || ''
         };
-
         return membresiaNormalizada;
     }
 
@@ -730,7 +705,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 ${crearBotonesAcciones(datos)}
             </td>
         `;
-
         return fila;
     }
 
@@ -760,10 +734,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    function actualizarMembresiaEnTabla(
-        membresia,
-        urls = null
-    ) {
+    function actualizarMembresiaEnTabla(membresia, urls = null) {
         if (!dataTable || !membresia) {
             return;
         }
@@ -773,7 +744,6 @@ document.addEventListener('DOMContentLoaded', function () {
         dataTable
             .rows()
             .every(function () {
-
                 const fila = this.node();
 
                 if (!fila) {
@@ -914,16 +884,12 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
     }
 
-    function agregarMembresiaATabla(
-        membresia,
-        urls = null
-    ) {
+    function agregarMembresiaATabla(membresia, urls = null) {
         if (!dataTable) {
             return;
         }
 
         quitarFilaVacia();
-
         const fila = crearFilaMembresia(membresia, urls);
 
         if (!fila) {
@@ -939,7 +905,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!dataTable) {
             return null;
         }
-
         let filaEncontrada = null;
 
         dataTable
@@ -956,11 +921,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return filaEncontrada;
     }
 
-    function peticion(
-        url,
-        method,
-        body = null
-    ) {
+    function peticion(url, method, body = null) {
         const opciones = {
             method,
             headers: {
@@ -979,7 +940,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Content-Type'
             ] =
                 'application/json';
-
             opciones.body = body;
         }
 
@@ -1000,18 +960,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             data.errors
                         ).flat()[0];
 
-                    throw new Error(
-                        primerError ||
-                        data.mensaje ||
-                        data.message ||
-                        'Ocurrió un error al procesar la solicitud.'
-                    );
+                    throw new Error(primerError || data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
                 }
-
-                throw new Error(
-                    data.mensaje ||
-                    data.message ||
-                    'Ocurrió un error al procesar la solicitud.'
+                throw new Error(data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.'
                 );
             }
             return data;
@@ -1046,17 +997,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function mostrarError(error) {
-        window.showToast(
-            'error',
-            error.message
-        );
+        window.showToast('error', error.message);
     }
 
     function mostrarExito(mensaje) {
-        window.showToast(
-            'success',
-            mensaje
-        );
+        window.showToast('success', mensaje);
     }
 
     function obtenerPrecioPlanSeleccionado(selectId) {
@@ -1065,19 +1010,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!select) {
             return NaN;
         }
-
         const opcion = select.options[select.selectedIndex];
 
         if (!opcion || !opcion.value) {
             return NaN;
         }
-
         const precio = opcion.getAttribute('data-precio');
         const numero = Number.parseFloat(precio);
 
-        return Number.isFinite(numero)
-            ? numero
-            : NaN;
+        return Number.isFinite(numero) ? numero : NaN;
     }
 
     function actualizarPrecioPlan() {
@@ -1087,7 +1028,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!planSelect || !precioPlan) {
             return;
         }
-
         const precio = obtenerPrecioPlanSeleccionado('plan_id');
 
         if (!Number.isFinite(precio)) {
@@ -1095,7 +1035,6 @@ document.addEventListener('DOMContentLoaded', function () {
             actualizarCambioNuevo();
             return;
         }
-
         precioPlan.textContent = formatearPrecio(precio);
         actualizarCambioNuevo();
     }
@@ -1107,7 +1046,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!planSelect || !precioPlan) {
             return;
         }
-
         const precio = obtenerPrecioPlanSeleccionado('renovar_plan_id');
 
         if (!Number.isFinite(precio)) {
@@ -1115,7 +1053,6 @@ document.addEventListener('DOMContentLoaded', function () {
             actualizarCambioRenovacion();
             return;
         }
-
         precioPlan.textContent = formatearPrecio(precio);
         actualizarCambioRenovacion();
     }
@@ -1127,16 +1064,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!planSelect || !periodoInfo) {
             return;
         }
-
         const opcion = planSelect.options[planSelect.selectedIndex];
 
         if (!opcion || !opcion.value) {
             periodoInfo.textContent = 'Selecciona un plan para calcular el nuevo periodo de la membresía.';
             return;
         }
-
         const duracion = opcion.getAttribute('data-duracion');
-
         const numero = Number(duracion);
 
         if (!Number.isFinite(numero) || numero <= 0) {
@@ -1181,7 +1115,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!metodoPago || !referenciaContainer || !montoRecibidoContainer || !cambioContainer) {
             return;
         }
-
         const efectivo = metodoPago.value === 'efectivo';
 
         referenciaContainer.classList.toggle('d-none', efectivo);
@@ -1197,14 +1130,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function calcularCambio(
-        precio,
-        recibido
-    ) {
+    function calcularCambio(precio, recibido) {
         if (!Number.isFinite(precio) || !Number.isFinite(recibido)) {
             return null;
         }
-
         return Math.round((recibido - precio) * 100) / 100;
     }
 
@@ -1215,7 +1144,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!cambio || !montoRecibido) {
             return;
         }
-
         const precio = obtenerPrecioPlanSeleccionado('plan_id');
         const recibido = Number.parseFloat(montoRecibido.value);
         const resultado = calcularCambio(precio, recibido);
@@ -1239,7 +1167,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!cambio || !montoRecibido) {
             return;
         }
-
         const precio = obtenerPrecioPlanSeleccionado('renovar_plan_id');
         const recibido = Number.parseFloat(montoRecibido.value);
         const resultado = calcularCambio(precio, recibido);
@@ -1253,7 +1180,6 @@ document.addEventListener('DOMContentLoaded', function () {
             cambio.textContent = 'Monto insuficiente';
             return;
         }
-
         cambio.textContent = formatearPrecio(resultado);
     }
 
@@ -1263,7 +1189,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (window.DataTable) {
-
             dataTable =
                 new DataTable(
                     '#tablaMembresias',
@@ -1330,9 +1255,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!paginacion) {
                     return;
                 }
-
                 const botones = paginacion.querySelectorAll('button');
-
                 botones.forEach(function (button) {
                     const icono = button.querySelector('i');
 
@@ -1365,7 +1288,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (window.jQuery && $.fn.DataTable) {
-
             dataTable =
                 $('#tablaMembresias').DataTable({
                     autoWidth: false,
@@ -1417,14 +1339,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const montoRecibidoRenovacion = document.getElementById('renovar_monto_recibido');
 
     planSelect?.addEventListener('change', actualizarPrecioPlan);
-
     renovarPlanSelect?.addEventListener('change',
         function () {
             actualizarPrecioRenovacion();
             actualizarPeriodoRenovacion();
         }
     );
-
     metodoPagoNuevo?.addEventListener('change', actualizarMetodoPagoNuevo);
     montoRecibidoNuevo?.addEventListener('input', actualizarCambioNuevo);
     metodoPagoRenovacion?.addEventListener('change', actualizarMetodoPagoRenovacion);
@@ -1432,7 +1352,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     formNuevo?.addEventListener('submit',
         async function (evento) {
-
             evento.preventDefault();
 
             if (metodoPagoNuevo && metodoPagoNuevo.value === 'efectivo') {
@@ -1447,7 +1366,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
             }
-
             const confirmado =
                 await confirmarAccion({
                     titulo: '¿Contratar membresía?',
@@ -1458,7 +1376,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!confirmado) {
                 return;
             }
-
             const boton = formNuevo.querySelector('button[type="submit"]');
             const textoOriginal = boton?.innerHTML;
 
@@ -1466,12 +1383,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 boton.disabled = true;
                 boton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
             }
-
             const formData = new FormData(formNuevo);
 
             peticion(formNuevo.action, 'POST', formData)
                 .then(function (data) {
-
                     cerrarModal(modalNuevo);
                     agregarMembresiaATabla(data.membresia, data.urls);
                     resetFormulario(formNuevo);
@@ -1498,13 +1413,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const observacionesActuales = String(document.getElementById('editar_observaciones')?.value || '').trim();
 
             if (observacionesActuales === (observacionesOriginales ?? '')) {
-                window.showToast(
-                    'info',
-                    'No hubo cambios para actualizar.'
-                );
+                window.showToast('info', 'No hubo cambios para actualizar.');
                 return;
             }
-
             const boton = formEditar.querySelector('button[type="submit"]');
             const textoOriginal = boton?.innerHTML;
 
@@ -1512,9 +1423,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 boton.disabled = true;
                 boton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
             }
-
             const formData = new FormData(formEditar);
-
             peticion(formEditar.action, 'POST', formData)
                 .then(function (data) {
 
@@ -1537,10 +1446,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     );
 
-    formRenovar?.addEventListener(
-        'submit',
+    formRenovar?.addEventListener('submit',
         async function (evento) {
-
             evento.preventDefault();
 
             if (metodoPagoRenovacion && metodoPagoRenovacion.value === 'efectivo') {
@@ -1571,24 +1478,19 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!confirmado) {
                 return;
             }
-
             const boton = formRenovar.querySelector('button[type="submit"]');
             const textoOriginal = boton?.innerHTML;
 
             if (boton) {
                 boton.disabled = true;
-
                 boton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
             }
-
             const formData = new FormData(formRenovar);
-
             peticion(formRenovar.action, 'POST', formData)
                 .then(function (data) {
                     if (data.membresia) {
                         actualizarMembresiaEnTabla(data.membresia, data.urls);
                     }
-
                     cerrarModal(modalRenovar);
                     mostrarTicketGenerado(data, data.mensaje || 'Membresía renovada correctamente.');
                 })
@@ -1616,9 +1518,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 boton.disabled = true;
                 boton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Cancelando...';
             }
-
             const formData = new FormData(formCancelar);
-
             peticion(formCancelar.action, 'POST', formData)
                 .then(function (data) {
                     const id = data.id || formCancelar.querySelector('input[name="id"]')?.value;
@@ -1769,7 +1669,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 return;
             }
-
             const botonCancelar = evento.target.closest('.btn-cancelar-membresia');
 
             if (!botonCancelar) {

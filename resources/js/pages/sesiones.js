@@ -159,7 +159,6 @@ document.addEventListener('DOMContentLoaded', function () {
             <td>${badgeEstado(sesion.estado)}</td>
             <td class="text-end px-4">${crearAccionesSesion(sesion)}</td>
         `;
-
         return fila;
     }
 
@@ -231,7 +230,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!paginacion) {
             return;
         }
-
         const titulos = {
             'fa-angles-left': 'Primera página',
             'fa-angle-left': 'Página anterior',
@@ -259,7 +257,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!fila) {
             return;
         }
-
         const celdas = fila.children;
 
         if (celdas.length < 7) {
@@ -322,9 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         filaEncontrada.remove();
-
         tablaSesiones.row.add(crearFilaSesion(sesion)).draw(false);
-
         ajustarTodasLasFilas();
         tablaSesiones.columns.adjust();
     }
@@ -332,7 +327,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (formAbrirSesion) {
         formAbrirSesion.addEventListener('submit', function (event) {
             event.preventDefault();
-
             const selectCaja = document.getElementById('abrir_caja_id');
             const inputFondo = document.getElementById('abrir_fondo_inicial');
 
@@ -412,7 +406,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         cuerpo.innerHTML = movimientos.map(function (movimiento) {
             const esEntrada = movimiento.tipo === 'entrada';
-
             return (
                 '<tr>' +
                 '<td class="text-secondary">' + escapeHtml(movimiento.fecha_formateada) + '</td>' +
@@ -452,7 +445,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         });
     }
-
     const modalRetiroSesionEl = document.getElementById('modalRetiroSesion');
     const formRetiroSesion = document.getElementById('formRetiroSesion');
     const modalRetiroSesion = modalRetiroSesionEl ? new bootstrap.Modal(modalRetiroSesionEl) : null;
@@ -491,7 +483,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!button) {
                 return;
             }
-
             const id = button.dataset.id;
             formRetiroSesion.reset();
             formRetiroSesion.action = button.dataset.url || `/sesiones-caja/${id}/retiros`;
@@ -536,7 +527,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 inputMonto.value = retiroMax.toFixed(2);
                 return;
             }
-
             const botonSubmit = document.getElementById('btnRetiroSesion');
             const textoOriginal = botonSubmit.innerHTML;
             botonSubmit.disabled = true;
@@ -597,10 +587,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         modalCerrarSesionEl.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
+
             if (!button) {
                 return;
             }
-
             const id = button.dataset.id;
             formCerrarSesion.reset();
             formCerrarSesion.action = button.dataset.url || `/sesiones-caja/${id}/cerrar`;
@@ -657,7 +647,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 inputPassword.focus();
                 return;
             }
-
             const botonSubmit = document.getElementById('btnCerrarSesion');
             const textoOriginal = botonSubmit.innerHTML;
             botonSubmit.disabled = true;

@@ -50,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!csrf) {
             throw new Error('No fue posible obtener el token de seguridad.');
         }
-
         const response = await fetch('/preferencias/tema',
             {
                 method: 'PUT',

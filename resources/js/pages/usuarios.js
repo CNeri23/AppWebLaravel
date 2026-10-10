@@ -104,7 +104,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!window.Swal) {
             return Promise.resolve(window.confirm(opciones.titulo));
         }
-
         const cuerpo = getComputedStyle(document.body);
         const referencia = document.querySelector('.modal-content');
         let fondo = referencia ? getComputedStyle(referencia).backgroundColor : cuerpo.backgroundColor;
@@ -161,7 +160,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return resultado.isConfirmed;
         });
     }
-
     const politicaPassword = window.politicaPassword || {};
     const passwordMinimo = parseInt(politicaPassword.min, 10) || 8;
     const passwordComplejo = !!politicaPassword.complex;
@@ -277,7 +275,6 @@ document.addEventListener('DOMContentLoaded', function () {
             },
         };
     }
-
     const politicaNuevo = enlazarPassword('password', 'password_confirmation', 'password-error', 'password-confirmation-error');
 
     if (modalNuevoUsuarioEl && politicaNuevo) {
@@ -421,8 +418,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (document.querySelector('#tablaUsuarios')) {
-        tablaUsuarios = new DataTable(
-            '#tablaUsuarios',
+        tablaUsuarios = new DataTable('#tablaUsuarios',
             {
                 autoWidth: false,
 
@@ -676,7 +672,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
-
     const modalEliminar = document.getElementById('modalEliminarUsuario');
 
     if (modalEliminar) {
@@ -717,7 +712,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
     }
-
     const formNuevoUsuario = document.getElementById('formNuevoUsuario');
 
     if (formNuevoUsuario) {
@@ -745,7 +739,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         );
     }
-
     const formEditarUsuario = document.getElementById('formEditarUsuario');
 
     if (formEditarUsuario) {
@@ -781,7 +774,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         );
     }
-
     const formRolesUsuario = document.getElementById('formRolesUsuario');
 
     if (formRolesUsuario) {
@@ -823,7 +815,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         );
     }
-
     const formEliminarUsuario = document.getElementById('formEliminarUsuario');
 
     if (formEliminarUsuario) {

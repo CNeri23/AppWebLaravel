@@ -178,31 +178,19 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error(
-                        'No fue posible actualizar la lista.'
-                    );
+                    throw new Error('No fue posible actualizar la lista.');
                 }
-
                 return response.text();
             })
             .then((html) => {
-                const documento =
-                    new DOMParser().parseFromString(
-                        html,
-                        'text/html'
-                    );
-
-                const nuevoTreeview =
-                    documento.getElementById('modulosTree');
+                const documento = new DOMParser().parseFromString(html, 'text/html');
+                const nuevoTreeview = documento.getElementById('modulosTree');
 
                 if (!nuevoTreeview) {
-                    throw new Error(
-                        'No fue posible encontrar la lista de módulos.'
-                    );
+                    throw new Error('No fue posible encontrar la lista de módulos.');
                 }
 
                 treeview.replaceWith(nuevoTreeview);
-
                 inicializarTreeview();
 
                 modulosExpandidos.forEach((id) => {
@@ -211,20 +199,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (!item) {
                         return;
                     }
-
                     const nodo = item.closest('.tree-node');
 
                     if (!nodo) {
                         return;
                     }
-
                     const submenu = nodo.querySelector(':scope > .tree-children');
                     const folderIcon = item.querySelector('.tree-folder i');
 
                     if (!submenu) {
                         return;
                     }
-
                     nodo.classList.add('expanded');
 
                     if (folderIcon) {
@@ -244,19 +229,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (!item) {
                         return;
                     }
-
                     const nodo = item.closest('.tree-child-node');
 
                     if (!nodo) {
                         return;
                     }
-
                     const submenu = nodo.querySelector(':scope > .action-children');
 
                     if (!submenu) {
                         return;
                     }
-
                     nodo.classList.add('expanded');
                     sincronizarCarpeta(item, true);
                 });
@@ -296,14 +278,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!nodo) {
             return;
         }
-
         const submenu = nodo.querySelector(':scope > .tree-children');
         const folderIcon = item.querySelector('.tree-folder i');
 
         if (!submenu) {
             return;
         }
-
         const expandido = nodo.classList.toggle('expanded');
 
         if (folderIcon) {
@@ -325,15 +305,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!nodo) {
             return;
         }
-
         const submenu = nodo.querySelector(':scope > .action-children');
 
         if (!submenu) {
             return;
         }
-
         const expandido = nodo.classList.toggle('expanded');
-
         sincronizarCarpeta(item, expandido);
     }
 
@@ -352,7 +329,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     folderIcon.classList.toggle('fa-folder-open', expandido && data.activo);
                     folderIcon.classList.toggle('fa-folder', !expandido || !data.activo);
                 }
-
                 let badge = item.querySelector('.tree-badge');
 
                 if (!data.activo && !badge) {
@@ -365,7 +341,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 window.showToast('success', data.mensaje);
-
                 return actualizarSidebar();
             })
             .catch((error) => {
@@ -432,13 +407,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function moverModulo(item, direccion) {
         const url = item.dataset.reorderUrl;
 
-        return peticion(
-            url,
-            'PATCH',
-            JSON.stringify({
-                direccion,
-            })
-        )
+        return peticion(url, 'PATCH', JSON.stringify({ direccion, }))
             .then((data) => {
                 window.showToast('success', data.mensaje);
                 return actualizarTreeview();
@@ -454,12 +423,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function moverSubmodulo(item, direccion) {
         const url = item.dataset.reorderUrl;
 
-        return peticion(
-            url,
-            'PATCH',
-            JSON.stringify({
-                direccion,
-            })
+        return peticion(url, 'PATCH', JSON.stringify({ direccion, })
         )
             .then((data) => {
                 window.showToast('success', data.mensaje);
@@ -476,12 +440,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function moverAccion(item, direccion) {
         const url = item.dataset.reorderUrl;
 
-        return peticion(
-            url,
-            'PATCH',
-            JSON.stringify({
-                direccion,
-            })
+        return peticion(url, 'PATCH', JSON.stringify({ direccion, })
             )
             .then((data) => {
                 window.showToast('success', data.mensaje);
@@ -551,7 +510,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (moduloNombreInput) {
             moduloNombreInput.value = moduloNombre;
         }
-
         document.getElementById('submodulo_nombre').value = '';
         document.getElementById('submodulo_slug').value = '';
         document.getElementById('submodulo_ruta').value = '';
@@ -599,7 +557,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (submoduloNombreInput) {
             submoduloNombreInput.value = submoduloNombre;
         }
-
         const nombreInput = document.getElementById('accion_nombre');
         const slugInput = document.getElementById('accion_slug');
         const descripcionInput = document.getElementById('accion_descripcion');
@@ -625,7 +582,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (ordenInput) {
             ordenInput.value = 0;
         }
-
         modalNuevoAccion?.show();
     }
 
@@ -650,7 +606,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (nombreInput) {
             nombreInput.value = item.dataset.nombre || '';
         }
-
         const slugInput = document.getElementById('editar_accion_slug');
 
         if (slugInput) {
@@ -717,7 +672,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
             }
         }
-
         const botonSubmit = form.querySelector('button[type="submit"]');
         const textoOriginal = botonSubmit?.innerHTML;
 
@@ -725,7 +679,6 @@ document.addEventListener('DOMContentLoaded', function () {
             botonSubmit.disabled = true;
             botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
         }
-
         const formData = new FormData(form);
 
         return peticion(form.action, 'POST', formData)
@@ -922,7 +875,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (toggleLabel) {
             toggleLabel.textContent = activo ? 'Desactivar' : 'Activar';
         }
-
         const btnToggle = contextMenu?.querySelector('[data-action="toggle"] i');
 
         if (btnToggle) {
@@ -1159,7 +1111,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!opcion || opcion.classList.contains('disabled') || !itemActivo) {
                 return;
             }
-
             const item = itemActivo;
             const accion = opcion.dataset.action;
 
@@ -1262,7 +1213,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!opcion || opcion.classList.contains('disabled') || !accionActiva) {
                 return;
             }
-
             const item = accionActiva;
             const accion = opcion.dataset.action;
 
@@ -1308,9 +1258,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (contextMenu && !contextMenu.contains(event.target) && submoduloContextMenu && !submoduloContextMenu.contains(event.target) && accionContextMenu && !accionContextMenu.contains(
                     event.target
                 )
-            ) {
-                cerrarMenu();
-            }
+            ) {cerrarMenu();}
         }
     );
 

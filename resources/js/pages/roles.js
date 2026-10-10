@@ -31,9 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return data;
         });
     }
-
     const tablaRolesElement = document.querySelector('#tablaRoles');
-
     let tablaRoles = null;
 
     if (tablaRolesElement) {
@@ -215,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const childrenId = 'permisoModuloChildren_' + modulo.id;
         const seleccionado = permisos.has('modulo:' + modulo.id);
         let html = '';
-
         html +=
             '<div class="permisos-tree-node">';
 
@@ -242,9 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             html += '<i class="fa-solid fa-layer-group"></i>';
         }
-
         html += '</span>';
-
         html += '<label ' + 'class="permisos-tree-label mb-0" ' + 'for="' + id + '">' + escapeHtml(modulo.nombre);
 
         if (modulo.descripcion) {
@@ -464,8 +459,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             permisosTree.innerHTML =
                                 '<div class="text-center text-danger py-4">' +
                                 '<i class="fa-solid fa-circle-exclamation fa-lg mb-2"></i>' +
-                                '<div>' +
-                                escapeHtml(error.message) +
+                                '<div>' + escapeHtml(error.message) +
                                 '</div>' +
                                 '</div>';
                         }
@@ -475,7 +469,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         );
     }
-
     const formPermisosRol = document.getElementById('formPermisosRol');
 
     if (formPermisosRol) {
@@ -691,7 +684,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!rolesDelUsuario.includes(id)) {
             return true;
         }
-
         return Boolean(window.esSuperadministrador);
     }
 
@@ -782,7 +774,6 @@ document.addEventListener('DOMContentLoaded', function () {
             actualizarPermisos: botonDe('[data-bs-target="#modalPermisosRol"]')?.dataset.saveUrl || '',
             delete: botonDe('[data-bs-target="#modalEliminarRol"]')?.dataset.url || '',
         };
-
         const urlsFinales = {
             update: urls?.update || previas.update,
             permisos: urls?.permisos || previas.permisos,
@@ -808,12 +799,10 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-
     function ajustarFila(fila) {
         if (!fila) {
             return;
         }
-
         const celdas = fila.children;
 
         if (celdas.length < 4) {
@@ -892,7 +881,6 @@ document.addEventListener('DOMContentLoaded', function () {
             ).catch(() => { });
         });
     }
-
     const formEditarRol = document.getElementById('formEditarRol');
 
     if (formEditarRol) {
@@ -907,7 +895,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     window.showToast('info', MENSAJE_SIN_CAMBIOS);
                     return;
                 }
-
                 const id = document.getElementById('editar_id').value;
                 let filaDataTable = null;
 
@@ -920,7 +907,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (!fila) {
                                 return;
                             }
-
                             const boton = fila.querySelector('[data-bs-target="#modalEditarRol"]');
 
                             if (boton && boton.dataset.id === id) {
@@ -944,7 +930,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             datos[2] = '<span class="text-secondary">' + escapeHtml(data.fecha_registro || '') + '</span>';
 
                             filaDataTable.data(datos).draw(false);
-
                             actualizarDatosAcciones(filaDataTable.node(), data.rol,data.urls);
                             ajustarFila(filaDataTable.node());
                             filaDataTable.invalidate('dom').draw(false);
@@ -955,7 +940,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         );
     }
-
     const formEliminarRol = document.getElementById('formEliminarRol');
 
     if (formEliminarRol) {
@@ -980,7 +964,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         });
                 }
-
                 enviarFormulario(formEliminarRol, modalEliminarRol, 'Rol eliminado correctamente.',
                     function () {
                         if (filaDataTable) {

@@ -131,12 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     ? Object.values(data.errors).flat()[0]
                     : null;
 
-                throw new Error(
-                    primerError ||
-                    data.mensaje ||
-                    data.message ||
-                    'Ocurrió un error al procesar la solicitud.'
-                );
+                throw new Error(primerError || data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
             }
             return data;
         });
@@ -254,8 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'class="btn btn-sm btn-outline-danger asistencia-action-btn btn-anular-asistencia" ' +
             'title="Anular registro" ' +
             'data-url="' + escapeAttribute(registro.url_eliminar) + '" ' +
-            'data-nombre="' + escapeAttribute(registro.nombre) + '">' +
-            iconoAnular +
+            'data-nombre="' + escapeAttribute(registro.nombre) + '">' + iconoAnular +
             '</button></div></td>'
             : '';
 
@@ -270,8 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '</td>' +
             '<td>' + escapeHtml(registro.plan || '—') + '</td>' +
             '<td>' + resultado + '</td>' +
-            '<td>' + escapeHtml(registro.usuario || '—') + '</td>' +
-            acciones;
+            '<td>' + escapeHtml(registro.usuario || '—') + '</td>' + acciones;
 
         return fila;
     }
@@ -364,9 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '<i class="fa-solid ' + estilo.icono + ' asistencia-resultado-icono"></i>' +
             '<div>' +
             '<div class="fw-bold fs-5">' + escapeHtml(titulo) + '</div>' +
-            (miembro
-                ? '<div class="fw-semibold">' + escapeHtml(miembro.nombre) + '</div>'
-                : '') +
+            (miembro  ? '<div class="fw-semibold">' + escapeHtml(miembro.nombre) + '</div>' : '') +
             lineas.map(function (linea) {
                 return '<div class="small">' + linea + '</div>';
             }).join('') +
@@ -381,7 +372,6 @@ document.addEventListener('DOMContentLoaded', function () {
             pendiente: ['text-bg-warning', 'No inicia'],
             sin_membresia: ['text-bg-secondary', 'Sin membresía']
         };
-
         const estado = estados[miembro.estado] || estados.sin_membresia;
 
         return '<span class="badge rounded-pill ' + estado[0] + '">' + estado[1] + '</span>';
@@ -416,8 +406,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 '<span>' +
                 '<span class="d-block fw-semibold">' + escapeHtml(miembro.nombre) + '</span>' +
                 '<span class="d-block small text-secondary">' + detalle + '</span>' +
-                '</span>' +
-                etiquetaEstado(miembro) +
+                '</span>' + etiquetaEstado(miembro) +
                 '</button>';
         }).join('');
 
@@ -432,7 +421,6 @@ document.addEventListener('DOMContentLoaded', function () {
             limpiarResultados();
             return Promise.resolve();
         }
-
         const esta = ++numeroBusqueda;
 
         return peticion(urlBuscar + '?q=' + encodeURIComponent(texto))
@@ -566,7 +554,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!confirmado) {
                 return;
             }
-
             boton.disabled = true;
 
             peticion(boton.dataset.url, {
@@ -577,7 +564,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         dataTable.row(fila).remove().draw(false);
                         actualizarResumen();
                     }
-
                     avisar('success', data.mensaje || 'Registro anulado correctamente.');
                 })
                 .catch(function (error) {
@@ -586,7 +572,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         });
     });
-
     inicializarDataTable();
 
     if (inputBusqueda) {

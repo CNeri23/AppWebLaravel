@@ -7,19 +7,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalNuevaCajaEl = document.getElementById('modalNuevaCaja');
     const modalEditarCajaEl = document.getElementById('modalEditarCaja');
     const modalEstadoCajaEl = document.getElementById('modalEstadoCaja');
-
-    const modalNuevaCaja = modalNuevaCajaEl
-        ? new bootstrap.Modal(modalNuevaCajaEl)
-        : null;
-
-    const modalEditarCaja = modalEditarCajaEl
-        ? new bootstrap.Modal(modalEditarCajaEl)
-        : null;
-
-    const modalEstadoCaja = modalEstadoCajaEl
-        ? new bootstrap.Modal(modalEstadoCajaEl)
-        : null;
-
+    const modalNuevaCaja = modalNuevaCajaEl ? new bootstrap.Modal(modalNuevaCajaEl) : null;
+    const modalEditarCaja = modalEditarCajaEl ? new bootstrap.Modal(modalEditarCajaEl) : null;
+    const modalEstadoCaja = modalEstadoCajaEl ? new bootstrap.Modal(modalEstadoCajaEl) : null;
     const formNuevaCaja = document.getElementById('formNuevaCaja');
     const formEditarCaja = document.getElementById('formEditarCaja');
     const formEstadoCaja = document.getElementById('formEstadoCaja');
@@ -48,19 +38,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.errors) {
                     const primerError = Object.values(data.errors).flat()[0];
 
-                    throw new Error(
-                        primerError ||
-                        data.mensaje ||
-                        data.message ||
-                        'Ocurrió un error al procesar la solicitud.'
-                    );
+                    throw new Error(primerError || data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
                 }
-
-                throw new Error(
-                    data.mensaje ||
-                    data.message ||
-                    'Ocurrió un error al procesar la solicitud.'
-                );
+                throw new Error(data.mensaje || data.message || 'Ocurrió un error al procesar la solicitud.');
             }
 
             return data;
@@ -74,10 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function mostrarError(error) {
-        window.showToast(
-            'error',
-            error.message || 'Ocurrió un error al procesar la solicitud.'
-        );
+        window.showToast('error', error.message || 'Ocurrió un error al procesar la solicitud.');
     }
 
     function mostrarInfo(mensaje) {
@@ -99,9 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function obtenerAccionesCajas() {
-        return Array.isArray(window.accionesCajas)
-            ? window.accionesCajas
-            : [];
+        return Array.isArray(window.accionesCajas) ? window.accionesCajas : [];
     }
 
     function tieneAccion(slug) {
@@ -160,11 +135,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         peticion(url, 'POST', cuerpo)
             .then(function (data) {
-                window.showToast(
-                    'success',
-                    data.mensaje || 'Estado de la caja actualizado correctamente.'
+                window.showToast('success', data.mensaje || 'Estado de la caja actualizado correctamente.'
                 );
-
                 actualizarCajaEnTabla(data.caja);
             })
             .catch(function (error) {
@@ -219,9 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 '</button>';
             }
         });
-
         html += '</div>';
-
         return html;
     }
 
@@ -234,7 +204,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!boton || boton.disabled) {
                 return;
             }
-
             const activar = boton.dataset.activo !== '1';
 
             if (activar) {
@@ -248,7 +217,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 return;
             }
-
             const cuerpo = getComputedStyle(document.body);
             const referencia = document.querySelector('.modal-content');
             let fondo = referencia
@@ -313,7 +281,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function crearFilaCaja(caja) {
         const fila = document.createElement('tr');
-
         const sesion = obtenerSesionAbierta(caja);
         const usuario = obtenerUsuarioSesion(sesion);
         const descripcion = caja.descripcion || 'Sin descripción';
@@ -574,7 +541,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!button) {
                 return;
             }
-
             const id = button.dataset.id;
             const nombre = button.dataset.nombre || '';
             const activo = button.dataset.activo === '1';
@@ -606,19 +572,16 @@ document.addEventListener('DOMContentLoaded', function () {
         modalEstadoCajaEl.addEventListener('hidden.bs.modal', function () {
             formEstadoCaja.action = '';
             formEstadoCaja.dataset.cajaId = '';
-
             document.getElementById('estado_caja_id').value = '';
         });
     }
 
     function enviarFormulario(form) {
         const botonSubmit = form.querySelector('button[type="submit"]');
-
         const textoOriginal = botonSubmit ? botonSubmit.innerHTML : '';
 
         if (botonSubmit) {
             botonSubmit.disabled = true;
-
             botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
         }
 
@@ -653,7 +616,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const inputNombre = document.getElementById('editar_nombre');
             const inputDescripcion = document.getElementById('editar_descripcion');
-
             const nombre = inputNombre.value.trim();
             const descripcion = inputDescripcion.value.trim();
 
@@ -675,7 +637,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         return;
                     }
                     cerrarModal(modalEditarCaja);
-
                     window.showToast('success', data.mensaje || 'Caja actualizada correctamente.');
                     actualizarCajaEnTabla(data.caja);
                 })
@@ -686,7 +647,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (formEstadoCaja) {
         formEstadoCaja.addEventListener('submit', function (event) {
             event.preventDefault();
-
             const id = document.getElementById('estado_caja_id').value;
 
             if (!id) {
@@ -697,19 +657,15 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!formEstadoCaja.action || !formEstadoCaja.action.match(/\/cajas\/[^/]+\/estado$/)) {
                 formEstadoCaja.action = `/cajas/${id}/estado`;
             }
-
             const botonSubmit = document.getElementById('btnEstadoCaja');
             const textoOriginal = botonSubmit.innerHTML;
-
             botonSubmit.disabled = true;
             botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 'Guardando...';
 
             peticion(formEstadoCaja.action, 'POST', new FormData(formEstadoCaja))
                 .then(function (data) {
                     cerrarModal(modalEstadoCaja);
-
                     window.showToast('success', data.mensaje || 'Estado de la caja actualizado correctamente.');
-
                     actualizarCajaEnTabla(data.caja);
                 })
                 .catch(mostrarError)
@@ -719,7 +675,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         });
     }
-
     ajustarTodasLasFilas();
 
     if (tablaCajas) {

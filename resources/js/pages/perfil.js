@@ -45,10 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return fetch(url, opciones)
             .then(async function (response) {
-                const data =
-                    await response
-                        .json()
-                        .catch(() => ({}));
+                const data = await response.json().catch(() => ({}));
 
                 if (!response.ok || data.success === false) {
                     const primerError = data.errors ? Object.values(data.errors).flat()[0] : null;
@@ -76,17 +73,15 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        formulario
-            .querySelectorAll('.is-invalid')
-            .forEach(function (elemento) {
+        formulario.querySelectorAll('.is-invalid').forEach(
+            function (elemento) {
                 elemento.classList.remove(
                     'is-invalid'
                 );
             });
 
-        formulario
-            .querySelectorAll('.invalid-feedback')
-            .forEach(function (elemento) {
+        formulario.querySelectorAll('.invalid-feedback').forEach(
+            function (elemento) {
                 elemento.textContent = '';
             });
     }
@@ -127,7 +122,6 @@ document.addEventListener('DOMContentLoaded', function () {
             password_confirmation: 'profile-password-confirmation-error',
             profile_image: 'profile-image-error',
         };
-
         return (ids[campo] || campo.replaceAll('_', '-') + '-error');
     }
 
@@ -220,7 +214,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function actualizarFechaActividad(fecha) {
         const elementos = document.querySelectorAll('[data-profile-updated]');
-
         elementos.forEach(
             function (elemento) {
                 elemento.dataset.profileUpdated = fecha;
@@ -295,7 +288,6 @@ document.addEventListener('DOMContentLoaded', function () {
             );
             return;
         }
-
         const placeholder = document.createElement('div');
         placeholder.className = claseBase + (clasePlaceholder ? ' ' + clasePlaceholder : '');
         placeholder.id = id;
@@ -339,7 +331,6 @@ document.addEventListener('DOMContentLoaded', function () {
             preview.replaceWith(imagen);
             return;
         }
-
         const placeholder = document.createElement('div');
         placeholder.className = 'profile-photo-preview-placeholder';
         placeholder.id = 'photoPreview';
@@ -453,7 +444,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!valor) {
                 return 'Confirma la nueva contraseña.';
             }
-
             const nueva = formulario.querySelector('[name="password"]');
 
             if (nueva && valor !== nueva.value) {
@@ -570,8 +560,7 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    document.addEventListener(
-        'click',
+    document.addEventListener('click',
         function (event) {
             const toggle = event.target.closest('.toggle-password');
 
@@ -608,8 +597,7 @@ document.addEventListener('DOMContentLoaded', function () {
     );
 
     if (modalEditarPerfilEl) {
-        modalEditarPerfilEl.addEventListener(
-            'show.bs.modal',
+        modalEditarPerfilEl.addEventListener('show.bs.modal',
             function () {
                 limpiarErrores(formEditarPerfil);
             }
@@ -617,15 +605,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (modalCambiarPasswordEl) {
-        modalCambiarPasswordEl.addEventListener(
-            'show.bs.modal',
+        modalCambiarPasswordEl.addEventListener('show.bs.modal',
             function () {
                 limpiarErrores(formCambiarPassword);
             }
         );
 
-        modalCambiarPasswordEl.addEventListener(
-            'hidden.bs.modal',
+        modalCambiarPasswordEl.addEventListener('hidden.bs.modal',
             function () {
                 if (formCambiarPassword) {
                     formCambiarPassword.reset();
@@ -636,15 +622,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (modalFotoPerfilEl) {
-        modalFotoPerfilEl.addEventListener(
-            'show.bs.modal',
+        modalFotoPerfilEl.addEventListener('show.bs.modal',
             function () {
                 limpiarErrores(formFotoPerfil);
             }
         );
 
-        modalFotoPerfilEl.addEventListener(
-            'hidden.bs.modal',
+        modalFotoPerfilEl.addEventListener('hidden.bs.modal',
             function () {
                 if (profileImageInput) {
                     profileImageInput.value = '';
@@ -674,7 +658,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!archivo) {
                     return;
                 }
-
                 const tiposPermitidos = [
                     'image/jpeg',
                     'image/png',
@@ -770,8 +753,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     if (btnEliminarFoto) {
-        btnEliminarFoto.addEventListener(
-            'click',
+        btnEliminarFoto.addEventListener('click',
             function () {
                 const boton = this;
                 const url = boton.dataset.url;
@@ -833,7 +815,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         );
     }
-
     setInterval(
         function () {
             document.querySelectorAll('[data-profile-updated]')
