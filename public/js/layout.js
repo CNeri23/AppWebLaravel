@@ -26,7 +26,6 @@
                 }
             } catch (e) { }
         }
-
         var tema = modo === 'dark' ? 'dark' : 'light';
 
         raiz.setAttribute('data-theme-mode', tema);

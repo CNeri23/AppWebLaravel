@@ -33,10 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         setTimeout(function () {
             if (typeof window.showToast === 'function') {
-                window.showToast(
-                    'error',
-                    'Tu sesión se cerró porque tu contraseña fue cambiada.'
-                );
+                window.showToast('error', 'Tu sesión se cerró porque tu contraseña fue cambiada.');
             }
         }, 300);
     })();
@@ -399,7 +396,6 @@ document.addEventListener('DOMContentLoaded', function () {
             button.setAttribute('aria-label', seVaAMostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
         });
     });
-
     const togglePasswordBtn = document.getElementById('togglePassword');
 
     if (togglePasswordBtn && passwordInput) {
@@ -533,13 +529,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 registerPasswordConfirmation.focus();
                 return;
             }
-
             const botonSubmit = formRegister.querySelector('button[type="submit"]');
             const textoOriginal = botonSubmit.innerHTML;
             botonSubmit.disabled = true;
             botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creando cuenta...';
             limpiarErroresPanel(obtenerPanel('register'));
-
             const formData = new FormData(formRegister);
 
             fetch(formRegister.action, {
