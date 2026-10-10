@@ -15,7 +15,7 @@ class AccionController extends Controller
             'nombre' => ['required', 'string', 'max:100'],
             'slug' => ['required', 'string', 'max:100', 'unique:acciones,slug'],
             'descripcion' => ['nullable', 'string', 'max:255'],
-            'icono' => ['nullable', 'string', 'max:150'],
+            'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'],
             'orden' => ['required', 'integer', 'min:0'],
         ]);
 
@@ -50,7 +50,7 @@ class AccionController extends Controller
                 'unique:acciones,slug,' . $accion->id,
             ],
             'descripcion' => ['nullable', 'string', 'max:255'],
-            'icono' => ['nullable', 'string', 'max:150'],
+            'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'],
             'orden' => ['required', 'integer', 'min:0'],
         ]);
 
