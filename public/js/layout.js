@@ -553,10 +553,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 await new Promise(resolve => setTimeout(resolve, 210));
             }
         } catch (error) {
-            // Algunos navegadores pueden cancelar una transición si cambia el documento.
+            // Si el navegador cancela o no puede iniciar el revelado, aplicar el tema igualmente.
             if (guardado) {
                 await guardado;
-            } else if (!puedeRevelar) {
+            } else {
+                html.classList.add('theme-switching');
                 await guardarYAplicar(siguiente);
             }
         } finally {
