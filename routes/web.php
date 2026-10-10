@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
     // Rutas configuración
 
     Route::get('/configuracion', [SystemSettingsController::class, 'index'])
+        ->middleware('permiso:submodulo,configuracion')
         ->name('configuracion.index');
 
     Route::put('/configuracion', [SystemSettingsController::class, 'update'])
