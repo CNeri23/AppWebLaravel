@@ -29,8 +29,8 @@
 
     if ($accentColor === 'neutral') {
         $accentColor = 'indigo';
-    } elseif (in_array($accentColor, ['rosa', 'azul_oscuro'], true)) {
-        $accentColor = 'blue';
+    } elseif ($accentColor === 'rosa') {
+        $accentColor = 'azul_oscuro';
     }
 
     if (!in_array($accentColor, [
@@ -39,6 +39,7 @@
         'orange',
         'purple',
         'red',
+        'azul_oscuro',
         'indigo',
         'petroleo',
     ], true)) {
