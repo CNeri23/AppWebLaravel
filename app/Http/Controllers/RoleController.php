@@ -366,11 +366,16 @@ class RoleController extends Controller
      */
     private function puedeAdministrarPermisosDeRol($usuario, Role $rol): bool
     {
+        // El rol reservado nunca se administra desde la interfaz.
+        if ($rol->is_superadmin) {
+            return false;
+        }
+
         if (!$this->usuarioTieneRol($usuario, $rol)) {
             return true;
         }
 
-        return $this->esSuperadministrador($usuario) && !$rol->is_superadmin;
+        return $this->esSuperadministrador($usuario);
     }
 
     private function usuarioTieneRol($usuario, Role $rol): bool
