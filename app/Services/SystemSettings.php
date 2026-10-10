@@ -40,6 +40,7 @@ class SystemSettings
         'lockout_minutes' => 5,
         'max_login_attempts_ip' => 30,
         'login_ip_window_seconds' => 60,
+        'login_ip_lockout_minutes' => 10,
         'registration_enabled' => true,
     ];
 
@@ -64,6 +65,7 @@ class SystemSettings
             'lockout_minutes',
             'max_login_attempts_ip',
             'login_ip_window_seconds',
+            'login_ip_lockout_minutes',
             'registration_enabled',
         ],
     ];
@@ -77,6 +79,7 @@ class SystemSettings
         'lockout_minutes',
         'max_login_attempts_ip',
         'login_ip_window_seconds',
+        'login_ip_lockout_minutes',
     ];
 
     private const TEXTS = [
