@@ -23,3 +23,37 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* SweetAlert2: mantiene el icono centrado y encima del contenido y los botones. */
+.swal2-popup.ip-confirmation-popup {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+}
+
+.swal2-popup.ip-confirmation-popup > .swal2-icon.ip-confirmation-icon {
+    order: 0 !important;
+    align-self: center !important;
+    margin: 1.25em auto 0.6em !important;
+    flex-shrink: 0;
+}
+
+.swal2-popup.ip-confirmation-popup > .swal2-title.ip-confirmation-title {
+    order: 1 !important;
+    width: 100%;
+    text-align: center !important;
+}
+
+.swal2-popup.ip-confirmation-popup > .swal2-html-container {
+    order: 2 !important;
+    width: 100%;
+    text-align: center !important;
+}
+
+.swal2-popup.ip-confirmation-popup > .swal2-actions.ip-confirmation-actions {
+    order: 3 !important;
+    align-self: center !important;
+    justify-content: center !important;
+    width: 100%;
+    margin: 1.25em auto 0 !important;
+}
