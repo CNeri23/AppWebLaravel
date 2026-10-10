@@ -38,6 +38,8 @@ class SystemSettings
         'password_complexity' => false,
         'max_login_attempts' => 5,
         'lockout_minutes' => 5,
+        'max_login_attempts_ip' => 30,
+        'login_ip_window_seconds' => 60,
         'registration_enabled' => true,
     ];
 
@@ -60,6 +62,8 @@ class SystemSettings
             'password_complexity',
             'max_login_attempts',
             'lockout_minutes',
+            'max_login_attempts_ip',
+            'login_ip_window_seconds',
             'registration_enabled',
         ],
     ];
@@ -71,6 +75,8 @@ class SystemSettings
         'password_min_length',
         'max_login_attempts',
         'lockout_minutes',
+        'max_login_attempts_ip',
+        'login_ip_window_seconds',
     ];
 
     private const TEXTS = [
