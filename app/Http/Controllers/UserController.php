@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Accion;
 use App\Models\Role;
+use App\Models\RolePermission;
 use App\Models\User;
 use App\Services\AuditLogService;
 use App\Services\PasswordPolicy;
@@ -91,6 +92,10 @@ class UserController extends Controller
             ...$politica->messages(),
         ]);
 
+        $roles = array_values(array_unique($datos['roles'] ?? []));
+
+        $this->validarRolesAsignables($roles, $request->user());
+
         // Primero se inserta el usuario y luego la persona con su usuario_id.
         $usuario = $servicio->crear(
             [
@@ -99,7 +104,7 @@ class UserController extends Controller
                 'activo' => $request->boolean('activo', true),
             ],
             $datos,
-            $datos['roles'] ?? []
+            $roles
         );
 
         AuditLogService::log(
@@ -260,17 +265,21 @@ class UserController extends Controller
             'roles.*' => ['integer', 'exists:roles,id'],
         ]);
 
+        $roles = array_values(array_unique($datos['roles'] ?? []));
+
+        $this->validarRolesAsignables($roles, $request->user());
+
         $rolesAnteriores = $usuario->roles()
             ->orderBy('name')
             ->pluck('name')
             ->toArray();
 
-        $rolesNuevos = Role::whereIn('id', $datos['roles'] ?? [])
+        $rolesNuevos = Role::whereIn('id', $roles)
             ->orderBy('name')
             ->pluck('name')
             ->toArray();
 
-        $usuario->roles()->sync($datos['roles'] ?? []);
+        $usuario->roles()->sync($roles);
 
         $rolesAnterioresTexto = !empty($rolesAnteriores)
             ? implode(', ', $rolesAnteriores)
@@ -327,6 +336,48 @@ class UserController extends Controller
             'mensaje' => 'Usuario eliminado correctamente.',
             'id' => $id,
         ]);
+    }
+
+    /**
+     * Impide asignar roles con permisos que el operador no posee.
+     *
+     * El permiso usuarios.roles se exige también al crear una cuenta con roles,
+     * para que usuarios.crear no permita conceder privilegios indirectamente.
+     */
+    private function validarRolesAsignables(array $roleIds, User $actor): void
+    {
+        if (empty($roleIds)) {
+            return;
+        }
+
+        $permissionService = app(PermissionService::class);
+
+        abort_unless(
+            $permissionService->tieneAccionPorSlug($actor, 'usuarios.roles'),
+            403,
+            'No tienes permiso para asignar roles a usuarios.'
+        );
+
+        $permisosDelActor = RolePermission::query()
+            ->whereIn('role_id', $actor->roles()->pluck('roles.id'))
+            ->get(['permission_type', 'permission_id'])
+            ->map(fn (RolePermission $permiso) => $permiso->permission_type . ':' . $permiso->permission_id)
+            ->unique()
+            ->flip();
+
+        $permisosDeRolesSolicitados = RolePermission::query()
+            ->whereIn('role_id', $roleIds)
+            ->get(['permission_type', 'permission_id']);
+
+        foreach ($permisosDeRolesSolicitados as $permiso) {
+            $clave = $permiso->permission_type . ':' . $permiso->permission_id;
+
+            abort_if(
+                !$permisosDelActor->has($clave),
+                403,
+                'No puedes asignar un rol con permisos que no tienes.'
+            );
+        }
     }
 
     private function urls(User $usuario): array
