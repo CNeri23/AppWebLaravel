@@ -136,15 +136,9 @@ class ProfileController extends Controller
             'password' => $datos['password'],
         ]);
 
-        // Revocar las demás sesiones cuando el controlador de sesiones usa la base de datos.
-        // La sesión actual se conserva para que el usuario no tenga que iniciar sesión otra vez.
-        if (config('session.driver') === 'database') {
-            DB::connection(config('session.connection'))
-                ->table(config('session.table', 'sessions'))
-                ->where('user_id', $usuario->id)
-                ->where('id', '!=', $request->session()->getId())
-                ->delete();
-        }
+        // Actualizar la huella de contraseña de la sesión actual para conservarla abierta.
+        // Las demás sesiones detectarán la contraseña anterior y se cerrarán con un aviso.
+        $request->session()->put('password_hash', $usuario->getAuthPassword());
 
         AuditLogService::log(
             module: 'perfil',
