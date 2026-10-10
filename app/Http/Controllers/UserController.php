@@ -247,7 +247,7 @@ class UserController extends Controller
         // Si el administrador cambia su propia contraseña, conservar esta sesión actual.
         // Las otras sesiones detectarán el cambio y recibirán un aviso al cerrarse.
         if ((int) $request->user()->id === (int) $usuario->id) {
-            $request->session()->put('password_hash', $usuario->getAuthPassword());
+            $request->session()->put('password_hash_' . \Illuminate\Support\Facades\Auth::getDefaultDriver(), $usuario->getAuthPassword());
         }
 
         AuditLogService::log(
