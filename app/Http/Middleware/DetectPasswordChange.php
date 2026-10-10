@@ -18,11 +18,12 @@ class DetectPasswordChange
 
         $usuario = Auth::user();
         $hashActual = $usuario->getAuthPassword();
-        $hashSesion = $request->session()->get('password_hash');
+        $claveHash = 'password_hash_' . Auth::getDefaultDriver();
+        $hashSesion = $request->session()->get($claveHash);
 
         // La primera petición autenticada establece la huella de contraseña de esta sesión.
         if (! is_string($hashSesion) || $hashSesion === '') {
-            $request->session()->put('password_hash', $hashActual);
+            $request->session()->put($claveHash, $hashActual);
 
             return $next($request);
         }
