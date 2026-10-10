@@ -2028,32 +2028,6 @@ html[data-bs-theme="dark"] .app-topbar.scrolled {
     outline-offset: 2px;
 }
 
-/* Topbar: breadcrumb */
-.topbar-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1 1 auto;
-    min-width: 0;
-    color: var(--text-muted);
-    font-size: 13.5px;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.topbar-breadcrumb i {
-    color: var(--text-soft);
-    font-size: 10px;
-}
-
-.topbar-breadcrumb .breadcrumb-current {
-    color: var(--text-strong);
-    font-weight: 700;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 /* Sidebar: el módulo padre ya no compite con el submódulo activo */
 .sidebar-group-toggle.active,
 .sidebar-group-toggle.active:hover {
@@ -2148,13 +2122,6 @@ html[data-bs-theme="dark"] .app-topbar.scrolled {
 .sidebar-tooltip.show {
     opacity: 1;
     transform: none;
-}
-
-/* Responsive de las piezas nuevas */
-@media (max-width: 1199.98px) {
-    .topbar-breadcrumb {
-        display: none;
-    }
 }
 
 /* Divisor único entre notificaciones y avatar */
