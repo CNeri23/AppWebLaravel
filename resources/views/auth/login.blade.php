@@ -27,6 +27,10 @@
         $darkThemeStyle = 'graphite';
     }
 
+    if ($accentColor === 'neutral') {
+        $accentColor = 'indigo';
+    }
+
     if (!in_array($accentColor, [
         'blue',
         'green',
@@ -34,8 +38,8 @@
         'purple',
         'red',
         'cyan',
-        'neutral',
-    ])) {
+        'indigo',
+    ], true)) {
         $accentColor = 'orange';
     }
 @endphp
