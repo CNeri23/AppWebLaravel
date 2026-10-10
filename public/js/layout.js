@@ -122,6 +122,8 @@ document.addEventListener('DOMContentLoaded', function () {
         html.setAttribute('data-theme-style', estiloActual);
 
         if (themeSwitch) {
+            themeSwitch.classList.toggle('is-dark', theme === 'dark');
+            themeSwitch.classList.toggle('is-light', theme !== 'dark');
             themeSwitch.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
             themeSwitch.setAttribute('aria-label', theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
             themeSwitch.title = theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
@@ -497,6 +499,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Mueve el switch de inmediato; el cambio de tema de la página llega un instante después.
+    function animarSwitchTema(siguiente) {
+        if (!themeSwitch) {
+            return;
+        }
+        themeSwitch.classList.toggle('is-dark', siguiente === 'dark');
+        themeSwitch.classList.toggle('is-light', siguiente !== 'dark');
+    }
+
+    const RETRASO_TEMA = 160;
+    let cambiandoTema = false;
+
     function cambiarTema(siguiente) {
         const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -514,27 +528,31 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const caja = themeSwitch.getBoundingClientRect();
-        const x = caja.left + caja.width / 2;
-        const y = caja.top + caja.height / 2;
-        const radio = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
-        const transicion = document.startViewTransition(function () { guardarYAplicar(siguiente); });
+        if (cambiandoTema) {
+            return;
+        }
+        cambiandoTema = true;
 
-        transicion.ready.then(function () {
-            html.animate(
-                {
-                    clipPath: [
-                        `circle(0px at ${x}px ${y}px)`,
-                        `circle(${radio}px at ${x}px ${y}px)`,
-                    ],
-                },
-                {
-                    duration: 600,
-                    easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-                    pseudoElement: '::view-transition-new(root)',
-                }
-            );
-        }).catch(function () { });
+        // 1) La perilla se mueve primero; 2) un instante después la página nueva emerge con profundidad 3D.
+        animarSwitchTema(siguiente);
+
+        const claseProfundidad = siguiente === 'dark' ? 'theme-depth-dark' : 'theme-depth-light';
+
+        function terminar() {
+            html.classList.remove('theme-depth-dark', 'theme-depth-light');
+            cambiandoTema = false;
+        }
+
+        setTimeout(function () {
+            html.classList.add(claseProfundidad);
+
+            const transicion = document.startViewTransition(function () { guardarYAplicar(siguiente); });
+
+            transicion.finished.then(terminar, terminar);
+        }, RETRASO_TEMA);
+
+        // Red de seguridad por si el navegador nunca resuelve la transición.
+        setTimeout(terminar, RETRASO_TEMA + 3000);
     }
 
     window.cambiarTemaManual = cambiarTema;
@@ -570,6 +588,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const overlay = document.getElementById('sidebarOverlay');
     const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
 
+    const topbar = document.querySelector('.app-topbar');
+
+    function actualizarSombraTopbar() {
+        topbar?.classList.toggle('scrolled', window.scrollY > 4);
+    }
+
+    window.addEventListener('scroll', actualizarSombraTopbar, { passive: true });
+    actualizarSombraTopbar();
+
     if (!sidebar) {
         return;
     }
@@ -578,9 +605,29 @@ document.addEventListener('DOMContentLoaded', function () {
         return window.matchMedia('(max-width: 991.98px)').matches;
     }
 
+    // Estado del botón de menú: expanded (hamburguesa), collapsed (>) u open (< en móvil).
+    function actualizarEstadoToggle() {
+        if (!sidebarToggleBtn) {
+            return;
+        }
+        let estado = 'expanded';
+        let expandido = true;
+
+        if (esMovil()) {
+            expandido = sidebar.classList.contains('show');
+            estado = expandido ? 'open' : 'expanded';
+        } else if (sidebar.classList.contains('collapsed')) {
+            estado = 'collapsed';
+            expandido = false;
+        }
+        sidebarToggleBtn.dataset.state = estado;
+        sidebarToggleBtn.setAttribute('aria-expanded', expandido ? 'true' : 'false');
+    }
+
     function toggleMobileSidebar() {
         sidebar.classList.toggle('show');
         overlay?.classList.toggle('show');
+        actualizarEstadoToggle();
     }
 
     overlay?.addEventListener('click', toggleMobileSidebar);
@@ -814,15 +861,63 @@ document.addEventListener('DOMContentLoaded', function () {
 
     inicializarGruposSidebar();
 
-    function actualizarTitulos(collapsed) {
-        sidebar.querySelectorAll('.sidebar-link[data-label], .sidebar-group-toggle[data-label]')
-            .forEach(elemento => {
-                if (collapsed) {
-                    elemento.title = elemento.dataset.label;
-                } else {
-                    elemento.removeAttribute('title');
-                }
-            });
+    // Tooltip propio para el sidebar colapsado (reemplaza el title nativo).
+    const tooltipSidebar = document.createElement('div');
+    tooltipSidebar.className = 'sidebar-tooltip';
+    tooltipSidebar.setAttribute('role', 'tooltip');
+    document.body.appendChild(tooltipSidebar);
+
+    function mostrarTooltipSidebar(elemento) {
+        if (!sidebar.classList.contains('collapsed') || esMovil()) {
+            return;
+        }
+        const texto = elemento.dataset.label;
+
+        if (!texto) {
+            return;
+        }
+        tooltipSidebar.textContent = texto;
+        const caja = elemento.getBoundingClientRect();
+        tooltipSidebar.style.left = (caja.right + 10) + 'px';
+        tooltipSidebar.style.top = (caja.top + caja.height / 2 - tooltipSidebar.offsetHeight / 2) + 'px';
+        tooltipSidebar.classList.add('show');
+    }
+
+    function ocultarTooltipSidebar() {
+        tooltipSidebar.classList.remove('show');
+    }
+
+    const SELECTOR_TOOLTIP = '.sidebar-link[data-label], .sidebar-group-toggle[data-label]';
+
+    sidebar.addEventListener('mouseover', function (event) {
+        const elemento = event.target.closest(SELECTOR_TOOLTIP);
+
+        if (elemento) {
+            mostrarTooltipSidebar(elemento);
+        }
+    });
+
+    sidebar.addEventListener('mouseout', function (event) {
+        if (event.target.closest(SELECTOR_TOOLTIP)) {
+            ocultarTooltipSidebar();
+        }
+    });
+
+    sidebar.addEventListener('focusin', function (event) {
+        const elemento = event.target.closest(SELECTOR_TOOLTIP);
+
+        if (elemento) {
+            mostrarTooltipSidebar(elemento);
+        }
+    });
+
+    sidebar.addEventListener('focusout', ocultarTooltipSidebar);
+    sidebar.addEventListener('click', ocultarTooltipSidebar);
+
+    function actualizarTitulos() {
+        ocultarTooltipSidebar();
+        sidebar.querySelectorAll(SELECTOR_TOOLTIP)
+            .forEach(elemento => elemento.removeAttribute('title'));
     }
 
     function abrirModuloActivo() {
@@ -855,12 +950,23 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             abrirModuloActivo();
         }
+        actualizarEstadoToggle();
     }
+
+    // Evita que la flecha "viaje" desde la hamburguesa al cargar la página.
+    sidebarToggleBtn?.classList.add('sin-animacion');
 
     if (window.matchMedia('(min-width: 992px)').matches) {
         const guardado = localStorage.getItem('sidebar-collapsed') === '1';
         setCollapsed(guardado);
     }
+    actualizarEstadoToggle();
+
+    requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+            sidebarToggleBtn?.classList.remove('sin-animacion');
+        });
+    });
 
     sidebarToggleBtn?.addEventListener('click', function () {
         if (esMovil()) {
@@ -887,5 +993,6 @@ document.addEventListener('DOMContentLoaded', function () {
             setCollapsed(guardado);
         }
         anchoAnterior = anchoActual;
+        actualizarEstadoToggle();
     });
 });

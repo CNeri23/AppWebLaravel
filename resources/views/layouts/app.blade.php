@@ -44,6 +44,22 @@
         ->filter(function ($modulo) {
             return $modulo->submodulos->isNotEmpty();
         });
+
+    // Breadcrumb: módulo / submódulo de la ruta actual
+    $breadcrumbModulo = null;
+    $breadcrumbSubmodulo = null;
+
+    foreach ($modulosMenu as $moduloMenu) {
+        foreach ($moduloMenu->submodulos as $submoduloMenu) {
+            if ($submoduloMenu->ruta && request()->routeIs($submoduloMenu->ruta)) {
+                $breadcrumbModulo = $moduloMenu->nombre;
+                $breadcrumbSubmodulo = $submoduloMenu->nombre;
+                break 2;
+            }
+        }
+    }
+
+    $primerNombre = \Illuminate\Support\Str::of($usuarioActual->name)->trim()->before(' ');
 @endphp
 
 <!DOCTYPE html>
@@ -83,7 +99,11 @@
     <header class="app-topbar">
         <div class="topbar-brand">
             <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Colapsar / expandir menú">
-                <i class="fa-solid fa-bars"></i>
+                <span class="sidebar-toggle-icon" aria-hidden="true">
+                    <span class="sidebar-toggle-bar"></span>
+                    <span class="sidebar-toggle-bar"></span>
+                    <span class="sidebar-toggle-bar"></span>
+                </span>
             </button>
 
             <div class="sidebar-brand-icon">
@@ -97,22 +117,21 @@
             <span class="sidebar-brand-text">{{ $settings['system_name'] }}</span>
         </div>
 
-        <div class="topbar-search">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Buscar...">
-        </div>
+        <nav class="topbar-breadcrumb" aria-label="Ubicación actual">
+            @if ($breadcrumbSubmodulo)
+                <span>{{ $breadcrumbModulo }}</span>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span class="breadcrumb-current">{{ $breadcrumbSubmodulo }}</span>
+            @elseif (request()->routeIs('dashboard'))
+                <span class="breadcrumb-current">Dashboard</span>
+            @endif
+        </nav>
 
         <div class="topbar-actions">
             <span class="topbar-greeting">
                 <span id="topbarGreetingText">{{ $greeting }}</span>,
-                <strong>{{ auth()->user()->name }}</strong>
+                <strong>{{ $primerNombre }}</strong>
             </span>
-
-            <span class="topbar-divider"></span>
-
-            <a href="{{ route('dashboard') }}" class="topbar-icon-btn" title="Inicio">
-                <i class="fa-solid fa-house"></i>
-            </a>
 
             <button type="button" class="theme-switch" id="themeSwitch" role="switch" aria-checked="false"
                 aria-label="Cambiar entre modo claro y oscuro" title="Cambiar tema">
@@ -123,8 +142,6 @@
                     </span>
                 </span>
             </button>
-
-            <span class="topbar-divider"></span>
 
             @php
                 $notificaciones = collect([

@@ -45,11 +45,11 @@
     --nav-tick: rgba(20, 22, 26, 0.26);
     --nav-knurl: rgba(20, 22, 26, 0.075);
     --nav-scroll: rgba(20, 22, 26, 0.18);
-    --nav-text: #545a63;
+    --nav-text: #434950;
     --nav-text-strong: #15171b;
-    --nav-muted: #8b919b;
+    --nav-muted: #747a85;
     --nav-hover: rgba(20, 22, 26, 0.055);
-    --nav-chip: rgba(20, 22, 26, 0.055);
+    --nav-chip: rgba(20, 22, 26, 0.085);
     --nav-active: rgba(234, 88, 12, 0.12);
     --table-head: #f3f5f9;
     --table-hover: #f6f8fb;
@@ -124,14 +124,6 @@ html[data-accent-color="indigo"] {
     --gym-soft: rgba(88, 86, 214, 0.13);
     --on-gym: #ffffff;
     --nav-active: rgba(88, 86, 214, 0.13);
-}
-
-html[data-accent-color="petroleo"] {
-    --gym: #0f766e;
-    --gym-strong: #115e59;
-    --gym-soft: rgba(15, 118, 110, 0.13);
-    --on-gym: #ffffff;
-    --nav-active: rgba(15, 118, 110, 0.13);
 }
 
 html[data-accent-color="petroleo"] {
@@ -477,49 +469,85 @@ body {
     color: var(--text-strong);
 }
 
-.topbar-search {
+/* Hamburguesa que se transforma en flecha > (colapsado) o < (abierto en móvil) */
+.sidebar-toggle-icon {
+    --tg-ease: cubic-bezier(0.3, 1.25, 0.5, 1);
     position: relative;
-    flex: 0 1 340px;
-    min-width: 0;
+    display: block;
+    width: 36px;
+    height: 36px;
+    transition: transform 0.45s var(--tg-ease);
 }
 
-.topbar-search input {
-    width: 100%;
-    height: 39px;
-    padding: 0 15px 0 40px;
-    border: 1px solid var(--flat-line);
-    border-radius: 10px;
-    background: var(--content-bg);
-    color: var(--text-main);
-    transition:
-        background 0.18s ease,
-        border-color 0.18s ease,
-        box-shadow 0.18s ease;
-}
-
-.topbar-search input::placeholder {
-    color: var(--text-muted);
-}
-
-.topbar-search input:hover {
-    border-color: var(--nav-muted);
-}
-
-.topbar-search input:focus {
-    outline: none;
-    border-color: var(--gym);
-    background: var(--topbar-bg);
-    box-shadow: 0 0 0 3px var(--gym-soft);
-}
-
-.topbar-search i {
+.sidebar-toggle-bar {
     position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    font-size: 13px;
-    pointer-events: none;
+    top: 17px;
+    right: 10px;
+    width: 16px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transform-origin: 100% 50%;
+    transition:
+        transform 0.42s var(--tg-ease),
+        width 0.3s ease,
+        right 0.3s ease,
+        opacity 0.2s ease;
+}
+
+.sidebar-toggle-bar:nth-child(1) {
+    transform: translateY(-6px);
+}
+
+.sidebar-toggle-bar:nth-child(3) {
+    transform: translateY(6px);
+}
+
+.sidebar-toggle-btn[data-state="expanded"]:hover .sidebar-toggle-bar:nth-child(2) {
+    width: 10px;
+}
+
+.sidebar-toggle-btn[data-state="collapsed"] .sidebar-toggle-bar,
+.sidebar-toggle-btn[data-state="open"] .sidebar-toggle-bar {
+    right: 13px;
+    width: 10px;
+}
+
+.sidebar-toggle-btn[data-state="collapsed"] .sidebar-toggle-bar:nth-child(1),
+.sidebar-toggle-btn[data-state="open"] .sidebar-toggle-bar:nth-child(1) {
+    transform: rotate(45deg);
+}
+
+.sidebar-toggle-btn[data-state="collapsed"] .sidebar-toggle-bar:nth-child(3),
+.sidebar-toggle-btn[data-state="open"] .sidebar-toggle-bar:nth-child(3) {
+    transform: rotate(-45deg);
+}
+
+.sidebar-toggle-btn[data-state="collapsed"] .sidebar-toggle-bar:nth-child(2),
+.sidebar-toggle-btn[data-state="open"] .sidebar-toggle-bar:nth-child(2) {
+    width: 0;
+    opacity: 0;
+}
+
+.sidebar-toggle-btn[data-state="open"] .sidebar-toggle-icon {
+    transform: scaleX(-1);
+}
+
+.sidebar-toggle-btn[data-state="collapsed"]:hover .sidebar-toggle-icon {
+    transform: translateX(2px);
+}
+
+.sidebar-toggle-btn[data-state="open"]:hover .sidebar-toggle-icon {
+    transform: scaleX(-1) translateX(2px);
+}
+
+.sidebar-toggle-btn:active .sidebar-toggle-icon {
+    scale: 0.9;
+}
+
+.sidebar-toggle-btn.sin-animacion .sidebar-toggle-icon,
+.sidebar-toggle-btn.sin-animacion .sidebar-toggle-bar {
+    transition: none !important;
 }
 
 .topbar-actions {
@@ -543,14 +571,6 @@ body {
 .topbar-greeting strong {
     color: var(--text-strong);
     font-weight: 700;
-}
-
-.topbar-divider {
-    width: 1px;
-    height: 23px;
-    margin: 0 5px;
-    background: var(--line);
-    opacity: 0.75;
 }
 
 .topbar-icon-btn {
@@ -900,6 +920,7 @@ html[data-bs-theme] .dropdown-menu {
     color: var(--nav-text-strong);
 }
 
+/* Perilla con el color de acento del sistema */
 .theme-switch-thumb {
     position: absolute;
     z-index: 1;
@@ -951,36 +972,159 @@ html[data-bs-theme] .dropdown-menu {
     width: 34px;
 }
 
-[data-bs-theme="dark"] .theme-switch-thumb {
+/* Estado oscuro: layout.js agrega is-dark / is-light para mover la perilla
+   un instante antes de que cambie el tema de toda la página. */
+html[data-bs-theme="dark"] .theme-switch:not(.is-light) .theme-switch-thumb,
+.theme-switch.is-dark .theme-switch-thumb {
     transform: translateX(28px);
 }
 
-[data-bs-theme="dark"] .theme-switch:active .theme-switch-thumb {
+html[data-bs-theme="dark"] .theme-switch:not(.is-light):active .theme-switch-thumb,
+.theme-switch.is-dark:active .theme-switch-thumb {
     transform: translateX(22px);
 }
 
-[data-bs-theme="dark"] .theme-switch-sun {
+html[data-bs-theme="dark"] .theme-switch:not(.is-light) .theme-switch-sun,
+.theme-switch.is-dark .theme-switch-sun {
     opacity: 0;
     transform: rotate(70deg) scale(0.4);
 }
 
-[data-bs-theme="dark"] .theme-switch-moon {
+html[data-bs-theme="dark"] .theme-switch:not(.is-light) .theme-switch-moon,
+.theme-switch.is-dark .theme-switch-moon {
     opacity: 1;
     transform: rotate(0deg) scale(1);
 }
 
-::view-transition-old(root),
-::view-transition-new(root) {
-    animation: none;
+/* Transición de tema con profundidad 3D: la página anterior retrocede hacia el
+   fondo (se aleja, se inclina y se oscurece) mientras la nueva emerge como una
+   tarjeta que se asienta con esquinas redondeadas y sombra. Al pasar a oscuro la
+   nueva sube desde abajo; al volver a claro baja desde arriba. Se activa solo
+   durante el cambio con theme-depth-dark / theme-depth-light. */
+html.theme-depth-dark::view-transition {
+    background: #050506;
+}
+
+html.theme-depth-light::view-transition {
+    background: #c9d0db;
+}
+
+html.theme-depth-dark::view-transition-image-pair(root),
+html.theme-depth-light::view-transition-image-pair(root) {
+    perspective: 1800px;
+    perspective-origin: 50% 50%;
+}
+
+html.theme-depth-dark::view-transition-old(root),
+html.theme-depth-dark::view-transition-new(root),
+html.theme-depth-light::view-transition-old(root),
+html.theme-depth-light::view-transition-new(root) {
+    animation-duration: 1.05s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: both;
     mix-blend-mode: normal;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
-::view-transition-old(root) {
-    z-index: 1;
+html.theme-depth-dark::view-transition-old(root) {
+    transform-origin: 50% 0%;
+    animation-name: theme-depth-out-up;
 }
 
-::view-transition-new(root) {
-    z-index: 2;
+html.theme-depth-dark::view-transition-new(root) {
+    transform-origin: 50% 100%;
+    animation-name: theme-depth-in-up;
+}
+
+html.theme-depth-light::view-transition-old(root) {
+    transform-origin: 50% 100%;
+    animation-name: theme-depth-out-down;
+}
+
+html.theme-depth-light::view-transition-new(root) {
+    transform-origin: 50% 0%;
+    animation-name: theme-depth-in-down;
+}
+
+@keyframes theme-depth-out-up {
+    0% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) rotateX(0deg) scale(1);
+        filter: brightness(1) blur(0);
+    }
+
+    70% {
+        opacity: 0.55;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate3d(0, -3%, -280px) rotateX(-9deg) scale(0.96);
+        filter: brightness(0.55) blur(3px);
+    }
+}
+
+@keyframes theme-depth-in-up {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, 9%, 0) rotateX(13deg) scale(0.94);
+        border-radius: 32px;
+        box-shadow: 0 -40px 90px rgba(0, 0, 0, 0.5);
+        filter: blur(2px);
+    }
+
+    35% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) rotateX(0deg) scale(1);
+        border-radius: 0;
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+        filter: blur(0);
+    }
+}
+
+@keyframes theme-depth-out-down {
+    0% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) rotateX(0deg) scale(1);
+        filter: brightness(1) blur(0);
+    }
+
+    70% {
+        opacity: 0.55;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate3d(0, 3%, -280px) rotateX(9deg) scale(0.96);
+        filter: brightness(0.55) blur(3px);
+    }
+}
+
+@keyframes theme-depth-in-down {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, -9%, 0) rotateX(-13deg) scale(0.94);
+        border-radius: 32px;
+        box-shadow: 0 40px 90px rgba(15, 26, 29, 0.35);
+        filter: blur(2px);
+    }
+
+    35% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) rotateX(0deg) scale(1);
+        border-radius: 0;
+        box-shadow: 0 0 0 rgba(15, 26, 29, 0);
+        filter: blur(0);
+    }
 }
 
 html.theme-switching *,
@@ -1770,10 +1914,6 @@ html[data-bs-theme] .modal-content .form-select:focus {
     .topbar-brand {
         width: auto;
     }
-
-    .topbar-search {
-        display: none;
-    }
 }
 
 @media (max-width: 767.98px) {
@@ -1786,10 +1926,6 @@ html[data-bs-theme] .modal-content .form-select:focus {
     .sidebar-brand-text,
     .topbar-greeting {
         display: none;
-    }
-
-    .topbar-divider {
-        margin: 0 2px;
     }
 
     .app-content {
@@ -1856,4 +1992,169 @@ html[data-bs-theme] .btn-danger:hover {
 
 html[data-bs-theme] .modal {
     --modal-head-bg: var(--gym);
+}
+
+/* ==========================================================================
+   Mejoras visuales de sidebar y topbar
+   ========================================================================== */
+
+/* Topbar: sombra sutil al hacer scroll */
+.app-topbar.scrolled {
+    box-shadow: 0 2px 10px rgba(15, 26, 29, 0.08);
+}
+
+html[data-bs-theme="dark"] .app-topbar.scrolled {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+/* Topbar: foco por teclado */
+.topbar-icon-btn:focus-visible,
+.sidebar-toggle-btn:focus-visible,
+.user-dropdown .dropdown-toggle:focus-visible {
+    outline: 2px solid var(--gym);
+    outline-offset: 2px;
+}
+
+/* Topbar: breadcrumb */
+.topbar-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 auto;
+    min-width: 0;
+    color: var(--text-muted);
+    font-size: 13.5px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.topbar-breadcrumb i {
+    color: var(--text-soft);
+    font-size: 10px;
+}
+
+.topbar-breadcrumb .breadcrumb-current {
+    color: var(--text-strong);
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Sidebar: el módulo padre ya no compite con el submódulo activo */
+.sidebar-group-toggle.active,
+.sidebar-group-toggle.active:hover {
+    background: transparent;
+    color: var(--nav-text-strong);
+    font-weight: 700;
+}
+
+.sidebar-group-toggle.active:hover,
+.sidebar-group-toggle.active[aria-expanded="true"]:hover {
+    background: var(--nav-hover);
+}
+
+.sidebar-group-toggle.active::before {
+    opacity: 0;
+}
+
+.sidebar-group-toggle.active > i:first-child {
+    background: var(--gym);
+    color: var(--on-gym);
+}
+
+/* Sidebar: jerarquía de submódulos más ligera */
+.sidebar-sublink {
+    font-size: 13.5px;
+    font-weight: 500;
+}
+
+.sidebar-sublink > i:first-child {
+    width: 22px;
+    height: 22px;
+    background: transparent;
+    font-size: 12px;
+}
+
+.sidebar-sublink:hover > i:first-child {
+    background: var(--nav-chip);
+}
+
+.sidebar-sublink.active,
+.sidebar-sublink.active:hover {
+    font-weight: 600;
+}
+
+.sidebar-sublink.active > i:first-child,
+.sidebar-sublink.active:hover > i:first-child {
+    background: var(--gym);
+    color: var(--on-gym);
+}
+
+/* Sidebar: marcas de sección más sutiles */
+.sidebar-section::after {
+    opacity: 0.6;
+}
+
+/* Sidebar colapsado: el módulo con submódulo activo sí necesita fondo */
+@media (min-width: 992px) {
+    .app-sidebar.collapsed .sidebar-group-toggle.active {
+        background: var(--nav-active);
+    }
+
+    .app-sidebar.collapsed .sidebar-group-toggle.active::before {
+        opacity: 1;
+        transform: none;
+    }
+
+    .app-sidebar.collapsed .sidebar-group-toggle.active > i:first-child {
+        background: var(--gym);
+        color: var(--on-gym);
+    }
+}
+
+/* Tooltip flotante del sidebar colapsado (lo posiciona layout.js) */
+.sidebar-tooltip {
+    position: fixed;
+    z-index: 2000;
+    padding: 6px 11px;
+    border-radius: 8px;
+    background: var(--nav-text-strong);
+    color: var(--nav-bg);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition:
+        opacity 0.14s ease,
+        transform 0.14s ease;
+}
+
+.sidebar-tooltip.show {
+    opacity: 1;
+    transform: none;
+}
+
+/* Responsive de las piezas nuevas */
+@media (max-width: 1199.98px) {
+    .topbar-breadcrumb {
+        display: none;
+    }
+}
+
+/* Divisor único entre notificaciones y avatar */
+.topbar-divider {
+    width: 1px;
+    height: 23px;
+    margin: 0 5px;
+    background: var(--line);
+    opacity: 0.75;
+}
+
+@media (max-width: 767.98px) {
+    .topbar-divider {
+        margin: 0 2px;
+    }
 }
