@@ -182,13 +182,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // Compatibilidad con instalaciones que todavía guardan el antiguo color neutro.
         const coloresCompatibles = {
             neutral: 'indigo',
-            rosa: 'azul_oscuro',
+            rosa: 'blue',
             blue: 'blue',
             green: 'green',
             orange: 'orange',
             purple: 'purple',
             red: 'red',
-            azul_oscuro: 'azul_oscuro',
+            azul_oscuro: 'blue',
             indigo: 'indigo',
             petroleo: 'petroleo',
         };
