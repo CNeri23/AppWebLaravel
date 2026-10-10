@@ -680,6 +680,10 @@ document.addEventListener('DOMContentLoaded', function () {
         contenedor.appendChild(boton);
     }
 
+    function puedeAdministrarPermisosRol(rolId) {
+        return !(window.rolesDelUsuario || []).map(Number).includes(Number(rolId));
+    }
+
     function crearAccionesRol(rol, urls) {
         let html = '<div class="rol-actions">';
         const acciones = window.accionesRoles || [];
@@ -700,7 +704,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     (accion.icono || '<i class="fa-solid fa-pen"></i>') +
                     '</button>';
             }
-            else if (accion.slug === 'roles.permisos') {
+            else if (accion.slug === 'roles.permisos' && puedeAdministrarPermisosRol(rol.id)) {
                 html +=
                     '<button type="button" ' +
                     'class="btn btn-sm btn-outline-success rol-action-btn" ' +
