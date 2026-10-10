@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\AuditLogService;
+use App\Services\PermissionService;
 use App\Services\SystemSettings;
 use App\Services\UserPreferences;
 use Illuminate\Http\JsonResponse;
@@ -36,6 +37,32 @@ class SystemSettingsController extends Controller
         'registration_enabled',
     ];
 
+    private const PERMISOS_CONFIGURACION = [
+        'system_name' => 'configuracion.nombre',
+        'logo' => 'configuracion.logotipo',
+        'accent_color' => 'configuracion.apariencia',
+        'currency' => 'configuracion.regional',
+        'timezone' => 'configuracion.regional',
+        'date_format' => 'configuracion.regional',
+        'time_format' => 'configuracion.regional',
+        'business_name' => 'configuracion.negocio',
+        'business_rfc' => 'configuracion.negocio',
+        'business_address' => 'configuracion.negocio',
+        'business_phone' => 'configuracion.negocio',
+        'business_email' => 'configuracion.negocio',
+        'business_website' => 'configuracion.negocio',
+        'business_schedule' => 'configuracion.negocio',
+        'session_timeout' => 'configuracion.seguridad',
+        'password_min_length' => 'configuracion.seguridad',
+        'password_complexity' => 'configuracion.seguridad',
+        'max_login_attempts' => 'configuracion.seguridad',
+        'lockout_minutes' => 'configuracion.seguridad',
+        'max_login_attempts_ip' => 'configuracion.seguridad',
+        'login_ip_window_seconds' => 'configuracion.seguridad',
+        'login_ip_lockout_minutes' => 'configuracion.seguridad',
+        'registration_enabled' => 'configuracion.seguridad',
+    ];
+
     private const CLAVES_BOOLEANAS = [
         'password_complexity',
         'registration_enabled',
@@ -52,6 +79,8 @@ class SystemSettingsController extends Controller
         Request $request,
         SystemSettings $settings
     ): JsonResponse {
+        $this->autorizarCambios($request);
+
         $datos = $request->validate([
             // General
             'system_name' => ['sometimes', 'required', 'string', 'max:100'],
@@ -321,6 +350,33 @@ class SystemSettingsController extends Controller
             'mensaje' => $mensaje,
             'settings' => $settings->all(),
         ]);
+    }
+
+
+    /**
+     * Cada grupo de ajustes requiere su propia acción de permiso.
+     * Si una petición incluye varios campos, el usuario debe tener todos
+     * los permisos correspondientes antes de que se valide o guarde.
+     */
+    private function autorizarCambios(Request $request): void
+    {
+        $permissionService = app(PermissionService::class);
+        $clavesSolicitadas = array_keys($request->all());
+
+        if ($request->hasFile('logo')) {
+            $clavesSolicitadas[] = 'logo';
+        }
+
+        foreach (array_unique($clavesSolicitadas) as $clave) {
+            $slug = self::PERMISOS_CONFIGURACION[$clave] ?? null;
+
+            if (
+                $slug !== null &&
+                !$permissionService->tieneAccionPorSlug($request->user(), $slug)
+            ) {
+                abort(403, 'No tienes permiso para modificar esta configuración.');
+            }
+        }
     }
 
     public function updateTheme(
