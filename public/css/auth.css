@@ -10,8 +10,8 @@
     --login-surface: #ffffff;
     --login-shadow: 0 8px 28px rgba(30, 45, 85, 0.1), 0 1px 3px rgba(30, 45, 85, 0.08);
     --login-dot: rgba(20, 30, 60, 0.16);
-    --login-btn: color-mix(in srgb, var(--gym) 82%, #1c1c1e);
-    --login-btn-hover: color-mix(in srgb, var(--gym) 72%, #1c1c1e);
+    --login-btn: var(--gym);
+    --login-btn-hover: var(--gym-strong);
     --login-btn-text: #ffffff;
     --gs-plate-accent: var(--gym);
     --gs-plate-dark: #2b2e35;
