@@ -499,7 +499,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Mueve el switch de inmediato; el cambio de tema de la página llega un instante después.
     function animarSwitchTema(siguiente) {
         if (!themeSwitch) {
             return;
@@ -510,38 +509,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let cambiandoTema = false;
 
-    function cambiarTema(siguiente) {
-        const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        if (!document.startViewTransition || reducirMovimiento || !themeSwitch) {
-            animarSwitchTema(siguiente);
-            guardarYAplicar(siguiente);
-            return;
-        }
-
+    async function cambiarTema(siguiente) {
         if (cambiandoTema) {
             return;
         }
+
         cambiandoTema = true;
+        const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         animarSwitchTema(siguiente);
-        html.classList.add('theme-fade-transition');
 
-        function terminar() {
-            html.classList.remove('theme-fade-transition');
+        if (reducirMovimiento) {
+            await guardarYAplicar(siguiente);
             cambiandoTema = false;
+            return;
         }
 
-        try {
-            const transicion = document.startViewTransition(function () {
-                guardarYAplicar(siguiente);
-            });
+        // Transición CSS real de colores: no captura la página ni mueve el contenido.
+        html.classList.add('theme-switching');
 
-            transicion.finished.then(terminar, terminar);
-            setTimeout(terminar, 1500);
-        } catch (error) {
-            terminar();
-            guardarYAplicar(siguiente);
+        try {
+            await guardarYAplicar(siguiente);
+            await new Promise(resolve => setTimeout(resolve, 210));
+        } finally {
+            html.classList.remove('theme-switching');
+            cambiandoTema = false;
         }
     }
 
