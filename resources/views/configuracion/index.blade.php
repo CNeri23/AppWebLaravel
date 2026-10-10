@@ -106,7 +106,7 @@
                                 @foreach ($accentColors as $value => $accent)
 
                                     <label class="accent-option">
-                                        <input type="radio" name="accent_color" value="{{ $value }}" {{ ($settings['accent_color'] === $value || ($value === 'indigo' && $settings['accent_color'] === 'neutral')) ? 'checked' : '' }}>
+                                        <input type="radio" name="accent_color" value="{{ $value }}" {{ ($settings['accent_color'] === $value || ($value === 'indigo' && $settings['accent_color'] === 'neutral') || ($value === 'blue' && in_array($settings['accent_color'], ['azul_oscuro', 'rosa'], true))) ? 'checked' : '' }}>
 
                                         <span class="accent-content">
                                             <span class="accent-dot" style="--accent-preview: {{ $accent['color'] }}"></span>
