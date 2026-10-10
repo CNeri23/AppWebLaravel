@@ -93,7 +93,8 @@
                             <div class="accent-grid">
                                 @php
                                     $accentColors = [
-                                        'blue' => ['name' => 'Azul', 'color' => '#2563eb'],
+                                        'blue' => ['name' => 'Azul', 'color' => '#007aff'],
+                                        'azul_oscuro' => ['name' => 'Azul oscuro', 'color' => '#1d4ed8'],
                                         'green' => ['name' => 'Verde', 'color' => '#34c759'],
                                         'orange' => ['name' => 'Naranja', 'color' => '#ff9500'],
                                         'purple' => ['name' => 'Morado', 'color' => '#af52de'],
@@ -106,7 +107,7 @@
                                 @foreach ($accentColors as $value => $accent)
 
                                     <label class="accent-option">
-                                        <input type="radio" name="accent_color" value="{{ $value }}" {{ ($settings['accent_color'] === $value || ($value === 'indigo' && $settings['accent_color'] === 'neutral') || ($value === 'blue' && in_array($settings['accent_color'], ['azul_oscuro', 'rosa'], true))) ? 'checked' : '' }}>
+                                        <input type="radio" name="accent_color" value="{{ $value }}" {{ ($settings['accent_color'] === $value || ($value === 'indigo' && $settings['accent_color'] === 'neutral')) ? 'checked' : '' }}>
 
                                         <span class="accent-content">
                                             <span class="accent-dot" style="--accent-preview: {{ $accent['color'] }}"></span>
