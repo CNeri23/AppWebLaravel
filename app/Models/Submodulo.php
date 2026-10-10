@@ -22,6 +22,11 @@ class Submodulo extends Model
         'activo',
     ];
 
+    public function getIconoAttribute(?string $value): ?string
+    {
+        return IconoSeguro::sanitizar($value);
+    }
+
     protected function casts(): array
     {
         return [
