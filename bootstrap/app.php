@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->appendToGroup('web', [
             \App\Http\Middleware\EnforceSessionTimeout::class,
-            \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \App\Http\Middleware\DetectPasswordChange::class,
         ]);
 
     })

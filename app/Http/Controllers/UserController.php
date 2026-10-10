@@ -244,18 +244,10 @@ class UserController extends Controller
 
         $usuario->save();
 
-        // Al cambiar la contraseña desde Administración, cerrar las sesiones del usuario afectado.
-        // Si el administrador cambia su propia contraseña, conservar únicamente la sesión actual.
-        if (config('session.driver') === 'database') {
-            $sesiones = DB::connection(config('session.connection'))
-                ->table(config('session.table', 'sessions'))
-                ->where('user_id', $usuario->id);
-
-            if ((int) $request->user()->id === (int) $usuario->id) {
-                $sesiones->where('id', '!=', $request->session()->getId());
-            }
-
-            $sesiones->delete();
+        // Si el administrador cambia su propia contraseña, conservar esta sesión actual.
+        // Las otras sesiones detectarán el cambio y recibirán un aviso al cerrarse.
+        if ((int) $request->user()->id === (int) $usuario->id) {
+            $request->session()->put('password_hash_' . \Illuminate\Support\Facades\Auth::getDefaultDriver(), $usuario->getAuthPassword());
         }
 
         AuditLogService::log(

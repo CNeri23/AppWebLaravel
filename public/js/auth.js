@@ -20,6 +20,27 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 300);
     })();
 
+    (function avisarCambioPassword() {
+        const params = new URLSearchParams(window.location.search);
+
+        if (params.get('password_cambiada') !== '1') {
+            return;
+        }
+
+        params.delete('password_cambiada');
+        const resto = params.toString();
+        window.history.replaceState({}, '', window.location.pathname + (resto ? '?' + resto : '') + window.location.hash);
+
+        setTimeout(function () {
+            if (typeof window.showToast === 'function') {
+                window.showToast(
+                    'error',
+                    'Tu sesión se cerró porque tu contraseña fue cambiada. Contacta al Superadministrador o al Administrador para obtener acceso nuevamente. Si no solicitaste el cambio, informa de inmediato al administrador.'
+                );
+            }
+        }, 300);
+    })();
+
     (function avisarCuentaDesactivada() {
         const params = new URLSearchParams(window.location.search);
 
