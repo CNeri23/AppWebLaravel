@@ -1109,9 +1109,16 @@ html.theme-switching *::after {
     text-decoration: none;
 }
 
+.sidebar-group-toggle.active,
+.sidebar-group-toggle.active:hover {
+    background: var(--nav-active);
+    color: var(--nav-text-strong);
+    font-weight: 700;
+}
+
 .sidebar-link.active,
 .sidebar-link.active:hover {
-    background: var(--nav-hover);
+    background: var(--nav-active);
     color: var(--nav-text-strong);
     font-weight: 700;
 }
