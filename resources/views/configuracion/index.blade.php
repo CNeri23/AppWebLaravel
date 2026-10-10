@@ -98,9 +98,8 @@
                                         'orange' => ['name' => 'Naranja', 'color' => '#ff9500'],
                                         'purple' => ['name' => 'Morado', 'color' => '#af52de'],
                                         'red' => ['name' => 'Rojo', 'color' => '#ff3b30'],
-                                        'cyan' => ['name' => 'Cian', 'color' => '#32ade6'],
+                                        'rosa' => ['name' => 'Rosa', 'color' => '#d63384'],
                                         'indigo' => ['name' => 'Índigo', 'color' => '#5856d6'],
-                                        'petroleo' => ['name' => 'Petróleo', 'color' => '#0f766e'],
                                         'petroleo' => ['name' => 'Petróleo', 'color' => '#0f766e'],
                                     ];
                                 @endphp

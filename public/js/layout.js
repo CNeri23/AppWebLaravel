@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
             orange: 'orange',
             purple: 'purple',
             red: 'red',
-            cyan: 'cyan',
+            rosa: 'rosa',
             indigo: 'indigo',
             petroleo: 'petroleo',
         };

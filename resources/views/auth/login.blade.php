@@ -37,7 +37,7 @@
         'orange',
         'purple',
         'red',
-        'cyan',
+        'rosa',
         'indigo',
         'petroleo',
     ], true)) {
