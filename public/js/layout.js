@@ -520,19 +520,49 @@ document.addEventListener('DOMContentLoaded', function () {
         animarSwitchTema(siguiente);
 
         if (reducirMovimiento) {
-            await guardarYAplicar(siguiente);
-            cambiandoTema = false;
+            try {
+                await guardarYAplicar(siguiente);
+            } finally {
+                cambiandoTema = false;
+            }
             return;
         }
 
-        // Transición CSS real de colores: no captura la página ni mueve el contenido.
-        html.classList.add('theme-switching');
+        const puedeRevelar = typeof document.startViewTransition === 'function';
+        let guardado;
 
         try {
-            await guardarYAplicar(siguiente);
-            await new Promise(resolve => setTimeout(resolve, 210));
+            if (puedeRevelar && themeSwitch) {
+                const rect = themeSwitch.getBoundingClientRect();
+                html.style.setProperty('--theme-origin-x', `${rect.left + rect.width / 2}px`);
+                html.style.setProperty('--theme-origin-y', `${rect.top + rect.height / 2}px`);
+
+                // La nueva apariencia se expande desde el botón; el contenido no se desliza.
+                const transicion = document.startViewTransition(() => {
+                    guardado = guardarYAplicar(siguiente);
+                });
+
+                await transicion.ready;
+                await transicion.finished;
+                if (guardado) {
+                    await guardado;
+                }
+            } else {
+                html.classList.add('theme-switching');
+                await guardarYAplicar(siguiente);
+                await new Promise(resolve => setTimeout(resolve, 210));
+            }
+        } catch (error) {
+            // Algunos navegadores pueden cancelar una transición si cambia el documento.
+            if (guardado) {
+                await guardado;
+            } else if (!puedeRevelar) {
+                await guardarYAplicar(siguiente);
+            }
         } finally {
             html.classList.remove('theme-switching');
+            html.style.removeProperty('--theme-origin-x');
+            html.style.removeProperty('--theme-origin-y');
             cambiandoTema = false;
         }
     }
