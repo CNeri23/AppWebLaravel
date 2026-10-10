@@ -32,6 +32,8 @@
     <script>
         window.accionesRoles = @json($accionesRolesJs);
         window.rolesDelUsuario = @json($rolesDelUsuario);
+        window.esSuperadministrador = @json($esSuperadministrador);
+        window.rolSuperadministradorId = @json($rolSuperadministradorId);
     </script>
 
     <div class="card border-0 shadow-sm">
@@ -89,7 +91,7 @@
                                                     @break
 
                                                 @case('roles.permisos')
-                                                    @if (!$rolesDelUsuario->contains((int) $rol->id))
+                                                    @if (!$rolesDelUsuario->contains((int) $rol->id) || ($esSuperadministrador && !$rol->is_superadmin))
                                                     <button
                                                         type="button"
                                                         class="btn btn-sm btn-outline-success rol-action-btn"
