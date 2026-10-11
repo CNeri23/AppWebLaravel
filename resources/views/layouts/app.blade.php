@@ -75,6 +75,7 @@
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
     <link rel="stylesheet" href="{{ asset('css/toast.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/modals.css') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 

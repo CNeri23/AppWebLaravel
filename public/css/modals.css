@@ -1,0 +1,148 @@
+html[data-bs-theme] .modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow:
+        0 24px 48px -16px rgba(15, 23, 42, 0.35),
+        0 4px 12px rgba(15, 23, 42, 0.1);
+}
+
+html[data-bs-theme="dark"] .modal-content {
+    box-shadow:
+        0 28px 56px -16px rgba(0, 0, 0, 0.7),
+        0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+html[data-bs-theme] .modal-content .modal-header {
+    align-items: center;
+    padding: 14px 20px;
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.14);
+}
+
+html[data-bs-theme] .modal-content .modal-header .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+}
+
+html[data-bs-theme] .modal-content .modal-header .modal-title > i:first-child {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    margin: 0 !important;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.16);
+    font-size: 14px;
+}
+
+html[data-bs-theme] .modal-content .modal-header .btn-close {
+    width: 30px;
+    height: 30px;
+    margin: 0 -4px 0 auto;
+    padding: 0;
+    border-radius: 7px;
+    background-size: 11px;
+    transition:
+        background-color 0.16s ease,
+        opacity 0.16s ease;
+}
+
+html[data-bs-theme] .modal-content .modal-header .btn-close:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+html[data-bs-theme] .modal-content .modal-body {
+    padding: 20px 22px 8px;
+}
+
+html[data-bs-theme] .modal-content .form-label {
+    margin-bottom: 6px;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+html[data-bs-theme] .modal-content .form-control,
+html[data-bs-theme] .modal-content .form-select {
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+}
+
+html[data-bs-theme] .modal-content .modal-footer {
+    gap: 8px;
+    padding: 12px 20px 16px;
+    background: transparent;
+}
+
+html[data-bs-theme] .modal-content .modal-footer > * {
+    margin: 0;
+}
+
+html[data-bs-theme] .modal-content .modal-footer .btn {
+    min-width: 96px;
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    transition:
+        background-color 0.16s ease,
+        border-color 0.16s ease,
+        color 0.16s ease,
+        filter 0.16s ease;
+}
+
+html[data-bs-theme] .modal-content .modal-footer .btn-secondary,
+html[data-bs-theme] .modal-content .modal-footer .btn-light,
+html[data-bs-theme] .modal-content .modal-footer .btn-outline-secondary {
+    border: 1px solid var(--modal-line);
+    background: transparent;
+    color: var(--text-muted);
+}
+
+html[data-bs-theme] .modal-content .modal-footer .btn-secondary:hover,
+html[data-bs-theme] .modal-content .modal-footer .btn-light:hover,
+html[data-bs-theme] .modal-content .modal-footer .btn-outline-secondary:hover {
+    border-color: var(--modal-line);
+    background: var(--hover-bg);
+    color: var(--text-strong);
+}
+
+html[data-bs-theme] .modal-content .modal-footer .btn-primary:hover,
+html[data-bs-theme] .modal-content .modal-footer .btn-success:hover,
+html[data-bs-theme] .modal-content .modal-footer .btn-info:hover,
+html[data-bs-theme] .modal-content .modal-footer .btn-warning:hover,
+html[data-bs-theme] .modal-content .modal-footer .btn-danger:hover,
+html[data-bs-theme] .modal-content .modal-footer .btn-guardar:hover,
+html[data-bs-theme] .modal-content .modal-footer .btn-save:hover {
+    filter: brightness(1.08);
+}
+
+.modal.fade .modal-dialog {
+    transform: translateY(12px) scale(0.98);
+    transition:
+        transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1),
+        opacity 0.25s ease;
+}
+
+.modal.show:not(.modal-static) .modal-dialog {
+    transform: none;
+}
+
+.modal.modal-static .modal-dialog {
+    transform: scale(1.02);
+}
+
+.modal-backdrop {
+    --bs-backdrop-bg: #020617;
+}
+
+.modal-backdrop.show {
+    --bs-backdrop-opacity: 0.55;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
