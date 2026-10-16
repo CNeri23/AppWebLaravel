@@ -239,7 +239,6 @@
                             <div class="invalid-feedback" id="email-error"></div>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="modal-footer">
@@ -275,9 +274,7 @@
                 @method('PUT')
 
                 <div class="modal-body">
-
                     <input type="hidden" id="editar_id" name="id">
-
                     <h6 class="fw-semibold mb-3"><i class="fa-solid fa-right-to-bracket me-2"></i>Acceso</h6>
 
                     <div class="mb-3">
@@ -327,7 +324,6 @@
                             <div class="invalid-feedback" id="editar-email-error"></div>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="modal-footer">
@@ -363,7 +359,6 @@
                 @method('PUT')
 
                 <div class="modal-body">
-
                     <input type="hidden" id="roles_usuario_id" name="id">
 
                     <div class="mb-3">
@@ -383,7 +378,6 @@
                         </label>
 
                         <div class="border rounded p-3">
-
                             @foreach ($roles as $rol)
                             <div class="form-check">
                                 <input class="form-check-input rol-usuario-checkbox" type="checkbox" name="roles[]"
@@ -402,7 +396,6 @@
                                 </label>
                             </div>
                             @endforeach
-
                         </div>
                     </div>
                     @else
@@ -446,9 +439,7 @@
                 @method('DELETE')
 
                 <input type="hidden" id="eliminar_id" name="id">
-
                 <div class="modal-body text-center">
-
                     <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center"
                         style="width: 58px; height: 58px;">
                         <i class="fa-solid fa-trash fa-lg"></i>
@@ -463,7 +454,6 @@
                         </strong>.
                         Esta acción no se puede deshacer.
                     </p>
-
                 </div>
 
                 <div class="modal-footer justify-content-center">
