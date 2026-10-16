@@ -469,7 +469,6 @@ body {
     color: var(--text-strong);
 }
 
-/* Hamburguesa que se transforma en flecha > (colapsado) o < (abierto en móvil) */
 .sidebar-toggle-icon {
     --tg-ease: cubic-bezier(0.3, 1.25, 0.5, 1);
     position: relative;
@@ -920,7 +919,6 @@ html[data-bs-theme] .dropdown-menu {
     color: var(--nav-text-strong);
 }
 
-/* Perilla con el color de acento del sistema */
 .theme-switch-thumb {
     position: absolute;
     z-index: 1;
@@ -972,8 +970,6 @@ html[data-bs-theme] .dropdown-menu {
     width: 34px;
 }
 
-/* Estado oscuro: layout.js agrega is-dark / is-light para mover la perilla
-   un instante antes de que cambie el tema de toda la página. */
 html[data-bs-theme="dark"] .theme-switch:not(.is-light) .theme-switch-thumb,
 .theme-switch.is-dark .theme-switch-thumb {
     transform: translateX(28px);
@@ -996,7 +992,6 @@ html[data-bs-theme="dark"] .theme-switch:not(.is-light) .theme-switch-moon,
     transform: rotate(0deg) scale(1);
 }
 
-/* Transición cinematográfica: la nueva interfaz se despliega en 3D con un pulso de luz. */
 ::view-transition-group(root) {
     perspective: 1200px;
     transform-style: preserve-3d;
@@ -1071,7 +1066,6 @@ html[data-bs-theme="dark"] .theme-switch:not(.is-light) .theme-switch-moon,
     }
 }
 
-/* El modo claro invierte el giro para que el cambio se sienta bidireccional. */
 html[data-theme-transition-direction="light"]::view-transition-old(root) {
     animation-name: theme-screen-out-reverse;
 }
@@ -1139,7 +1133,6 @@ html[data-theme-transition-direction="light"]::view-transition-new(root) {
     }
 }
 
-/* Alternativa para navegadores sin View Transitions. */
 html.theme-switching *,
 html.theme-switching *::before,
 html.theme-switching *::after {
@@ -1958,7 +1951,6 @@ html[data-bs-theme] .modal-content .form-select:focus {
     }
 }
 
-/* El color de acento se aplica a los controles principales de toda la aplicación. */
 html[data-bs-theme] {
     --color-primary: var(--gym);
     --color-primary-dark: var(--gym-strong);
@@ -1966,7 +1958,6 @@ html[data-bs-theme] {
     --gym-fill: var(--gym);
 }
 
-/* Botones principales y destructivos de la aplicación. Los botones de acción de tablas se definen en el CSS de cada módulo. */
 html[data-bs-theme] .btn-primary,
 html[data-bs-theme] .btn-success,
 html[data-bs-theme] .btn-info,
@@ -1995,7 +1986,6 @@ html[data-bs-theme] .btn-save:hover {
     color: var(--on-gym, #ffffff);
 }
 
-/* La acción de eliminar mantiene siempre su tratamiento de peligro. */
 html[data-bs-theme] .btn-danger,
 html[data-bs-theme] .btn-danger:hover {
     border-color: var(--danger-fill);
@@ -2007,11 +1997,6 @@ html[data-bs-theme] .modal {
     --modal-head-bg: var(--gym);
 }
 
-/* ==========================================================================
-   Mejoras visuales de sidebar y topbar
-   ========================================================================== */
-
-/* Topbar: sombra sutil al hacer scroll */
 .app-topbar.scrolled {
     box-shadow: 0 2px 10px rgba(15, 26, 29, 0.08);
 }
@@ -2020,7 +2005,6 @@ html[data-bs-theme="dark"] .app-topbar.scrolled {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
 }
 
-/* Topbar: foco por teclado */
 .topbar-icon-btn:focus-visible,
 .sidebar-toggle-btn:focus-visible,
 .user-dropdown .dropdown-toggle:focus-visible {
@@ -2028,7 +2012,6 @@ html[data-bs-theme="dark"] .app-topbar.scrolled {
     outline-offset: 2px;
 }
 
-/* Sidebar: el módulo padre ya no compite con el submódulo activo */
 .sidebar-group-toggle.active,
 .sidebar-group-toggle.active:hover {
     background: transparent;
@@ -2050,7 +2033,6 @@ html[data-bs-theme="dark"] .app-topbar.scrolled {
     color: var(--on-gym);
 }
 
-/* Sidebar: jerarquía de submódulos más ligera */
 .sidebar-sublink {
     font-size: 13.5px;
     font-weight: 500;
@@ -2078,12 +2060,10 @@ html[data-bs-theme="dark"] .app-topbar.scrolled {
     color: var(--on-gym);
 }
 
-/* Sidebar: marcas de sección más sutiles */
 .sidebar-section::after {
     opacity: 0.6;
 }
 
-/* Sidebar colapsado: el módulo con submódulo activo sí necesita fondo */
 @media (min-width: 992px) {
     .app-sidebar.collapsed .sidebar-group-toggle.active {
         background: var(--nav-active);
@@ -2100,7 +2080,6 @@ html[data-bs-theme="dark"] .app-topbar.scrolled {
     }
 }
 
-/* Tooltip flotante del sidebar colapsado (lo posiciona layout.js) */
 .sidebar-tooltip {
     position: fixed;
     z-index: 2000;
@@ -2124,7 +2103,6 @@ html[data-bs-theme="dark"] .app-topbar.scrolled {
     transform: none;
 }
 
-/* Divisor único entre notificaciones y avatar */
 .topbar-divider {
     width: 1px;
     height: 23px;
