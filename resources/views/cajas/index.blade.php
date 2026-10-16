@@ -60,13 +60,11 @@
                                 {{ $caja->nombre }}
                             </div>
                         </td>
-
                         <td>
                             <span class="text-secondary">
                                 {{ $caja->descripcion ?: 'Sin descripción' }}
                             </span>
                         </td>
-
                         <td>
                             @if ($caja->activo)
                                 <span class="badge text-bg-success">
@@ -78,7 +76,6 @@
                                 </span>
                             @endif
                         </td>
-
                         <td>
                             @if ($sesionAbierta)
                                 <span class="badge text-bg-primary">
@@ -90,7 +87,6 @@
                                 </span>
                             @endif
                         </td>
-
                         <td>
                             @if ($sesionAbierta && $sesionAbierta->usuarioApertura)
                                 {{ $sesionAbierta->usuarioApertura->name }}
@@ -100,7 +96,6 @@
                                 </span>
                             @endif
                         </td>
-
                         <td class="text-center px-4">
                             <div class="caja-actions">
                                 @foreach ($accionesCajas as $accion)
@@ -162,10 +157,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
-            <form method="POST" id="formNuevaCaja" action="{{ route('cajas.store') }}" novalidate
-                autocomplete="off">
+            <form method="POST" id="formNuevaCaja" action="{{ route('cajas.store') }}" novalidate autocomplete="off">
                 @csrf
-
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="nombre" class="form-label">
@@ -259,7 +252,6 @@
 <div class="modal fade" id="modalEstadoCaja" tabindex="-1" aria-labelledby="modalEstadoCajaLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="modalEstadoCajaLabel">
                     <i class="fa-solid fa-toggle-on me-2"></i>
@@ -272,7 +264,6 @@
             <form method="POST" id="formEstadoCaja" novalidate>
                 @csrf
                 @method('PATCH')
-
                 <input type="hidden" id="estado_caja_id" name="id">
 
                 <div class="modal-body text-center">
@@ -289,7 +280,6 @@
                         <strong id="estado_caja_nombre"> esta caja </strong>
                         cambiará de estado.
                     </p>
-
                 </div>
 
                 <div class="modal-footer justify-content-center">

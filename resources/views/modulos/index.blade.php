@@ -56,7 +56,6 @@
                                     aria-label="Más acciones para {{ $modulo->nombre }}">
 
                                     <i class="fa-solid fa-ellipsis-vertical"></i>
-
                                 </button>
                             @endif
                         </div>

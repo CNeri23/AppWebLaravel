@@ -1,50 +1,50 @@
 @php
-    $systemSettings = app(\App\Services\SystemSettings::class)->all();
-    $themeMode = 'light';
-    $lightThemeStyle = 'white';
-    $darkThemeStyle = 'graphite';
-    $accentColor = $systemSettings['accent_color'] ?? 'orange';
-    $systemName = $systemSettings['system_name'] ?? 'IronPulse';
-    $registroHabilitado = $registroHabilitado ?? (bool) ($systemSettings['registration_enabled'] ?? true);
-    $passwordMinimo = $passwordMinimo ?? (int) ($systemSettings['password_min_length'] ?? 8);
-    $passwordComplejo = $passwordComplejo ?? (bool) ($systemSettings['password_complexity'] ?? false);
-    $passwordDescripcion = $passwordDescripcion ?? ('Mínimo ' . $passwordMinimo . ' caracteres' . ($passwordComplejo ? ', con mayúsculas, minúsculas y números' : '') . '.');
+$systemSettings = app(\App\Services\SystemSettings::class)->all();
+$themeMode = 'light';
+$lightThemeStyle = 'white';
+$darkThemeStyle = 'graphite';
+$accentColor = $systemSettings['accent_color'] ?? 'orange';
+$systemName = $systemSettings['system_name'] ?? 'IronPulse';
+$registroHabilitado = $registroHabilitado ?? (bool) ($systemSettings['registration_enabled'] ?? true);
+$passwordMinimo = $passwordMinimo ?? (int) ($systemSettings['password_min_length'] ?? 8);
+$passwordComplejo = $passwordComplejo ?? (bool) ($systemSettings['password_complexity'] ?? false);
+$passwordDescripcion = $passwordDescripcion ?? ('Mínimo ' . $passwordMinimo . ' caracteres' . ($passwordComplejo ? ', con mayúsculas, minúsculas y números' : '') . '.');
 
-    $themeStyles = [
-        'white',
-        'mist',
-        'sky',
-        'graphite',
-        'charcoal',
-        'black',
-    ];
+$themeStyles = [
+'white',
+'mist',
+'sky',
+'graphite',
+'charcoal',
+'black',
+];
 
-    if (!in_array($lightThemeStyle, ['white', 'mist', 'sky'])) {
-        $lightThemeStyle = 'white';
-    }
+if (!in_array($lightThemeStyle, ['white', 'mist', 'sky'])) {
+$lightThemeStyle = 'white';
+}
 
-    if (!in_array($darkThemeStyle, ['graphite', 'charcoal', 'black'])) {
-        $darkThemeStyle = 'graphite';
-    }
+if (!in_array($darkThemeStyle, ['graphite', 'charcoal', 'black'])) {
+$darkThemeStyle = 'graphite';
+}
 
-    if ($accentColor === 'neutral') {
-        $accentColor = 'indigo';
-    } elseif ($accentColor === 'rosa') {
-        $accentColor = 'azul_oscuro';
-    }
+if ($accentColor === 'neutral') {
+$accentColor = 'indigo';
+} elseif ($accentColor === 'rosa') {
+$accentColor = 'azul_oscuro';
+}
 
-    if (!in_array($accentColor, [
-        'blue',
-        'green',
-        'orange',
-        'purple',
-        'red',
-        'azul_oscuro',
-        'indigo',
-        'petroleo',
-    ], true)) {
-        $accentColor = 'orange';
-    }
+if (!in_array($accentColor, [
+'blue',
+'green',
+'orange',
+'purple',
+'red',
+'azul_oscuro',
+'indigo',
+'petroleo',
+], true)) {
+$accentColor = 'orange';
+}
 @endphp
 
 <!DOCTYPE html>
@@ -57,8 +57,7 @@
     data-theme-style="{{ $themeMode === 'dark' ? $darkThemeStyle : $lightThemeStyle }}"
     data-accent-color="{{ $accentColor }}"
     data-system-name="{{ $systemName }}"
-    data-theme-guest="true"
->
+    data-theme-guest="true">
 
 <head>
     <meta charset="UTF-8">
@@ -83,8 +82,7 @@
     <div class="login-page">
         <div class="login-form-side">
             <div class="login-form-wrap">
-                <div class="auth-form-stage" id="authFormStage" data-initial-panel="{{ $authPanel ?? 'login' }}"
-                    data-registration-enabled="{{ $registroHabilitado ? '1' : '0' }}"
+                <div class="auth-form-stage" id="authFormStage" data-initial-panel="{{ $authPanel ?? 'login' }}" data-registration-enabled="{{ $registroHabilitado ? '1' : '0' }}"
                     data-password-min="{{ $passwordMinimo }}"
                     data-password-complex="{{ $passwordComplejo ? '1' : '0' }}">
                     <div class="auth-panel auth-panel-login" data-panel="login">
@@ -229,6 +227,7 @@
 
                                     <div class="invalid-feedback d-block" id="register-apellido-paterno-error"></div>
                                 </div>
+
                                 <div class="col-12 col-sm-6 mb-3">
                                     <label for="registerApellidoMaterno" class="form-label">
                                         Apellido materno (opc.)
@@ -290,9 +289,7 @@
 
                                     <input type="password" class="form-control" id="registerPassword" name="password" required placeholder="Ingresa tu contraseña">
 
-                                    <button class="input-group-text toggle-password" type="button"
-                                        data-password-target="registerPassword" tabindex="-1"
-                                        aria-label="Mostrar contraseña">
+                                    <button class="input-group-text toggle-password" type="button" data-password-target="registerPassword" tabindex="-1" aria-label="Mostrar contraseña">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
                                 </div>
@@ -314,9 +311,7 @@
 
                                     <input type="password" class="form-control" id="registerPasswordConfirmation" name="password_confirmation" required placeholder="Confirma tu contraseña">
 
-                                    <button class="input-group-text toggle-password" type="button"
-                                        data-password-target="registerPasswordConfirmation" tabindex="-1"
-                                        aria-label="Mostrar contraseña">
+                                    <button class="input-group-text toggle-password" type="button" data-password-target="registerPasswordConfirmation" tabindex="-1" aria-label="Mostrar contraseña">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
                                 </div>
@@ -345,7 +340,6 @@
                     @endif
 
                     <div class="auth-panel auth-panel-forgot" data-panel="forgot">
-
                         <h1 class="login-title text-center">
                             Recuperar contraseña
                         </h1>
@@ -392,7 +386,6 @@
                     </div>
 
                     <div class="auth-panel auth-panel-reset" data-panel="reset">
-
                         <h1 class="login-title text-center">
                             Restablecer contraseña
                         </h1>
@@ -403,7 +396,6 @@
 
                         <form method="POST" action="{{ route('password.update') }}" id="formResetPassword" novalidate>
                             @csrf
-
                             <input type="hidden" name="token" id="resetToken" value="{{ $token ?? '' }}">
 
                             <div class="mb-3">

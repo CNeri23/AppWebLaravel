@@ -25,7 +25,7 @@
                     </button>
                 </div>
 
-                <div class="grow flex-grow-1 text-center text-lg-start">
+                <div class="grow text-center text-lg-start">
                     <span class="profile-eyebrow">
                         <i class="fa-solid fa-id-card me-2"></i>
                         Mi cuenta

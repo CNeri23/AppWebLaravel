@@ -22,8 +22,7 @@
 
     @foreach ($accionesDirecciones as $accion)
         @if ($accion->slug === 'direcciones.crear')
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevaDireccion"
-                title="{{ $accion->nombre }}">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevaDireccion" title="{{ $accion->nombre }}">
                 {!! $accion->icono ?: '<i class="fa-solid fa-location-dot me-2"></i>' !!}
                 {{ $accion->nombre }}
             </button>
@@ -117,20 +116,20 @@
                                     title="{{ $direccion->personas_count > 0 ? 'Dirección asignada' : $accion->nombre }}"
                                     data-bs-toggle="modal" data-bs-target="#modalEliminarDireccion"
                                     data-id="{{ $direccion->id }}" data-name="
-                                {{ trim(
-                                    $direccion->calle . ' ' .
-                                    $direccion->numero_exterior .
-                                    ($direccion->numero_interior
-                                        ? ' Int. ' . $direccion->numero_interior
-                                        : '') .
-                                    ', ' .
-                                    $direccion->colonia
-                                ) }}" data-personas-count="{{ $direccion->personas_count }}"
-                                    data-url="{{ route('direcciones.destroy', $direccion) }}"
-                                    @if ($direccion->personas_count > 0)
-                                    disabled
-                                    @endif>
-                                    {!! $accion->icono ?: '<i class="fa-solid fa-trash"></i>' !!}
+                                    {{ trim(
+                                        $direccion->calle . ' ' .
+                                        $direccion->numero_exterior .
+                                        ($direccion->numero_interior
+                                            ? ' Int. ' . $direccion->numero_interior
+                                            : '') .
+                                        ', ' .
+                                        $direccion->colonia
+                                    ) }}" data-personas-count="{{ $direccion->personas_count }}"
+                                        data-url="{{ route('direcciones.destroy', $direccion) }}"
+                                        @if ($direccion->personas_count > 0)
+                                        disabled
+                                        @endif>
+                                        {!! $accion->icono ?: '<i class="fa-solid fa-trash"></i>' !!}
                                 </button>
                                 @endif
                                 @endforeach
@@ -159,11 +158,8 @@
 
             <form method="POST" id="formNuevaDireccion" action="{{ route('direcciones.store') }}" novalidate autocomplete="off">
                 @csrf
-
                 <div class="modal-body">
-
                     <div class="row g-3">
-
                         <div class="col-md-8">
                             <label for="calle" class="form-label">
                                 Calle
@@ -263,12 +259,9 @@
                 @method('PUT')
 
                 <div class="modal-body">
-
                     <input type="hidden" id="editar_id" name="id">
 
-
                     <div class="row g-3">
-
                         <div class="col-md-8">
                             <label for="editar_calle" class="form-label">
                                 Calle
@@ -351,7 +344,6 @@
 </div>
 
 {{-- MODAL ELIMINAR DIRECCIÓN --}}
-
 <div class="modal fade" id="modalEliminarDireccion" tabindex="-1" aria-labelledby="modalEliminarDireccionLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">

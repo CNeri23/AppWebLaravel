@@ -64,31 +64,26 @@
                                 {{ $plan->nombre }}
                             </span>
                         </td>
-
                         <td>
                             <span class="text-secondary plan-descripcion">
                                 {{ $plan->descripcion ?: 'Sin descripción' }}
                             </span>
                         </td>
-
                         <td>
                             <span class="plan-duracion">
                                 {{ $plan->duracion_dias }} {{ $plan->duracion_dias === 1 ? 'día' : 'días' }}
                             </span>
                         </td>
-
                         <td>
                             <span class="fw-semibold plan-precio">
                                 {{ $moneda['simbolo'] }}{{ number_format((float) $plan->precio * $moneda['tasa'], 2) }}
                             </span>
                         </td>
-
                         <td class="text-center">
                             <span class="plan-estado-text {{ $plan->activo ? 'activo' : 'inactivo' }}">
                                 {{ $plan->activo ? 'Activo' : 'Inactivo' }}
                             </span>
                         </td>
-
                         <td>
                             <div class="plan-actions">
                                 @foreach ($accionesPlanes as $accion)
