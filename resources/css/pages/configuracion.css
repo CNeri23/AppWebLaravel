@@ -602,19 +602,10 @@
     background: var(--surface) !important;
 }
 
+/* Conserva el diseño original del input de búsqueda, adaptando solo sus colores. */
 .ss-content .ss-search input {
-    border: 1px solid var(--flat-line) !important;
-    border-radius: 7px !important;
     background: var(--field-bg) !important;
     color: var(--text-main) !important;
-    font-family: inherit !important;
-    font-size: 12px !important;
-}
-
-.ss-content .ss-search input:focus {
-    border-color: var(--gym) !important;
-    box-shadow: none !important;
-    outline: none !important;
 }
 
 .ss-content .ss-list {
