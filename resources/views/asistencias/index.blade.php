@@ -11,10 +11,12 @@ $iconoAnular = optional($accionesAsistencias->firstWhere('slug', 'asistencias.el
 
 <div id="asistenciasApp" data-url-buscar="{{ route('asistencias.buscar') }}" data-url-registrar="{{ route('asistencias.store') }}" data-incluye-hoy="{{ $incluyeHoy ? 1 : 0 }}" data-puede-anular="{{ $puedeAnular ? 1 : 0 }}" data-icono-anular="{{ $iconoAnular }}">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="fw-bold mb-1">Asistencias</h1>
-            <p class="text-secondary mb-0">Registro de entradas de los miembros al gimnasio.</p>
+    <div class="card border-0 shadow-sm mb-4 planes-header-card">
+        <div class="card-body planes-header-content">
+            <div class="planes-header-text">
+                <h1 class="fw-bold mb-1">Asistencias</h1>
+                <p class="text-secondary mb-0">Registro de entradas de los miembros al gimnasio.</p>
+            </div>
         </div>
     </div>
 
