@@ -394,41 +394,46 @@
 
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn {
-    border-color: rgba(var(--ua), 0.62);
-    color: rgb(var(--ua));
-    background: rgba(var(--ua), 0.27);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035), 0 2px 5px rgba(0, 0, 0, 0.16);
+    border-color: rgb(var(--ua));
+    color: #ffffff;
+    background: rgb(var(--ua));
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-primary,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
-    --ua: 119, 169, 245;
+    --ua: 96, 156, 245;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-success,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-user-shield, .fa-user-check, .fa-arrows-rotate) {
-    --ua: 93, 204, 132;
+    --ua: 74, 186, 120;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-danger,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
-    --ua: 242, 121, 121;
+    --ua: 238, 105, 112;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-warning,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-key) {
-    --ua: 242, 183, 78;
+    --ua: 232, 168, 62;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-info,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-eye) {
-    --ua: 75, 194, 215;
+    --ua: 72, 182, 208;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:hover {
     color: #ffffff;
-    background: rgb(var(--ua));
-    border-color: rgb(var(--ua));
+    background: color-mix(in srgb, rgb(var(--ua)) 86%, #ffffff);
+    border-color: color-mix(in srgb, rgb(var(--ua)) 86%, #ffffff);
+    box-shadow: 0 4px 10px -6px rgba(0, 0, 0, 0.55);
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:hover::before {
+    opacity: 0;
 }
 
 #tablaUsuarios .btn.usuario-action-btn:hover {
@@ -564,4 +569,34 @@
     #tablaUsuarios .usuario-actions [data-tooltip]::after {
         display: none;
     }
+}
+
+/* Acciones: solo ícono en reposo; en hover se rellena con azul suave (como el menú del treeview). */
+#tablaUsuarios .btn.usuario-action-btn,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn {
+    border-color: transparent;
+    background: transparent;
+    color: rgb(var(--ua));
+    box-shadow: none;
+}
+
+#tablaUsuarios .btn.usuario-action-btn:hover,
+#tablaUsuarios .btn.usuario-action-btn:focus-visible {
+    border-color: transparent;
+    background: rgba(var(--ua), 0.13);
+    color: rgb(var(--ua));
+    box-shadow: none;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:hover,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:focus-visible {
+    border-color: transparent;
+    background: rgba(var(--ua), 0.2);
+    color: color-mix(in srgb, rgb(var(--ua)) 80%, #ffffff);
+    box-shadow: none;
+}
+
+#tablaUsuarios .btn.usuario-action-btn:hover::before,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:hover::before {
+    opacity: 0;
 }
