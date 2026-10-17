@@ -3,19 +3,21 @@ namespace App\Http\Controllers;
 use App\Models\Modulo;
 use App\Models\Submodulo;
 use App\Services\AuditLogService;
+use App\Services\TreeOrderService;
 use Illuminate\Http\Request;
 class SubmoduloController extends Controller
 {
     public function store(Request $request, Modulo $modulo)
     {
-        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:submodulos,slug'], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'], 'ruta' => ['nullable', 'string', 'max:150'], 'orden' => ['required', 'integer', 'min:0'],]);
+        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:submodulos,slug'], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'], 'ruta' => ['nullable', 'string', 'max:150'],]);
+        $datos['orden'] = TreeOrderService::next(Submodulo::class, 'modulo_id', $modulo->id);
         $submodulo = $modulo->submodulos()->create($datos);
         AuditLogService::log('SUBMODULOS', 'CREAR_SUBMODULO', 'Se creó el submódulo "' . $submodulo->nombre . '" en el módulo "' . $modulo->nombre . '".', $submodulo);
         return response()->json(['success' => true, 'mensaje' => 'Submódulo creado correctamente.', 'submodulo' => $submodulo,]);
     }
     public function update(Request $request, Submodulo $submodulo)
     {
-        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:submodulos,slug,' . $submodulo->id,], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'], 'ruta' => ['nullable', 'string', 'max:150'], 'orden' => ['required', 'integer', 'min:0'],]);
+        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:submodulos,slug,' . $submodulo->id,], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'], 'ruta' => ['nullable', 'string', 'max:150'],]);
         $cambios = [];
         foreach ($datos as $campo => $valorNuevo) {
             $valorAnterior = $submodulo->getOriginal($campo);
@@ -42,6 +44,9 @@ class SubmoduloController extends Controller
     public function reorder(Request $request, Submodulo $submodulo)
     {
         $datos = $request->validate(['direccion' => ['required', 'in:arriba,abajo'],]);
+        TreeOrderService::normalize(Submodulo::class, 'modulo_id', $submodulo->modulo_id);
+        $submodulo->refresh();
+
         $vecino = $datos['direccion'] === 'arriba' ? Submodulo::where('modulo_id', $submodulo->modulo_id)->where('orden', '<', $submodulo->orden)->orderByDesc('orden')->orderByDesc('id')->first() : Submodulo::where('modulo_id', $submodulo->modulo_id)->where('orden', '>', $submodulo->orden)->orderBy('orden')->orderBy('id')->first();
         if (!$vecino) {
             return response()->json(['success' => false, 'mensaje' => 'El submódulo ya está en ese extremo de la lista.',], 422);
@@ -53,6 +58,7 @@ class SubmoduloController extends Controller
         }
         $submodulo->update(['orden' => $ordenVecino,]);
         $vecino->update(['orden' => $ordenActual,]);
+        TreeOrderService::normalize(Submodulo::class, 'modulo_id', $submodulo->modulo_id);
         $moduloNombre = $submodulo->modulo?->nombre ?? 'Sin módulo';
         AuditLogService::log('SUBMODULOS', 'REORDENAR_SUBMODULO', 'Se movió el submódulo "' . $submodulo->nombre . '" ' . $datos['direccion'] . ' dentro del módulo "' . $moduloNombre . '".', $submodulo);
         return response()->json(['success' => true, 'mensaje' => 'Orden actualizado correctamente.',]);
@@ -62,7 +68,9 @@ class SubmoduloController extends Controller
         $moduloNombre = $submodulo->modulo?->nombre ?? 'Sin módulo';
         $submoduloNombre = $submodulo->nombre;
         AuditLogService::log('SUBMODULOS', 'ELIMINAR_SUBMODULO', 'Se eliminó el submódulo "' . $submoduloNombre . '" del módulo "' . $moduloNombre . '".', $submodulo);
+        $moduloId = $submodulo->modulo_id;
         $submodulo->delete();
+        TreeOrderService::normalize(Submodulo::class, 'modulo_id', $moduloId);
         return response()->json(['success' => true, 'mensaje' => 'Submódulo eliminado correctamente.',]);
     }
 }
