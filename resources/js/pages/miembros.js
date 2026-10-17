@@ -51,6 +51,97 @@ document.addEventListener('DOMContentLoaded', function () {
         window.showToast('error', error.message);
     }
 
+
+    function configurarValidacionMiembro(formulario, reglas) {
+        const campos = Object.keys(reglas).map(function (id) {
+            return document.getElementById(id);
+        }).filter(Boolean);
+
+        function validarCampo(campo) {
+            const regla = reglas[campo.id];
+            const valor = campo.value.trim();
+            let mensaje = '';
+
+            if (regla.required && !valor) {
+                mensaje = regla.required;
+            } else if (valor && regla.validate) {
+                mensaje = regla.validate(valor) || '';
+            }
+
+            let feedback = document.getElementById(campo.id + '-error');
+
+            if (!feedback) {
+                feedback = document.createElement('div');
+                feedback.id = campo.id + '-error';
+                feedback.className = 'invalid-feedback';
+                campo.insertAdjacentElement('afterend', feedback);
+            }
+
+            campo.classList.toggle('is-invalid', Boolean(mensaje));
+            campo.classList.toggle('is-valid', !mensaje && Boolean(valor));
+            campo.setAttribute('aria-invalid', mensaje ? 'true' : 'false');
+            feedback.textContent = mensaje;
+            feedback.classList.toggle('d-block', Boolean(mensaje));
+            return !mensaje;
+        }
+
+        function validar() {
+            let valido = true;
+            let primero = null;
+
+            campos.forEach(function (campo) {
+                if (!validarCampo(campo)) {
+                    valido = false;
+                    if (!primero) primero = campo;
+                }
+            });
+
+            if (primero) primero.focus();
+            return valido;
+        }
+
+        function limpiar() {
+            campos.forEach(function (campo) {
+                campo.classList.remove('is-invalid', 'is-valid');
+                campo.removeAttribute('aria-invalid');
+                const feedback = document.getElementById(campo.id + '-error');
+                if (feedback) {
+                    feedback.textContent = '';
+                    feedback.classList.remove('d-block');
+                }
+            });
+        }
+
+        campos.forEach(function (campo) {
+            campo.addEventListener('input', function () { validarCampo(campo); });
+            campo.addEventListener('change', function () { validarCampo(campo); });
+        });
+
+        formulario.addEventListener('reset', function () {
+            window.setTimeout(limpiar, 0);
+        });
+
+        return { validar: validar, limpiar: limpiar };
+    }
+
+    function reglaNombre(valor) {
+        if (valor.length > 100) return 'Máximo 100 caracteres.';
+        if (!/^[\\p{L}\\p{M} .'-]+$/u.test(valor)) return 'Ingresa un nombre válido.';
+        return '';
+    }
+
+    function reglaTelefono(valor) {
+        if (valor.length > 30) return 'Máximo 30 caracteres.';
+        if (!/^[0-9+().\\-\\s]+$/.test(valor)) return 'Ingresa un teléfono válido.';
+        return '';
+    }
+
+    function reglaCorreo(valor) {
+        if (valor.length > 255) return 'Máximo 255 caracteres.';
+        if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(valor)) return 'Ingresa un correo electrónico válido.';
+        return '';
+    }
+
     function escapeHtml(valor) {
         const div = document.createElement('div');
         div.textContent = valor ?? '';
@@ -447,10 +538,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const formNuevoMiembro = document.getElementById('formNuevoMiembro');
 
     if (formNuevoMiembro) {
+        const validacionNuevo = configurarValidacionMiembro(formNuevoMiembro, {
+            nombre: { required: 'El nombre es obligatorio.', validate: reglaNombre },
+            apellido_paterno: { required: 'El apellido paterno es obligatorio.', validate: reglaNombre },
+            apellido_materno: { validate: reglaNombre },
+            telefono: { validate: reglaTelefono },
+            email: { validate: reglaCorreo },
+            direccion_id: { required: 'Selecciona una dirección.' }
+        });
+
+        if (modalNuevoMiembroEl) modalNuevoMiembroEl.addEventListener('show.bs.modal', validacionNuevo.limpiar);
+
         formNuevoMiembro.addEventListener(
             'submit',
             function (event) {
                 event.preventDefault();
+
+                if (!validacionNuevo.validar()) {
+                    window.showToast('warning', 'Revisa los campos marcados antes de continuar.');
+                    return;
+                }
 
                 enviarFormulario(formNuevoMiembro, modalNuevoMiembro, 'Miembro creado correctamente.')
                     .then((data) => {
@@ -467,10 +574,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const formEditarMiembro = document.getElementById('formEditarMiembro');
 
     if (formEditarMiembro) {
+        const validacionEditar = configurarValidacionMiembro(formEditarMiembro, {
+            editar_nombre: { required: 'El nombre es obligatorio.', validate: reglaNombre },
+            editar_apellido_paterno: { required: 'El apellido paterno es obligatorio.', validate: reglaNombre },
+            editar_apellido_materno: { validate: reglaNombre },
+            editar_telefono: { validate: reglaTelefono },
+            editar_email: { validate: reglaCorreo },
+            editar_direccion_id: { required: 'Selecciona una dirección.' }
+        });
+
+        if (modalEditarMiembro) modalEditarMiembroEl.addEventListener('show.bs.modal', validacionEditar.limpiar);
+
         formEditarMiembro.addEventListener(
             'submit',
             function (event) {
                 event.preventDefault();
+
+                if (!validacionEditar.validar()) {
+                    window.showToast('warning', 'Revisa los campos marcados antes de continuar.');
+                    return;
+                }
 
                 const campos =
                     [
