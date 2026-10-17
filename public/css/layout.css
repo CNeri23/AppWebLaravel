@@ -2119,22 +2119,27 @@ html[data-bs-theme="dark"] .app-topbar.scrolled {
 
 html[data-font-family="inter"] {
     --app-font-family: "Inter Variable", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-sans: var(--app-font-family);
 }
 
 html[data-font-family="system"] {
     --app-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-sans: var(--app-font-family);
 }
 
 html[data-font-family="arial"] {
     --app-font-family: Arial, Helvetica, sans-serif;
+    --font-sans: var(--app-font-family);
 }
 
 html[data-font-family="verdana"] {
     --app-font-family: Verdana, Geneva, sans-serif;
+    --font-sans: var(--app-font-family);
 }
 
 html[data-font-family="georgia"] {
     --app-font-family: Georgia, "Times New Roman", serif;
+    --font-sans: var(--app-font-family);
 }
 
 body,
