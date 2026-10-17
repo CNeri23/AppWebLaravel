@@ -183,13 +183,19 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
     content: "Información";
 }
 
+.swal2-popup.toast {
+    position: relative !important;
+}
+
 .swal2-popup.toast .swal-toast-close {
     position: absolute !important;
-    inset-block-start: 7px !important;
-    inset-inline-end: 7px !important;
-    inset-inline-start: auto !important;
+    top: 6px !important;
+    right: 6px !important;
+    bottom: auto !important;
+    left: auto !important;
+    inset: 6px 6px auto auto !important;
     transform: none !important;
-    z-index: 5 !important;
+    z-index: 10 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
