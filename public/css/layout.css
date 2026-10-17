@@ -2219,22 +2219,42 @@ textarea,
     font-family: var(--app-font-family, "Inter Variable", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
 }
 
-html[data-font-scale="small"] { --font-scale-factor: 0.9; }
+
+/* Escala tipográfica: cambia texto sin alterar iconos ni miniaturas de preferencias. */
+html { --font-scale-factor: 1; }
+html[data-font-scale="small"] { --font-scale-factor: .9; }
 html[data-font-scale="medium"] { --font-scale-factor: 1; }
 html[data-font-scale="large"] { --font-scale-factor: 1.12; }
 
-html[data-font-scale="small"] :is(.topbar, .sidebar, .app-content, .modal, .dropdown-menu, .swal2-popup) {
-    --font-scale-factor: 0.9;
+html[data-font-scale] .topbar-brand .sidebar-brand-text,
+html[data-font-scale] .topbar-greeting,
+html[data-font-scale] .sidebar-link > span,
+html[data-font-scale] .sidebar-group-toggle > span {
+    font-size: calc(14px * var(--font-scale-factor)) !important;
 }
-
-html[data-font-scale="large"] :is(.topbar, .sidebar, .app-content, .modal, .dropdown-menu, .swal2-popup) {
-    --font-scale-factor: 1.12;
+html[data-font-scale] .sidebar-sublink > span {
+    font-size: calc(13.5px * var(--font-scale-factor)) !important;
 }
-
-html[data-font-scale="small"] :is(.topbar, .sidebar, .app-content, .modal, .dropdown-menu, .swal2-popup) :is(h1,h2,h3,h4,h5,h6,p,a,span,label,button,input,select,textarea,small,strong,em,li,td,th,.badge,.btn,.form-control,.form-select,.dataTables_info,.dataTables_paginate,.dataTables_length,.dataTables_filter) {
-    font-size: calc(1rem * var(--font-scale-factor)) !important;
+html[data-font-scale] .sidebar-section > span {
+    font-size: calc(12px * var(--font-scale-factor)) !important;
 }
-
-html[data-font-scale="large"] :is(.topbar, .sidebar, .app-content, .modal, .dropdown-menu, .swal2-popup) :is(h1,h2,h3,h4,h5,h6,p,a,span,label,button,input,select,textarea,small,strong,em,li,td,th,.badge,.btn,.form-control,.form-select,.dataTables_info,.dataTables_paginate,.dataTables_length,.dataTables_filter) {
-    font-size: calc(1rem * var(--font-scale-factor)) !important;
+html[data-font-scale] .notification-title,
+html[data-font-scale] .notification-description,
+html[data-font-scale] .notification-time,
+html[data-font-scale] .notification-empty p,
+html[data-font-scale] .swal2-popup.toast .swal2-title.toast-title,
+html[data-font-scale] .swal2-popup.toast .swal2-html-container,
+html[data-font-scale] .swal-confirmacion-titulo,
+html[data-font-scale] .swal-confirmacion-texto,
+html[data-font-scale] .swal2-popup:not(.swal2-toast) .swal2-title,
+html[data-font-scale] .swal2-popup:not(.swal2-toast) .swal2-html-container {
+    font-size: calc(14px * var(--font-scale-factor)) !important;
+}
+html[data-font-scale] .swal2-popup.toast .swal2-title.toast-title::before {
+    font-size: calc(10.5px * var(--font-scale-factor)) !important;
+}
+html[data-font-scale] .swal-confirmacion-confirmar,
+html[data-font-scale] .swal-confirmacion-cancelar,
+html[data-font-scale] .swal2-popup:not(.swal2-toast) .swal2-actions button {
+    font-size: calc(13px * var(--font-scale-factor)) !important;
 }

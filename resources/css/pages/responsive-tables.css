@@ -332,8 +332,15 @@
 }
 
 
-html[data-font-scale="small"] .table-responsive table.responsive-cards-table tbody td,
-html[data-font-scale="small"] .table-responsive table.responsive-cards-table tbody td::before { font-size: 0.9rem !important; }
 
-html[data-font-scale="large"] .table-responsive table.responsive-cards-table tbody td,
-html[data-font-scale="large"] .table-responsive table.responsive-cards-table tbody td::before { font-size: 1.12rem !important; }
+/* Escala solo el texto de las tablas; los iconos y botones de acción conservan su tamaño. */
+html[data-font-scale="small"] .table-responsive table.responsive-cards-table tbody td:not([data-label="Acciones"]),
+html[data-font-scale="small"] .table-responsive table.responsive-cards-table tbody td:not([data-label="Acciones"])::before { font-size: .9em !important; }
+html[data-font-scale="large"] .table-responsive table.responsive-cards-table tbody td:not([data-label="Acciones"]),
+html[data-font-scale="large"] .table-responsive table.responsive-cards-table tbody td:not([data-label="Acciones"])::before { font-size: 1.12em !important; }
+html[data-font-scale="small"] .dataTables_wrapper .dataTables_info,
+html[data-font-scale="small"] .dataTables_wrapper .dataTables_length,
+html[data-font-scale="small"] .dataTables_wrapper .dataTables_filter { font-size: .9em !important; }
+html[data-font-scale="large"] .dataTables_wrapper .dataTables_info,
+html[data-font-scale="large"] .dataTables_wrapper .dataTables_length,
+html[data-font-scale="large"] .dataTables_wrapper .dataTables_filter { font-size: 1.12em !important; }

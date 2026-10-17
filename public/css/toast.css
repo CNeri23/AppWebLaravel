@@ -534,8 +534,3 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
     }
 }
 
-html[data-font-scale="small"] .swal2-popup.toast,
-html[data-font-scale="small"] .swal2-popup:not(.swal2-toast) { font-size: 0.9rem !important; }
-
-html[data-font-scale="large"] .swal2-popup.toast,
-html[data-font-scale="large"] .swal2-popup:not(.swal2-toast) { font-size: 1.12rem !important; }
