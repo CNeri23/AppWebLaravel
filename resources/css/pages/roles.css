@@ -69,7 +69,7 @@
 }
 
 .permisos-tree-toggle:hover {
-    color: var(--accent-color, var(--gym-accent, #ea580c));
+    color: var(--gym);
 }
 
 .permisos-tree-toggle i {
@@ -88,7 +88,7 @@
 .permisos-tree-icon {
     width: 20px;
     text-align: center;
-    color: var(--accent-color, var(--gym-accent, #ea580c));
+    color: var(--gym);
     flex: 0 0 20px;
 }
 
@@ -128,18 +128,19 @@
 .permisos-tree input[type="checkbox"] {
     width: 17px;
     height: 17px;
+    accent-color: var(--gym);
     margin: 0;
     cursor: pointer;
     flex: 0 0 17px;
 }
 
 .permisos-tree input[type="checkbox"]:checked {
-    background-color: var(--accent-color, var(--gym-accent, #ea580c));
-    border-color: var(--accent-color, var(--gym-accent, #ea580c));
+    background-color: var(--gym);
+    border-color: var(--gym);
 }
 
 .permisos-tree input[type="checkbox"]:focus {
-    border-color: var(--accent-color, var(--gym-accent, #ea580c));
+    border-color: var(--gym);
     box-shadow: 0 0 0 0.2rem var(--gym-soft, rgba(234, 88, 12, 0.18));
 }
 
@@ -149,8 +150,8 @@
 }
 
 [data-bs-theme="dark"] .permisos-tree input[type="checkbox"]:checked {
-    background-color: var(--accent-color, var(--gym-accent, #ea580c));
-    border-color: var(--accent-color, var(--gym-accent, #ea580c));
+    background-color: var(--gym);
+    border-color: var(--gym);
 }
 
 #modalPermisosRol .alert {
@@ -161,7 +162,7 @@
 
 #modalPermisosRol .alert .text-primary,
 #modalPermisosRol .permisos-tree-loading .text-primary {
-    color: var(--accent-color, var(--gym-accent, #ea580c)) !important;
+    color: var(--gym-strong) !important;
 }
 
 @media (max-width: 576px) {
