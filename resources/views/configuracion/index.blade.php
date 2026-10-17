@@ -120,6 +120,16 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                             <option value="arial" {{ ($settings['font_family'] ?? 'inter') === 'arial' ? 'selected' : '' }}>Arial — Clásica y clara</option>
                             <option value="verdana" {{ ($settings['font_family'] ?? 'inter') === 'verdana' ? 'selected' : '' }}>Verdana — Alta legibilidad</option>
                             <option value="georgia" {{ ($settings['font_family'] ?? 'inter') === 'georgia' ? 'selected' : '' }}>Georgia — Serif tradicional</option>
+                            <option value="roboto" {{ ($settings['font_family'] ?? 'inter') === 'roboto' ? 'selected' : '' }}>Roboto — Moderna y versátil</option>
+                            <option value="opensans" {{ ($settings['font_family'] ?? 'inter') === 'opensans' ? 'selected' : '' }}>Open Sans — Limpia y legible</option>
+                            <option value="lato" {{ ($settings['font_family'] ?? 'inter') === 'lato' ? 'selected' : '' }}>Lato — Profesional</option>
+                            <option value="poppins" {{ ($settings['font_family'] ?? 'inter') === 'poppins' ? 'selected' : '' }}>Poppins — Geométrica</option>
+                            <option value="montserrat" {{ ($settings['font_family'] ?? 'inter') === 'montserrat' ? 'selected' : '' }}>Montserrat — Contemporánea</option>
+                            <option value="nunito" {{ ($settings['font_family'] ?? 'inter') === 'nunito' ? 'selected' : '' }}>Nunito — Suave y amigable</option>
+                            <option value="tahoma" {{ ($settings['font_family'] ?? 'inter') === 'tahoma' ? 'selected' : '' }}>Tahoma — Compacta</option>
+                            <option value="trebuchet" {{ ($settings['font_family'] ?? 'inter') === 'trebuchet' ? 'selected' : '' }}>Trebuchet MS — Humanista</option>
+                            <option value="times" {{ ($settings['font_family'] ?? 'inter') === 'times' ? 'selected' : '' }}>Times New Roman — Serif clásica</option>
+                            <option value="courier" {{ ($settings['font_family'] ?? 'inter') === 'courier' ? 'selected' : '' }}>Courier New — Monoespaciada</option>
                         </select>
                         <small>Se aplicará en toda la interfaz: menú lateral, barra superior, tablas, formularios, modales y mensajes.</small>
                     </div>
@@ -195,6 +205,29 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                                 <option value="Europe/Madrid" {{ $settings['timezone'] === 'Europe/Madrid' ? 'selected' : '' }}>
                                     Madrid
                                 </option>
+
+                                <option value="America/Hermosillo" {{ $settings['timezone'] === 'America/Hermosillo' ? 'selected' : '' }}>Hermosillo</option>
+                                <option value="America/Chihuahua" {{ $settings['timezone'] === 'America/Chihuahua' ? 'selected' : '' }}>Chihuahua</option>
+                                <option value="America/Mazatlan" {{ $settings['timezone'] === 'America/Mazatlan' ? 'selected' : '' }}>Mazatlán</option>
+                                <option value="America/Matamoros" {{ $settings['timezone'] === 'America/Matamoros' ? 'selected' : '' }}>Matamoros</option>
+                                <option value="America/Merida" {{ $settings['timezone'] === 'America/Merida' ? 'selected' : '' }}>Mérida</option>
+                                <option value="America/Ojinaga" {{ $settings['timezone'] === 'America/Ojinaga' ? 'selected' : '' }}>Ojinaga</option>
+                                <option value="America/Chicago" {{ $settings['timezone'] === 'America/Chicago' ? 'selected' : '' }}>Chicago</option>
+                                <option value="America/Denver" {{ $settings['timezone'] === 'America/Denver' ? 'selected' : '' }}>Denver</option>
+                                <option value="America/Toronto" {{ $settings['timezone'] === 'America/Toronto' ? 'selected' : '' }}>Toronto</option>
+                                <option value="America/Vancouver" {{ $settings['timezone'] === 'America/Vancouver' ? 'selected' : '' }}>Vancouver</option>
+                                <option value="America/Bogota" {{ $settings['timezone'] === 'America/Bogota' ? 'selected' : '' }}>Bogotá</option>
+                                <option value="America/Lima" {{ $settings['timezone'] === 'America/Lima' ? 'selected' : '' }}>Lima</option>
+                                <option value="America/Sao_Paulo" {{ $settings['timezone'] === 'America/Sao_Paulo' ? 'selected' : '' }}>São Paulo</option>
+                                <option value="America/Argentina/Buenos_Aires" {{ $settings['timezone'] === 'America/Argentina/Buenos_Aires' ? 'selected' : '' }}>Buenos Aires</option>
+                                <option value="Europe/London" {{ $settings['timezone'] === 'Europe/London' ? 'selected' : '' }}>Londres</option>
+                                <option value="Europe/Paris" {{ $settings['timezone'] === 'Europe/Paris' ? 'selected' : '' }}>París</option>
+                                <option value="Europe/Berlin" {{ $settings['timezone'] === 'Europe/Berlin' ? 'selected' : '' }}>Berlín</option>
+                                <option value="Europe/Rome" {{ $settings['timezone'] === 'Europe/Rome' ? 'selected' : '' }}>Roma</option>
+                                <option value="Asia/Dubai" {{ $settings['timezone'] === 'Asia/Dubai' ? 'selected' : '' }}>Dubái</option>
+                                <option value="Asia/Tokyo" {{ $settings['timezone'] === 'Asia/Tokyo' ? 'selected' : '' }}>Tokio</option>
+                                <option value="Asia/Shanghai" {{ $settings['timezone'] === 'Asia/Shanghai' ? 'selected' : '' }}>Shanghái</option>
+                                <option value="Australia/Sydney" {{ $settings['timezone'] === 'Australia/Sydney' ? 'selected' : '' }}>Sídney</option>
                             </select>
                         </div>
                         @endif
