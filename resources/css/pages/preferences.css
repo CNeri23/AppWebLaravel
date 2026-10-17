@@ -705,37 +705,19 @@
 @media(max-width:700px){.display-scale-options{grid-template-columns:1fr}}
 
 
+/* Escala tipográfica de Preferencias; los previews de temas conservan su diseño original. */
+html[data-font-scale="small"] .preferencias-page .preferences-card .theme-section-header h2,
+html[data-font-scale="small"] .preferencias-page .preferences-card .theme-section-header p,
+html[data-font-scale="small"] .preferencias-page .preferences-card .display-scale-label,
+html[data-font-scale="small"] .preferencias-page .preferences-card .theme-style-info strong,
+html[data-font-scale="small"] .preferencias-page .preferences-card .theme-style-info small {
+    font-size: .9em;
+}
 
-/* La escala afecta los controles y textos de Preferencias, no los previews de temas. */
-html[data-font-scale="small"] .preferences-page .preferences-card,
-html[data-font-scale="small"] .preferences-page .preferences-card h1,
-html[data-font-scale="small"] .preferences-page .preferences-card h2,
-html[data-font-scale="small"] .preferences-page .preferences-card h3,
-html[data-font-scale="small"] .preferences-page .preferences-card p,
-html[data-font-scale="small"] .preferences-page .preferences-card label,
-html[data-font-scale="small"] .preferences-page .preferences-card .form-text,
-html[data-font-scale="small"] .preferences-page .preferences-card .form-control,
-html[data-font-scale="small"] .preferences-page .preferences-card .form-select,
-html[data-font-scale="small"] .preferences-page .preferences-card .btn,
-html[data-font-scale="small"] .preferences-page .display-scale-label { font-size: .9em !important; }
-
-html[data-font-scale="large"] .preferences-page .preferences-card,
-html[data-font-scale="large"] .preferences-page .preferences-card h1,
-html[data-font-scale="large"] .preferences-page .preferences-card h2,
-html[data-font-scale="large"] .preferences-page .preferences-card h3,
-html[data-font-scale="large"] .preferences-page .preferences-card p,
-html[data-font-scale="large"] .preferences-page .preferences-card label,
-html[data-font-scale="large"] .preferences-page .preferences-card .form-text,
-html[data-font-scale="large"] .preferences-page .preferences-card .form-control,
-html[data-font-scale="large"] .preferences-page .preferences-card .form-select,
-html[data-font-scale="large"] .preferences-page .preferences-card .btn,
-html[data-font-scale="large"] .preferences-page .display-scale-label { font-size: 1.12em !important; }
-
-/* Mantener intactos los previews, que representan el diseño y no la escala activa. */
-html[data-font-scale] .theme-preview,
-html[data-font-scale] .theme-preview *,
-html[data-font-scale] .theme-style-info,
-html[data-font-scale] .theme-style-info * { font-size: initial; }
-html[data-font-scale] .theme-style-info strong { font-size: 13px; }
-html[data-font-scale] .theme-style-info small { font-size: 11px; }
-html[data-font-scale] .theme-style-check i { font-size: 8px; }
+html[data-font-scale="large"] .preferencias-page .preferences-card .theme-section-header h2,
+html[data-font-scale="large"] .preferencias-page .preferences-card .theme-section-header p,
+html[data-font-scale="large"] .preferencias-page .preferences-card .display-scale-label,
+html[data-font-scale="large"] .preferencias-page .preferences-card .theme-style-info strong,
+html[data-font-scale="large"] .preferencias-page .preferences-card .theme-style-info small {
+    font-size: 1.12em;
+}

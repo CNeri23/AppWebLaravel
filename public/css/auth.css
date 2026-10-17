@@ -1339,23 +1339,3 @@ button.auth-link.link-muted {
     }
 }
 
-/* Escala tipográfica del login según la preferencia guardada para el usuario. */
-html[data-font-scale="small"] .login-page .login-title,
-html[data-font-scale="small"] .login-page .login-subtitle,
-html[data-font-scale="small"] .login-page .form-label,
-html[data-font-scale="small"] .login-page .form-control,
-html[data-font-scale="small"] .login-page .input-group-text,
-html[data-font-scale="small"] .login-page .btn,
-html[data-font-scale="small"] .login-page .invalid-feedback,
-html[data-font-scale="small"] .login-page .auth-form-stage p,
-html[data-font-scale="small"] .login-page .auth-form-stage label { font-size: .9em !important; }
-
-html[data-font-scale="large"] .login-page .login-title,
-html[data-font-scale="large"] .login-page .login-subtitle,
-html[data-font-scale="large"] .login-page .form-label,
-html[data-font-scale="large"] .login-page .form-control,
-html[data-font-scale="large"] .login-page .input-group-text,
-html[data-font-scale="large"] .login-page .btn,
-html[data-font-scale="large"] .login-page .invalid-feedback,
-html[data-font-scale="large"] .login-page .auth-form-stage p,
-html[data-font-scale="large"] .login-page .auth-form-stage label { font-size: 1.12em !important; }
