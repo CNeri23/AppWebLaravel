@@ -584,6 +584,100 @@ document.addEventListener('DOMContentLoaded', function () {
         tablaUsuarios.draw(false);
     }
 
+    const camposValidablesUsuario = [
+        { id: 'username', requerido: true, max: 50, etiqueta: 'El usuario' },
+        { id: 'nuevo_nombre', requerido: true, max: 100, etiqueta: 'El nombre' },
+        { id: 'nuevo_apellido_paterno', requerido: true, max: 100, etiqueta: 'El apellido paterno' },
+        { id: 'nuevo_apellido_materno', requerido: false, max: 100, etiqueta: 'El apellido materno' },
+        { id: 'nuevo_telefono', requerido: false, max: 30, etiqueta: 'El teléfono' },
+        { id: 'nuevo_email', requerido: true, max: 255, etiqueta: 'El correo electrónico' },
+        { id: 'editar_username', requerido: true, max: 50, etiqueta: 'El usuario' },
+        { id: 'editar_nombre', requerido: true, max: 100, etiqueta: 'El nombre' },
+        { id: 'editar_apellido_paterno', requerido: true, max: 100, etiqueta: 'El apellido paterno' },
+        { id: 'editar_apellido_materno', requerido: false, max: 100, etiqueta: 'El apellido materno' },
+        { id: 'editar_telefono', requerido: false, max: 30, etiqueta: 'El teléfono' },
+        { id: 'editar_email', requerido: true, max: 255, etiqueta: 'El correo electrónico' },
+    ];
+
+    function limpiarValidacionUsuario(input) {
+        if (!input) return;
+        input.classList.remove('is-invalid', 'is-valid');
+        input.removeAttribute('aria-invalid');
+        const aviso = document.getElementById(input.id.replace(/^editar_/, '').replace(/^nuevo_/, '') + '-error');
+        const avisoEdicion = document.getElementById('editar-' + input.name + '-error');
+        if (aviso) aviso.textContent = '';
+        if (avisoEdicion) avisoEdicion.textContent = '';
+    }
+
+    function validarCampoUsuario(input, mostrarValido = true) {
+        if (!input) return true;
+        limpiarValidacionUsuario(input);
+        const regla = camposValidablesUsuario.find((campo) => campo.id === input.id);
+        if (!regla) return true;
+        const valor = input.value.trim();
+        let mensaje = '';
+
+        if (regla.requerido && !valor) {
+            mensaje = 'Este campo es obligatorio.';
+        } else if (valor && valor.length > regla.max) {
+            mensaje = 'No puede superar ' + regla.max + ' caracteres.';
+        } else if (valor && input.name === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor)) {
+            mensaje = 'Ingresa un correo electrónico válido.';
+        } else if (valor && input.name === 'telefono' && !/^[0-9+().\-\s]+$/.test(valor)) {
+            mensaje = 'El teléfono contiene caracteres no válidos.';
+        } else if (valor && ['nombre', 'apellido_paterno', 'apellido_materno'].includes(input.name) && !/^[\p{L}\p{M} .'-]+$/u.test(valor)) {
+            mensaje = 'Usa únicamente letras, espacios, puntos, apóstrofes o guiones.';
+        } else if (valor && input.name === 'username' && !/^[a-zA-Z0-9._-]+$/.test(valor)) {
+            mensaje = 'Usa letras, números, puntos, guiones o guiones bajos.';
+        }
+
+        const avisoId = input.id.startsWith('editar_')
+            ? 'editar-' + input.name + '-error'
+            : input.name + '-error';
+        const aviso = document.getElementById(avisoId);
+
+        if (mensaje) {
+            input.classList.add('is-invalid');
+            input.setAttribute('aria-invalid', 'true');
+            if (aviso) aviso.textContent = mensaje;
+            return false;
+        }
+
+        if (mostrarValido && (valor || regla.requerido)) {
+            input.classList.add('is-valid');
+            input.setAttribute('aria-invalid', 'false');
+        }
+        return true;
+    }
+
+    function validarFormularioUsuario(form) {
+        let valido = true;
+        let primero = null;
+        form.querySelectorAll('input[name]').forEach(function (input) {
+            if (input.type === 'hidden' || ['_token', '_method', 'password', 'password_confirmation'].includes(input.name)) return;
+            if (!validarCampoUsuario(input, true)) {
+                valido = false;
+                if (!primero) primero = input;
+            }
+        });
+        if (primero) primero.focus();
+        return valido;
+    }
+
+    function inicializarValidacionesUsuario(form, modal) {
+        if (!form) return;
+        form.querySelectorAll('input[name]').forEach(function (input) {
+            if (input.type === 'hidden' || ['_token', '_method', 'password', 'password_confirmation'].includes(input.name)) return;
+            input.addEventListener('input', () => validarCampoUsuario(input, true));
+            input.addEventListener('change', () => validarCampoUsuario(input, true));
+        });
+        if (modal) {
+            modal.addEventListener('shown.bs.modal', function () {
+                form.querySelectorAll('input[name]').forEach(limpiarValidacionUsuario);
+            });
+        }
+    }
+
     let datosOriginalesEditar = null;
     let rolesOriginales = null;
     const MENSAJE_SIN_CAMBIOS = 'No hubo cambios para actualizar.';
@@ -714,11 +808,19 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     const formNuevoUsuario = document.getElementById('formNuevoUsuario');
 
+    inicializarValidacionesUsuario(formNuevoUsuario, modalNuevoUsuarioEl);
+    inicializarValidacionesUsuario(formEditarUsuario, modalEditarUsuarioEl);
+
     if (formNuevoUsuario) {
         formNuevoUsuario.addEventListener('submit',
             function (event) {
                 event.preventDefault();
                 limpiarErroresForm(formNuevoUsuario);
+
+                if (!validarFormularioUsuario(formNuevoUsuario)) {
+                    window.showToast('warning', 'Revisa los campos marcados antes de continuar.');
+                    return;
+                }
 
                 if (politicaNuevo && !politicaNuevo.validar()) {
                     return;
@@ -759,11 +861,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         return actuales[campo] === datosOriginalesEditar[campo];
                     })
                 ) {
+                    formEditarUsuario.querySelectorAll('input[name]').forEach(limpiarValidacionUsuario);
                     window.showToast('info', MENSAJE_SIN_CAMBIOS);
                     return;
                 }
 
                 limpiarErroresForm(formEditarUsuario);
+                if (!validarFormularioUsuario(formEditarUsuario)) {
+                    window.showToast('warning', 'Revisa los campos marcados antes de continuar.');
+                    return;
+                }
                 enviarFormulario(formEditarUsuario, modalEditarUsuario, 'Datos del usuario actualizados correctamente.')
                     .then((data) => {
                         actualizarUsuarioEnTabla(data.usuario, data.urls);
