@@ -45,6 +45,93 @@ document.addEventListener('DOMContentLoaded', function () {
         window.showToast('error', error.message || 'Ocurrió un error al procesar la solicitud.');
     }
 
+
+    function configurarValidacion(formulario, reglas) {
+        const campos = Object.keys(reglas).map(function (id) {
+            return document.getElementById(id);
+        }).filter(Boolean);
+
+        function validarCampo(campo) {
+            const regla = reglas[campo.id];
+            const valor = campo.value.trim();
+            let mensaje = '';
+
+            if (regla.required && !valor) {
+                mensaje = regla.required;
+            } else if (valor && regla.validate) {
+                mensaje = regla.validate(valor) || '';
+            }
+
+            let feedback = document.getElementById(campo.id + '-error');
+
+            if (!feedback) {
+                feedback = document.createElement('div');
+                feedback.id = campo.id + '-error';
+                feedback.className = 'invalid-feedback';
+                campo.insertAdjacentElement('afterend', feedback);
+            }
+
+            campo.classList.toggle('is-invalid', Boolean(mensaje));
+            campo.classList.toggle('is-valid', !mensaje && Boolean(valor));
+            campo.setAttribute('aria-invalid', mensaje ? 'true' : 'false');
+            feedback.textContent = mensaje;
+            feedback.classList.toggle('d-block', Boolean(mensaje));
+            return !mensaje;
+        }
+
+        function validarFormulario() {
+            let valido = true;
+            let primerInvalido = null;
+
+            campos.forEach(function (campo) {
+                if (!validarCampo(campo)) {
+                    valido = false;
+                    if (!primerInvalido) primerInvalido = campo;
+                }
+            });
+
+            if (primerInvalido) primerInvalido.focus();
+            return valido;
+        }
+
+        function limpiarValidacion() {
+            campos.forEach(function (campo) {
+                campo.classList.remove('is-invalid', 'is-valid');
+                campo.removeAttribute('aria-invalid');
+                const feedback = document.getElementById(campo.id + '-error');
+                if (feedback) {
+                    feedback.textContent = '';
+                    feedback.classList.remove('d-block');
+                }
+            });
+        }
+
+        campos.forEach(function (campo) {
+            campo.addEventListener('input', function () { validarCampo(campo); });
+            campo.addEventListener('change', function () { validarCampo(campo); });
+        });
+
+        formulario.addEventListener('reset', function () {
+            window.setTimeout(limpiarValidacion, 0);
+        });
+
+        return { validar: validarFormulario, limpiar: limpiarValidacion, validarCampo: validarCampo };
+    }
+
+    function validarMontoPositivo(valor) {
+        const numero = Number(valor);
+        if (!Number.isFinite(numero) || numero <= 0) return 'El monto debe ser mayor que cero.';
+        if (!/^\\d+(?:\\.\\d{1,2})?$/.test(valor)) return 'Ingresa un monto válido con máximo dos decimales.';
+        return '';
+    }
+
+    function validarMontoNoNegativo(valor) {
+        const numero = Number(valor);
+        if (!Number.isFinite(numero) || numero < 0) return 'El monto no puede ser negativo.';
+        if (!/^\\d+(?:\\.\\d{1,2})?$/.test(valor)) return 'Ingresa un monto válido con máximo dos decimales.';
+        return '';
+    }
+
     function escapeHtml(valor) {
         const div = document.createElement('div');
         div.textContent = valor ?? '';
@@ -325,20 +412,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (formAbrirSesion) {
+        const validacionApertura = configurarValidacion(formAbrirSesion, {
+            abrir_caja_id: { required: 'Debes seleccionar una caja.' },
+            abrir_fondo_inicial: { required: 'El fondo inicial es obligatorio.', validate: validarMontoNoNegativo },
+            abrir_observaciones: { validate: function (valor) { return valor.length > 255 ? 'Máximo 255 caracteres.' : ''; } }
+        });
+
+        if (modalAbrirSesionEl) modalAbrirSesionEl.addEventListener('show.bs.modal', validacionApertura.limpiar);
+
         formAbrirSesion.addEventListener('submit', function (event) {
             event.preventDefault();
             const selectCaja = document.getElementById('abrir_caja_id');
             const inputFondo = document.getElementById('abrir_fondo_inicial');
 
-            if (!selectCaja.value) {
-                window.showToast('error', 'Debes seleccionar una caja.');
-                selectCaja.focus();
-                return;
-            }
-
-            if (inputFondo.value === '' || Number(inputFondo.value) < 0) {
-                window.showToast('error', 'El fondo inicial es obligatorio y no puede ser negativo.');
-                inputFondo.focus();
+            if (!validacionApertura.validar()) {
+                window.showToast('warning', 'Completa correctamente los campos marcados.');
                 return;
             }
             const botonSubmit = formAbrirSesion.querySelector('button[type="submit"]');
@@ -475,6 +563,21 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
+        const validacionRetiro = configurarValidacion(formRetiroSesion, {
+            retiro_monto: {
+                required: 'El monto es obligatorio.',
+                validate: function (valor) {
+                    const error = validarMontoPositivo(valor);
+                    if (error) return error;
+                    if (retiroMax !== null && Number(valor) > retiroMax) return 'El monto supera el efectivo disponible (' + formatoMonto(retiroMax) + ').';
+                    return '';
+                }
+            },
+            retiro_concepto: { required: 'Debes seleccionar el concepto del movimiento.' },
+            retiro_referencia: { validate: function (valor) { return valor.length > 100 ? 'Máximo 100 caracteres.' : ''; } },
+            retiro_observaciones: { validate: function (valor) { return valor.length > 255 ? 'Máximo 255 caracteres.' : ''; } }
+        });
+
         inputMontoRetiro.addEventListener('input', limitarMonto);
         inputMontoRetiro.addEventListener('blur', limitarMonto);
         modalRetiroSesionEl.addEventListener('show.bs.modal', function (event) {
@@ -490,6 +593,7 @@ document.addEventListener('DOMContentLoaded', function () {
             botonRetiroActual = button;
             const disponible = parseFloat(button.dataset.disponible);
             retiroMax = isNaN(disponible) ? null : Math.max(disponible, 0);
+            validacionRetiro.limpiar();
 
             if (retiroMax === null) {
                 inputMontoRetiro.removeAttribute('max');
@@ -507,24 +611,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         formRetiroSesion.addEventListener('submit', function (event) {
             event.preventDefault();
-            const inputMonto = document.getElementById('retiro_monto');
-            const selectConcepto = document.getElementById('retiro_concepto');
-
-            if (inputMonto.value === '' || Number(inputMonto.value) <= 0) {
-                window.showToast('error', 'El monto debe ser mayor que cero.');
-                inputMonto.focus();
-                return;
-            }
-
-            if (!selectConcepto.value) {
-                window.showToast('error', 'Debes seleccionar el concepto del movimiento.');
-                selectConcepto.focus();
-                return;
-            }
-
-            if (retiroMax !== null && Number(inputMonto.value) > retiroMax) {
-                window.showToast('error', 'El monto supera el efectivo disponible en caja (' + formatoMonto(retiroMax) + ').');
-                inputMonto.value = retiroMax.toFixed(2);
+            if (!validacionRetiro.validar()) {
+                window.showToast('warning', 'Completa correctamente los campos marcados.');
                 return;
             }
             const botonSubmit = document.getElementById('btnRetiroSesion');
@@ -560,6 +648,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const arqueoContenido = document.getElementById('cerrarArqueoContenido');
         const inputContado = document.getElementById('cerrar_efectivo_contado');
         const textoDiferencia = document.getElementById('cerrar_diferencia');
+        const validacionCierre = configurarValidacion(formCerrarSesion, {
+            cerrar_efectivo_contado: { required: 'Debes ingresar el efectivo contado.', validate: validarMontoNoNegativo },
+            cerrar_autorizador: { required: 'Debes seleccionar al administrador que autoriza el cierre.' },
+            cerrar_password: { required: 'La contraseña del administrador es obligatoria.' },
+            cerrar_observaciones: { validate: function (valor) { return valor.length > 255 ? 'Máximo 255 caracteres.' : ''; } }
+        });
 
         function actualizarDiferencia() {
             textoDiferencia.textContent = '';
@@ -627,24 +721,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         formCerrarSesion.addEventListener('submit', function (event) {
             event.preventDefault();
-            const selectAutorizador = document.getElementById('cerrar_autorizador');
             const inputPassword = document.getElementById('cerrar_password');
 
-            if (inputContado.value === '' || Number(inputContado.value) < 0) {
-                window.showToast('error', 'Debes ingresar el efectivo contado (no puede ser negativo).');
-                inputContado.focus();
-                return;
-            }
-
-            if (!selectAutorizador.value) {
-                window.showToast('error', 'Debes seleccionar al administrador que autoriza el cierre.');
-                selectAutorizador.focus();
-                return;
-            }
-
-            if (!inputPassword.value) {
-                window.showToast('error', 'La contraseña del administrador es obligatoria.');
-                inputPassword.focus();
+            if (!validacionCierre.validar()) {
+                window.showToast('warning', 'Completa correctamente los campos marcados.');
                 return;
             }
             const botonSubmit = document.getElementById('btnCerrarSesion');
