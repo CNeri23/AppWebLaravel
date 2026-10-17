@@ -709,3 +709,15 @@ html[data-font-scale="large"] .configuracion-page .form-check-label,
 html[data-font-scale="large"] .configuracion-page .ss-main,
 html[data-font-scale="large"] .ss-content .ss-option,
 html[data-font-scale="large"] .ss-content .ss-search input { font-size: 1.12em !important; }
+
+
+/* Los nombres de los colores de acento también siguen la escala elegida. */
+html[data-font-scale="small"] .configuracion-page .accent-content {
+    font-size: 9px !important;
+}
+html[data-font-scale="medium"] .configuracion-page .accent-content {
+    font-size: 10px !important;
+}
+html[data-font-scale="large"] .configuracion-page .accent-content {
+    font-size: 11.2px !important;
+}
