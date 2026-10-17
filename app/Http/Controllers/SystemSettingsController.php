@@ -41,6 +41,7 @@ class SystemSettingsController extends Controller
         'system_name' => 'configuracion.nombre',
         'logo' => 'configuracion.logotipo',
         'accent_color' => 'configuracion.apariencia',
+        'font_family' => 'configuracion.apariencia',
         'currency' => 'configuracion.moneda',
         'timezone' => 'configuracion.zona_horaria',
         'date_format' => 'configuracion.formato_fecha',
@@ -109,6 +110,8 @@ class SystemSettingsController extends Controller
                 ]),
             ],
 
+            'font_family' => ['sometimes', 'required', Rule::in(['inter', 'system', 'arial', 'verdana', 'georgia'])],
+
             // Regional
             'currency' => ['sometimes', 'required', Rule::in(['MXN', 'USD', 'EUR'])],
             'timezone' => ['sometimes', 'required', 'timezone'],
@@ -164,6 +167,8 @@ class SystemSettingsController extends Controller
             'logo.max' => 'El logotipo no puede superar los 2 MB.',
 
             'accent_color.required' => 'El color de acento es obligatorio.',
+            'font_family.required' => 'Selecciona una tipografía.',
+            'font_family.in' => 'La tipografía seleccionada no es válida.',
             'accent_color.in' => 'El color de acento seleccionado no es válido.',
 
             'currency.required' => 'La moneda es obligatoria.',
@@ -266,6 +271,7 @@ class SystemSettingsController extends Controller
 
         if (in_array($claveActualizada, [
             'accent_color',
+            'font_family',
         ], true)) {
             $partes[] = 'la configuración de apariencia';
         }
@@ -311,6 +317,7 @@ class SystemSettingsController extends Controller
 
         $mensajes = [
             'accent_color' => 'El color de acento se actualizó correctamente.',
+            'font_family' => 'La tipografía se actualizó correctamente.',
 
             'system_name' => 'El nombre del sistema se actualizó correctamente.',
             'logo_path' => 'El logotipo se actualizó correctamente.',
