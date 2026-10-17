@@ -393,3 +393,44 @@
 .asistencia-actions .btn.asistencia-action-btn:focus-visible > svg {
     color: inherit !important;
 }
+
+
+/* Medidas iguales a los botones de acciones de la tabla Usuarios. */
+.asistencia-actions {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    padding: 0 !important;
+}
+.asistencia-actions .btn.asistencia-action-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 35px !important;
+    width: 35px !important;
+    min-width: 35px !important;
+    max-width: 35px !important;
+    height: 35px !important;
+    min-height: 35px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-width: 1px !important;
+    border-radius: 10px !important;
+    line-height: 1 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+.asistencia-actions .btn.asistencia-action-btn > i,
+.asistencia-actions .btn.asistencia-action-btn > svg {
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    font-size: 13px !important;
+    line-height: 1 !important;
+}
+.asistencia-actions > :hover,
+.asistencia-actions > :hover + *,
+.asistencia-actions > :has(+ :hover) {
+    transform: none !important;
+}
