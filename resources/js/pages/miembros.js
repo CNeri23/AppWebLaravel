@@ -126,19 +126,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function reglaNombre(valor) {
         if (valor.length > 100) return 'Máximo 100 caracteres.';
-        if (!/^[\\p{L}\\p{M} .'-]+$/u.test(valor)) return 'Ingresa un nombre válido.';
+        if (!/^[\p{L}\p{M} .'-]+$/u.test(valor)) return 'Ingresa un nombre válido.';
         return '';
     }
 
     function reglaTelefono(valor) {
         if (valor.length > 30) return 'Máximo 30 caracteres.';
-        if (!/^[0-9+().\\-\\s]+$/.test(valor)) return 'Ingresa un teléfono válido.';
+        if (!/^[0-9+().\-\s]+$/.test(valor)) return 'Ingresa un teléfono válido.';
         return '';
     }
 
     function reglaCorreo(valor) {
         if (valor.length > 255) return 'Máximo 255 caracteres.';
-        if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(valor)) return 'Ingresa un correo electrónico válido.';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor)) return 'Ingresa un correo electrónico válido.';
         return '';
     }
 
