@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const campos = Object.keys(reglas).map(function (id) {
             return document.getElementById(id);
         }).filter(Boolean);
+        const camposTocados = new Set();
 
         function validarCampo(campo) {
             const regla = reglas[campo.id];
@@ -72,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             campo.classList.toggle('is-invalid', Boolean(mensaje));
-            campo.classList.toggle('is-valid', !mensaje && Boolean(valor));
+            campo.classList.toggle('is-valid', !mensaje && Boolean(valor) && camposTocados.has(campo));
             campo.setAttribute('aria-invalid', mensaje ? 'true' : 'false');
             feedback.textContent = mensaje;
             feedback.classList.toggle('d-block', Boolean(mensaje));
@@ -95,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function limpiarValidacion() {
+            camposTocados.clear();
             campos.forEach(function (campo) {
                 campo.classList.remove('is-invalid', 'is-valid');
                 campo.removeAttribute('aria-invalid');
@@ -107,8 +109,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         campos.forEach(function (campo) {
-            campo.addEventListener('input', function () { validarCampo(campo); });
-            campo.addEventListener('change', function () { validarCampo(campo); });
+            campo.addEventListener('input', function () {
+                camposTocados.add(campo);
+                validarCampo(campo);
+            });
+            campo.addEventListener('change', function () {
+                camposTocados.add(campo);
+                validarCampo(campo);
+            });
         });
 
         formulario.addEventListener('reset', function () {

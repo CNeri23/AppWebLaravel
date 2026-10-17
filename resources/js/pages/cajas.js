@@ -678,11 +678,6 @@ document.addEventListener('DOMContentLoaded', function () {
         formEditarCaja.addEventListener('submit', function (event) {
             event.preventDefault();
 
-            if (!validarFormulario(formEditarCaja)) {
-                window.showToast('warning', 'Completa correctamente los campos marcados.');
-                return;
-            }
-
             const inputNombre = document.getElementById('editar_nombre');
             const inputDescripcion = document.getElementById('editar_descripcion');
             const nombre = inputNombre.value.trim();
@@ -695,7 +690,13 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (nombre === (formEditarCaja.dataset.nombreOriginal || '') && descripcion === (formEditarCaja.dataset.descripcionOriginal || '')) {
+                camposFormulario(formEditarCaja).forEach(limpiarValidacionCampo);
                 mostrarInfo('No hubo cambios para actualizar.');
+                return;
+            }
+
+            if (!validarFormulario(formEditarCaja)) {
+                window.showToast('warning', 'Completa correctamente los campos marcados.');
                 return;
             }
 

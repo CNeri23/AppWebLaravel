@@ -587,11 +587,7 @@ document.addEventListener('DOMContentLoaded', function () {
     formEditar?.addEventListener('submit',
         function (evento) {
             evento.preventDefault();
-            if (!validarFormulario(formEditar)) {
-                window.showToast('warning', 'Completa correctamente los campos marcados.');
-                return;
-            }
-            const formData =new FormData(formEditar);
+            const formData = new FormData(formEditar);
             const datosActuales = {
                 nombre: String(formData.get('nombre') || '').trim(),
                 descripcion: String(formData.get('descripcion') || '').trim(),
@@ -603,7 +599,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const hayCambios = datosActuales.nombre !== snapshot.nombre || datosActuales.descripcion !== snapshot.descripcion || datosActuales.duracion_dias !== snapshot.duracion_dias || datosActuales.precio !==snapshot.precio;
 
             if (!hayCambios) {
+                camposFormulario(formEditar).forEach(limpiarValidacionCampo);
                 window.showToast('info', 'No hubo cambios para actualizar.');
+                return;
+            }
+            if (!validarFormulario(formEditar)) {
+                window.showToast('warning', 'Completa correctamente los campos marcados.');
                 return;
             }
             const boton = formEditar.querySelector('button[type="submit"]');
