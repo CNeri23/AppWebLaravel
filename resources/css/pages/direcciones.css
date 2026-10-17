@@ -1,25 +1,5 @@
 
 
-.btn.direccion-action-btn {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    border-radius: 10px;
-    line-height: 1;
-}
-
-.btn.direccion-action-btn>i,
-.btn.direccion-action-btn>svg {
-    margin: 0 !important;
-    font-size: 14px;
-    line-height: 1;
-    pointer-events: none;
-}
-
 #tablaDirecciones th:last-child,
 #tablaDirecciones td:last-child {
     white-space: nowrap;
@@ -96,7 +76,13 @@
 @media (hover: hover) {
 }
 
-/* Botones de acciones: estilo único, sin fondos permanentes. */
+@media (hover: hover) {
+}
+
+@media (prefers-reduced-motion: reduce) {
+}
+
+/* Botones de acciones: mismo diseño que Usuarios. */
 .direccion-actions {
     display: flex;
     align-items: center;
@@ -129,35 +115,27 @@
     transition: color .16s ease, background-color .16s ease, box-shadow .16s ease, transform .2s cubic-bezier(.2,.9,.3,1);
 }
 
-.direccion-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
+.direccion-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .fa-pen-to-square, .bi-pencil),
 .direccion-actions .btn.btn-outline-primary { --ua: 37, 99, 235; }
-
 .direccion-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
 .direccion-actions .btn.btn-outline-danger { --ua: 220, 53, 69; }
-
 .direccion-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people, .fa-arrows-rotate),
 .direccion-actions .btn.btn-outline-success { --ua: 22, 163, 74; }
-
 .direccion-actions .btn:has(.fa-key, .bi-key, .fa-lock),
 .direccion-actions .btn.btn-outline-warning { --ua: 217, 119, 6; }
-
 .direccion-actions .btn:has(.fa-eye, .bi-eye),
 .direccion-actions .btn.btn-outline-info { --ua: 8, 145, 178; }
 
-[data-bs-theme="dark"] direccion-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
-[data-bs-theme="dark"] direccion-actions .btn.btn-outline-primary { --ua: 96, 165, 250; }
-
-[data-bs-theme="dark"] direccion-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
-[data-bs-theme="dark"] direccion-actions .btn.btn-outline-danger { --ua: 248, 113, 113; }
-
-[data-bs-theme="dark"] direccion-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people, .fa-arrows-rotate),
-[data-bs-theme="dark"] direccion-actions .btn.btn-outline-success { --ua: 74, 222, 128; }
-
-[data-bs-theme="dark"] direccion-actions .btn:has(.fa-key, .bi-key, .fa-lock),
-[data-bs-theme="dark"] direccion-actions .btn.btn-outline-warning { --ua: 251, 191, 36; }
-
-[data-bs-theme="dark"] direccion-actions .btn:has(.fa-eye, .bi-eye),
-[data-bs-theme="dark"] direccion-actions .btn.btn-outline-info { --ua: 34, 211, 238; }
+[data-bs-theme="dark"] .direccion-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .fa-pen-to-square, .bi-pencil),
+[data-bs-theme="dark"] .direccion-actions .btn.btn-outline-primary { --ua: 96, 165, 250; }
+[data-bs-theme="dark"] .direccion-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
+[data-bs-theme="dark"] .direccion-actions .btn.btn-outline-danger { --ua: 248, 113, 113; }
+[data-bs-theme="dark"] .direccion-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people, .fa-arrows-rotate),
+[data-bs-theme="dark"] .direccion-actions .btn.btn-outline-success { --ua: 74, 222, 128; }
+[data-bs-theme="dark"] .direccion-actions .btn:has(.fa-key, .bi-key, .fa-lock),
+[data-bs-theme="dark"] .direccion-actions .btn.btn-outline-warning { --ua: 251, 191, 36; }
+[data-bs-theme="dark"] .direccion-actions .btn:has(.fa-eye, .bi-eye),
+[data-bs-theme="dark"] .direccion-actions .btn.btn-outline-info { --ua: 34, 211, 238; }
 
 .direccion-actions .btn:hover,
 .direccion-actions .btn:focus-visible {
@@ -166,24 +144,15 @@
     border-color: transparent;
     box-shadow: inset 0 0 0 1px rgba(var(--ua), .3), 0 6px 14px -8px rgba(var(--ua), .7);
 }
-
 .direccion-actions .btn:active { transform: scale(.94); }
-
 .direccion-actions .btn > i,
-.direccion-actions .btn > svg {
-    margin: 0 !important;
-    font-size: 14px;
-    line-height: 1;
-    pointer-events: none;
-}
+.direccion-actions .btn > svg { margin: 0 !important; font-size: 14px; line-height: 1; pointer-events: none; }
 
 @media (hover: hover) {
     .direccion-actions > :hover { transform: translateY(-2px) scale(1.08); }
     .direccion-actions > :hover + *,
     .direccion-actions > :has(+ :hover) { transform: translateY(-1px) scale(1.03); }
 }
-
 @media (prefers-reduced-motion: reduce) {
-    .direccion-actions *,
-    .direccion-actions *::before { transition: none !important; }
+    .direccion-actions *, .direccion-actions *::before { transition: none !important; }
 }
