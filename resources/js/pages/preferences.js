@@ -65,11 +65,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    opciones.forEach(function (opcion) {
-            const estiloActivo = opcion.name === 'light_theme_style' ? opcion.value === lightThemeStyle : opcion.value === darkThemeStyle;
-            opcion.checked = estiloActivo;
-        });
-    }
 
     function mostrarAviso(mensaje, tipo) {
         if (typeof window.showToast === 'function') {
