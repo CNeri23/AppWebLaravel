@@ -312,3 +312,26 @@
     background: rgba(var(--ua), 0.2);
     border-color: transparent;
 }
+
+
+/* Ajustes finales: mantener el color del icono durante hover en ambos temas. */
+.asistencia-actions .btn.asistencia-action-btn:hover,
+.asistencia-actions .btn.asistencia-action-btn:focus-visible {
+    color: rgb(var(--ua)) !important;
+    background: rgba(var(--ua), 0.13) !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+[data-bs-theme="dark"] .asistencia-actions .btn.asistencia-action-btn:hover,
+[data-bs-theme="dark"] .asistencia-actions .btn.asistencia-action-btn:focus-visible {
+    color: color-mix(in srgb, rgb(var(--ua)) 80%, #ffffff) !important;
+    background: rgba(var(--ua), 0.2) !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+.asistencia-actions .btn.asistencia-action-btn:hover > i,
+.asistencia-actions .btn.asistencia-action-btn:hover > svg,
+.asistencia-actions .btn.asistencia-action-btn:focus-visible > i,
+.asistencia-actions .btn.asistencia-action-btn:focus-visible > svg {
+    color: inherit !important;
+}
