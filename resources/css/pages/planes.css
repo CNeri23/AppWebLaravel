@@ -323,3 +323,43 @@
 @media (prefers-reduced-motion: reduce) {
     .plan-actions *, .plan-actions *::before { transition: none !important; }
 }
+
+/* Encabezado de planes en tarjeta responsiva. */
+.planes-header-card {
+    border-radius: 14px;
+    background: var(--bs-card-bg);
+}
+
+.planes-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+}
+
+.planes-header-text {
+    min-width: 0;
+}
+
+.planes-header-text h1 {
+    overflow-wrap: anywhere;
+}
+
+.planes-header-action {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .planes-header-content {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .planes-header-action {
+        width: 100%;
+    }
+}
+
