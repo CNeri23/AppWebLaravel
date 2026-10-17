@@ -9,16 +9,16 @@ $puedeAnular = $accionesAsistencias->contains('slug', 'asistencias.eliminar');
 $iconoAnular = optional($accionesAsistencias->firstWhere('slug', 'asistencias.eliminar'))->icono ?: '<i class="fa-regular fa-trash-can"></i>';
 @endphp
 
-<div id="asistenciasApp" data-url-buscar="{{ route('asistencias.buscar') }}" data-url-registrar="{{ route('asistencias.store') }}" data-incluye-hoy="{{ $incluyeHoy ? 1 : 0 }}" data-puede-anular="{{ $puedeAnular ? 1 : 0 }}" data-icono-anular="{{ $iconoAnular }}">
-
-    <div class="card border-0 shadow-sm asistencias-header-card mb-4">
-        <div class="card-body asistencias-header-content">
-            <div class="asistencias-header-text">
-                <h1 class="fw-bold mb-1">Asistencias</h1>
-                <p class="text-secondary mb-0">Registro de entradas de los miembros al gimnasio.</p>
-            </div>
+<div class="card border-0 shadow-sm planes-header-card mb-4">
+    <div class="card-body planes-header-content">
+        <div class="planes-header-text">
+            <h1 class="fw-bold mb-1">Asistencias</h1>
+            <p class="text-secondary mb-0">Registro de entradas de los miembros al gimnasio.</p>
         </div>
     </div>
+</div>
+
+<div id="asistenciasApp" data-url-buscar="{{ route('asistencias.buscar') }}" data-url-registrar="{{ route('asistencias.store') }}" data-incluye-hoy="{{ $incluyeHoy ? 1 : 0 }}" data-puede-anular="{{ $puedeAnular ? 1 : 0 }}" data-icono-anular="{{ $iconoAnular }}">
 
     @if ($puedeRegistrar)
     <div class="card border-0 shadow-sm mb-4 asistencia-registro-card">
