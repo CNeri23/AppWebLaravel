@@ -388,14 +388,6 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label for="orden" class="form-label">Orden</label>
-                            <input type="number" class="form-control @error('orden') is-invalid @enderror" id="orden" name="orden" value="{{ old('orden', 0) }}" min="0" placeholder="Orden del módulo" required>
-
-                            @error('orden')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -475,10 +467,6 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label for="editar_orden" class="form-label">Orden</label>
-                            <input type="number" class="form-control" id="editar_orden" name="orden" min="0" placeholder="Orden del módulo" required>
-                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -652,17 +640,6 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label for="submodulo_orden" class="form-label">
-                                Orden
-                            </label>
-
-                            <input type="number" class="form-control @error('orden') is-invalid @enderror" id="submodulo_orden" name="orden" value="{{ old('orden', 0) }}" min="0" placeholder="0" required>
-
-                            @error('orden')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -775,13 +752,6 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label for="editar_submodulo_orden" class="form-label">
-                                Orden
-                            </label>
-
-                            <input type="number" class="form-control" id="editar_submodulo_orden" name="orden" min="0" required>
-                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -925,13 +895,6 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label for="accion_orden" class="form-label">
-                                Orden
-                            </label>
-
-                            <input type="number" class="form-control" id="accion_orden" name="orden" value="0" min="0" placeholder="Orden de la acción" required>
-                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -1027,13 +990,6 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label for="editar_accion_orden" class="form-label">
-                                Orden
-                            </label>
-
-                            <input type="number" class="form-control" id="editar_accion_orden" name="orden" min="0" placeholder="Orden de la acción" required>
-                        </div>
                     </div>
 
                     <div class="modal-footer">
