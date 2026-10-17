@@ -28,33 +28,35 @@
     $precioMostrado = $membresia->precio_mostrado;
 @endphp
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <div class="d-flex align-items-center gap-2 mb-1">
-            <a href="{{ route('membresias.index') }}" class="btn btn-sm btn-outline-secondary" title="Volver">
-                <i class="fa-solid fa-arrow-left"></i>
-            </a>
+<div class="card border-0 shadow-sm membresias-header-card mb-4">
+    <div class="card-body membresias-header-content">
+        <div class="membresias-header-text">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <a href="{{ route('membresias.index') }}" class="btn btn-sm btn-outline-secondary" title="Volver">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
 
-            <h1 class="fw-bold mb-0">
-                Membresía
-            </h1>
+                <h1 class="fw-bold mb-0">
+                    Membresía
+                </h1>
+            </div>
+
+            <p class="text-secondary mb-0">
+                Detalle de la membresía y su historial de pagos.
+            </p>
         </div>
 
-        <p class="text-secondary mb-0">
-            Detalle de la membresía y su historial de pagos.
-        </p>
-    </div>
-
-    <div class="d-flex align-items-center gap-2">
-        @foreach ($accionesMembresias as $accion)
-            @if ($accion->slug === 'membresias.cancelar' && $membresia->estado === 'activa')
-                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
-                    data-bs-target="#modalCancelarMembresia">
-                    {!! $accion->icono ?: '<i class="fa-solid fa-ban me-2"></i>' !!}
-                    {{ $accion->nombre }}
-                </button>
-            @endif
-        @endforeach
+        <div class="membresias-header-actions">
+            @foreach ($accionesMembresias as $accion)
+                @if ($accion->slug === 'membresias.cancelar' && $membresia->estado === 'activa')
+                    <button type="button" class="btn btn-outline-danger membresias-header-action" data-bs-toggle="modal"
+                        data-bs-target="#modalCancelarMembresia">
+                        {!! $accion->icono ?: '<i class="fa-solid fa-ban me-2"></i>' !!}
+                        {{ $accion->nombre }}
+                    </button>
+                @endif
+            @endforeach
+        </div>
     </div>
 </div>
 

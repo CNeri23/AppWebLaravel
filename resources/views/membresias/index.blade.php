@@ -16,20 +16,22 @@
 
     @endphp
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="fw-bold mb-1">Membresías</h1>
-            <p class="text-secondary mb-0">Administración de membresías del gimnasio.</p>
+    <div class="card border-0 shadow-sm membresias-header-card mb-4">
+        <div class="card-body membresias-header-content">
+            <div class="membresias-header-text">
+                <h1 class="fw-bold mb-1">Membresías</h1>
+                <p class="text-secondary mb-0">Administración de membresías del gimnasio.</p>
+            </div>
+            @foreach ($accionesMembresias as $accion)
+                @if ($accion->slug === 'membresias.crear')
+                    <button type="button" class="btn btn-primary membresias-header-action" data-bs-toggle="modal"
+                        data-bs-target="#modalNuevaMembresia" data-tooltip="{{ $accion->nombre }}">
+                        {!! $accion->icono ?: '<i class="fa-solid fa-id-card me-2"></i>' !!}
+                        {{ $accion->nombre }}
+                    </button>
+                @endif
+            @endforeach
         </div>
-        @foreach ($accionesMembresias as $accion)
-            @if ($accion->slug === 'membresias.crear')
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevaMembresia"
-                    data-tooltip="{{ $accion->nombre }}">
-                    {!! $accion->icono ?: '<i class="fa-solid fa-id-card me-2"></i>' !!}
-                    {{ $accion->nombre }}
-                </button>
-            @endif
-        @endforeach
     </div>
     <script>
         window.accionesMembresias = @json($accionesMembresiasJs);

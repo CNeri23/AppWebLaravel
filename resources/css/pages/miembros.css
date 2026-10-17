@@ -304,3 +304,42 @@ html[data-bs-theme="dark"] .ss-content .ss-search input {
 html[data-bs-theme="dark"] .ss-content .ss-search input {
     background-color: var(--field-bg) !important;
 }
+
+
+.miembros-header-card {
+    border-radius: 14px;
+    background: var(--bs-card-bg);
+}
+
+.miembros-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1.25rem;
+}
+
+.miembros-header-text {
+    min-width: 0;
+}
+
+.miembros-header-text h1 {
+    overflow-wrap: anywhere;
+}
+
+.miembros-header-action {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .miembros-header-content {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 0.8rem 1rem;
+    }
+
+    .miembros-header-action {
+        width: 100%;
+    }
+}

@@ -362,3 +362,55 @@ html[data-bs-theme="dark"] .ss-content .ss-search input {
 html[data-bs-theme="dark"] .ss-content .ss-search input {
     background-color: var(--field-bg) !important;
 }
+
+
+.membresias-header-card {
+    border-radius: 14px;
+    background: var(--bs-card-bg);
+}
+
+.membresias-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1.25rem;
+}
+
+.membresias-header-text {
+    min-width: 0;
+}
+
+.membresias-header-text h1 {
+    overflow-wrap: anywhere;
+}
+
+.membresias-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.membresias-header-action {
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .membresias-header-content {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 0.8rem 1rem;
+    }
+
+    .membresias-header-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .membresias-header-actions > .btn {
+        width: 100%;
+    }
+}
