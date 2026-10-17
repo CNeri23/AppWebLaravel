@@ -70,51 +70,51 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
 }
 
 .swal2-popup.toast-success {
-    --toast-accent: #e8f5ed;
-    --toast-foreground: #245b3c;
-    --toast-border: #cce8d6;
+    --toast-accent: #d9f2e3;
+    --toast-foreground: #17633d;
+    --toast-border: #a9dfbf;
 }
 
 .swal2-popup.toast-error {
-    --toast-accent: #fbeaec;
-    --toast-foreground: #8e2f3a;
-    --toast-border: #f1cbd0;
+    --toast-accent: #f9dfe2;
+    --toast-foreground: #8f2634;
+    --toast-border: #edb3bc;
 }
 
 .swal2-popup.toast-info {
-    --toast-accent: #e8f1fc;
-    --toast-foreground: #244f85;
-    --toast-border: #cbdcf4;
+    --toast-accent: #dcecff;
+    --toast-foreground: #174f91;
+    --toast-border: #aacbf4;
 }
 
 .swal2-popup.toast-warning {
-    --toast-accent: #fff3d9;
-    --toast-foreground: #785316;
-    --toast-border: #f3dfb3;
+    --toast-accent: #ffedc2;
+    --toast-foreground: #76500a;
+    --toast-border: #f0d18a;
 }
 
 [data-bs-theme="dark"] .swal2-popup.toast-success {
-    --toast-accent: #233c30;
-    --toast-foreground: #d2eadb;
-    --toast-border: #355744;
+    --toast-accent: #174b32;
+    --toast-foreground: #d9fbe7;
+    --toast-border: #28794f;
 }
 
 [data-bs-theme="dark"] .swal2-popup.toast-error {
-    --toast-accent: #462b30;
-    --toast-foreground: #f2d4d8;
-    --toast-border: #613940;
+    --toast-accent: #54232b;
+    --toast-foreground: #ffe1e5;
+    --toast-border: #8e3543;
 }
 
 [data-bs-theme="dark"] .swal2-popup.toast-info {
-    --toast-accent: #26384e;
-    --toast-foreground: #d5e5fa;
-    --toast-border: #354d69;
+    --toast-accent: #193d65;
+    --toast-foreground: #deedff;
+    --toast-border: #2e68a3;
 }
 
 [data-bs-theme="dark"] .swal2-popup.toast-warning {
-    --toast-accent: #443923;
-    --toast-foreground: #f4e4bd;
-    --toast-border: #5c4b2d;
+    --toast-accent: #594014;
+    --toast-foreground: #fff0c9;
+    --toast-border: #967025;
 }
 
 /* Solo se ajustan los colores del icono; su forma y animación quedan a cargo de SweetAlert2. */
@@ -185,9 +185,14 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
 
 .swal2-popup.toast .swal-toast-close {
     position: absolute !important;
-    top: 8px !important;
-    right: 8px !important;
-    left: auto !important;
+    inset-block-start: 7px !important;
+    inset-inline-end: 7px !important;
+    inset-inline-start: auto !important;
+    transform: none !important;
+    z-index: 5 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     margin: 0 !important;
     width: 25px !important;
     min-width: 25px !important;
@@ -196,12 +201,8 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
     border-radius: 7px !important;
     color: var(--toast-foreground) !important;
     font-size: 19px !important;
-    line-height: 25px !important;
-    opacity: 0.78;
-}
-
-.swal2-popup.toast .swal-toast-close {
-    color: var(--toast-foreground) !important;
+    line-height: 1 !important;
+    opacity: 0.82;
 }
 
 .swal2-popup.toast .swal-toast-close:hover {

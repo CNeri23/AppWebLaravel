@@ -22,14 +22,6 @@ window.showToast = function (tipo, mensaje) {
             timerProgressBar: 'swal-toast-progress'
         },
 
-        showClass: {
-            popup: 'toast-show',
-            icon: 'swal2-icon-show'
-        },
-
-        hideClass: {
-            popup: 'toast-hide'
-        },
 
         didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer);
