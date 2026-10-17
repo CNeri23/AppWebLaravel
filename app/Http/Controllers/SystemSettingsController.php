@@ -41,7 +41,7 @@ class SystemSettingsController extends Controller
         'system_name' => 'configuracion.nombre',
         'logo' => 'configuracion.logotipo',
         'accent_color' => 'configuracion.apariencia',
-        'font_family' => 'configuracion.apariencia',
+        'font_family' => 'configuracion.tipografia',
         'currency' => 'configuracion.moneda',
         'timezone' => 'configuracion.zona_horaria',
         'date_format' => 'configuracion.formato_fecha',
