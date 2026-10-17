@@ -318,6 +318,70 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    function camposFormulario(formulario) {
+        return Array.from(formulario.querySelectorAll('input:not([type="hidden"]):not([type="submit"]):not([type="button"]), textarea'));
+    }
+
+    function limpiarValidacionCampo(campo) {
+        campo.classList.remove('is-invalid');
+        campo.setCustomValidity('');
+        const contenedor = campo.closest('.input-group') || campo;
+        const feedback = contenedor.nextElementSibling;
+        if (feedback && feedback.classList.contains('js-campo-feedback')) feedback.remove();
+    }
+
+    function mensajeValidacionCampo(campo, formulario) {
+        const valor = campo.value.trim();
+        if (campo.name === 'descripcion' && formulario === formEditar && valor === '') return '';
+        if (valor === '') return 'Este campo es obligatorio.';
+        if (campo.name === 'nombre' && valor.length > 100) return 'El nombre no puede superar los 100 caracteres.';
+        if (campo.name === 'descripcion' && valor.length > 255) return 'La descripción no puede superar los 255 caracteres.';
+        if (campo.name === 'duracion_dias' && (!Number.isInteger(Number(valor)) || Number(valor) < 1)) return 'La duración debe ser un número entero mayor o igual a 1.';
+        if (campo.name === 'precio') {
+            const precio = Number(valor);
+            const decimales = valor.includes('.') ? valor.split('.')[1].length : 0;
+            if (!Number.isFinite(precio) || precio < 0 || precio > 99999999.99 || decimales > 2) return 'Ingresa un precio entre 0 y 99,999,999.99 con máximo dos decimales.';
+        }
+        return '';
+    }
+
+    function validarCampo(campo, formulario) {
+        limpiarValidacionCampo(campo);
+        const mensaje = mensajeValidacionCampo(campo, formulario);
+        if (!mensaje) return true;
+        campo.classList.add('is-invalid');
+        campo.setCustomValidity(mensaje);
+        const feedback = document.createElement('div');
+        feedback.className = 'invalid-feedback js-campo-feedback';
+        feedback.textContent = mensaje;
+        (campo.closest('.input-group') || campo).insertAdjacentElement('afterend', feedback);
+        return false;
+    }
+
+    function validarFormulario(formulario) {
+        let primerInvalido = null;
+        camposFormulario(formulario).forEach(function (campo) {
+            if (!validarCampo(campo, formulario) && !primerInvalido) primerInvalido = campo;
+        });
+        if (primerInvalido) { primerInvalido.focus(); return false; }
+        camposFormulario(formulario).forEach(function (campo) { campo.value = campo.value.trim(); });
+        return true;
+    }
+
+    function inicializarValidacionFormularios() {
+        [formNuevo, formEditar].filter(Boolean).forEach(function (formulario) {
+            camposFormulario(formulario).forEach(function (campo) {
+                campo.addEventListener('input', function () { validarCampo(campo, formulario); });
+                campo.addEventListener('change', function () { validarCampo(campo, formulario); });
+            });
+        });
+        [modalNuevo, modalEditar].filter(Boolean).forEach(function (modal) {
+            modal.addEventListener('show.bs.modal', function () {
+                const formulario = modal.querySelector('form');
+                if (formulario) camposFormulario(formulario).forEach(limpiarValidacionCampo);
+            });
+        });
+    }
     function mostrarError(error) {
         window.showToast('error', error.message);
     }
@@ -486,6 +550,10 @@ document.addEventListener('DOMContentLoaded', function () {
     formNuevo?.addEventListener('submit',
         function (evento) {
             evento.preventDefault();
+            if (!validarFormulario(formNuevo)) {
+                window.showToast('warning', 'Completa correctamente los campos marcados.');
+                return;
+            }
             const boton =formNuevo.querySelector('button[type="submit"]');
             const textoOriginal = boton?.innerHTML;
 
@@ -519,7 +587,10 @@ document.addEventListener('DOMContentLoaded', function () {
     formEditar?.addEventListener('submit',
         function (evento) {
             evento.preventDefault();
-
+            if (!validarFormulario(formEditar)) {
+                window.showToast('warning', 'Completa correctamente los campos marcados.');
+                return;
+            }
             const formData =new FormData(formEditar);
             const datosActuales = {
                 nombre: String(formData.get('nombre') || '').trim(),
@@ -758,5 +829,6 @@ document.addEventListener('DOMContentLoaded', function () {
             planOriginalSnapshot = null;
         }
     );
+    inicializarValidacionFormularios();
     inicializarDataTable();
 });
