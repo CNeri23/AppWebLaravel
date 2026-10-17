@@ -1413,6 +1413,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const observacionesActuales = String(document.getElementById('editar_observaciones')?.value || '').trim();
 
             if (observacionesActuales === (observacionesOriginales ?? '')) {
+                formEditar.querySelectorAll('.is-valid, .is-invalid').forEach(function (campo) {
+                    campo.classList.remove('is-valid', 'is-invalid');
+                    campo.removeAttribute('aria-invalid');
+                });
+                formEditar.querySelectorAll('.invalid-feedback').forEach(function (feedback) {
+                    feedback.textContent = '';
+                    feedback.classList.remove('d-block');
+                });
                 window.showToast('info', 'No hubo cambios para actualizar.');
                 return;
             }
