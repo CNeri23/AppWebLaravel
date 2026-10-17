@@ -10,7 +10,7 @@
     @foreach ($accionesUsuarios as $accion)
         @if ($accion->slug === 'usuarios.crear')
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                data-bs-target="#modalNuevoUsuario" title="Agregar usuario">
+                data-bs-target="#modalNuevoUsuario" data-tooltip="Agregar usuario">
                 {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
                 {{ $accion->nombre }}
             </button>
@@ -88,7 +88,7 @@
                                 @if ($accion->slug === 'usuarios.editar')
                                 <button type="button"
                                     class="btn btn-sm btn-outline-primary usuario-action-btn"
-                                    title="{{ $accion->nombre }}"
+                                    data-tooltip="{{ $accion->nombre }}"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalEditarUsuario"
                                     data-id="{{ $usuario->id }}"
@@ -107,7 +107,7 @@
                                 @elseif ($accion->slug === 'usuarios.toggle')
                                 <button type="button"
                                     class="usuario-toggle-btn btn-estado-usuario {{ $usuario->activo ? 'activo' : 'inactivo' }}"
-                                    title="{{ $usuario->activo ? 'Desactivar usuario' : 'Activar usuario' }}"
+                                    data-tooltip="{{ $usuario->activo ? 'Desactivar usuario' : 'Activar usuario' }}"
                                     data-id="{{ $usuario->id }}"
                                     data-name="{{ $usuario->username }}"
                                     data-activo="{{ $usuario->activo ? 1 : 0 }}"
