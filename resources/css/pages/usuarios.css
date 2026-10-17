@@ -310,7 +310,7 @@
 #tablaUsuarios .btn.usuario-action-btn {
     position: relative;
     isolation: isolate;
-    overflow: hidden;
+    overflow: visible;
     width: 35px;
     height: 35px;
     border: 1px solid rgba(var(--ua), 0.28);
@@ -369,27 +369,27 @@
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-primary,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
-    --ua: 139, 169, 216;
+    --ua: 151, 180, 229;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-success,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-user-shield, .fa-user-check, .fa-arrows-rotate) {
-    --ua: 91, 173, 119;
+    --ua: 101, 190, 130;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-danger,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
-    --ua: 211, 126, 126;
+    --ua: 224, 137, 137;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-warning,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-key) {
-    --ua: 211, 166, 91;
+    --ua: 224, 177, 99;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-info,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-eye) {
-    --ua: 91, 171, 188;
+    --ua: 101, 188, 204;
 }
 
 #tablaUsuarios .btn.usuario-action-btn:hover {
@@ -491,8 +491,8 @@
     padding: 9px 12px;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 9px;
-    background: #252a32;
-    color: #f8fafc;
+    background: #000000;
+    color: #ffffff;
     content: attr(data-tooltip);
     font-family: inherit;
     font-size: 13px;
@@ -518,7 +518,7 @@
     height: 7px;
     border-right: 1px solid rgba(255, 255, 255, 0.12);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    background: #252a32;
+    background: #000000;
     content: "";
     opacity: 0;
     visibility: hidden;
@@ -543,12 +543,6 @@
 #tablaUsuarios .usuario-actions [data-tooltip]:hover::before,
 #tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::before {
     transform: translate(-50%, 0) rotate(45deg);
-}
-
-[data-bs-theme="light"] #tablaUsuarios .usuario-actions [data-tooltip]::after,
-[data-bs-theme="light"] #tablaUsuarios .usuario-actions [data-tooltip]::before {
-    border-color: rgba(15, 23, 42, 0.1);
-    background: #202733;
 }
 
 @media (max-width: 767.98px) {
