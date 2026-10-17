@@ -6,6 +6,7 @@ use App\Models\Modulo;
 use App\Models\Submodulo;
 use App\Services\AuditLogService;
 use App\Services\PermissionService;
+use App\Services\TreeOrderService;
 use Illuminate\Http\Request;
 
 class ModuloController extends Controller
@@ -63,8 +64,9 @@ class ModuloController extends Controller
 
     public function store(Request $request)
     {
-        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:modulos,slug'], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'], 'orden' => ['required', 'integer', 'min:0'],]);
+        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:modulos,slug'], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'],]);
 
+        $datos['orden'] = TreeOrderService::next(Modulo::class);
         $modulo = Modulo::create($datos);
 
         AuditLogService::log('MODULOS', 'CREAR_MODULO', 'Se creó el módulo "' . $modulo->nombre . '".', $modulo);
@@ -74,7 +76,7 @@ class ModuloController extends Controller
 
     public function update(Request $request, Modulo $modulo)
     {
-        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:modulos,slug,' . $modulo->id,], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'], 'orden' => ['required', 'integer', 'min:0'],]);
+        $datos = $request->validate(['nombre' => ['required', 'string', 'max:100'], 'slug' => ['required', 'string', 'max:100', 'unique:modulos,slug,' . $modulo->id,], 'descripcion' => ['nullable', 'string', 'max:255'], 'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'],]);
 
         $cambios = [];
 
@@ -111,6 +113,9 @@ class ModuloController extends Controller
     {
         $datos = $request->validate(['direccion' => ['required', 'in:arriba,abajo'],]);
 
+        TreeOrderService::normalize(Modulo::class);
+        $modulo->refresh();
+
         $vecino = $datos['direccion'] === 'arriba' ? Modulo::where('orden', '<', $modulo->orden)->orderByDesc('orden')->orderByDesc('id')->first() : Modulo::where('orden', '>', $modulo->orden)->orderBy('orden')->orderBy('id')->first();
 
         if (!$vecino) {
@@ -126,6 +131,7 @@ class ModuloController extends Controller
 
         $modulo->update(['orden' => $ordenVecino,]);
         $vecino->update(['orden' => $ordenModulo,]);
+        TreeOrderService::normalize(Modulo::class);
 
         AuditLogService::log('MODULOS', 'REORDENAR_MODULO', 'Se movió el módulo "' . $modulo->nombre . '" ' . $datos['direccion'] . '.', $modulo);
 
@@ -139,6 +145,7 @@ class ModuloController extends Controller
         AuditLogService::log('MODULOS', 'ELIMINAR_MODULO', 'Se eliminó el módulo "' . $nombreModulo . '".', $modulo);
 
         $modulo->delete();
+        TreeOrderService::normalize(Modulo::class);
 
         return response()->json(['success' => true, 'mensaje' => 'Módulo eliminado correctamente.',]);
     }
