@@ -1,27 +1,31 @@
+/* ==========================================================
+   Alertas SweetAlert2 – toasts y modales
+   ========================================================== */
+
 :root {
     --toast-bg: var(--bs-body-bg, #ffffff);
-    --toast-line: var(--bs-border-color, #dee2e6);
-    --toast-text: var(--bs-body-color, #212529);
-    --toast-muted: var(--bs-secondary-color, #6c757d);
-    --toast-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
-    --toast-backdrop: rgba(15, 23, 42, 0.42);
+    --toast-line: var(--bs-border-color, #e5e7eb);
+    --toast-text: var(--bs-body-color, #1f2937);
+    --toast-muted: var(--bs-secondary-color, #6b7280);
+    --toast-shadow: 0 10px 30px -6px rgba(15, 23, 42, 0.18), 0 4px 10px -4px rgba(15, 23, 42, 0.10);
+    --toast-backdrop: rgba(15, 23, 42, 0.45);
     --confirm-bg: var(--bs-primary, #2878c7);
     --confirm-bg-hover: #2166a9;
     --confirm-fg: #ffffff;
-    --cancel-bg: var(--bs-tertiary-bg, #f1f3f5);
-    --cancel-bg-hover: var(--bs-secondary-bg, #e2e6ea);
-    --cancel-fg: var(--bs-body-color, #343a40);
+    --cancel-bg: var(--bs-tertiary-bg, #f3f4f6);
+    --cancel-bg-hover: var(--bs-secondary-bg, #e5e7eb);
+    --cancel-fg: var(--bs-body-color, #374151);
 }
 
 [data-bs-theme="dark"] {
-    --toast-bg: #242424;
-    --toast-line: #383838;
+    --toast-bg: #1f2125;
+    --toast-line: #34373d;
     --toast-text: #f3f4f6;
-    --toast-muted: #a1a1aa;
-    --toast-shadow: 0 12px 34px rgba(0, 0, 0, 0.35);
-    --toast-backdrop: rgba(0, 0, 0, 0.62);
-    --cancel-bg: #303238;
-    --cancel-bg-hover: #3b3e45;
+    --toast-muted: #9ca3af;
+    --toast-shadow: 0 14px 36px -8px rgba(0, 0, 0, 0.6), 0 4px 10px -4px rgba(0, 0, 0, 0.4);
+    --toast-backdrop: rgba(0, 0, 0, 0.65);
+    --cancel-bg: #2b2e34;
+    --cancel-bg-hover: #373a41;
     --cancel-fg: #e5e7eb;
 }
 
@@ -31,8 +35,8 @@
 
 .swal2-container.swal2-backdrop-show:has(> .swal2-popup:not(.swal2-toast)) {
     background: var(--toast-backdrop) !important;
-    -webkit-backdrop-filter: blur(3px);
-    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
 }
 
 body.swal2-toast-shown .swal2-container,
@@ -50,203 +54,297 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
 }
 
 .swal2-container.swal2-bottom-end {
-    padding: 18px 20px !important;
+    padding: 20px 22px !important;
 }
 
-/* Notificaciones: se conservan los iconos y animaciones nativos de SweetAlert2. */
+/* ==========================================================
+   TOASTS
+   Tarjeta neutra + barra de acento lateral con el color del tipo
+   ========================================================== */
 .swal2-popup.toast {
-    --toast-accent: #e8f5ed;
-    --toast-foreground: #245b3c;
-    width: 420px !important;
+    --toast-color: #3b82f6;
+    --toast-tint: rgba(59, 130, 246, 0.12);
+
+    position: relative;
+    width: 390px !important;
     max-width: calc(100vw - 32px);
     min-width: 0;
-    padding: 15px 44px 17px 15px !important;
+    padding: 14px 42px 17px 18px !important;
     overflow: hidden;
-    border: 1px solid var(--toast-border, #cce8d6) !important;
-    border-radius: 13px !important;
-    background: var(--toast-accent) !important;
-    color: var(--toast-foreground) !important;
-    box-shadow: 0 8px 24px rgba(24, 39, 30, 0.12) !important;
+    align-items: center;
+    border: 1px solid var(--toast-line) !important;
+    border-radius: 12px !important;
+    background: var(--toast-bg) !important;
+    color: var(--toast-text) !important;
+    box-shadow: inset 4px 0 0 var(--toast-color), var(--toast-shadow) !important;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
-.swal2-popup.toast-success {
-    --toast-accent: #d9f2e3;
-    --toast-foreground: #17633d;
-    --toast-border: #a9dfbf;
+.swal2-popup.toast:hover {
+    transform: translateY(-1px);
 }
 
-.swal2-popup.toast-error {
-    --toast-accent: #f9dfe2;
-    --toast-foreground: #8f2634;
-    --toast-border: #edb3bc;
-}
+.swal2-popup.toast-success { --toast-color: #16a34a; --toast-tint: rgba(22, 163, 74, 0.12); }
+.swal2-popup.toast-error   { --toast-color: #dc2626; --toast-tint: rgba(220, 38, 38, 0.12); }
+.swal2-popup.toast-warning { --toast-color: #d97706; --toast-tint: rgba(217, 119, 6, 0.14); }
+.swal2-popup.toast-info    { --toast-color: #2563eb; --toast-tint: rgba(37, 99, 235, 0.12); }
 
-.swal2-popup.toast-info {
-    --toast-accent: #dcecff;
-    --toast-foreground: #174f91;
-    --toast-border: #aacbf4;
-}
+[data-bs-theme="dark"] .swal2-popup.toast-success { --toast-color: #4ade80; --toast-tint: rgba(74, 222, 128, 0.14); }
+[data-bs-theme="dark"] .swal2-popup.toast-error   { --toast-color: #f87171; --toast-tint: rgba(248, 113, 113, 0.14); }
+[data-bs-theme="dark"] .swal2-popup.toast-warning { --toast-color: #fbbf24; --toast-tint: rgba(251, 191, 36, 0.14); }
+[data-bs-theme="dark"] .swal2-popup.toast-info    { --toast-color: #60a5fa; --toast-tint: rgba(96, 165, 250, 0.14); }
 
-.swal2-popup.toast-warning {
-    --toast-accent: #ffedc2;
-    --toast-foreground: #76500a;
-    --toast-border: #f0d18a;
-}
-
-[data-bs-theme="dark"] .swal2-popup.toast-success {
-    --toast-accent: #174b32;
-    --toast-foreground: #d9fbe7;
-    --toast-border: #28794f;
-}
-
-[data-bs-theme="dark"] .swal2-popup.toast-error {
-    --toast-accent: #54232b;
-    --toast-foreground: #ffe1e5;
-    --toast-border: #8e3543;
-}
-
-[data-bs-theme="dark"] .swal2-popup.toast-info {
-    --toast-accent: #193d65;
-    --toast-foreground: #deedff;
-    --toast-border: #2e68a3;
-}
-
-[data-bs-theme="dark"] .swal2-popup.toast-warning {
-    --toast-accent: #594014;
-    --toast-foreground: #fff0c9;
-    --toast-border: #967025;
-}
-
-/* Solo se ajustan los colores del icono; su forma y animación quedan a cargo de SweetAlert2. */
+/* Icono: se conserva el nativo de SweetAlert2, solo se recolorea y alinea */
 .swal2-popup.toast .swal2-icon {
     flex-shrink: 0;
+    width: 2.1em !important;
+    min-width: 2.1em !important;
+    height: 2.1em !important;
+    margin: 0 12px 0 0 !important;
+    border-color: var(--toast-color) !important;
+    color: var(--toast-color) !important;
+    background: var(--toast-tint);
 }
 
 .swal2-popup.toast .swal2-icon.swal2-success {
-    border-color: #3b9b68 !important;
-    color: #25834f !important;
+    border-color: var(--toast-color) !important;
+    color: var(--toast-color) !important;
 }
 
 .swal2-popup.toast .swal2-icon.swal2-success .swal2-success-ring {
-    border-color: #3b9b68 !important;
+    border-color: var(--toast-tint) !important;
 }
 
 .swal2-popup.toast .swal2-icon.swal2-success [class^="swal2-success-line"] {
-    background-color: #25834f !important;
+    background-color: var(--toast-color) !important;
 }
 
-.swal2-popup.toast-error .swal2-icon.swal2-error {
-    border-color: #d34c5b !important;
+.swal2-popup.toast .swal2-icon.swal2-success [class^="swal2-success-circular-line"],
+.swal2-popup.toast .swal2-icon.swal2-success .swal2-success-fix {
+    background: transparent !important;
 }
 
-.swal2-popup.toast-info .swal2-icon.swal2-info {
-    border-color: #3978c8 !important;
-    color: #3978c8 !important;
+.swal2-popup.toast .swal2-icon.swal2-error [class^="swal2-x-mark-line"] {
+    background-color: var(--toast-color) !important;
 }
 
+/* Warning: triángulo con "!" para distinguirlo del icono de info (círculo).
+   El triángulo se dibuja con una máscara SVG (contorno + relleno suave) para
+   poder usar el color del tipo; el "!" es el texto nativo y se anima aparte. */
 .swal2-popup.toast-warning .swal2-icon.swal2-warning {
-    border-color: #c18a22 !important;
-    color: #c18a22 !important;
+    position: relative;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    overflow: visible;
 }
 
+.swal2-popup.toast-warning .swal2-icon.swal2-warning::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background-color: var(--toast-color);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3.2 22 20.4H2Z' fill='%23000' fill-opacity='.16' stroke='%23000' stroke-width='1.9' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3.2 22 20.4H2Z' fill='%23000' fill-opacity='.16' stroke='%23000' stroke-width='1.9' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.swal2-popup.toast-warning .swal2-icon.swal2-warning .swal2-icon-content {
+    position: relative;
+    z-index: 1;
+    margin-top: 7px;
+    color: var(--toast-color) !important;
+    font-size: 17px !important;
+    font-weight: 800;
+    line-height: 1;
+    animation: none !important;
+    transform-origin: center 80%;
+}
+
+@keyframes toast-warn-bang {
+    0%   { opacity: 0; transform: translateY(-8px) scale(0.4); }
+    40%  { opacity: 1; transform: translateY(1px) scale(1.25); }
+    55%  { transform: rotate(-12deg) scale(1.05); }
+    70%  { transform: rotate(9deg); }
+    85%  { transform: rotate(-4deg); }
+    100% { opacity: 1; transform: rotate(0) scale(1); }
+}
+
+.toast-anim-in.toast-warning .swal2-icon.swal2-warning .swal2-icon-content {
+    animation: toast-warn-bang 0.7s ease-out 0.45s backwards !important;
+}
+
+/* Título con etiqueta superior (Éxito / Error / ...) */
 .swal2-popup.toast .swal2-title.toast-title {
-    color: var(--toast-foreground) !important;
-    font-size: 14px !important;
-    font-weight: 650 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: var(--toast-text) !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
     line-height: 1.4;
+    text-align: left;
 }
 
 .swal2-popup.toast .swal2-title.toast-title::before {
     display: block;
-    margin-bottom: 4px;
-    color: var(--toast-foreground) !important;
-    opacity: 0.78;
-    font-size: 10px;
+    margin-bottom: 3px;
+    color: var(--toast-color);
+    font-size: 10.5px;
     font-weight: 700;
     line-height: 1.2;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
 }
 
-.swal2-popup.toast-success .swal2-title.toast-title::before {
-    content: "Éxito";
-}
+.swal2-popup.toast-success .swal2-title.toast-title::before { content: "Éxito"; }
+.swal2-popup.toast-error   .swal2-title.toast-title::before { content: "Error"; }
+.swal2-popup.toast-warning .swal2-title.toast-title::before { content: "Atención"; }
+.swal2-popup.toast-info    .swal2-title.toast-title::before { content: "Información"; }
 
-.swal2-popup.toast-error .swal2-title.toast-title::before {
-    content: "Error";
-}
-
-.swal2-popup.toast-warning .swal2-title.toast-title::before {
-    content: "Atención";
-}
-
-.swal2-popup.toast-info .swal2-title.toast-title::before {
-    content: "Información";
-}
-
-.swal2-popup.toast {
-    position: relative !important;
-}
-
+/* Botón cerrar */
+.swal2-popup.swal2-toast.toast > .swal2-close.swal-toast-close,
 .swal2-popup.toast .swal-toast-close {
     position: absolute !important;
-    top: 6px !important;
-    right: 6px !important;
+    top: 8px !important;
+    right: 8px !important;
     bottom: auto !important;
     left: auto !important;
-    inset: 6px 6px auto auto !important;
+    inset-block-start: 8px !important;
+    inset-inline-end: 8px !important;
+    inset-inline-start: auto !important;
+    grid-area: auto !important;
+    align-self: auto !important;
+    justify-self: auto !important;
+    float: none !important;
     transform: none !important;
-    z-index: 10 !important;
+    z-index: 5 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     margin: 0 !important;
-    width: 25px !important;
-    min-width: 25px !important;
-    height: 25px !important;
+    width: 24px !important;
+    min-width: 24px !important;
+    height: 24px !important;
     padding: 0 !important;
-    border-radius: 7px !important;
-    color: var(--toast-foreground) !important;
-    font-size: 19px !important;
+    border-radius: 6px !important;
+    color: var(--toast-muted) !important;
+    font-size: 18px !important;
     line-height: 1 !important;
-    opacity: 0.82;
+    opacity: 0.8;
+    transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
 }
 
 .swal2-popup.toast .swal-toast-close:hover {
-    background: rgba(100, 116, 139, 0.12) !important;
+    background: var(--toast-tint) !important;
+    color: var(--toast-color) !important;
     opacity: 1;
 }
 
+.swal2-popup.toast .swal-toast-close:focus-visible {
+    outline: 2px solid var(--toast-color);
+    outline-offset: 1px;
+    box-shadow: none !important;
+}
+
+/* Barra de progreso */
 .swal2-popup.toast .swal2-timer-progress-bar-container {
     height: 3px !important;
-    background: rgba(100, 116, 139, 0.12) !important;
+    background: transparent !important;
 }
 
 .swal2-popup.toast .swal-toast-progress {
     height: 3px !important;
-    background: var(--toast-foreground) !important;
-    opacity: 0.42;
+    background: var(--toast-color) !important;
+    opacity: 0.75;
 }
 
-/* Confirmaciones y alertas modales */
+/* Animaciones de entrada / salida (se activan desde toast.js) */
+/* Entrada: la tarjeta "aterriza" con resorte, desenfoque que se enfoca y ligera inclinación.
+   Después el icono hace pop, el texto sube y la barra de acento se despliega. */
+@keyframes toast-in {
+    0%   { opacity: 0; transform: translateX(70px) scale(0.86) rotate(2.5deg); filter: blur(6px); }
+    55%  { opacity: 1; transform: translateX(-7px) scale(1.025) rotate(-0.4deg); filter: blur(0); }
+    78%  { transform: translateX(2px) scale(0.995) rotate(0); }
+    100% { opacity: 1; transform: translateX(0) scale(1) rotate(0); filter: blur(0); }
+}
+
+@keyframes toast-icon-pop {
+    0%   { transform: scale(0) rotate(-90deg); opacity: 0; }
+    60%  { transform: scale(1.25) rotate(8deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+@keyframes toast-text-rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toast-bar-grow {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
+}
+
+/* Salida: se contrae, se desenfoca y se desliza hacia afuera */
+@keyframes toast-out {
+    0%   { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); }
+    25%  { transform: translateX(-6px) scale(1.02); }
+    100% { opacity: 0; transform: translateX(60px) scale(0.82) rotate(2deg); filter: blur(5px); }
+}
+
+.toast-anim-in {
+    animation: toast-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    transform-origin: right center;
+}
+
+.toast-anim-in .swal2-icon {
+    animation: toast-icon-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s backwards;
+}
+
+.toast-anim-in .swal2-title {
+    animation: toast-text-rise 0.45s ease-out 0.28s backwards;
+}
+
+.toast-anim-in::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: 4px;
+    background: var(--toast-color);
+    transform-origin: center;
+    animation: toast-bar-grow 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.1s backwards;
+    pointer-events: none;
+}
+
+.toast-anim-out {
+    animation: toast-out 0.35s cubic-bezier(0.55, 0, 0.8, 0.3) forwards;
+    transform-origin: right center;
+}
+
+/* ==========================================================
+   MODALES (confirmaciones y alertas)
+   ========================================================== */
 .swal-confirmacion,
 .swal-confirmacion-light,
 .swal-confirmacion-dark {
     border: 1px solid var(--toast-line) !important;
-    border-radius: 14px !important;
+    border-radius: 16px !important;
     background: var(--toast-bg) !important;
     color: var(--toast-text) !important;
     box-shadow: var(--toast-shadow) !important;
 }
 
 .swal-confirmacion .swal2-icon {
-    width: 48px !important;
-    height: 48px !important;
-    margin: 0 auto 12px !important;
+    width: 52px !important;
+    height: 52px !important;
+    margin: 0 auto 14px !important;
     border-width: 2px !important;
 }
 
 .swal-confirmacion .swal2-icon .swal2-icon-content {
-    font-size: 25px !important;
+    font-size: 26px !important;
 }
 
 .swal-confirmacion-titulo {
@@ -254,34 +352,36 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
     color: var(--toast-text) !important;
     font-size: 19px !important;
     font-weight: 700 !important;
+    letter-spacing: -0.01em;
 }
 
 .swal-confirmacion-texto {
     margin: 0 !important;
     color: var(--toast-muted) !important;
     font-size: 14px !important;
-    line-height: 1.5;
+    line-height: 1.55;
 }
 
 .swal-confirmacion .swal2-actions {
-    margin-top: 20px !important;
-    gap: 8px !important;
+    margin-top: 22px !important;
+    gap: 10px !important;
 }
 
 .swal-confirmacion-confirmar,
 .swal-confirmacion-cancelar {
-    padding: 9px 17px !important;
+    padding: 10px 18px !important;
     border: 1px solid transparent !important;
-    border-radius: 8px !important;
+    border-radius: 10px !important;
     font-size: 13px !important;
     font-weight: 600 !important;
     box-shadow: none !important;
-    transition: background-color 0.15s ease, border-color 0.15s ease !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease !important;
 }
 
 .swal-confirmacion-confirmar {
     background: var(--confirm-bg) !important;
     color: var(--confirm-fg) !important;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.2), 0 4px 10px -4px var(--confirm-bg) !important;
 }
 
 .swal-confirmacion-confirmar:hover {
@@ -298,16 +398,22 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
     background: var(--cancel-bg-hover) !important;
 }
 
+.swal-confirmacion-confirmar:active,
+.swal-confirmacion-cancelar:active {
+    transform: scale(0.97);
+}
+
 .swal-confirmacion-confirmar:focus-visible,
 .swal-confirmacion-cancelar:focus-visible {
     outline: 2px solid var(--confirm-bg);
     outline-offset: 2px;
 }
 
+/* Modales genéricos de SweetAlert2 (sin customClass) */
 .swal2-popup:not(.swal2-toast) {
     width: 420px !important;
     max-width: calc(100vw - 32px);
-    padding: 28px 26px 24px !important;
+    padding: 30px 26px 24px !important;
     overflow: hidden;
     border: 1px solid var(--toast-line) !important;
     border-radius: 16px !important;
@@ -329,6 +435,7 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
     color: var(--toast-text) !important;
     font-size: 21px !important;
     font-weight: 700 !important;
+    letter-spacing: -0.01em;
     line-height: 1.3;
 }
 
@@ -342,21 +449,25 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
 
 .swal2-popup:not(.swal2-toast) .swal2-actions {
     width: 100%;
-    margin: 22px 0 0 !important;
-    gap: 8px;
+    margin: 24px 0 0 !important;
+    gap: 10px;
     justify-content: center;
 }
 
 .swal2-popup:not(.swal2-toast) .swal2-actions button {
-    min-width: 104px;
+    min-width: 108px;
     margin: 0 !important;
-    padding: 9px 17px !important;
+    padding: 10px 18px !important;
     border: 1px solid transparent !important;
-    border-radius: 8px !important;
+    border-radius: 10px !important;
     font-size: 13px !important;
     font-weight: 600 !important;
     box-shadow: none !important;
-    transition: background-color 0.15s ease, border-color 0.15s ease !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease !important;
+}
+
+.swal2-popup:not(.swal2-toast) .swal2-actions button:active {
+    transform: scale(0.97);
 }
 
 .swal2-popup:not(.swal2-toast) .swal2-actions .swal2-confirm,
@@ -383,6 +494,7 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
 .swal2-popup:not(.swal2-toast) .swal2-actions button:focus-visible {
     outline: 2px solid var(--confirm-bg);
     outline-offset: 2px;
+    box-shadow: none !important;
 }
 
 @media (max-width: 575.98px) {
@@ -402,5 +514,20 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
 
     .swal2-popup:not(.swal2-toast) .swal2-actions {
         flex-wrap: wrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toast-anim-in,
+    .toast-anim-in .swal2-icon,
+    .toast-anim-in .swal2-title,
+    .toast-anim-in.toast-warning .swal2-icon.swal2-warning .swal2-icon-content,
+    .toast-anim-in::after,
+    .toast-anim-out {
+        animation: none !important;
+    }
+
+    .swal2-popup.toast {
+        transition: none;
     }
 }

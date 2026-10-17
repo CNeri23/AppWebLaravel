@@ -14,6 +14,8 @@ window.showToast = function (tipo, mensaje) {
         showCloseButton: true,
         timer: 4500,
         timerProgressBar: true,
+        showClass: { popup: 'toast-anim-in' },
+        hideClass: { popup: 'toast-anim-out' },
         customClass: {
             popup: `toast toast-${tipo}`,
             icon: 'toast-icon',
@@ -21,7 +23,6 @@ window.showToast = function (tipo, mensaje) {
             closeButton: 'swal-toast-close',
             timerProgressBar: 'swal-toast-progress'
         },
-
 
         didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer);
