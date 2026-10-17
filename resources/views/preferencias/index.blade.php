@@ -48,6 +48,26 @@
             ];
         @endphp
 
+
+        <section class="theme-section display-scale-section">
+            <div class="theme-section-header">
+                <div>
+                    <h2>Escala de visualización</h2>
+                    <p>Ajusta el tamaño general del contenido para que sea más cómodo de leer. La preferencia se guarda en tu cuenta.</p>
+                </div>
+            </div>
+            <div class="display-scale-options" role="radiogroup" aria-label="Tamaño del contenido">
+                @foreach (['small' => 'Pequeña', 'medium' => 'Mediana', 'large' => 'Grande'] as $value => $label)
+                    <label class="display-scale-option">
+                        <input type="radio" name="font_scale" value="{{ $value }}" {{ ($preferencias['font_scale'] ?? 'medium') === $value ? 'checked' : '' }}>
+                        <span class="display-scale-preview" aria-hidden="true"><span class="display-scale-letter display-scale-letter-small">A</span><span class="display-scale-letter display-scale-letter-medium">A</span><span class="display-scale-letter display-scale-letter-large">A</span></span>
+                        <span class="display-scale-label">{{ $label }}</span>
+                        <span class="display-scale-check"><i class="fa-solid fa-check"></i></span>
+                    </label>
+                @endforeach
+            </div>
+        </section>
+        <div class="theme-section-divider"></div>
         <section class="theme-section">
             <div class="theme-section-header">
                 <div>

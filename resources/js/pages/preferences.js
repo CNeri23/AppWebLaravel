@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let lightThemeStyle = html.dataset.lightThemeStyle || 'white';
     let darkThemeStyle = html.dataset.darkThemeStyle || 'graphite';
 
+    const opcionesEscala = document.querySelectorAll('input[name="font_scale"]');
+    let fontScale = html.dataset.fontScale || 'medium';
+
     const csrf = document.querySelector('meta[name="csrf-token"]') ?.getAttribute('content');
 
     function esEstiloClaro(style) {
@@ -26,10 +29,36 @@ document.addEventListener('DOMContentLoaded', function () {
         html.setAttribute('data-dark-theme-style', darkThemeStyle);
         html.setAttribute('data-theme-style', obtenerEstiloActual());
         html.setAttribute('data-bs-theme', themeMode);
+        html.setAttribute('data-font-scale', fontScale);
     }
 
     function actualizarSeleccionVisual() {
-        opciones.forEach(function (opcion) {
+    
+    opcionesEscala.forEach(function (opcion) {
+        opcion.addEventListener('change', async function () {
+            if (!this.checked) return;
+            const escalaAnterior = fontScale;
+            fontScale = this.value;
+            html.setAttribute('data-font-scale', fontScale);
+            opcionesEscala.forEach(function (elemento) { elemento.disabled = true; });
+            try {
+                const data = await guardarPreferencia();
+                fontScale = data.preferences?.font_scale || fontScale;
+                html.setAttribute('data-font-scale', fontScale);
+                opcionesEscala.forEach(function (elemento) { elemento.checked = elemento.value === fontScale; });
+                mostrarAviso('El tamaño del contenido se actualizó correctamente.', 'success');
+            } catch (error) {
+                fontScale = escalaAnterior;
+                html.setAttribute('data-font-scale', fontScale);
+                opcionesEscala.forEach(function (elemento) { elemento.checked = elemento.value === fontScale; });
+                mostrarAviso(error.message || 'No fue posible actualizar el tamaño del contenido.', 'error');
+            } finally {
+                opcionesEscala.forEach(function (elemento) { elemento.disabled = false; });
+            }
+        });
+    });
+
+    opciones.forEach(function (opcion) {
             const estiloActivo = opcion.name === 'light_theme_style' ? opcion.value === lightThemeStyle : opcion.value === darkThemeStyle;
             opcion.checked = estiloActivo;
         });
@@ -64,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     theme_mode: themeMode,
                     light_theme_style: lightThemeStyle,
                     dark_theme_style: darkThemeStyle,
+                    font_scale: fontScale,
                 }),
             }
         );
@@ -150,4 +180,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     aplicarTemaActual();
     actualizarSeleccionVisual();
+    opcionesEscala.forEach(function (opcion) { opcion.checked = opcion.value === fontScale; });
 });

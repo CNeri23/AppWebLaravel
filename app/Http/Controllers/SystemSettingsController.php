@@ -407,6 +407,7 @@ class SystemSettingsController extends Controller
                 'required',
                 Rule::in(['graphite', 'charcoal', 'black']),
             ],
+            'font_scale' => ['sometimes', 'required', Rule::in(['small', 'medium', 'large'])],
         ], [
             'theme_mode.required' => 'El modo del tema es obligatorio.',
             'theme_mode.in' => 'El modo del tema seleccionado no es válido.',

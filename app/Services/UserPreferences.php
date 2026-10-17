@@ -11,6 +11,7 @@ class UserPreferences
         'theme_mode' => 'light',
         'light_theme_style' => 'white',
         'dark_theme_style' => 'graphite',
+        'font_scale' => 'medium',
     ];
 
     private const THEME_MODES = [
@@ -61,10 +62,13 @@ class UserPreferences
             ? $preference->dark_theme_style
             : self::DEFAULTS['dark_theme_style'];
 
+        $fontScale = in_array($preference->font_scale, ['small', 'medium', 'large'], true) ? $preference->font_scale : self::DEFAULTS['font_scale'];
+
         return [
             'theme_mode' => $themeMode,
             'light_theme_style' => $lightThemeStyle,
             'dark_theme_style' => $darkThemeStyle,
+            'font_scale' => $fontScale,
         ];
     }
 
@@ -93,12 +97,18 @@ class UserPreferences
             $darkThemeStyle = self::DEFAULTS['dark_theme_style'];
         }
 
+        $fontScale = $preferences['font_scale'] ?? $actuales['font_scale'];
+        if (! in_array($fontScale, ['small', 'medium', 'large'], true)) {
+            $fontScale = self::DEFAULTS['font_scale'];
+        }
+
         $preference = UserPreference::updateOrCreate(
             ['user_id' => $user->id],
             [
                 'theme_mode' => $themeMode,
                 'light_theme_style' => $lightThemeStyle,
                 'dark_theme_style' => $darkThemeStyle,
+                'font_scale' => $fontScale,
             ]
         );
 
@@ -106,6 +116,7 @@ class UserPreferences
             'theme_mode' => $preference->theme_mode,
             'light_theme_style' => $preference->light_theme_style,
             'dark_theme_style' => $preference->dark_theme_style,
+            'font_scale' => $preference->font_scale,
         ];
     }
 }

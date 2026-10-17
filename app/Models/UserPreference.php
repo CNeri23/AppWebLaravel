@@ -12,6 +12,7 @@ class UserPreference extends Model
         'theme_mode',
         'light_theme_style',
         'dark_theme_style',
+        'font_scale',
     ];
 
     public function user(): BelongsTo
