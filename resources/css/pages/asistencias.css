@@ -287,12 +287,12 @@
     .asistencia-actions *, .asistencia-actions *::before { transition: none !important; }
 }
 
-.asistencias-header-card {
+.planes-header-card {
     border-radius: 14px;
     background: var(--bs-card-bg);
 }
 
-.asistencias-header-content {
+.planes-header-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -300,16 +300,16 @@
     padding: 0.8rem 1.25rem;
 }
 
-.asistencias-header-text {
+.planes-header-text {
     min-width: 0;
 }
 
-.asistencias-header-text h1 {
+.planes-header-text h1 {
     overflow-wrap: anywhere;
 }
 
 @media (max-width: 575.98px) {
-    .asistencias-header-content {
+    .planes-header-content {
         align-items: stretch;
         flex-direction: column;
         padding: 0.8rem 1rem;
