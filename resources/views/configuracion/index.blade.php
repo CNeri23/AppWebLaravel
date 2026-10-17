@@ -112,7 +112,17 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                             Este color se utilizará como acento principal en módulos, submódulos, estados activos e indicadores.
                         </small>
                     </div>
-                    @endif
+                    <div class="config-field">
+                        <label for="font_family">Tipo de letra</label>
+                        <select id="font_family" name="font_family" class="form-select">
+                            <option value="inter" {{ ($settings['font_family'] ?? 'inter') === 'inter' ? 'selected' : '' }}>Inter — Moderna y equilibrada</option>
+                            <option value="system" {{ ($settings['font_family'] ?? 'inter') === 'system' ? 'selected' : '' }}>System UI — Nativa del sistema</option>
+                            <option value="arial" {{ ($settings['font_family'] ?? 'inter') === 'arial' ? 'selected' : '' }}>Arial — Clásica y clara</option>
+                            <option value="verdana" {{ ($settings['font_family'] ?? 'inter') === 'verdana' ? 'selected' : '' }}>Verdana — Alta legibilidad</option>
+                            <option value="georgia" {{ ($settings['font_family'] ?? 'inter') === 'georgia' ? 'selected' : '' }}>Georgia — Serif tradicional</option>
+                        </select>
+                        <small>Se aplicará en toda la interfaz: menú lateral, barra superior, tablas, formularios, modales y mensajes.</small>
+                    </div>
                 </div>
             </section>
             @endif
