@@ -310,3 +310,22 @@
 .caja-actions .btn.caja-action-btn:focus-visible > svg {
     color: inherit !important;
 }
+
+
+/* Colores explícitos en modo claro: no depender de la variante Bootstrap del botón. */
+.caja-actions .caja-action-btn.btn-outline-primary,
+.caja-actions .caja-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-pen-to-square, .fa-user-pen) { --ua: 37, 99, 235 !important; color: rgb(37, 99, 235) !important; }
+.caja-actions .caja-action-btn.btn-outline-success,
+.caja-actions .caja-action-btn:has(.fa-user-check, .fa-user-shield, .fa-arrows-rotate) { --ua: 22, 163, 74 !important; color: rgb(22, 163, 74) !important; }
+.caja-actions .caja-action-btn.btn-outline-danger,
+.caja-actions .caja-action-btn:has(.fa-trash, .fa-trash-can, .fa-ban) { --ua: 220, 53, 69 !important; color: rgb(220, 53, 69) !important; }
+.caja-actions .caja-action-btn.btn-outline-warning,
+.caja-actions .caja-action-btn:has(.fa-key, .fa-lock, .fa-user-lock) { --ua: 217, 119, 6 !important; color: rgb(217, 119, 6) !important; }
+.caja-actions .caja-action-btn.btn-outline-info,
+.caja-actions .caja-action-btn:has(.fa-eye) { --ua: 8, 145, 178 !important; color: rgb(8, 145, 178) !important; }
+.caja-actions .caja-action-btn:hover,
+.caja-actions .caja-action-btn:focus-visible { color: rgb(var(--ua)) !important; background: rgba(var(--ua), .13) !important; }
+.caja-actions .caja-action-btn:hover > i,
+.caja-actions .caja-action-btn:hover > svg,
+.caja-actions .caja-action-btn:focus-visible > i,
+.caja-actions .caja-action-btn:focus-visible > svg { color: inherit !important; }
