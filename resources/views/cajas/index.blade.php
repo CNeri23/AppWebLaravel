@@ -10,7 +10,7 @@
     @foreach ($accionesCajas as $accion)
         @if ($accion->slug === 'cajas.crear')
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                data-bs-target="#modalNuevaCaja" title="{{ $accion->nombre }}">
+                data-bs-target="#modalNuevaCaja" data-tooltip="{{ $accion->nombre }}">
                 {!! $accion->icono ?: '<i class="fa-solid fa-plus me-2"></i>' !!}
                 {{ $accion->nombre }}
             </button>
@@ -102,7 +102,7 @@
                                     @if ($accion->slug === 'cajas.editar')
                                         <button type="button"
                                             class="btn btn-sm btn-outline-primary caja-action-btn"
-                                            title="{{ $accion->nombre }}"
+                                            data-tooltip="{{ $accion->nombre }}"
                                             data-bs-toggle="modal"
                                             data-bs-target="#modalEditarCaja"
                                             data-id="{{ $caja->id }}"
@@ -114,13 +114,12 @@
                                     @elseif ($accion->slug === 'cajas.ver')
                                         <a href="{{ route('cajas.sesiones.index', ['caja_id' => $caja->id]) }}"
                                             class="btn btn-sm btn-outline-info caja-action-btn"
-                                            title="{{ $accion->nombre }}">
+                                            data-tooltip="{{ $accion->nombre }}">
                                             {!! $accion->icono ?: '<i class="fa-regular fa-eye"></i>' !!}
                                         </a>
                                     @elseif ($accion->slug === 'cajas.toggle')
                                         <button type="button"
                                             class="usuario-toggle-btn caja-toggle-btn {{ $caja->activo ? 'activo' : 'inactivo' }}"
-                                            title="{{ $caja->activo ? 'Desactivar caja' : 'Activar caja' }}"
                                             data-tooltip="{{ $caja->activo ? 'Desactivar caja' : 'Activar caja' }}"
                                             aria-label="{{ $caja->activo ? 'Desactivar caja' : 'Activar caja' }}"
                                             aria-pressed="{{ $caja->activo ? 'true' : 'false' }}"
