@@ -203,3 +203,26 @@
     background: rgba(var(--ua), 0.2);
     border-color: transparent;
 }
+
+
+/* Ajustes finales: mantener el color del icono durante hover en ambos temas. */
+.miembro-actions .btn.miembro-action-btn:hover,
+.miembro-actions .btn.miembro-action-btn:focus-visible {
+    color: rgb(var(--ua)) !important;
+    background: rgba(var(--ua), 0.13) !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+[data-bs-theme="dark"] .miembro-actions .btn.miembro-action-btn:hover,
+[data-bs-theme="dark"] .miembro-actions .btn.miembro-action-btn:focus-visible {
+    color: color-mix(in srgb, rgb(var(--ua)) 80%, #ffffff) !important;
+    background: rgba(var(--ua), 0.2) !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+.miembro-actions .btn.miembro-action-btn:hover > i,
+.miembro-actions .btn.miembro-action-btn:hover > svg,
+.miembro-actions .btn.miembro-action-btn:focus-visible > i,
+.miembro-actions .btn.miembro-action-btn:focus-visible > svg {
+    color: inherit !important;
+}
