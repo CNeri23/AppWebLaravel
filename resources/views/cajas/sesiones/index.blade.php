@@ -1,35 +1,37 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="fw-bold mb-1">Sesiones de caja</h1>
+<div class="card border-0 shadow-sm sesiones-header-card mb-4">
+    <div class="card-body sesiones-header-content">
+        <div class="sesiones-header-text">
+            <h1 class="fw-bold mb-1">Sesiones de caja</h1>
 
-        <p class="text-secondary mb-0">
-            @if ($cajaFiltro)
-                Sesiones de la caja <strong>{{ $cajaFiltro->nombre }}</strong>.
-                <a href="{{ route('cajas.sesiones.index') }}" class="ms-1">Ver todas</a>
-            @else
-                Historial de aperturas y cierres de todas las cajas.
-            @endif
-        </p>
-    </div>
+            <p class="text-secondary mb-0">
+                @if ($cajaFiltro)
+                    Sesiones de la caja <strong>{{ $cajaFiltro->nombre }}</strong>.
+                    <a href="{{ route('cajas.sesiones.index') }}" class="ms-1">Ver todas</a>
+                @else
+                    Historial de aperturas y cierres de todas las cajas.
+                @endif
+            </p>
+        </div>
 
-    <div class="d-flex gap-2">
-        <a href="{{ route('cajas.index') }}" class="btn btn-outline-secondary">
-            <i class="fa-solid fa-arrow-left me-2"></i>
-            Cajas
-        </a>
+        <div class="sesiones-header-actions">
+            <a href="{{ route('cajas.index') }}" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left me-2"></i>
+                Cajas
+            </a>
 
-        @foreach ($accionesCajas as $accion)
-            @if ($accion->slug === 'cajas.abrir')
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#modalAbrirSesion" title="{{ $accion->nombre }}">
-                    {!! $accion->icono ?: '<i class="fa-solid fa-lock-open me-2"></i>' !!}
-                    {{ $accion->nombre }}
-                </button>
-            @endif
-        @endforeach
+            @foreach ($accionesCajas as $accion)
+                @if ($accion->slug === 'cajas.abrir')
+                    <button type="button" class="btn btn-primary sesiones-header-action" data-bs-toggle="modal"
+                        data-bs-target="#modalAbrirSesion" title="{{ $accion->nombre }}">
+                        {!! $accion->icono ?: '<i class="fa-solid fa-lock-open me-2"></i>' !!}
+                        {{ $accion->nombre }}
+                    </button>
+                @endif
+            @endforeach
+        </div>
     </div>
 </div>
 

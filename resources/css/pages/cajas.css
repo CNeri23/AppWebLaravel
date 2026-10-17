@@ -261,3 +261,42 @@
 @media (prefers-reduced-motion: reduce) {
     .caja-actions *, .caja-actions *::before { transition: none !important; }
 }
+
+
+.cajas-header-card {
+    border-radius: 14px;
+    background: var(--bs-card-bg);
+}
+
+.cajas-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1.25rem;
+}
+
+.cajas-header-text {
+    min-width: 0;
+}
+
+.cajas-header-text h1 {
+    overflow-wrap: anywhere;
+}
+
+.cajas-header-action {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .cajas-header-content {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 0.8rem 1rem;
+    }
+
+    .cajas-header-action {
+        width: 100%;
+    }
+}

@@ -1,21 +1,23 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="fw-bold mb-1">Cajas</h1>
-        <p class="text-secondary mb-0">Administración de cajas registradoras del sistema.</p>
-    </div>
+<div class="card border-0 shadow-sm cajas-header-card mb-4">
+    <div class="card-body cajas-header-content">
+        <div class="cajas-header-text">
+            <h1 class="fw-bold mb-1">Cajas</h1>
+            <p class="text-secondary mb-0">Administración de cajas registradoras del sistema.</p>
+        </div>
 
-    @foreach ($accionesCajas as $accion)
-        @if ($accion->slug === 'cajas.crear')
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                data-bs-target="#modalNuevaCaja" data-tooltip="{{ $accion->nombre }}">
-                {!! $accion->icono ?: '<i class="fa-solid fa-plus me-2"></i>' !!}
-                {{ $accion->nombre }}
-            </button>
-        @endif
-    @endforeach
+        @foreach ($accionesCajas as $accion)
+            @if ($accion->slug === 'cajas.crear')
+                <button type="button" class="btn btn-primary cajas-header-action" data-bs-toggle="modal"
+                    data-bs-target="#modalNuevaCaja" data-tooltip="{{ $accion->nombre }}">
+                    {!! $accion->icono ?: '<i class="fa-solid fa-plus me-2"></i>' !!}
+                    {{ $accion->nombre }}
+                </button>
+            @endif
+        @endforeach
+    </div>
 </div>
 
 @php

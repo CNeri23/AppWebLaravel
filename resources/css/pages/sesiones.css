@@ -341,3 +341,55 @@ html[data-bs-theme="dark"] .ss-content .ss-search input {
 html[data-bs-theme="dark"] .ss-content .ss-search input {
     background-color: var(--field-bg) !important;
 }
+
+
+.sesiones-header-card {
+    border-radius: 14px;
+    background: var(--bs-card-bg);
+}
+
+.sesiones-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1.25rem;
+}
+
+.sesiones-header-text {
+    min-width: 0;
+}
+
+.sesiones-header-text h1 {
+    overflow-wrap: anywhere;
+}
+
+.sesiones-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.sesiones-header-action {
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .sesiones-header-content {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 0.8rem 1rem;
+    }
+
+    .sesiones-header-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .sesiones-header-actions > .btn {
+        width: 100%;
+    }
+}
