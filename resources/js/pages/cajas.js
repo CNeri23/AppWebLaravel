@@ -61,6 +61,64 @@ document.addEventListener('DOMContentLoaded', function () {
         window.showToast('info', mensaje);
     }
 
+    function camposFormulario(formulario) {
+        return Array.from(formulario.querySelectorAll('input:not([type="hidden"]):not([type="submit"]):not([type="button"]), textarea'));
+    }
+
+    function limpiarValidacionCampo(campo) {
+        campo.classList.remove('is-invalid');
+        campo.setCustomValidity('');
+        const feedback = document.getElementById(campo.id + '-error');
+        if (feedback) feedback.textContent = '';
+    }
+
+    function mensajeValidacionCampo(campo) {
+        const valor = campo.value.trim();
+        if (campo.name === 'nombre' && valor === '') return 'El nombre de la caja es obligatorio.';
+        if (campo.name === 'nombre' && valor.length > 100) return 'El nombre no puede superar los 100 caracteres.';
+        if (campo.name === 'descripcion' && valor.length > 255) return 'La descripción no puede superar los 255 caracteres.';
+        return '';
+    }
+
+    function validarCampo(campo) {
+        limpiarValidacionCampo(campo);
+        const mensaje = mensajeValidacionCampo(campo);
+        if (!mensaje) return true;
+        campo.classList.add('is-invalid');
+        campo.setCustomValidity(mensaje);
+        const feedback = document.getElementById(campo.id + '-error');
+        if (feedback) feedback.textContent = mensaje;
+        return false;
+    }
+
+    function validarFormulario(formulario) {
+        let primerInvalido = null;
+        camposFormulario(formulario).forEach(function (campo) {
+            if (!validarCampo(campo) && !primerInvalido) primerInvalido = campo;
+        });
+        if (primerInvalido) {
+            primerInvalido.focus();
+            return false;
+        }
+        camposFormulario(formulario).forEach(function (campo) { campo.value = campo.value.trim(); });
+        return true;
+    }
+
+    function inicializarValidacionFormularios() {
+        [formNuevaCaja, formEditarCaja].filter(Boolean).forEach(function (formulario) {
+            camposFormulario(formulario).forEach(function (campo) {
+                campo.addEventListener('input', function () { validarCampo(campo); });
+                campo.addEventListener('change', function () { validarCampo(campo); });
+            });
+        });
+        [modalNuevaCajaEl, modalEditarCajaEl].filter(Boolean).forEach(function (modal) {
+            modal.addEventListener('show.bs.modal', function () {
+                const formulario = modal.querySelector('form');
+                if (formulario) camposFormulario(formulario).forEach(limpiarValidacionCampo);
+            });
+        });
+    }
+
     function escapeHtml(valor) {
         const div = document.createElement('div');
         div.textContent = valor ?? '';
@@ -455,7 +513,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         tablaCajas.row.add(crearFilaCaja(caja)).draw(false);
 
-        ajustarTodasLasFilas();
+        inicializarValidacionFormularios();
+    ajustarTodasLasFilas();
         tablaCajas.columns.adjust();
     }
 
@@ -598,6 +657,11 @@ document.addEventListener('DOMContentLoaded', function () {
         formNuevaCaja.addEventListener('submit', function (event) {
             event.preventDefault();
 
+            if (!validarFormulario(formNuevaCaja)) {
+                window.showToast('warning', 'Completa correctamente los campos marcados.');
+                return;
+            }
+
             enviarFormulario(formNuevaCaja)
                 .then(function (data) {
                     cerrarModal(modalNuevaCaja);
@@ -613,6 +677,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (formEditarCaja) {
         formEditarCaja.addEventListener('submit', function (event) {
             event.preventDefault();
+
+            if (!validarFormulario(formEditarCaja)) {
+                window.showToast('warning', 'Completa correctamente los campos marcados.');
+                return;
+            }
 
             const inputNombre = document.getElementById('editar_nombre');
             const inputDescripcion = document.getElementById('editar_descripcion');
