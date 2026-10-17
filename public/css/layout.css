@@ -2142,6 +2142,56 @@ html[data-font-family="georgia"] {
     --font-sans: var(--app-font-family);
 }
 
+html[data-font-family="roboto"] {
+    --app-font-family: Roboto, "Segoe UI", Arial, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="opensans"] {
+    --app-font-family: "Open Sans", "Segoe UI", Arial, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="lato"] {
+    --app-font-family: Lato, "Segoe UI", Arial, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="poppins"] {
+    --app-font-family: Poppins, "Segoe UI", Arial, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="montserrat"] {
+    --app-font-family: Montserrat, "Segoe UI", Arial, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="nunito"] {
+    --app-font-family: Nunito, "Segoe UI", Arial, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="tahoma"] {
+    --app-font-family: Tahoma, Geneva, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="trebuchet"] {
+    --app-font-family: "Trebuchet MS", Arial, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="times"] {
+    --app-font-family: "Times New Roman", Times, serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="courier"] {
+    --app-font-family: "Courier New", Courier, monospace;
+    --font-sans: var(--app-font-family);
+}
+
 body,
 button,
 input,
