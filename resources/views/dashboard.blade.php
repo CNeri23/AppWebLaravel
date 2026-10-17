@@ -1,9 +1,13 @@
 @extends('layouts.app')
 @section('content')
 
-    <div class="mb-4">
-        <h2 class="fw-bold mb-1">Dashboard</h2>
-        <p class="text-secondary mb-0">Resumen general del sistema.</p>
+    <div class="card border-0 shadow-sm dashboard-header-card mb-4">
+        <div class="card-body dashboard-header-content">
+            <div class="dashboard-header-text">
+                <h2 class="fw-bold mb-1">Dashboard</h2>
+                <p class="text-secondary mb-0">Resumen general del sistema.</p>
+            </div>
+        </div>
     </div>
 
     <div class="row g-4">

@@ -1,0 +1,26 @@
+.dashboard-header-card {
+    border-radius: 14px;
+    background: var(--bs-card-bg);
+}
+
+.dashboard-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1.25rem;
+}
+
+.dashboard-header-text {
+    min-width: 0;
+}
+
+.dashboard-header-text h2 {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 575.98px) {
+    .dashboard-header-content {
+        padding: 0.8rem 1rem;
+    }
+}
