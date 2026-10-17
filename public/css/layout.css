@@ -2222,8 +2222,8 @@ textarea,
 
 /* Escala tipográfica: cambia texto sin alterar iconos ni miniaturas de preferencias. */
 html { --font-scale-factor: 1; }
-html[data-font-scale="small"] { --font-scale-factor: 1; }
-html[data-font-scale="medium"] { --font-scale-factor: .9; }
+html[data-font-scale="small"] { --font-scale-factor: .9; }
+html[data-font-scale="medium"] { --font-scale-factor: 1; }
 html[data-font-scale="large"] { --font-scale-factor: 1.12; }
 
 html[data-font-scale] .topbar-brand .sidebar-brand-text,
@@ -2264,11 +2264,11 @@ html[data-font-scale] .swal2-popup:not(.swal2-toast) .swal2-actions button {
 /* Escala tipográfica para el contenido real de los modales y el menú de usuario. */
 html[data-font-scale="small"] .modal .modal-content,
 html[data-font-scale="small"] .modal .modal-content * {
-    --modal-font-scale: 1;
+    --modal-font-scale: .9;
 }
 html[data-font-scale="medium"] .modal .modal-content,
 html[data-font-scale="medium"] .modal .modal-content * {
-    --modal-font-scale: .9;
+    --modal-font-scale: 1;
 }
 html[data-font-scale="large"] .modal .modal-content,
 html[data-font-scale="large"] .modal .modal-content * {
@@ -2303,12 +2303,12 @@ html[data-font-scale] .modal .modal-content .modal-body .invalid-feedback {
     font-size: calc(12px * var(--modal-font-scale)) !important;
 }
 
-html[data-font-scale="small"] .user-dropdown-header strong { font-size: 14px !important; }
-html[data-font-scale="medium"] .user-dropdown-header strong { font-size: 12.6px !important; }
+html[data-font-scale="small"] .user-dropdown-header strong { font-size: 12.6px !important; }
+html[data-font-scale="medium"] .user-dropdown-header strong { font-size: 14px !important; }
 html[data-font-scale="large"] .user-dropdown-header strong { font-size: 15.68px !important; }
 html[data-font-scale="small"] .user-dropdown-header small,
-html[data-font-scale="small"] .user-dropdown .dropdown-item { font-size: 13px !important; }
+html[data-font-scale="small"] .user-dropdown .dropdown-item { font-size: 11.7px !important; }
 html[data-font-scale="medium"] .user-dropdown-header small,
-html[data-font-scale="medium"] .user-dropdown .dropdown-item { font-size: 11.7px !important; }
+html[data-font-scale="medium"] .user-dropdown .dropdown-item { font-size: 13px !important; }
 html[data-font-scale="large"] .user-dropdown-header small,
 html[data-font-scale="large"] .user-dropdown .dropdown-item { font-size: 14.56px !important; }
