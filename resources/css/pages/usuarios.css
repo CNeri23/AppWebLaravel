@@ -344,52 +344,52 @@
 
 #tablaUsuarios .btn.usuario-action-btn.btn-outline-primary,
 #tablaUsuarios .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
-    --ua: 55, 105, 165;
+    --ua: 37, 99, 235;
 }
 
 #tablaUsuarios .btn.usuario-action-btn.btn-outline-success,
 #tablaUsuarios .btn.usuario-action-btn:has(.fa-user-shield, .fa-user-check, .fa-arrows-rotate) {
-    --ua: 43, 126, 83;
+    --ua: 22, 163, 74;
 }
 
 #tablaUsuarios .btn.usuario-action-btn.btn-outline-danger,
 #tablaUsuarios .btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
-    --ua: 174, 69, 69;
+    --ua: 220, 53, 69;
 }
 
 #tablaUsuarios .btn.usuario-action-btn.btn-outline-warning,
 #tablaUsuarios .btn.usuario-action-btn:has(.fa-key) {
-    --ua: 157, 105, 38;
+    --ua: 217, 119, 6;
 }
 
 #tablaUsuarios .btn.usuario-action-btn.btn-outline-info,
 #tablaUsuarios .btn.usuario-action-btn:has(.fa-eye) {
-    --ua: 40, 119, 139;
+    --ua: 8, 145, 178;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-primary,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
-    --ua: 112, 151, 198;
+    --ua: 125, 157, 205;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-success,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-user-shield, .fa-user-check, .fa-arrows-rotate) {
-    --ua: 103, 164, 124;
+    --ua: 83, 158, 111;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-danger,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
-    --ua: 190, 105, 105;
+    --ua: 202, 119, 119;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-warning,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-key) {
-    --ua: 190, 148, 81;
+    --ua: 202, 157, 83;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-info,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-eye) {
-    --ua: 91, 157, 171;
+    --ua: 83, 157, 174;
 }
 
 #tablaUsuarios .btn.usuario-action-btn:hover {
@@ -472,5 +472,88 @@
     #tablaUsuarios .usuario-actions *,
     #tablaUsuarios .usuario-actions *::before {
         transition: none !important;
+    }
+}
+
+
+/* Tooltips propios: tipografía legible y contraste consistente en ambos temas. */
+#tablaUsuarios .usuario-actions [data-tooltip] {
+    position: relative;
+}
+
+#tablaUsuarios .usuario-actions [data-tooltip]::after {
+    position: absolute;
+    z-index: 1080;
+    left: 50%;
+    bottom: calc(100% + 11px);
+    width: max-content;
+    max-width: 220px;
+    padding: 9px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9px;
+    background: #252a32;
+    color: #f8fafc;
+    content: attr(data-tooltip);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+    text-align: center;
+    white-space: normal;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22), 0 2px 5px rgba(0, 0, 0, 0.14);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate(-50%, 4px);
+    transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
+}
+
+#tablaUsuarios .usuario-actions [data-tooltip]::before {
+    position: absolute;
+    z-index: 1081;
+    left: 50%;
+    bottom: calc(100% + 5px);
+    width: 7px;
+    height: 7px;
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    background: #252a32;
+    content: "";
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate(-50%, 4px) rotate(45deg);
+    transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
+}
+
+#tablaUsuarios .usuario-actions [data-tooltip]:hover::after,
+#tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::after,
+#tablaUsuarios .usuario-actions [data-tooltip]:hover::before,
+#tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+#tablaUsuarios .usuario-actions [data-tooltip]:hover::after,
+#tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::after {
+    transform: translate(-50%, 0);
+}
+
+#tablaUsuarios .usuario-actions [data-tooltip]:hover::before,
+#tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::before {
+    transform: translate(-50%, 0) rotate(45deg);
+}
+
+[data-bs-theme="light"] #tablaUsuarios .usuario-actions [data-tooltip]::after,
+[data-bs-theme="light"] #tablaUsuarios .usuario-actions [data-tooltip]::before {
+    border-color: rgba(15, 23, 42, 0.1);
+    background: #202733;
+}
+
+@media (max-width: 767.98px) {
+    #tablaUsuarios .usuario-actions [data-tooltip]::after,
+    #tablaUsuarios .usuario-actions [data-tooltip]::before {
+        display: none;
     }
 }
