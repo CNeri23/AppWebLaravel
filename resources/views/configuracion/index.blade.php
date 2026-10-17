@@ -112,6 +112,7 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                             Este color se utilizará como acento principal en módulos, submódulos, estados activos e indicadores.
                         </small>
                     </div>
+                    @endif
                     @if ($puedeConfigurar('configuracion.tipografia'))
                     <div class="config-field">
                         <label for="font_family">Tipo de letra</label>
@@ -134,7 +135,6 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                         </select>
                         <small>Se aplicará en toda la interfaz: menú lateral, barra superior, tablas, formularios, modales y mensajes.</small>
                     </div>
-                    @endif
                     @endif
                 </div>
             </section>
