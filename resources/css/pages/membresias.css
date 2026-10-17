@@ -241,3 +241,129 @@
 @media (prefers-reduced-motion: reduce) {
     .membresia-actions *, .membresia-actions *::before { transition: none !important; }
 }
+
+/* SlimSelect en los modales de membresías: adapta colores y scroll al tema activo. */
+#modalNuevaMembresia .ss-main,
+#modalRenovarMembresia .ss-main,
+#modalNuevaMembresia, #modalRenovarMembresia .ss-main {
+    min-height: 40px !important;
+    border: 1px solid var(--flat-line) !important;
+    border-radius: 9px !important;
+    background: var(--field-bg) !important;
+    color: var(--text-main) !important;
+    font-family: inherit !important;
+    font-size: 12px !important;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+#modalNuevaMembresia .ss-main:focus,
+#modalNuevaMembresia .ss-main:focus-within,
+#modalRenovarMembresia .ss-main:focus,
+#modalRenovarMembresia .ss-main:focus-within,
+#modalNuevaMembresia, #modalRenovarMembresia .ss-main:focus,
+#modalNuevaMembresia, #modalRenovarMembresia .ss-main:focus-within {
+    border-color: var(--gym) !important;
+    box-shadow: 0 0 0 3px var(--gym-soft) !important;
+}
+
+#modalNuevaMembresia .ss-main .ss-values .ss-single,
+#modalRenovarMembresia .ss-main .ss-values .ss-single,
+#modalNuevaMembresia, #modalRenovarMembresia .ss-main .ss-values .ss-single {
+    color: var(--text-main) !important;
+}
+
+#modalNuevaMembresia .ss-main .ss-arrow path,
+#modalRenovarMembresia .ss-main .ss-arrow path,
+#modalNuevaMembresia, #modalRenovarMembresia .ss-main .ss-arrow path {
+    stroke: var(--text-muted) !important;
+}
+
+.ss-content {
+    z-index: 1080 !important;
+    overflow: hidden !important;
+    border: 1px solid var(--flat-line) !important;
+    border-radius: 10px !important;
+    background: var(--surface) !important;
+    color: var(--text-main) !important;
+    box-shadow: var(--flat-dropdown-shadow) !important;
+}
+
+.ss-content .ss-search {
+    padding: 7px !important;
+    background: var(--surface) !important;
+}
+
+.ss-content .ss-search input {
+    background: var(--field-bg) !important;
+    color: var(--text-main) !important;
+}
+
+.ss-content .ss-list {
+    scrollbar-width: thin !important;
+    scrollbar-color: color-mix(in srgb, var(--text-muted) 35%, transparent) transparent !important;
+}
+
+.ss-content .ss-list::-webkit-scrollbar,
+.ss-content::-webkit-scrollbar {
+    width: 4px !important;
+    height: 4px !important;
+}
+
+.ss-content .ss-list::-webkit-scrollbar-track,
+.ss-content::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+.ss-content .ss-list::-webkit-scrollbar-thumb,
+.ss-content::-webkit-scrollbar-thumb {
+    border: 1px solid transparent !important;
+    border-radius: 10px !important;
+    background: color-mix(in srgb, var(--text-muted) 35%, transparent) !important;
+    background-clip: padding-box !important;
+}
+
+.ss-content .ss-list::-webkit-scrollbar-thumb:hover,
+.ss-content::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--gym) 65%, transparent) !important;
+    background-clip: padding-box !important;
+}
+
+.ss-content .ss-list .ss-option {
+    padding-right: 12px !important;
+    background: transparent;
+    color: var(--text-main) !important;
+    font-size: 12px !important;
+}
+
+.ss-content .ss-list .ss-option:hover,
+.ss-content .ss-list .ss-option.ss-highlighted {
+    background: var(--gym-soft) !important;
+    color: var(--text-strong) !important;
+}
+
+.ss-content .ss-list .ss-option.ss-selected {
+    background: var(--gym) !important;
+    color: var(--on-gym) !important;
+}
+
+.ss-content .ss-list .ss-option.ss-disabled {
+    color: var(--text-muted) !important;
+}
+
+html[data-bs-theme="light"] .ss-content,
+html[data-bs-theme="light"] .ss-content .ss-search,
+html[data-bs-theme="light"] .ss-content .ss-search input {
+    color-scheme: light;
+}
+
+html[data-bs-theme="dark"] .ss-content,
+html[data-bs-theme="dark"] .ss-content .ss-search,
+html[data-bs-theme="dark"] .ss-content .ss-search input {
+    color-scheme: dark;
+    background-color: var(--surface) !important;
+    color: var(--text-main) !important;
+}
+
+html[data-bs-theme="dark"] .ss-content .ss-search input {
+    background-color: var(--field-bg) !important;
+}
