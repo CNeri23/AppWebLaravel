@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalEditarMiembro = modalEditarMiembroEl ? new bootstrap.Modal(modalEditarMiembroEl) : null;
     const modalEliminarMiembro = modalEliminarMiembroEl ? new bootstrap.Modal(modalEliminarMiembroEl) : null;
 
+    const slimSelectsMiembros = {};
+
     [
         '#direccion_id',
         '#editar_direccion_id',
@@ -22,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const elemento = document.querySelector(selector);
 
         if (elemento && !elemento.dataset.slimSelectInicializado) {
-            new SlimSelect({
+            slimSelectsMiembros[selector] = new SlimSelect({
                 select: selector,
                 settings: {
                     showSearch: true,
@@ -34,6 +36,41 @@ document.addEventListener('DOMContentLoaded', function () {
             elemento.dataset.slimSelectInicializado = 'true';
         }
     });
+
+    function establecerSeleccionSlim(selector, valor) {
+        const slimSelect = slimSelectsMiembros[selector];
+        const elemento = document.querySelector(selector);
+        const seleccion = valor === null || valor === undefined ? '' : String(valor);
+
+        if (slimSelect) {
+            slimSelect.setSelected(seleccion);
+        } else if (elemento) {
+            elemento.value = seleccion;
+        }
+    }
+
+    function limpiarDireccionNuevoMiembro() {
+        establecerSeleccionSlim('#direccion_id', '');
+    }
+
+    if (modalNuevoMiembroEl) {
+        modalNuevoMiembroEl.addEventListener('show.bs.modal', limpiarDireccionNuevoMiembro);
+        modalNuevoMiembroEl.addEventListener('hidden.bs.modal', function () {
+            const formulario = document.getElementById('formNuevoMiembro');
+
+            if (formulario) {
+                formulario.reset();
+            }
+
+            limpiarDireccionNuevoMiembro();
+        });
+    }
+
+    if (modalEditarMiembroEl) {
+        modalEditarMiembroEl.addEventListener('hidden.bs.modal', function () {
+            establecerSeleccionSlim('#editar_direccion_id', '');
+        });
+    }
 
     function peticion(url, method, body = null) {
         const opciones = {
@@ -516,8 +553,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('editar_apellido_materno').value = button.dataset.apellidoMaterno || '';
                 document.getElementById('editar_telefono').value = button.dataset.telefono || '';
                 document.getElementById('editar_email').value = button.dataset.email || '';
-                document.getElementById('editar_direccion_id').value = button.dataset.direccionId || '';
-                document.getElementById('formEditarMiembro').setAttribute('action',button.dataset.url);
+                establecerSeleccionSlim('#editar_direccion_id', button.dataset.direccionId || '');
+                document.getElementById('formEditarMiembro').setAttribute('action', button.dataset.url);
             }
         );
     }
