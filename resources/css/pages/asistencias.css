@@ -460,3 +460,58 @@ html[data-bs-theme] .asistencia-actions .btn-outline-secondary:focus-visible {
     .asistencia-actions > :hover + *,
     .asistencia-actions > :has(+ :hover) { transform: translateY(-1px) scale(1.05); }
 }
+
+
+/* Override final: garantiza el acabado de los botones de Usuarios frente a Bootstrap. */
+html body .asistencia-actions > .btn,
+html body .asistencia-actions > button,
+html body .asistencia-actions > a,
+html body .asistencia-actions .btn {
+    --ua: 100, 116, 139;
+    color: rgb(var(--ua)) !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    box-shadow: none !important;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 !important;
+    border-radius: 9px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color .16s ease, color .16s ease, box-shadow .16s ease, transform .2s cubic-bezier(.2,.9,.3,1) !important;
+}
+html body .asistencia-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
+html body .asistencia-actions .btn.btn-outline-primary { --ua: 37, 99, 235; }
+html body .asistencia-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
+html body .asistencia-actions .btn.btn-outline-danger { --ua: 220, 53, 69; }
+html body .asistencia-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people),
+html body .asistencia-actions .btn.btn-outline-success { --ua: 22, 163, 74; }
+html body .asistencia-actions .btn:has(.fa-key, .fa-lock),
+html body .asistencia-actions .btn.btn-outline-warning { --ua: 217, 119, 6; }
+html body .asistencia-actions .btn:has(.fa-eye, .bi-eye),
+html body .asistencia-actions .btn.btn-outline-info { --ua: 8, 145, 178; }
+
+html[data-bs-theme="dark"] body .asistencia-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
+html[data-bs-theme="dark"] body .asistencia-actions .btn.btn-outline-primary { --ua: 96, 165, 250; }
+html[data-bs-theme="dark"] body .asistencia-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
+html[data-bs-theme="dark"] body .asistencia-actions .btn.btn-outline-danger { --ua: 248, 113, 113; }
+html[data-bs-theme="dark"] body .asistencia-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people),
+html[data-bs-theme="dark"] body .asistencia-actions .btn.btn-outline-success { --ua: 74, 222, 128; }
+html[data-bs-theme="dark"] body .asistencia-actions .btn:has(.fa-key, .fa-lock),
+html[data-bs-theme="dark"] body .asistencia-actions .btn.btn-outline-warning { --ua: 251, 191, 36; }
+html[data-bs-theme="dark"] body .asistencia-actions .btn:has(.fa-eye, .bi-eye),
+html[data-bs-theme="dark"] body .asistencia-actions .btn.btn-outline-info { --ua: 34, 211, 238; }
+
+html body .asistencia-actions .btn:hover,
+html body .asistencia-actions .btn:focus-visible {
+    color: #fff !important;
+    background: rgba(var(--ua), .14) !important;
+    border-color: transparent !important;
+    box-shadow: inset 0 0 0 1px rgba(var(--ua), .3), 0 6px 14px -8px rgba(var(--ua), .7) !important;
+    transform: translateY(-2px) scale(1.08);
+}
+html body .asistencia-actions .btn:active { transform: scale(.94); }
+html body .asistencia-actions .btn > i,
+html body .asistencia-actions .btn > svg { font-size: 14px; margin: 0 !important; pointer-events: none; }
