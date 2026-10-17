@@ -491,3 +491,58 @@
 .rol-actions > :has(+ :hover) {
     transform: none !important;
 }
+
+
+/* Réplica visual exacta del botón de acciones de Usuarios: relleno, borde y centrado. */
+.rol-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+.rol-actions .btn.rol-action-btn {
+    position: relative !important;
+    isolation: isolate !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 35px !important;
+    width: 35px !important;
+    min-width: 35px !important;
+    max-width: 35px !important;
+    height: 35px !important;
+    min-height: 35px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid rgba(var(--ua), .38) !important;
+    border-radius: 10px !important;
+    color: rgb(var(--ua)) !important;
+    background: rgba(var(--ua), .14) !important;
+    box-shadow: none !important;
+    line-height: 1 !important;
+    transform: none !important;
+}
+.rol-actions .btn.rol-action-btn:hover,
+.rol-actions .btn.rol-action-btn:focus-visible {
+    color: rgb(var(--ua)) !important;
+    border-color: rgba(var(--ua), .58) !important;
+    background: rgba(var(--ua), .22) !important;
+    box-shadow: 0 2px 7px rgba(var(--ua), .16) !important;
+}
+.rol-actions .btn.rol-action-btn > i,
+.rol-actions .btn.rol-action-btn > svg {
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    font-size: 13px !important;
+    line-height: 1 !important;
+    color: inherit !important;
+}
