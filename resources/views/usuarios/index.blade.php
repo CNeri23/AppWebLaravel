@@ -88,7 +88,7 @@
                                 @if ($accion->slug === 'usuarios.editar')
                                 <button type="button"
                                     class="btn btn-sm btn-outline-primary usuario-action-btn"
-                                    title="{{ $accion->nombre }}"
+                                    data-tooltip="{{ $accion->nombre }}"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalEditarUsuario"
                                     data-id="{{ $usuario->id }}"
