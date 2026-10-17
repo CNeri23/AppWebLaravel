@@ -1619,16 +1619,6 @@ html[data-bs-theme] .table tbody tr:hover {
     border-radius: 10px;
 }
 
-.btn-primary {
-    border-color: transparent;
-    background: var(--color-primary);
-    color: #fff;
-}
-
-.btn-primary:hover {
-    background: var(--color-primary-dark);
-}
-
 html[data-bs-theme] .dt-container,
 html[data-bs-theme] .dataTables_wrapper {
     color: var(--text-main);
@@ -1780,10 +1770,6 @@ html[data-bs-theme] .dt-container .pagination .page-link:focus-visible,
 html[data-bs-theme] .dataTables_wrapper .pagination .page-link:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px var(--color-primary-soft);
-}
-
-html[data-bs-theme] .modal {
-    --modal-head-bg: var(--gym-fill);
 }
 
 html[data-bs-theme] .modal[id*="elimin" i],
