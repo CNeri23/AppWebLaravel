@@ -551,7 +551,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     const formNuevaDireccion = document.getElementById('formNuevaDireccion');
 
-    inicializarValidacionDireccion(formNuevaDireccion, modalNuevaDireccion);
+    inicializarValidacionDireccion(formNuevaDireccion, modalNuevaDireccionEl);
 
     if (formNuevaDireccion) {
         formNuevaDireccion.addEventListener('submit',
@@ -578,7 +578,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const formEditarDireccion = document.getElementById('formEditarDireccion');
 
-    inicializarValidacionDireccion(formEditarDireccion, modalEditarDireccion, true);
+    inicializarValidacionDireccion(formEditarDireccion, modalEditarDireccionEl, true);
 
     if (formEditarDireccion) {
         formEditarDireccion.addEventListener('submit',
