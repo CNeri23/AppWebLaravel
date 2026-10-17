@@ -621,17 +621,18 @@
     }
 }
 
-/* Escala de texto del árbol de módulos y su menú contextual. */
-html[data-font-scale="small"] .modulos-page .tree-name,
-html[data-font-scale="small"] .modulos-page .context-menu-item { font-size: .9em !important; }
-html[data-font-scale="medium"] .modulos-page .tree-name,
-html[data-font-scale="medium"] .modulos-page .context-menu-item { font-size: 1em !important; }
-html[data-font-scale="large"] .modulos-page .tree-name,
-html[data-font-scale="large"] .modulos-page .context-menu-item { font-size: 1.12em !important; }
 
-html[data-font-scale="small"] .modulos-page .tree-item .tree-status,
-html[data-font-scale="small"] .modulos-page .tree-item .badge { font-size: .594rem !important; }
-html[data-font-scale="medium"] .modulos-page .tree-item .tree-status,
-html[data-font-scale="medium"] .modulos-page .tree-item .badge { font-size: .66rem !important; }
-html[data-font-scale="large"] .modulos-page .tree-item .tree-status,
-html[data-font-scale="large"] .modulos-page .tree-item .badge { font-size: .739rem !important; }
+/* Escala de texto del árbol de módulos y su menú contextual. */
+html[data-font-scale="small"] .modulos-treeview .tree-name,
+html[data-font-scale="small"] .context-menu-item { font-size: .9em !important; }
+html[data-font-scale="medium"] .modulos-treeview .tree-name,
+html[data-font-scale="medium"] .context-menu-item { font-size: 1em !important; }
+html[data-font-scale="large"] .modulos-treeview .tree-name,
+html[data-font-scale="large"] .context-menu-item { font-size: 1.12em !important; }
+
+html[data-font-scale="small"] .modulos-treeview .tree-item .tree-status,
+html[data-font-scale="small"] .modulos-treeview .tree-item .badge { font-size: .594rem !important; }
+html[data-font-scale="medium"] .modulos-treeview .tree-item .tree-status,
+html[data-font-scale="medium"] .modulos-treeview .tree-item .badge { font-size: .66rem !important; }
+html[data-font-scale="large"] .modulos-treeview .tree-item .tree-status,
+html[data-font-scale="large"] .modulos-treeview .tree-item .badge { font-size: .739rem !important; }
