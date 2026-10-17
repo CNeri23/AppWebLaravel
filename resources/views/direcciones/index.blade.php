@@ -22,7 +22,7 @@
 
     @foreach ($accionesDirecciones as $accion)
         @if ($accion->slug === 'direcciones.crear')
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevaDireccion" title="{{ $accion->nombre }}">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevaDireccion" data-tooltip="{{ $accion->nombre }}">
                 {!! $accion->icono ?: '<i class="fa-solid fa-location-dot me-2"></i>' !!}
                 {{ $accion->nombre }}
             </button>
@@ -97,7 +97,7 @@
                                 @foreach ($accionesDirecciones as $accion)
                                 @if ($accion->slug === 'direcciones.editar')
                                 <button type="button" class="btn btn-sm btn-outline-primary direccion-action-btn"
-                                    title="{{ $accion->nombre }}" data-bs-toggle="modal"
+                                    data-tooltip="{{ $accion->nombre }}" data-bs-toggle="modal"
                                     data-bs-target="#modalEditarDireccion" data-id="{{ $direccion->id }}"
                                     data-calle="{{ $direccion->calle }}"
                                     data-numero-exterior="{{ $direccion->numero_exterior }}"
@@ -113,7 +113,7 @@
 
                                 @elseif ($accion->slug === 'direcciones.eliminar')
                                 <button type="button" class="btn btn-sm btn-outline-danger direccion-action-btn"
-                                    title="{{ $direccion->personas_count > 0 ? 'Dirección asignada' : $accion->nombre }}"
+                                    data-tooltip="{{ $direccion->personas_count > 0 ? 'Dirección asignada' : $accion->nombre }}"
                                     data-bs-toggle="modal" data-bs-target="#modalEliminarDireccion"
                                     data-id="{{ $direccion->id }}" data-name="
                                     {{ trim(
