@@ -481,7 +481,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('editar_slug').value = item.dataset.slug || '';
         document.getElementById('editar_descripcion').value = item.dataset.descripcion || '';
         document.getElementById('editar_icono').value = item.dataset.icono || '';
-        document.getElementById('editar_orden').value = item.dataset.orden;
         document.getElementById('formEditarModulo').setAttribute('action', item.dataset.editUrl);
         modalEditar?.show();
     }
@@ -515,7 +514,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('submodulo_ruta').value = '';
         document.getElementById('submodulo_descripcion').value = '';
         document.getElementById('submodulo_icono').value = '';
-        document.getElementById('submodulo_orden').value = 0;
         modalNuevoSubmodulo?.show();
     }
 
@@ -528,7 +526,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('editar_submodulo_ruta').value = item.dataset.ruta || '';
         document.getElementById('editar_submodulo_descripcion').value = item.dataset.descripcion || '';
         document.getElementById('editar_submodulo_icono').value = item.dataset.icono || '';
-        document.getElementById('editar_submodulo_orden').value = item.dataset.orden || 0;
         document.getElementById('formEditarSubmodulo').setAttribute('action',item.dataset.editUrl);
         modalEditarSubmodulo?.show();
     }
@@ -561,7 +558,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const slugInput = document.getElementById('accion_slug');
         const descripcionInput = document.getElementById('accion_descripcion');
         const iconoInput = document.getElementById('accion_icono');
-        const ordenInput = document.getElementById('accion_orden');
 
         if (nombreInput) {
             nombreInput.value = '';
@@ -579,9 +575,6 @@ document.addEventListener('DOMContentLoaded', function () {
             iconoInput.value = '';
         }
 
-        if (ordenInput) {
-            ordenInput.value = 0;
-        }
         modalNuevoAccion?.show();
     }
 
@@ -620,11 +613,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (iconoInput) {
             iconoInput.value = item.dataset.icono || '';
-        }
-        const ordenInput = document.getElementById('editar_accion_orden');
-
-        if (ordenInput) {
-            ordenInput.value = item.dataset.orden || 0;
         }
         const form = document.getElementById('formEditarAccion');
 
