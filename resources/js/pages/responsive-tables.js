@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 celda.querySelectorAll('a, button').forEach(function (control) {
                     if (control.closest('.dropdown-menu')) return;
+
+
                     if (tabla.id === 'tablaUsuarios') return;
 
                     const icono = control.querySelector('i, svg');
