@@ -1,4 +1,119 @@
+.usuario-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 2px;
+    width: fit-content;
+    min-width: max-content;
+    margin-inline: auto;
+    padding: 3px;
+    border-radius: 12px;
+    background: transparent;
+    transition: background-color 0.2s ease;
+}
 
+.btn.usuario-action-btn {
+    --ua: 100, 116, 139;
+    --bs-btn-color: var(--text-soft);
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: transparent;
+    --bs-btn-hover-color: rgb(var(--ua));
+    --bs-btn-hover-bg: rgba(var(--ua), 0.14);
+    --bs-btn-hover-border-color: transparent;
+    --bs-btn-active-color: rgb(var(--ua));
+    --bs-btn-active-bg: rgba(var(--ua), 0.22);
+    --bs-btn-active-border-color: transparent;
+    --bs-btn-disabled-color: var(--text-soft);
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: transparent;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 9px;
+    line-height: 1;
+    transition:
+        background-color 0.16s ease,
+        color 0.16s ease,
+        box-shadow 0.16s ease,
+        transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+.btn.usuario-action-btn > i,
+.btn.usuario-action-btn > svg {
+    margin: 0 !important;
+    font-size: 14px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.btn.usuario-action-btn.btn-outline-primary,
+.btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
+    --ua: 37, 99, 235;
+}
+
+.btn.usuario-action-btn.btn-outline-success,
+.btn.usuario-action-btn:has(.fa-user-shield, .fa-user-check, .fa-arrows-rotate) {
+    --ua: 22, 163, 74;
+}
+
+.btn.usuario-action-btn.btn-outline-danger,
+.btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
+    --ua: 220, 53, 69;
+}
+
+.btn.usuario-action-btn.btn-outline-warning,
+.btn.usuario-action-btn:has(.fa-key) {
+    --ua: 217, 119, 6;
+}
+
+.btn.usuario-action-btn.btn-outline-info,
+.btn.usuario-action-btn:has(.fa-eye) {
+    --ua: 8, 145, 178;
+}
+
+[data-bs-theme="dark"] .btn.usuario-action-btn.btn-outline-primary,
+[data-bs-theme="dark"] .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
+    --ua: 96, 165, 250;
+}
+
+[data-bs-theme="dark"] .btn.usuario-action-btn.btn-outline-success,
+[data-bs-theme="dark"] .btn.usuario-action-btn:has(.fa-user-shield, .fa-user-check, .fa-arrows-rotate) {
+    --ua: 74, 222, 128;
+}
+
+[data-bs-theme="dark"] .btn.usuario-action-btn.btn-outline-danger,
+[data-bs-theme="dark"] .btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
+    --ua: 248, 113, 113;
+}
+
+[data-bs-theme="dark"] .btn.usuario-action-btn.btn-outline-warning,
+[data-bs-theme="dark"] .btn.usuario-action-btn:has(.fa-key) {
+    --ua: 251, 191, 36;
+}
+
+[data-bs-theme="dark"] .btn.usuario-action-btn.btn-outline-info,
+[data-bs-theme="dark"] .btn.usuario-action-btn:has(.fa-eye) {
+    --ua: 34, 211, 238;
+}
+
+.btn.usuario-action-btn:hover {
+    box-shadow:
+        inset 0 0 0 1px rgba(var(--ua), 0.3),
+        0 6px 14px -8px rgba(var(--ua), 0.7);
+}
+
+.btn.usuario-action-btn:active {
+    transform: scale(0.94);
+}
+
+.btn.usuario-action-btn:focus-visible {
+    box-shadow: 0 0 0 3px rgba(var(--ua), 0.3);
+}
 
 #tablaUsuarios th:last-child,
 #tablaUsuarios td:last-child {
@@ -6,9 +121,32 @@
 }
 
 @media (hover: hover) {
+    #tablaUsuarios tbody tr:hover .usuario-actions {
+        background: color-mix(in srgb, var(--text-main) 6%, transparent);
+    }
+
+    #tablaUsuarios tbody tr:hover .btn.usuario-action-btn {
+        --bs-btn-color: var(--text-muted);
+    }
+
+    .usuario-actions > :hover {
+        transform: translateY(-2px) scale(1.12);
+    }
+
+    .usuario-actions > :hover + *,
+    .usuario-actions > :has(+ :hover) {
+        transform: translateY(-1px) scale(1.05);
+    }
 }
 
 @media (hover: none) {
+    .usuario-actions {
+        background: color-mix(in srgb, var(--text-main) 6%, transparent);
+    }
+
+    .btn.usuario-action-btn {
+        --bs-btn-color: var(--text-muted);
+    }
 }
 
 .usuarios-table-wrap {
@@ -159,6 +297,171 @@
     opacity: 0.8;
 }
 
+/* Acciones de usuarios: botones definidos sin contenedor decorativo. */
+#tablaUsuarios .usuario-actions {
+    gap: 5px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+#tablaUsuarios .btn.usuario-action-btn {
+    position: relative;
+    isolation: isolate;
+    overflow: visible;
+    width: 35px;
+    height: 35px;
+    border: 1px solid rgba(var(--ua), 0.38);
+    border-radius: 10px;
+    color: rgb(var(--ua));
+    background: rgba(var(--ua), 0.14);
+    box-shadow: none;
+    transition:
+        color 180ms ease,
+        background-color 180ms ease,
+        border-color 180ms ease,
+        box-shadow 220ms ease,
+        transform 220ms cubic-bezier(0.2, 0.85, 0.25, 1);
+}
+
+#tablaUsuarios .btn.usuario-action-btn::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    content: "";
+    opacity: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 65%);
+    transition: opacity 180ms ease;
+}
+
+#tablaUsuarios .btn.usuario-action-btn > i,
+#tablaUsuarios .btn.usuario-action-btn > svg {
+    font-size: 13px;
+    transition: transform 220ms cubic-bezier(0.2, 0.85, 0.25, 1);
+}
+
+#tablaUsuarios .btn.usuario-action-btn.btn-outline-primary,
+#tablaUsuarios .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
+    --ua: 37, 99, 235;
+}
+
+#tablaUsuarios .btn.usuario-action-btn.btn-outline-success,
+#tablaUsuarios .btn.usuario-action-btn:has(.fa-user-shield, .fa-user-check, .fa-arrows-rotate) {
+    --ua: 22, 163, 74;
+}
+
+#tablaUsuarios .btn.usuario-action-btn.btn-outline-danger,
+#tablaUsuarios .btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
+    --ua: 220, 53, 69;
+}
+
+#tablaUsuarios .btn.usuario-action-btn.btn-outline-warning,
+#tablaUsuarios .btn.usuario-action-btn:has(.fa-key) {
+    --ua: 217, 119, 6;
+}
+
+#tablaUsuarios .btn.usuario-action-btn.btn-outline-info,
+#tablaUsuarios .btn.usuario-action-btn:has(.fa-eye) {
+    --ua: 8, 145, 178;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-primary,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
+    --ua: 151, 180, 229;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-success,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-user-shield, .fa-user-check, .fa-arrows-rotate) {
+    --ua: 101, 190, 130;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-danger,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
+    --ua: 224, 137, 137;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-warning,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-key) {
+    --ua: 224, 177, 99;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-info,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-eye) {
+    --ua: 101, 188, 204;
+}
+
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn {
+    border-color: rgb(var(--ua));
+    color: #ffffff;
+    background: rgb(var(--ua));
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-primary,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
+    --ua: 96, 156, 245;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-success,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-user-shield, .fa-user-check, .fa-arrows-rotate) {
+    --ua: 74, 186, 120;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-danger,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
+    --ua: 238, 105, 112;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-warning,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-key) {
+    --ua: 232, 168, 62;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-info,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-eye) {
+    --ua: 72, 182, 208;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:hover {
+    color: #ffffff;
+    background: color-mix(in srgb, rgb(var(--ua)) 86%, #ffffff);
+    border-color: color-mix(in srgb, rgb(var(--ua)) 86%, #ffffff);
+    box-shadow: 0 4px 10px -6px rgba(0, 0, 0, 0.55);
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:hover::before {
+    opacity: 0;
+}
+
+#tablaUsuarios .btn.usuario-action-btn:hover {
+    color: #ffffff;
+    border-color: rgb(var(--ua));
+    background: rgb(var(--ua));
+    box-shadow: 0 4px 10px -5px rgba(var(--ua), 0.55);
+}
+
+#tablaUsuarios .btn.usuario-action-btn:hover::before {
+    opacity: 1;
+}
+
+#tablaUsuarios .btn.usuario-action-btn:hover > i,
+#tablaUsuarios .btn.usuario-action-btn:hover > svg {
+    transform: scale(1.1) rotate(-3deg);
+}
+
+#tablaUsuarios .btn.usuario-action-btn:active {
+    transform: scale(0.92);
+    box-shadow: none;
+}
+
+#tablaUsuarios .btn.usuario-action-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--ua), 0.24);
+}
+
 #tablaUsuarios .usuario-toggle-btn {
     width: 39px;
     height: 35px;
@@ -193,10 +496,29 @@
 }
 
 @media (hover: hover) {
+    #tablaUsuarios tbody tr:hover .usuario-actions {
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    #tablaUsuarios .usuario-actions > :hover {
+        transform: translateY(-2px) scale(1.05);
+    }
+
+    #tablaUsuarios .usuario-actions > :hover + *,
+    #tablaUsuarios .usuario-actions > :has(+ :hover) {
+        transform: translateY(-1px) scale(1.02);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
+    #tablaUsuarios .usuario-actions *,
+    #tablaUsuarios .usuario-actions *::before {
+        transition: none !important;
+    }
 }
+
 
 /* Tooltips propios: tipografía legible y contraste consistente en ambos temas. */
 #tablaUsuarios .usuario-actions [data-tooltip] {
@@ -231,6 +553,7 @@
     transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
 }
 
+
 #tablaUsuarios .usuario-actions [data-tooltip]:hover::after,
 #tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::after {
     opacity: 1;
@@ -248,83 +571,32 @@
     }
 }
 
-@media (hover: hover) {
-}
-
-@media (prefers-reduced-motion: reduce) {
-}
-
-/* Botones de acciones: mismo diseño que Usuarios. */
-.usuario-actions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: nowrap;
-    gap: 2px;
-    width: fit-content;
-    min-width: max-content;
-    margin-inline: auto;
-    padding: 0;
-    background: transparent;
-}
-
-.usuario-actions .btn {
-    --ua: 100, 116, 139;
-    display: inline-flex;
-    flex: 0 0 auto;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    min-width: 32px;
-    height: 32px;
-    padding: 0;
-    border: 1px solid transparent;
-    border-radius: 9px;
-    color: rgb(var(--ua));
-    background: transparent;
-    box-shadow: none;
-    line-height: 1;
-    transition: color .16s ease, background-color .16s ease, box-shadow .16s ease, transform .2s cubic-bezier(.2,.9,.3,1);
-}
-
-.usuario-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .fa-pen-to-square, .bi-pencil),
-.usuario-actions .btn.btn-outline-primary { --ua: 37, 99, 235; }
-.usuario-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
-.usuario-actions .btn.btn-outline-danger { --ua: 220, 53, 69; }
-.usuario-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people, .fa-arrows-rotate),
-.usuario-actions .btn.btn-outline-success { --ua: 22, 163, 74; }
-.usuario-actions .btn:has(.fa-key, .bi-key, .fa-lock),
-.usuario-actions .btn.btn-outline-warning { --ua: 217, 119, 6; }
-.usuario-actions .btn:has(.fa-eye, .bi-eye),
-.usuario-actions .btn.btn-outline-info { --ua: 8, 145, 178; }
-
-[data-bs-theme="dark"] .usuario-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .fa-pen-to-square, .bi-pencil),
-[data-bs-theme="dark"] .usuario-actions .btn.btn-outline-primary { --ua: 96, 165, 250; }
-[data-bs-theme="dark"] .usuario-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
-[data-bs-theme="dark"] .usuario-actions .btn.btn-outline-danger { --ua: 248, 113, 113; }
-[data-bs-theme="dark"] .usuario-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people, .fa-arrows-rotate),
-[data-bs-theme="dark"] .usuario-actions .btn.btn-outline-success { --ua: 74, 222, 128; }
-[data-bs-theme="dark"] .usuario-actions .btn:has(.fa-key, .bi-key, .fa-lock),
-[data-bs-theme="dark"] .usuario-actions .btn.btn-outline-warning { --ua: 251, 191, 36; }
-[data-bs-theme="dark"] .usuario-actions .btn:has(.fa-eye, .bi-eye),
-[data-bs-theme="dark"] .usuario-actions .btn.btn-outline-info { --ua: 34, 211, 238; }
-
-.usuario-actions .btn:hover,
-.usuario-actions .btn:focus-visible {
-    color: #fff;
-    background: rgba(var(--ua), .14);
+/* Acciones: solo ícono en reposo; en hover se rellena con azul suave (como el menú del treeview). */
+#tablaUsuarios .btn.usuario-action-btn,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn {
     border-color: transparent;
-    box-shadow: inset 0 0 0 1px rgba(var(--ua), .3), 0 6px 14px -8px rgba(var(--ua), .7);
+    background: transparent;
+    color: rgb(var(--ua));
+    box-shadow: none;
 }
-.usuario-actions .btn:active { transform: scale(.94); }
-.usuario-actions .btn > i,
-.usuario-actions .btn > svg { margin: 0 !important; font-size: 14px; line-height: 1; pointer-events: none; }
 
-@media (hover: hover) {
-    .usuario-actions > :hover { transform: translateY(-2px) scale(1.08); }
-    .usuario-actions > :hover + *,
-    .usuario-actions > :has(+ :hover) { transform: translateY(-1px) scale(1.03); }
+#tablaUsuarios .btn.usuario-action-btn:hover,
+#tablaUsuarios .btn.usuario-action-btn:focus-visible {
+    border-color: transparent;
+    background: rgba(var(--ua), 0.13);
+    color: rgb(var(--ua));
+    box-shadow: none;
 }
-@media (prefers-reduced-motion: reduce) {
-    .usuario-actions *, .usuario-actions *::before { transition: none !important; }
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:hover,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:focus-visible {
+    border-color: transparent;
+    background: rgba(var(--ua), 0.2);
+    color: color-mix(in srgb, rgb(var(--ua)) 80%, #ffffff);
+    box-shadow: none;
+}
+
+#tablaUsuarios .btn.usuario-action-btn:hover::before,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:hover::before {
+    opacity: 0;
 }
