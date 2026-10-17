@@ -1,25 +1,5 @@
 
 
-.btn.membresia-action-btn {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    border-radius: 10px;
-    line-height: 1;
-}
-
-.btn.membresia-action-btn>i,
-.btn.membresia-action-btn>svg {
-    margin: 0 !important;
-    font-size: 14px;
-    line-height: 1;
-    pointer-events: none;
-}
-
 #tablaMembresias th:last-child,
 #tablaMembresias td:last-child {
     white-space: nowrap;
@@ -94,35 +74,6 @@
     background: var(--bs-modal-bg);
 }
 
-#tablaMembresias .membresia-action-btn {
-    border-width: 1px;
-}
-
-#tablaMembresias .membresia-action-btn:has(.fa-eye):hover {
-    border-color: #25cff2 !important;
-    background: #3dd5f3 !important;
-    color: #000 !important;
-}
-
-#tablaMembresias .membresia-action-btn:has(.fa-pen):hover,
-#tablaMembresias .membresia-action-btn.btn-editar-membresia:hover {
-    border-color: #0a58ca !important;
-    background: #0a58ca !important;
-    color: #fff !important;
-}
-
-#tablaMembresias .membresia-action-btn:has(.fa-arrows-rotate):hover {
-    border-color: #146c43 !important;
-    background: #146c43 !important;
-    color: #fff !important;
-}
-
-#tablaMembresias .membresia-action-btn:has(.fa-ban):hover {
-    border-color: #b02a37 !important;
-    background: #b02a37 !important;
-    color: #fff !important;
-}
-
 /* ===== Paginación con iconos (igual que logs) ===== */
 #tablaMembresias_wrapper .dt-paging button {
     position: relative;
@@ -192,7 +143,13 @@
 @media (hover: hover) {
 }
 
-/* Botones de acciones: estilo único, sin fondos permanentes. */
+@media (hover: hover) {
+}
+
+@media (prefers-reduced-motion: reduce) {
+}
+
+/* Botones de acciones: mismo diseño que Usuarios. */
 .membresia-actions {
     display: flex;
     align-items: center;
@@ -225,35 +182,27 @@
     transition: color .16s ease, background-color .16s ease, box-shadow .16s ease, transform .2s cubic-bezier(.2,.9,.3,1);
 }
 
-.membresia-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
+.membresia-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .fa-pen-to-square, .bi-pencil),
 .membresia-actions .btn.btn-outline-primary { --ua: 37, 99, 235; }
-
 .membresia-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
 .membresia-actions .btn.btn-outline-danger { --ua: 220, 53, 69; }
-
 .membresia-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people, .fa-arrows-rotate),
 .membresia-actions .btn.btn-outline-success { --ua: 22, 163, 74; }
-
 .membresia-actions .btn:has(.fa-key, .bi-key, .fa-lock),
 .membresia-actions .btn.btn-outline-warning { --ua: 217, 119, 6; }
-
 .membresia-actions .btn:has(.fa-eye, .bi-eye),
 .membresia-actions .btn.btn-outline-info { --ua: 8, 145, 178; }
 
-[data-bs-theme="dark"] membresia-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
-[data-bs-theme="dark"] membresia-actions .btn.btn-outline-primary { --ua: 96, 165, 250; }
-
-[data-bs-theme="dark"] membresia-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
-[data-bs-theme="dark"] membresia-actions .btn.btn-outline-danger { --ua: 248, 113, 113; }
-
-[data-bs-theme="dark"] membresia-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people, .fa-arrows-rotate),
-[data-bs-theme="dark"] membresia-actions .btn.btn-outline-success { --ua: 74, 222, 128; }
-
-[data-bs-theme="dark"] membresia-actions .btn:has(.fa-key, .bi-key, .fa-lock),
-[data-bs-theme="dark"] membresia-actions .btn.btn-outline-warning { --ua: 251, 191, 36; }
-
-[data-bs-theme="dark"] membresia-actions .btn:has(.fa-eye, .bi-eye),
-[data-bs-theme="dark"] membresia-actions .btn.btn-outline-info { --ua: 34, 211, 238; }
+[data-bs-theme="dark"] .membresia-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .fa-pen-to-square, .bi-pencil),
+[data-bs-theme="dark"] .membresia-actions .btn.btn-outline-primary { --ua: 96, 165, 250; }
+[data-bs-theme="dark"] .membresia-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
+[data-bs-theme="dark"] .membresia-actions .btn.btn-outline-danger { --ua: 248, 113, 113; }
+[data-bs-theme="dark"] .membresia-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people, .fa-arrows-rotate),
+[data-bs-theme="dark"] .membresia-actions .btn.btn-outline-success { --ua: 74, 222, 128; }
+[data-bs-theme="dark"] .membresia-actions .btn:has(.fa-key, .bi-key, .fa-lock),
+[data-bs-theme="dark"] .membresia-actions .btn.btn-outline-warning { --ua: 251, 191, 36; }
+[data-bs-theme="dark"] .membresia-actions .btn:has(.fa-eye, .bi-eye),
+[data-bs-theme="dark"] .membresia-actions .btn.btn-outline-info { --ua: 34, 211, 238; }
 
 .membresia-actions .btn:hover,
 .membresia-actions .btn:focus-visible {
@@ -262,24 +211,15 @@
     border-color: transparent;
     box-shadow: inset 0 0 0 1px rgba(var(--ua), .3), 0 6px 14px -8px rgba(var(--ua), .7);
 }
-
 .membresia-actions .btn:active { transform: scale(.94); }
-
 .membresia-actions .btn > i,
-.membresia-actions .btn > svg {
-    margin: 0 !important;
-    font-size: 14px;
-    line-height: 1;
-    pointer-events: none;
-}
+.membresia-actions .btn > svg { margin: 0 !important; font-size: 14px; line-height: 1; pointer-events: none; }
 
 @media (hover: hover) {
     .membresia-actions > :hover { transform: translateY(-2px) scale(1.08); }
     .membresia-actions > :hover + *,
     .membresia-actions > :has(+ :hover) { transform: translateY(-1px) scale(1.03); }
 }
-
 @media (prefers-reduced-motion: reduce) {
-    .membresia-actions *,
-    .membresia-actions *::before { transition: none !important; }
+    .membresia-actions *, .membresia-actions *::before { transition: none !important; }
 }
