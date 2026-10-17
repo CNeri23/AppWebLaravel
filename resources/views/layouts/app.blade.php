@@ -56,6 +56,7 @@
     data-dark-theme-style="{{ $userPreferences['dark_theme_style'] }}"
     data-theme-style="{{ $userPreferences['theme_mode'] === 'dark' ? $userPreferences['dark_theme_style'] : $userPreferences['light_theme_style'] }}"
     data-accent-color="{{ $settings['accent_color'] }}"
+    data-font-family="{{ $settings['font_family'] ?? 'inter' }}"
     data-session-timeout="{{ (int) $settings['session_timeout'] }}"
     data-login-url="{{ route('login') }}"
     data-timezone="{{ $settings['timezone'] }}">
