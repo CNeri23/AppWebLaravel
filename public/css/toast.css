@@ -62,6 +62,7 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
    Tarjeta neutra + barra de acento lateral con el color del tipo
    ========================================================== */
 .swal2-popup.toast {
+    font-family: var(--app-font-family, var(--font-sans, inherit)) !important;
     --toast-color: #3b82f6;
     --toast-tint: rgba(59, 130, 246, 0.12);
 
@@ -411,6 +412,7 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
 
 /* Modales genéricos de SweetAlert2 (sin customClass) */
 .swal2-popup:not(.swal2-toast) {
+    font-family: var(--app-font-family, var(--font-sans, inherit)) !important;
     width: 420px !important;
     max-width: calc(100vw - 32px);
     padding: 30px 26px 24px !important;
