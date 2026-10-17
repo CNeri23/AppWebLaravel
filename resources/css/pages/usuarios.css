@@ -313,10 +313,10 @@
     overflow: visible;
     width: 35px;
     height: 35px;
-    border: 1px solid rgba(var(--ua), 0.28);
+    border: 1px solid rgba(var(--ua), 0.38);
     border-radius: 10px;
     color: rgb(var(--ua));
-    background: rgba(var(--ua), 0.12);
+    background: rgba(var(--ua), 0.14);
     box-shadow: none;
     transition:
         color 180ms ease,
@@ -390,6 +390,45 @@
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-info,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-eye) {
     --ua: 101, 188, 204;
+}
+
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn {
+    border-color: rgba(var(--ua), 0.62);
+    color: rgb(var(--ua));
+    background: rgba(var(--ua), 0.27);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035), 0 2px 5px rgba(0, 0, 0, 0.16);
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-primary,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
+    --ua: 119, 169, 245;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-success,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-user-shield, .fa-user-check, .fa-arrows-rotate) {
+    --ua: 93, 204, 132;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-danger,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
+    --ua: 242, 121, 121;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-warning,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-key) {
+    --ua: 242, 183, 78;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-info,
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-eye) {
+    --ua: 75, 194, 215;
+}
+
+[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:hover {
+    color: #ffffff;
+    background: rgb(var(--ua));
+    border-color: rgb(var(--ua));
 }
 
 #tablaUsuarios .btn.usuario-action-btn:hover {
@@ -509,23 +548,6 @@
     transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
 }
 
-#tablaUsuarios .usuario-actions [data-tooltip]::before {
-    position: absolute;
-    z-index: 1081;
-    left: 50%;
-    bottom: calc(100% + 5px);
-    width: 7px;
-    height: 7px;
-    border-right: 1px solid rgba(255, 255, 255, 0.12);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    background: #000000;
-    content: "";
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: translate(-50%, 4px) rotate(45deg);
-    transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
-}
 
 #tablaUsuarios .usuario-actions [data-tooltip]:hover::after,
 #tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::after,
@@ -538,11 +560,6 @@
 #tablaUsuarios .usuario-actions [data-tooltip]:hover::after,
 #tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::after {
     transform: translate(-50%, 0);
-}
-
-#tablaUsuarios .usuario-actions [data-tooltip]:hover::before,
-#tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::before {
-    transform: translate(-50%, 0) rotate(45deg);
 }
 
 @media (max-width: 767.98px) {
