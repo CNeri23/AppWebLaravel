@@ -10,8 +10,7 @@
 
         @foreach ($accionesUsuarios as $accion)
             @if ($accion->slug === 'usuarios.crear')
-                <button type="button" class="btn btn-primary usuarios-header-action" data-bs-toggle="modal"
-                    data-bs-target="#modalNuevoUsuario" data-tooltip="Agregar usuario">
+                <button type="button" class="btn btn-primary usuarios-header-action" data-bs-toggle="modal" data-bs-target="#modalNuevoUsuario">
                     {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
                     {{ $accion->nombre }}
                 </button>

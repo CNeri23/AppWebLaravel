@@ -25,8 +25,7 @@
 
         @foreach ($accionesPlanes as $accion)
             @if ($accion->slug === 'planes.crear')
-                <button type="button" class="btn btn-primary planes-header-action" data-bs-toggle="modal" data-bs-target="#modalNuevoPlan"
-                    data-tooltip="{{ $accion->nombre }}">
+                <button type="button" class="btn btn-primary planes-header-action" data-bs-toggle="modal" data-bs-target="#modalNuevoPlan">
                     {!! $accion->icono ?: '<i class="fa-solid fa-plus me-2"></i>' !!}
                     {{ $accion->nombre }}
                 </button>

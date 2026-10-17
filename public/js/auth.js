@@ -55,66 +55,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 300);
     })();
 
-    (function iniciarEscenaGym() {
-        const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const formato = function (n) {return n.toLocaleString('es-MX');};
-        const destacar = function (el) {
-            el.classList.remove('is-tick');
-            void el.offsetWidth;
-            el.classList.add('is-tick');
-        };
+    (function iniciarParallaxGym() {
+        const visual = document.querySelector('.login-visual');
 
-        document.querySelectorAll('[data-countup]').forEach(function (el, i) {
-            const destino = parseInt(el.dataset.countup, 10) || 0;
+        if (!visual || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            return;
+        }
+        let frame = null;
 
-            if (sinMovimiento) {
-                el.textContent = formato(destino);
+        visual.addEventListener('pointermove', function (event) {
+            if (frame) {
                 return;
             }
-            el.textContent = '0';
 
-            setTimeout(function () {
-                const duracion = 1500;
-                const inicio = performance.now();
-
-                function paso(ahora) {
-                    const t = Math.min((ahora - inicio) / duracion, 1);
-                    const suave = 1 - Math.pow(1 - t, 3);
-                    el.textContent = formato(Math.round(destino * suave));
-
-                    if (t < 1) {
-                        requestAnimationFrame(paso);
-                    }
-                }
-                requestAnimationFrame(paso);
-
-                if (el.hasAttribute('data-live')) {
-                    let actual = destino;
-
-                    (function siguiente() {
-                        setTimeout(function () {
-                            actual += 1;
-                            el.textContent = formato(actual);
-                            destacar(el);
-                            siguiente();
-                        }, 3500 + Math.random() * 3500);
-                    })();
-                }
-            }, 700 + i * 150);
+            frame = requestAnimationFrame(function () {
+                frame = null;
+                const caja = visual.getBoundingClientRect();
+                visual.style.setProperty('--mx', ((event.clientX - caja.left) / caja.width - 0.5).toFixed(3));
+                visual.style.setProperty('--my', ((event.clientY - caja.top) / caja.height - 0.5).toFixed(3));
+            });
         });
 
-        const reps = document.querySelector('[data-reps]');
-        const barra = document.querySelector('.gs-lift');
-
-        if (reps && barra && !sinMovimiento) {
-            let total = 0;
-
-            barra.addEventListener('animationiteration', function () {
-                total = total >= 12 ? 1 : total + 1;
-                reps.textContent = String(total).padStart(2, '0');
-                destacar(reps.parentElement);
-            });
-        }
+        visual.addEventListener('pointerleave', function () {
+            visual.style.setProperty('--mx', '0');
+            visual.style.setProperty('--my', '0');
+        });
     })();
 
     const authFormStage = document.getElementById('authFormStage');

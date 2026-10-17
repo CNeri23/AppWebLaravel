@@ -10,8 +10,7 @@
 
         @foreach ($accionesCajas as $accion)
             @if ($accion->slug === 'cajas.crear')
-                <button type="button" class="btn btn-primary cajas-header-action" data-bs-toggle="modal"
-                    data-bs-target="#modalNuevaCaja" data-tooltip="{{ $accion->nombre }}">
+                <button type="button" class="btn btn-primary cajas-header-action" data-bs-toggle="modal" data-bs-target="#modalNuevaCaja">
                     {!! $accion->icono ?: '<i class="fa-solid fa-plus me-2"></i>' !!}
                     {{ $accion->nombre }}
                 </button>

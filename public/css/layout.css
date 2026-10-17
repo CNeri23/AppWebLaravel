@@ -435,6 +435,14 @@ body {
     object-fit: cover;
 }
 
+/* Con logo subido: esquinas redondeadas, sin fondo de acento ni recorte diagonal */
+.sidebar-brand-icon:has(img) {
+    background: transparent;
+    border-radius: 11px;
+    clip-path: none;
+    overflow: hidden;
+}
+
 .sidebar-brand-text {
     min-width: 0;
     color: var(--text-strong);

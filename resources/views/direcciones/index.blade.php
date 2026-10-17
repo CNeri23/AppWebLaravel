@@ -3,7 +3,6 @@
 
 @php
     $accionesDirecciones = $accionesDirecciones ?? collect();
-
     $accionesDireccionesJs = $accionesDirecciones->map(function ($accion) {
         return [
             'id' => $accion->id,
@@ -23,7 +22,7 @@
 
         @foreach ($accionesDirecciones as $accion)
             @if ($accion->slug === 'direcciones.crear')
-                <button type="button" class="btn btn-primary direcciones-header-action" data-bs-toggle="modal" data-bs-target="#modalNuevaDireccion" data-tooltip="{{ $accion->nombre }}">
+                <button type="button" class="btn btn-primary direcciones-header-action" data-bs-toggle="modal" data-bs-target="#modalNuevaDireccion">
                     {!! $accion->icono ?: '<i class="fa-solid fa-location-dot me-2"></i>' !!}
                     {{ $accion->nombre }}
                 </button>

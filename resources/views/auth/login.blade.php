@@ -489,7 +489,11 @@ $accentColor = 'orange';
             <div class="visual-content">
                 <div class="visual-brand">
                     <span class="visual-brand-icon">
-                        <i class="fa-solid fa-heart-pulse"></i>
+                        @if (!empty($systemSettings['logo_path']))
+                            <img src="{{ asset('storage/' . $systemSettings['logo_path']) }}" alt="{{ $systemName }}">
+                        @else
+                            <i class="fa-solid fa-heart-pulse"></i>
+                        @endif
                     </span>
 
                     <span class="visual-brand-name">{{ $systemName }}</span>
@@ -506,34 +510,10 @@ $accentColor = 'orange';
                 <span class="visual-ruler" aria-hidden="true"></span>
 
                 <div class="gym-scene" aria-hidden="true">
-                    <div class="gym-stats">
-                        <div class="gym-chip">
-                            <span class="gym-chip-icon"><i class="fa-solid fa-users"></i></span>
-                            <span class="gym-chip-text">
-                                <span class="gym-chip-label">Miembros</span>
-                                <span class="gym-chip-value" data-countup="1248">1,248</span>
-                            </span>
-                        </div>
-
-                        <div class="gym-chip">
-                            <span class="gym-chip-icon"><i class="fa-solid fa-calendar-check"></i></span>
-                            <span class="gym-chip-text">
-                                <span class="gym-chip-label">Check-ins hoy</span>
-                                <span class="gym-chip-value" data-countup="86" data-live>86</span>
-                            </span>
-                        </div>
-
-                        <div class="gym-chip">
-                            <span class="gym-chip-icon"><i class="fa-solid fa-dumbbell"></i></span>
-                            <span class="gym-chip-text">
-                                <span class="gym-chip-label">Repeticiones</span>
-                                <span class="gym-chip-value"><span data-reps>00</span><small>/12</small></span>
-                            </span>
-                        </div>
-                    </div>
-
                     <div class="gym-stage">
                         <div class="gym-glow"></div>
+                        <div class="gym-ring"></div>
+                        <div class="gym-ring is-inner"></div>
 
                         <svg class="gym-svg" viewBox="0 0 460 236" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false">
                             <defs>
@@ -548,6 +528,7 @@ $accentColor = 'orange';
                             <circle class="gs-pulse-dot" cx="0" cy="0" r="4" />
 
                             <!-- Sombra en el piso -->
+                            <ellipse class="gs-ripple" cx="230" cy="196" rx="150" ry="7" />
                             <ellipse class="gs-shadow" cx="230" cy="196" rx="150" ry="7" />
 
                             <!-- Barra con discos -->
@@ -576,7 +557,44 @@ $accentColor = 'orange';
                                     <rect class="gs-cap" x="394" y="90" width="16" height="20" rx="3" />
                                 </g>
                             </g>
+                            <!-- Chispas al llegar arriba -->
+                            <g class="gs-sparks">
+                                <circle class="gs-spark" style="--dx:-18px;--dy:-14px" cx="124" cy="6" r="3" />
+                                <circle class="gs-spark" style="--dx:-6px;--dy:-24px" cx="132" cy="2" r="2.2" />
+                                <circle class="gs-spark" style="--dx:12px;--dy:-18px" cx="142" cy="4" r="2.6" />
+                                <circle class="gs-spark" style="--dx:-12px;--dy:-18px" cx="318" cy="4" r="2.6" />
+                                <circle class="gs-spark" style="--dx:6px;--dy:-24px" cx="328" cy="2" r="2.2" />
+                                <circle class="gs-spark" style="--dx:18px;--dy:-14px" cx="336" cy="6" r="3" />
+                            </g>
                         </svg>
+
+                        <div class="gym-badges">
+                            <span class="gym-badge" style="--x:42.6%;--y:17%;--depth:22;--in:0.9s;--dur:5.2s">
+                                <span class="gym-badge-body is-tick"><i class="fa-solid fa-stopwatch"></i></span>
+                            </span>
+                            <span class="gym-badge" style="--x:57.4%;--y:17%;--depth:26;--in:1.05s;--dur:4.6s">
+                                <span class="gym-badge-body is-fire"><i class="fa-solid fa-fire"></i></span>
+                            </span>
+                            <span class="gym-badge" style="--x:42.6%;--y:62.7%;--depth:28;--in:1.2s;--dur:5.6s">
+                                <span class="gym-badge-body is-trophy"><i class="fa-solid fa-trophy"></i></span>
+                            </span>
+                            <span class="gym-badge" style="--x:57.4%;--y:62.7%;--depth:20;--in:1.35s;--dur:4.8s">
+                                <span class="gym-badge-body is-medal"><i class="fa-solid fa-medal"></i></span>
+                            </span>
+
+                            <span class="gym-badge is-outer" style="--x:10%;--y:0%;--depth:36;--size:38px;--in:1.5s;--dur:6s">
+                                <span class="gym-badge-body is-run"><i class="fa-solid fa-person-running"></i></span>
+                            </span>
+                            <span class="gym-badge is-outer" style="--x:90%;--y:0%;--depth:32;--size:38px;--in:1.65s;--dur:5.4s">
+                                <span class="gym-badge-body is-bolt"><i class="fa-solid fa-bolt"></i></span>
+                            </span>
+                            <span class="gym-badge is-outer" style="--x:10%;--y:63.6%;--depth:30;--size:38px;--in:1.8s;--dur:5.8s">
+                                <span class="gym-badge-body is-weight"><i class="fa-solid fa-weight-hanging"></i></span>
+                            </span>
+                            <span class="gym-badge is-outer" style="--x:90%;--y:63.6%;--depth:34;--size:38px;--in:1.95s;--dur:5s">
+                                <span class="gym-badge-body is-apple"><i class="fa-solid fa-apple-whole"></i></span>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

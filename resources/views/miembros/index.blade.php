@@ -23,8 +23,7 @@ return [
 
         @foreach ($accionesMiembros as $accion)
         @if ($accion->slug === 'miembros.crear')
-        <button type="button" class="btn btn-primary miembros-header-action" data-bs-toggle="modal"
-            data-bs-target="#modalNuevoMiembro" data-tooltip="{{ $accion->nombre }}">
+        <button type="button" class="btn btn-primary miembros-header-action" data-bs-toggle="modal" data-bs-target="#modalNuevoMiembro">
             {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
             {{ $accion->nombre }}
         </button>

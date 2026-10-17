@@ -24,8 +24,7 @@
 
             @foreach ($accionesCajas as $accion)
                 @if ($accion->slug === 'cajas.abrir')
-                    <button type="button" class="btn btn-primary sesiones-header-action" data-bs-toggle="modal"
-                        data-bs-target="#modalAbrirSesion" title="{{ $accion->nombre }}">
+                    <button type="button" class="btn btn-primary sesiones-header-action" data-bs-toggle="modal" data-bs-target="#modalAbrirSesion">
                         {!! $accion->icono ?: '<i class="fa-solid fa-lock-open me-2"></i>' !!}
                         {{ $accion->nombre }}
                     </button>

@@ -24,8 +24,7 @@
             </div>
             @foreach ($accionesMembresias as $accion)
                 @if ($accion->slug === 'membresias.crear')
-                    <button type="button" class="btn btn-primary membresias-header-action" data-bs-toggle="modal"
-                        data-bs-target="#modalNuevaMembresia" data-tooltip="{{ $accion->nombre }}">
+                    <button type="button" class="btn btn-primary membresias-header-action" data-bs-toggle="modal" data-bs-target="#modalNuevaMembresia">
                         {!! $accion->icono ?: '<i class="fa-solid fa-id-card me-2"></i>' !!}
                         {{ $accion->nombre }}
                     </button>
