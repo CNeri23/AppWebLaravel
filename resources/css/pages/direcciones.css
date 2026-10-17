@@ -451,3 +451,38 @@
     box-shadow: none !important;
     transform: none !important;
 }
+
+
+/* Paleta del tema oscuro sincronizada con Usuarios. */
+[data-bs-theme="dark"] .direccion-actions .btn.direccion-action-btn.btn-outline-primary,
+[data-bs-theme="dark"] .direccion-actions .btn.direccion-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-pen-to-square, .fa-user-pen) {
+    --ua: 96, 156, 245 !important;
+    color: rgb(96, 156, 245) !important;
+}
+[data-bs-theme="dark"] .direccion-actions .btn.direccion-action-btn.btn-outline-danger,
+[data-bs-theme="dark"] .direccion-actions .btn.direccion-action-btn:has(.fa-trash, .fa-trash-can, .fa-ban) {
+    --ua: 238, 105, 112 !important;
+    color: rgb(238, 105, 112) !important;
+}
+[data-bs-theme="dark"] .direccion-actions .btn.direccion-action-btn.btn-outline-success,
+[data-bs-theme="dark"] .direccion-actions .btn.direccion-action-btn:has(.fa-user-check, .fa-user-shield, .fa-users, .fa-user-plus, .fa-arrows-rotate, .fa-shield) {
+    --ua: 74, 186, 120 !important;
+    color: rgb(74, 186, 120) !important;
+}
+[data-bs-theme="dark"] .direccion-actions .btn.direccion-action-btn.btn-outline-warning,
+[data-bs-theme="dark"] .direccion-actions .btn.direccion-action-btn:has(.fa-key, .fa-lock, .fa-user-lock) {
+    --ua: 232, 168, 62 !important;
+    color: rgb(232, 168, 62) !important;
+}
+[data-bs-theme="dark"] .direccion-actions .btn.direccion-action-btn.btn-outline-info,
+[data-bs-theme="dark"] .direccion-actions .btn.direccion-action-btn:has(.fa-eye, .fa-circle-info) {
+    --ua: 72, 182, 208 !important;
+    color: rgb(72, 182, 208) !important;
+}
+[data-bs-theme="dark"] .direccion-actions .btn.direccion-action-btn:hover,
+[data-bs-theme="dark"] .direccion-actions .btn.direccion-action-btn:focus-visible {
+    color: color-mix(in srgb, rgb(var(--ua)) 80%, #ffffff) !important;
+    background-color: rgba(var(--ua), .2) !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
