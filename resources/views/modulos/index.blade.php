@@ -1,18 +1,20 @@
 @extends('layouts.app')
 @section('content')
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold mb-1">Módulos</h2>
-            <p class="text-secondary mb-0">Despliega y haz click derecho sobre un elemento del árbol para ver las opciones.</p>
-        </div>
+    <div class="card border-0 shadow-sm modulos-header-card mb-4">
+        <div class="card-body modulos-header-content">
+            <div class="modulos-header-text">
+                <h2 class="fw-bold mb-1">Módulos</h2>
+                <p class="text-secondary mb-0">Despliega y haz click derecho sobre un elemento del árbol para ver las opciones.</p>
+            </div>
 
-        @if ($accionesModulos->contains('modulos.crear'))
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoModulo">
-                <i class="fa-solid fa-plus me-2"></i>
-                Agregar
-            </button>
-        @endif
+            @if ($accionesModulos->contains('modulos.crear'))
+                <button type="button" class="btn btn-primary modulos-header-action" data-bs-toggle="modal" data-bs-target="#modalNuevoModulo">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    Agregar
+                </button>
+            @endif
+        </div>
     </div>
 
     <div class="card border-0 shadow-sm">

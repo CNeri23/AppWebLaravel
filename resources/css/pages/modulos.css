@@ -581,3 +581,42 @@
     overflow-y: auto;
     overscroll-behavior: contain;
 }
+
+.modulos-header-card {
+    border-radius: 14px;
+    background: var(--bs-card-bg);
+}
+
+.modulos-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1.25rem;
+}
+
+.modulos-header-text {
+    min-width: 0;
+}
+
+.modulos-header-text h1,
+.modulos-header-text h2 {
+    overflow-wrap: anywhere;
+}
+
+.modulos-header-action {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .modulos-header-content {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 0.8rem 1rem;
+    }
+
+    .modulos-header-action {
+        width: 100%;
+    }
+}

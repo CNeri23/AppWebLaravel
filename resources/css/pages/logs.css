@@ -234,3 +234,42 @@
         font-size: 10px;
     }
 }
+
+.logs-header-card {
+    border-radius: 14px;
+    background: var(--bs-card-bg);
+}
+
+.logs-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1.25rem;
+}
+
+.logs-header-text {
+    min-width: 0;
+}
+
+.logs-header-text h1,
+.logs-header-text h2 {
+    overflow-wrap: anywhere;
+}
+
+.logs-header-action {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .logs-header-content {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 0.8rem 1rem;
+    }
+
+    .logs-header-action {
+        width: 100%;
+    }
+}

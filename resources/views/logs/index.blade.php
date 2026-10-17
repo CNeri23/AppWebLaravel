@@ -2,14 +2,15 @@
 @section('content')
 
     <div class="container-fluid py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="h3 mb-1">
-                    <i class="fa-solid fa-clock-rotate-left me-2"></i>
-                    Logs del sistema
-                </h1>
-
-                <p class="text-muted mb-0">Historial de acciones realizadas en el sistema.</p>
+        <div class="card border-0 shadow-sm logs-header-card mb-4">
+            <div class="card-body logs-header-content">
+                <div class="logs-header-text">
+                    <h1 class="fw-bold mb-1">
+                        <i class="fa-solid fa-clock-rotate-left me-2"></i>
+                        Logs del sistema
+                    </h1>
+                    <p class="text-secondary mb-0">Historial de acciones realizadas en el sistema.</p>
+                </div>
             </div>
         </div>
 
