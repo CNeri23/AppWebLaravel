@@ -704,3 +704,15 @@
 .display-scale-option:focus-within{outline:2px solid var(--gym);outline-offset:3px}
 html[data-font-scale="small"]{font-size:14px}html[data-font-scale="medium"]{font-size:16px}html[data-font-scale="large"]{font-size:18px}
 @media(max-width:700px){.display-scale-options{grid-template-columns:1fr}}
+
+
+/* Los previews son ilustraciones estáticas: no heredan la escala tipográfica del usuario. */
+html[data-font-scale] .theme-preview,
+html[data-font-scale] .theme-preview *,
+html[data-font-scale] .theme-style-option .theme-style-info,
+html[data-font-scale] .theme-style-option .theme-style-info * {
+    font-size: initial;
+}
+html[data-font-scale] .theme-style-option .theme-style-info strong { font-size: 13px; }
+html[data-font-scale] .theme-style-option .theme-style-info small { font-size: 11px; }
+html[data-font-scale] .theme-style-option .theme-style-check i { font-size: 8px; }

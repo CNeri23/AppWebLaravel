@@ -676,3 +676,45 @@ html[data-bs-theme="dark"] .ss-content .ss-search input {
     background-color: var(--field-bg) !important;
 }
 
+
+
+/* Escala tipográfica de la vista Configuración. Los iconos conservan medidas propias. */
+html[data-font-scale="small"] .configuracion-page .config-card-header,
+html[data-font-scale="small"] .configuracion-page .config-card-header h1,
+html[data-font-scale="small"] .configuracion-page .config-card-header h2,
+html[data-font-scale="small"] .configuracion-page .config-card-header h3,
+html[data-font-scale="small"] .configuracion-page .config-field > label,
+html[data-font-scale="small"] .configuracion-page .config-switch-text > label,
+html[data-font-scale="small"] .configuracion-page .config-field > small,
+html[data-font-scale="small"] .configuracion-page .config-switch-text > small,
+html[data-font-scale="small"] .configuracion-page .form-control,
+html[data-font-scale="small"] .configuracion-page .form-select,
+html[data-font-scale="small"] .configuracion-page .form-check-label,
+html[data-font-scale="small"] .configuracion-page .ss-main,
+html[data-font-scale="small"] .ss-content .ss-option,
+html[data-font-scale="small"] .ss-content .ss-search input { font-size: .9em !important; }
+
+html[data-font-scale="large"] .configuracion-page .config-card-header,
+html[data-font-scale="large"] .configuracion-page .config-card-header h1,
+html[data-font-scale="large"] .configuracion-page .config-card-header h2,
+html[data-font-scale="large"] .configuracion-page .config-card-header h3,
+html[data-font-scale="large"] .configuracion-page .config-field > label,
+html[data-font-scale="large"] .configuracion-page .config-switch-text > label,
+html[data-font-scale="large"] .configuracion-page .config-field > small,
+html[data-font-scale="large"] .configuracion-page .config-switch-text > small,
+html[data-font-scale="large"] .configuracion-page .form-control,
+html[data-font-scale="large"] .configuracion-page .form-select,
+html[data-font-scale="large"] .configuracion-page .form-check-label,
+html[data-font-scale="large"] .configuracion-page .ss-main,
+html[data-font-scale="large"] .ss-content .ss-option,
+html[data-font-scale="large"] .ss-content .ss-search input { font-size: 1.12em !important; }
+
+/* Iconografía de Configuración: tamaño estable independientemente de la escala del texto. */
+html[data-font-scale] .configuracion-page .config-card-header i,
+html[data-font-scale] .configuracion-page .config-input-save i,
+html[data-font-scale] .configuracion-page .accent-option i,
+html[data-font-scale] .configuracion-page .form-check-input,
+html[data-font-scale] .configuracion-page .ss-main .ss-arrow,
+html[data-font-scale] .ss-content .ss-option i {
+    font-size: 14px !important;
+}
