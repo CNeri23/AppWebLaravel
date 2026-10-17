@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="container-fluid py-4 preferencias-page">
+<div class="container-fluid preferencias-page">
     <div class="preferences-card">
 
         @php
