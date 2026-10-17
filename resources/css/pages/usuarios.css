@@ -369,31 +369,31 @@
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-primary,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
-    --ua: 125, 157, 205;
+    --ua: 139, 169, 216;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-success,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-user-shield, .fa-user-check, .fa-arrows-rotate) {
-    --ua: 83, 158, 111;
+    --ua: 91, 173, 119;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-danger,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
-    --ua: 202, 119, 119;
+    --ua: 211, 126, 126;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-warning,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-key) {
-    --ua: 202, 157, 83;
+    --ua: 211, 166, 91;
 }
 
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-info,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-eye) {
-    --ua: 83, 157, 174;
+    --ua: 91, 171, 188;
 }
 
 #tablaUsuarios .btn.usuario-action-btn:hover {
-    color: var(--bs-body-bg);
+    color: #ffffff;
     border-color: rgb(var(--ua));
     background: rgb(var(--ua));
     box-shadow: 0 4px 10px -5px rgba(var(--ua), 0.55);
