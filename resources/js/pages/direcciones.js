@@ -371,6 +371,89 @@ document.addEventListener('DOMContentLoaded', function () {
         ajustarTodasLasFilas();
     }
 
+    const camposObligatoriosDireccion = ['calle', 'numero_exterior', 'colonia', 'codigo_postal', 'municipio', 'estado', 'pais'];
+    const camposDireccion = ['calle', 'numero_exterior', 'numero_interior', 'colonia', 'codigo_postal', 'municipio', 'estado', 'pais'];
+    const camposTocadosDireccion = new WeakSet();
+
+    function limpiarValidacionDireccion(input) {
+        if (!input) return;
+        input.classList.remove('is-invalid', 'is-valid');
+        input.removeAttribute('aria-invalid');
+        const contenedor = input.closest('.col-md-4, .col-md-6, .col-md-8, .col-12, .form-group') || input.parentElement;
+        const feedback = contenedor?.querySelector('.feedback-validacion-direccion');
+        if (feedback) feedback.remove();
+    }
+
+    function validarCampoDireccion(input, mostrarValido = false) {
+        if (!input || input.type === 'hidden' || input.disabled) return true;
+        limpiarValidacionDireccion(input);
+        const valor = input.value.trim();
+        let mensaje = '';
+        const campo = input.name;
+
+        if (input.required && !valor) {
+            mensaje = 'Este campo es obligatorio.';
+        } else if (valor && campo === 'codigo_postal' && !/^\\d{5}$/.test(valor)) {
+            mensaje = 'Ingresa un código postal de exactamente 5 dígitos.';
+        } else if (valor && input.maxLength > 0 && valor.length > input.maxLength) {
+            mensaje = 'No puede superar ' + input.maxLength + ' caracteres.';
+        }
+
+        if (mensaje) {
+            input.classList.add('is-invalid');
+            input.setAttribute('aria-invalid', 'true');
+            const feedback = document.createElement('div');
+            feedback.className = 'invalid-feedback feedback-validacion-direccion';
+            feedback.textContent = mensaje;
+            input.insertAdjacentElement('afterend', feedback);
+            return false;
+        }
+
+        if (mostrarValido && (valor || input.required)) {
+            input.classList.add('is-valid');
+            input.setAttribute('aria-invalid', 'false');
+        }
+        return true;
+    }
+
+    function validarFormularioDireccion(form) {
+        let valido = true;
+        let primerInvalido = null;
+        form.querySelectorAll('input[name], textarea[name], select[name]').forEach(function (input) {
+            if (input.name === '_token' || input.name === '_method' || input.type === 'hidden') return;
+            const correcto = validarCampoDireccion(input, true);
+            if (!correcto) {
+                valido = false;
+                if (!primerInvalido) primerInvalido = input;
+            }
+        });
+        if (primerInvalido) primerInvalido.focus();
+        return valido;
+    }
+
+    function inicializarValidacionDireccion(form, modal, esEdicion = false) {
+        if (!form) return;
+        form.querySelectorAll('input[name], textarea[name], select[name]').forEach(function (input) {
+            if (input.name === '_token' || input.name === '_method' || input.type === 'hidden') return;
+            input.addEventListener('input', function () {
+                camposTocadosDireccion.add(input);
+                validarCampoDireccion(input, true);
+            });
+            input.addEventListener('change', function () {
+                camposTocadosDireccion.add(input);
+                validarCampoDireccion(input, true);
+            });
+        });
+        if (modal) {
+            modal.addEventListener('shown.bs.modal', function () {
+                form.querySelectorAll('input[name], textarea[name], select[name]').forEach(function (input) {
+                    limpiarValidacionDireccion(input);
+                    camposTocadosDireccion.delete(input);
+                });
+            });
+        }
+    }
+
     let datosOriginalesEditar = null;
     const MENSAJE_SIN_CAMBIOS = 'No hubo cambios para actualizar.';
     const modalEditar = document.getElementById('modalEditarDireccion');
@@ -468,11 +551,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     const formNuevaDireccion = document.getElementById('formNuevaDireccion');
 
+    inicializarValidacionDireccion(formNuevaDireccion, modalNuevaDireccion);
+
     if (formNuevaDireccion) {
         formNuevaDireccion.addEventListener('submit',
             function (event) {
 
                 event.preventDefault();
+                if (!validarFormularioDireccion(formNuevaDireccion)) {
+                    window.showToast('warning', 'Revisa los campos marcados antes de continuar.');
+                    return;
+                }
 
                 enviarFormulario(formNuevaDireccion, modalNuevaDireccion, 'Dirección creada correctamente.')
                     .then((data) => {
@@ -488,6 +577,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const formEditarDireccion = document.getElementById('formEditarDireccion');
+
+    inicializarValidacionDireccion(formEditarDireccion, modalEditarDireccion, true);
 
     if (formEditarDireccion) {
         formEditarDireccion.addEventListener('submit',
@@ -519,7 +610,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 if (sinCambios) {
+                    camposDireccion.forEach(function (campo) {
+                        limpiarValidacionDireccion(document.getElementById('editar_' + campo));
+                    });
                     window.showToast('info', MENSAJE_SIN_CAMBIOS);
+                    return;
+                }
+
+                if (!validarFormularioDireccion(formEditarDireccion)) {
+                    window.showToast('warning', 'Revisa los campos marcados antes de continuar.');
                     return;
                 }
 
