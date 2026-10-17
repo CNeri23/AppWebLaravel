@@ -121,14 +121,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function validarMontoPositivo(valor) {
         const numero = Number(valor);
         if (!Number.isFinite(numero) || numero <= 0) return 'El monto debe ser mayor que cero.';
-        if (!/^\\d+(?:\\.\\d{1,2})?$/.test(valor)) return 'Ingresa un monto válido con máximo dos decimales.';
+        if (!/^\d+(?:\.\d{1,2})?$/.test(valor)) return 'Ingresa un monto válido con máximo dos decimales.';
         return '';
     }
 
     function validarMontoNoNegativo(valor) {
         const numero = Number(valor);
         if (!Number.isFinite(numero) || numero < 0) return 'El monto no puede ser negativo.';
-        if (!/^\\d+(?:\\.\\d{1,2})?$/.test(valor)) return 'Ingresa un monto válido con máximo dos decimales.';
+        if (!/^\d+(?:\.\d{1,2})?$/.test(valor)) return 'Ingresa un monto válido con máximo dos decimales.';
         return '';
     }
 
