@@ -349,3 +349,26 @@
     background: rgba(var(--ua), 0.2);
     border-color: transparent;
 }
+
+
+/* Ajustes finales: mantener el color del icono durante hover en ambos temas. */
+.plan-actions .btn.plan-action-btn:hover,
+.plan-actions .btn.plan-action-btn:focus-visible {
+    color: rgb(var(--ua)) !important;
+    background: rgba(var(--ua), 0.13) !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+[data-bs-theme="dark"] .plan-actions .btn.plan-action-btn:hover,
+[data-bs-theme="dark"] .plan-actions .btn.plan-action-btn:focus-visible {
+    color: color-mix(in srgb, rgb(var(--ua)) 80%, #ffffff) !important;
+    background: rgba(var(--ua), 0.2) !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+.plan-actions .btn.plan-action-btn:hover > i,
+.plan-actions .btn.plan-action-btn:hover > svg,
+.plan-actions .btn.plan-action-btn:focus-visible > i,
+.plan-actions .btn.plan-action-btn:focus-visible > svg {
+    color: inherit !important;
+}
