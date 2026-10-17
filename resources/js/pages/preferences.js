@@ -33,7 +33,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function actualizarSeleccionVisual() {
-    
+        opciones.forEach(function (opcion) {
+            const estiloActivo = opcion.name === 'light_theme_style'
+                ? opcion.value === lightThemeStyle
+                : opcion.value === darkThemeStyle;
+            opcion.checked = estiloActivo;
+        });
+    }
+
     opcionesEscala.forEach(function (opcion) {
         opcion.addEventListener('change', async function () {
             if (!this.checked) return;

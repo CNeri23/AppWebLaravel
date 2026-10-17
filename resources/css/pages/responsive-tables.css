@@ -330,3 +330,10 @@
     opacity: 1;
     visibility: visible;
 }
+
+
+html[data-font-scale="small"] .table-responsive table.responsive-cards-table tbody td,
+html[data-font-scale="small"] .table-responsive table.responsive-cards-table tbody td::before { font-size: 0.9rem !important; }
+
+html[data-font-scale="large"] .table-responsive table.responsive-cards-table tbody td,
+html[data-font-scale="large"] .table-responsive table.responsive-cards-table tbody td::before { font-size: 1.12rem !important; }

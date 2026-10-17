@@ -2218,3 +2218,23 @@ textarea,
 .swal2-cancel {
     font-family: var(--app-font-family, "Inter Variable", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
 }
+
+html[data-font-scale="small"] { --font-scale-factor: 0.9; }
+html[data-font-scale="medium"] { --font-scale-factor: 1; }
+html[data-font-scale="large"] { --font-scale-factor: 1.12; }
+
+html[data-font-scale="small"] :is(.topbar, .sidebar, .app-content, .modal, .dropdown-menu, .swal2-popup) {
+    --font-scale-factor: 0.9;
+}
+
+html[data-font-scale="large"] :is(.topbar, .sidebar, .app-content, .modal, .dropdown-menu, .swal2-popup) {
+    --font-scale-factor: 1.12;
+}
+
+html[data-font-scale="small"] :is(.topbar, .sidebar, .app-content, .modal, .dropdown-menu, .swal2-popup) :is(h1,h2,h3,h4,h5,h6,p,a,span,label,button,input,select,textarea,small,strong,em,li,td,th,.badge,.btn,.form-control,.form-select,.dataTables_info,.dataTables_paginate,.dataTables_length,.dataTables_filter) {
+    font-size: calc(1rem * var(--font-scale-factor)) !important;
+}
+
+html[data-font-scale="large"] :is(.topbar, .sidebar, .app-content, .modal, .dropdown-menu, .swal2-popup) :is(h1,h2,h3,h4,h5,h6,p,a,span,label,button,input,select,textarea,small,strong,em,li,td,th,.badge,.btn,.form-control,.form-select,.dataTables_info,.dataTables_paginate,.dataTables_length,.dataTables_filter) {
+    font-size: calc(1rem * var(--font-scale-factor)) !important;
+}
