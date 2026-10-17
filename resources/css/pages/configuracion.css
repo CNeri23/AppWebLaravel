@@ -693,7 +693,23 @@ html[data-font-scale="small"] .configuracion-page .form-select,
 html[data-font-scale="small"] .configuracion-page .form-check-label,
 html[data-font-scale="small"] .configuracion-page .ss-main,
 html[data-font-scale="small"] .ss-content .ss-option,
-html[data-font-scale="small"] .ss-content .ss-search input { font-size: .9em !important; }
+html[data-font-scale="small"] .ss-content .ss-search input { font-size: 1em !important; }
+
+/* Escala tipográfica propia de Configuración. */
+html[data-font-scale="medium"] .configuracion-page .config-card-header,
+html[data-font-scale="medium"] .configuracion-page .config-card-header h1,
+html[data-font-scale="medium"] .configuracion-page .config-card-header h2,
+html[data-font-scale="medium"] .configuracion-page .config-card-header h3,
+html[data-font-scale="medium"] .configuracion-page .config-field > label,
+html[data-font-scale="medium"] .configuracion-page .config-switch-text > label,
+html[data-font-scale="medium"] .configuracion-page .config-field > small,
+html[data-font-scale="medium"] .configuracion-page .config-switch-text > small,
+html[data-font-scale="medium"] .configuracion-page .form-control,
+html[data-font-scale="medium"] .configuracion-page .form-select,
+html[data-font-scale="medium"] .configuracion-page .form-check-label,
+html[data-font-scale="medium"] .configuracion-page .ss-main,
+html[data-font-scale="medium"] .ss-content .ss-option,
+html[data-font-scale="medium"] .ss-content .ss-search input { font-size: .9em !important; }
 
 html[data-font-scale="large"] .configuracion-page .config-card-header,
 html[data-font-scale="large"] .configuracion-page .config-card-header h1,
