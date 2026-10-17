@@ -1,3 +1,6 @@
+import SlimSelect from 'slim-select';
+import 'slim-select/styles';
+
 function avisarTicket(tipo, mensaje) {
     if (window.showToast) {
         window.showToast(tipo, mensaje);
@@ -191,6 +194,59 @@ document.addEventListener('DOMContentLoaded', function () {
     const formNuevo = document.getElementById('formNuevaMembresia');
     const formEditar = document.getElementById('formEditarMembresia');
     const formRenovar = document.getElementById('formRenovarMembresia');
+
+    const slimSelectsMembresias = {};
+
+    [
+        '#persona_id',
+        '#plan_id',
+        '#metodo_pago',
+        '#renovar_plan_id',
+        '#renovar_metodo_pago',
+    ].forEach(function (selector) {
+        const elemento = document.querySelector(selector);
+
+        if (elemento && !elemento.dataset.slimSelectInicializado) {
+            slimSelectsMembresias[selector] = new SlimSelect({
+                select: selector,
+                settings: {
+                    showSearch: true,
+                    searchText: 'Sin resultados',
+                    searchPlaceholder: 'Buscar...',
+                },
+            });
+
+            elemento.dataset.slimSelectInicializado = 'true';
+        }
+    });
+
+    function establecerSeleccionSlimMembresias(selector, valor, notificar = false) {
+        const slimSelect = slimSelectsMembresias[selector];
+        const elemento = document.querySelector(selector);
+        const seleccion = valor === null || valor === undefined ? '' : String(valor);
+
+        if (slimSelect) {
+            slimSelect.setSelected(seleccion);
+        } else if (elemento) {
+            elemento.value = seleccion;
+        }
+
+        if (notificar && elemento) {
+            elemento.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+
+    function sincronizarSelectsSlimMembresias(formulario) {
+        if (!formulario) {
+            return;
+        }
+
+        formulario.querySelectorAll('select').forEach(function (select) {
+            if (select.id && slimSelectsMembresias['#' + select.id]) {
+                establecerSeleccionSlimMembresias('#' + select.id, select.value);
+            }
+        });
+    }
     const formCancelar = document.getElementById('formCancelarMembresia');
 
     const acciones = Array.isArray(window.accionesMembresias) ? window.accionesMembresias : [];
@@ -1079,6 +1135,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         formulario.reset();
+        sincronizarSelectsSlimMembresias(formulario);
         formulario.querySelectorAll('.is-valid, .is-invalid')
             .forEach(function (elemento) {
                 elemento.classList.remove(
@@ -1750,12 +1807,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 if (planSelect) {
-                    planSelect.value = '';
-                    planSelect.dispatchEvent(new Event('change'));
+                    establecerSeleccionSlimMembresias('#renovar_plan_id', '', true);
                 }
 
                 if (metodoPago) {
-                    metodoPago.value = '';
+                    establecerSeleccionSlimMembresias('#renovar_metodo_pago', '', true);
                     actualizarMetodoPagoRenovacion();
                 }
 
@@ -1824,6 +1880,7 @@ document.addEventListener('DOMContentLoaded', function () {
     modalNuevo?.addEventListener(
         'show.bs.modal',
         function () {
+            sincronizarSelectsSlimMembresias(formNuevo);
             actualizarPrecioPlan();
             actualizarMetodoPagoNuevo();
         }
