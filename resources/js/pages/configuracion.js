@@ -1,3 +1,6 @@
+import SlimSelect from 'slim-select';
+import 'slim-select/styles';
+
 document.addEventListener('DOMContentLoaded', function () {
     const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfTokenElement ? csrfTokenElement.content : '';
@@ -17,6 +20,31 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!formulario) {
         return;
     }
+
+    const selectoresSlim = [
+        '#font_family',
+        '#currency',
+        '#timezone',
+        '#date_format',
+        '#time_format',
+    ];
+
+    selectoresSlim.forEach(function (selector) {
+        const elemento = formulario.querySelector(selector);
+
+        if (elemento && !elemento.dataset.slimSelectInicializado) {
+            new SlimSelect({
+                select: selector,
+                settings: {
+                    showSearch: selector === '#timezone' || selector === '#font_family',
+                    searchText: 'Sin resultados',
+                    searchPlaceholder: 'Buscar...',
+                },
+            });
+
+            elemento.dataset.slimSelectInicializado = 'true';
+        }
+    });
 
     const estilosClaros = ['white', 'mist', 'sky',];
     const estilosOscuros = ['graphite', 'charcoal', 'black',];
