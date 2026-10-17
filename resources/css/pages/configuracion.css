@@ -1,6 +1,7 @@
 .configuracion-page {
-    max-width: 1700px;
-    margin: 0 auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
 }
 
 .configuracion-grid {
@@ -543,11 +544,6 @@
 }
 
 @media (max-width: 500px) {
-    .configuracion-page {
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-
     .config-card-body {
         padding: 14px;
     }

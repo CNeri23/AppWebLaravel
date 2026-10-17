@@ -5,7 +5,7 @@
 $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionService::class)->tieneAccionPorSlug(auth()->user(), $slug);
 @endphp
 
-<div class="container-fluid py-4 configuracion-page">
+<div class="container-fluid configuracion-page">
     <form id="formConfiguracion" enctype="multipart/form-data">
         <div class="configuracion-grid">
             @if (($puedeConfigurar('configuracion.nombre') || $puedeConfigurar('configuracion.logotipo')))
