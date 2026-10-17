@@ -28,15 +28,6 @@
     line-height: 1.1;
 }
 
-.asistencia-actions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: nowrap;
-    gap: 6px;
-    min-width: max-content;
-}
-
 .btn.asistencia-action-btn {
     flex: 0 0 auto;
     display: inline-flex;
@@ -214,163 +205,10 @@
     }
 }
 
-html[data-bs-theme] .asistencia-actions .btn-outline-primary {
-    color: #0d6efd !important;
-    border-color: #0d6efd !important;
-    background-color: transparent !important;
+@media (hover: hover) {
 }
 
-html[data-bs-theme] .asistencia-actions .btn-outline-primary:hover,
-html[data-bs-theme] .asistencia-actions .btn-outline-primary:focus-visible {
-    color: #fff !important;
-    border-color: #0d6efd !important;
-    background-color: #0d6efd !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-info {
-    color: #0891b2 !important;
-    border-color: #0dcaf0 !important;
-    background-color: transparent !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-info:hover,
-html[data-bs-theme] .asistencia-actions .btn-outline-info:focus-visible {
-    color: #052c33 !important;
-    border-color: #0dcaf0 !important;
-    background-color: #0dcaf0 !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-success {
-    color: #198754 !important;
-    border-color: #198754 !important;
-    background-color: transparent !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-success:hover,
-html[data-bs-theme] .asistencia-actions .btn-outline-success:focus-visible {
-    color: #fff !important;
-    border-color: #198754 !important;
-    background-color: #198754 !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-danger {
-    color: #dc3545 !important;
-    border-color: #dc3545 !important;
-    background-color: transparent !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-danger:hover,
-html[data-bs-theme] .asistencia-actions .btn-outline-danger:focus-visible {
-    color: #fff !important;
-    border-color: #dc3545 !important;
-    background-color: #dc3545 !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-warning {
-    color: #997404 !important;
-    border-color: #ffc107 !important;
-    background-color: transparent !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-warning:hover,
-html[data-bs-theme] .asistencia-actions .btn-outline-warning:focus-visible {
-    color: #212529 !important;
-    border-color: #ffc107 !important;
-    background-color: #ffc107 !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-secondary {
-    color: #6c757d !important;
-    border-color: #6c757d !important;
-    background-color: transparent !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-secondary:hover,
-html[data-bs-theme] .asistencia-actions .btn-outline-secondary:focus-visible {
-    color: #fff !important;
-    border-color: #6c757d !important;
-    background-color: #6c757d !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-primary {
-    color: #0d6efd !important;
-    border-color: #0d6efd !important;
-    background-color: transparent !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-primary:hover,
-html[data-bs-theme] .asistencia-actions .btn-outline-primary:focus-visible {
-    color: #fff !important;
-    border-color: #0d6efd !important;
-    background-color: #0d6efd !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-info {
-    color: #0891b2 !important;
-    border-color: #0dcaf0 !important;
-    background-color: transparent !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-info:hover,
-html[data-bs-theme] .asistencia-actions .btn-outline-info:focus-visible {
-    color: #052c33 !important;
-    border-color: #0dcaf0 !important;
-    background-color: #0dcaf0 !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-success {
-    color: #198754 !important;
-    border-color: #198754 !important;
-    background-color: transparent !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-success:hover,
-html[data-bs-theme] .asistencia-actions .btn-outline-success:focus-visible {
-    color: #fff !important;
-    border-color: #198754 !important;
-    background-color: #198754 !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-danger {
-    color: #dc3545 !important;
-    border-color: #dc3545 !important;
-    background-color: transparent !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-danger:hover,
-html[data-bs-theme] .asistencia-actions .btn-outline-danger:focus-visible {
-    color: #fff !important;
-    border-color: #dc3545 !important;
-    background-color: #dc3545 !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-warning {
-    color: #997404 !important;
-    border-color: #ffc107 !important;
-    background-color: transparent !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-warning:hover,
-html[data-bs-theme] .asistencia-actions .btn-outline-warning:focus-visible {
-    color: #212529 !important;
-    border-color: #ffc107 !important;
-    background-color: #ffc107 !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-secondary {
-    color: #6c757d !important;
-    border-color: #6c757d !important;
-    background-color: transparent !important;
-}
-
-html[data-bs-theme] .asistencia-actions .btn-outline-secondary:hover,
-html[data-bs-theme] .asistencia-actions .btn-outline-secondary:focus-visible {
-    color: #fff !important;
-    border-color: #6c757d !important;
-    background-color: #6c757d !important;
-}
-
-/* Botones de acciones: mismo estilo visual que la tabla de Usuarios. */
+/* Botones de acciones: estilo único, sin fondos permanentes. */
 .asistencia-actions {
     display: flex;
     align-items: center;
@@ -380,32 +218,68 @@ html[data-bs-theme] .asistencia-actions .btn-outline-secondary:focus-visible {
     width: fit-content;
     min-width: max-content;
     margin-inline: auto;
-    padding: 3px;
+    padding: 0;
     background: transparent;
 }
 
 .asistencia-actions .btn {
     --ua: 100, 116, 139;
-    --bs-btn-color: var(--text-soft, #64748b);
-    --bs-btn-bg: transparent;
-    --bs-btn-border-color: transparent;
-    --bs-btn-hover-color: rgb(var(--ua));
-    --bs-btn-hover-bg: rgba(var(--ua), 0.14);
-    --bs-btn-hover-border-color: transparent;
-    --bs-btn-active-color: rgb(var(--ua));
-    --bs-btn-active-bg: rgba(var(--ua), 0.22);
-    flex: 0 0 auto;
     display: inline-flex;
+    flex: 0 0 auto;
     align-items: center;
     justify-content: center;
     width: 32px;
     min-width: 32px;
     height: 32px;
     padding: 0;
+    border: 1px solid transparent;
     border-radius: 9px;
+    color: rgb(var(--ua));
+    background: transparent;
+    box-shadow: none;
     line-height: 1;
-    transition: background-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease, transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+    transition: color .16s ease, background-color .16s ease, box-shadow .16s ease, transform .2s cubic-bezier(.2,.9,.3,1);
 }
+
+.asistencia-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
+.asistencia-actions .btn.btn-outline-primary { --ua: 37, 99, 235; }
+
+.asistencia-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
+.asistencia-actions .btn.btn-outline-danger { --ua: 220, 53, 69; }
+
+.asistencia-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people, .fa-arrows-rotate),
+.asistencia-actions .btn.btn-outline-success { --ua: 22, 163, 74; }
+
+.asistencia-actions .btn:has(.fa-key, .bi-key, .fa-lock),
+.asistencia-actions .btn.btn-outline-warning { --ua: 217, 119, 6; }
+
+.asistencia-actions .btn:has(.fa-eye, .bi-eye),
+.asistencia-actions .btn.btn-outline-info { --ua: 8, 145, 178; }
+
+[data-bs-theme="dark"] asistencia-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
+[data-bs-theme="dark"] asistencia-actions .btn.btn-outline-primary { --ua: 96, 165, 250; }
+
+[data-bs-theme="dark"] asistencia-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
+[data-bs-theme="dark"] asistencia-actions .btn.btn-outline-danger { --ua: 248, 113, 113; }
+
+[data-bs-theme="dark"] asistencia-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people, .fa-arrows-rotate),
+[data-bs-theme="dark"] asistencia-actions .btn.btn-outline-success { --ua: 74, 222, 128; }
+
+[data-bs-theme="dark"] asistencia-actions .btn:has(.fa-key, .bi-key, .fa-lock),
+[data-bs-theme="dark"] asistencia-actions .btn.btn-outline-warning { --ua: 251, 191, 36; }
+
+[data-bs-theme="dark"] asistencia-actions .btn:has(.fa-eye, .bi-eye),
+[data-bs-theme="dark"] asistencia-actions .btn.btn-outline-info { --ua: 34, 211, 238; }
+
+.asistencia-actions .btn:hover,
+.asistencia-actions .btn:focus-visible {
+    color: #fff;
+    background: rgba(var(--ua), .14);
+    border-color: transparent;
+    box-shadow: inset 0 0 0 1px rgba(var(--ua), .3), 0 6px 14px -8px rgba(var(--ua), .7);
+}
+
+.asistencia-actions .btn:active { transform: scale(.94); }
 
 .asistencia-actions .btn > i,
 .asistencia-actions .btn > svg {
@@ -415,103 +289,13 @@ html[data-bs-theme] .asistencia-actions .btn-outline-secondary:focus-visible {
     pointer-events: none;
 }
 
-.asistencia-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
-.asistencia-actions .btn.btn-outline-primary { --ua: 37, 99, 235; }
-
-.asistencia-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
-.asistencia-actions .btn.btn-outline-danger { --ua: 220, 53, 69; }
-
-.asistencia-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people),
-.asistencia-actions .btn.btn-outline-success { --ua: 22, 163, 74; }
-
-.asistencia-actions .btn:has(.fa-key, .fa-lock),
-.asistencia-actions .btn.btn-outline-warning { --ua: 217, 119, 6; }
-
-.asistencia-actions .btn:has(.fa-eye, .bi-eye),
-.asistencia-actions .btn.btn-outline-info { --ua: 8, 145, 178; }
-
-[data-bs-theme="dark"] .asistencia-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
-[data-bs-theme="dark"] .asistencia-actions .btn.btn-outline-primary { --ua: 96, 165, 250; }
-
-[data-bs-theme="dark"] .asistencia-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
-[data-bs-theme="dark"] .asistencia-actions .btn.btn-outline-danger { --ua: 248, 113, 113; }
-
-[data-bs-theme="dark"] .asistencia-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people),
-[data-bs-theme="dark"] .asistencia-actions .btn.btn-outline-success { --ua: 74, 222, 128; }
-
-[data-bs-theme="dark"] .asistencia-actions .btn:has(.fa-key, .fa-lock),
-[data-bs-theme="dark"] .asistencia-actions .btn.btn-outline-warning { --ua: 251, 191, 36; }
-
-[data-bs-theme="dark"] .asistencia-actions .btn:has(.fa-eye, .bi-eye),
-[data-bs-theme="dark"] .asistencia-actions .btn.btn-outline-info { --ua: 34, 211, 238; }
-
-.asistencia-actions .btn:hover,
-.asistencia-actions .btn:focus-visible {
-    color: #ffffff !important;
-    border-color: rgba(var(--ua), 0.55) !important;
-    background: rgba(var(--ua), 0.14) !important;
-    box-shadow: inset 0 0 0 1px rgba(var(--ua), 0.3), 0 6px 14px -8px rgba(var(--ua), 0.7);
-}
-
-.asistencia-actions .btn:active { transform: scale(0.94); }
-
 @media (hover: hover) {
-    .asistencia-actions > :hover { transform: translateY(-2px) scale(1.12); }
+    .asistencia-actions > :hover { transform: translateY(-2px) scale(1.08); }
     .asistencia-actions > :hover + *,
-    .asistencia-actions > :has(+ :hover) { transform: translateY(-1px) scale(1.05); }
+    .asistencia-actions > :has(+ :hover) { transform: translateY(-1px) scale(1.03); }
 }
 
-
-/* Override final: garantiza el acabado de los botones de Usuarios frente a Bootstrap. */
-html body .asistencia-actions > .btn,
-html body .asistencia-actions > button,
-html body .asistencia-actions > a,
-html body .asistencia-actions .btn {
-    --ua: 100, 116, 139;
-    color: rgb(var(--ua)) !important;
-    background: transparent !important;
-    border: 1px solid transparent !important;
-    box-shadow: none !important;
-    width: 32px;
-    min-width: 32px;
-    height: 32px;
-    padding: 0 !important;
-    border-radius: 9px !important;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color .16s ease, color .16s ease, box-shadow .16s ease, transform .2s cubic-bezier(.2,.9,.3,1) !important;
+@media (prefers-reduced-motion: reduce) {
+    .asistencia-actions *,
+    .asistencia-actions *::before { transition: none !important; }
 }
-html body .asistencia-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
-html body .asistencia-actions .btn.btn-outline-primary { --ua: 37, 99, 235; }
-html body .asistencia-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
-html body .asistencia-actions .btn.btn-outline-danger { --ua: 220, 53, 69; }
-html body .asistencia-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people),
-html body .asistencia-actions .btn.btn-outline-success { --ua: 22, 163, 74; }
-html body .asistencia-actions .btn:has(.fa-key, .fa-lock),
-html body .asistencia-actions .btn.btn-outline-warning { --ua: 217, 119, 6; }
-html body .asistencia-actions .btn:has(.fa-eye, .bi-eye),
-html body .asistencia-actions .btn.btn-outline-info { --ua: 8, 145, 178; }
-
-html[data-bs-theme="dark"] body .asistencia-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
-html[data-bs-theme="dark"] body .asistencia-actions .btn.btn-outline-primary { --ua: 96, 165, 250; }
-html[data-bs-theme="dark"] body .asistencia-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
-html[data-bs-theme="dark"] body .asistencia-actions .btn.btn-outline-danger { --ua: 248, 113, 113; }
-html[data-bs-theme="dark"] body .asistencia-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people),
-html[data-bs-theme="dark"] body .asistencia-actions .btn.btn-outline-success { --ua: 74, 222, 128; }
-html[data-bs-theme="dark"] body .asistencia-actions .btn:has(.fa-key, .fa-lock),
-html[data-bs-theme="dark"] body .asistencia-actions .btn.btn-outline-warning { --ua: 251, 191, 36; }
-html[data-bs-theme="dark"] body .asistencia-actions .btn:has(.fa-eye, .bi-eye),
-html[data-bs-theme="dark"] body .asistencia-actions .btn.btn-outline-info { --ua: 34, 211, 238; }
-
-html body .asistencia-actions .btn:hover,
-html body .asistencia-actions .btn:focus-visible {
-    color: #fff !important;
-    background: rgba(var(--ua), .14) !important;
-    border-color: transparent !important;
-    box-shadow: inset 0 0 0 1px rgba(var(--ua), .3), 0 6px 14px -8px rgba(var(--ua), .7) !important;
-    transform: translateY(-2px) scale(1.08);
-}
-html body .asistencia-actions .btn:active { transform: scale(.94); }
-html body .asistencia-actions .btn > i,
-html body .asistencia-actions .btn > svg { font-size: 14px; margin: 0 !important; pointer-events: none; }
