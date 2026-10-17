@@ -58,18 +58,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         control.classList.add('table-action-info');
                     }
 
-                    const tooltip = control.getAttribute('data-tooltip')
-                        || control.getAttribute('aria-label')
-                        || control.getAttribute('title')
-                        || control.getAttribute('data-bs-original-title');
-
-                    if (tooltip && !control.hasAttribute('data-tooltip')) {
-                        control.setAttribute('data-tooltip', tooltip.trim());
-                    }
-                    if (control.hasAttribute('title')) control.removeAttribute('title');
-                    if (control.hasAttribute('data-bs-toggle') && control.getAttribute('data-bs-toggle') === 'tooltip') {
-                        control.removeAttribute('data-bs-toggle');
-                    }
                 });
             });
         }
