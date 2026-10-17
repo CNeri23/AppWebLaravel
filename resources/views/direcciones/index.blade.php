@@ -14,20 +14,22 @@
         })->values();
 @endphp
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="fw-bold mb-1">Direcciones</h1>
-        <p class="text-secondary mb-0">Administración de direcciones registradas.</p>
-    </div>
+<div class="card border-0 shadow-sm direcciones-header-card mb-4">
+    <div class="card-body direcciones-header-content">
+        <div class="direcciones-header-text">
+            <h1 class="fw-bold mb-1">Direcciones</h1>
+            <p class="text-secondary mb-0">Administración de direcciones registradas.</p>
+        </div>
 
-    @foreach ($accionesDirecciones as $accion)
-        @if ($accion->slug === 'direcciones.crear')
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevaDireccion" data-tooltip="{{ $accion->nombre }}">
-                {!! $accion->icono ?: '<i class="fa-solid fa-location-dot me-2"></i>' !!}
-                {{ $accion->nombre }}
-            </button>
-        @endif
-    @endforeach
+        @foreach ($accionesDirecciones as $accion)
+            @if ($accion->slug === 'direcciones.crear')
+                <button type="button" class="btn btn-primary direcciones-header-action" data-bs-toggle="modal" data-bs-target="#modalNuevaDireccion" data-tooltip="{{ $accion->nombre }}">
+                    {!! $accion->icono ?: '<i class="fa-solid fa-location-dot me-2"></i>' !!}
+                    {{ $accion->nombre }}
+                </button>
+            @endif
+        @endforeach
+    </div>
 </div>
 
 <script>
