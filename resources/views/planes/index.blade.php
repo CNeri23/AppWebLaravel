@@ -25,7 +25,7 @@
     @foreach ($accionesPlanes as $accion)
         @if ($accion->slug === 'planes.crear')
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoPlan"
-                title="{{ $accion->nombre }}">
+                data-tooltip="{{ $accion->nombre }}">
                 {!! $accion->icono ?: '<i class="fa-solid fa-plus me-2"></i>' !!}
                 {{ $accion->nombre }}
             </button>
@@ -89,8 +89,7 @@
                                 @foreach ($accionesPlanes as $accion)
                                 @if ($accion->slug === 'planes.editar')
                                 <button type="button" class="btn btn-outline-primary plan-action-btn btn-editar-plan"
-                                    data-id="{{ $plan->id }}" title="{{ $accion->nombre }}"
-                                    data-tooltip="{{ $accion->nombre }}">
+                                    data-id="{{ $plan->id }}" data-tooltip="{{ $accion->nombre }}">
                                     {!! $accion->icono ?: '<i class="fa-solid fa-pen-to-square"></i>' !!}
                                 </button>
                                 @endif
@@ -100,7 +99,6 @@
                                     class="plan-toggle-btn {{ $plan->activo ? 'activo' : 'inactivo' }}"
                                     data-id="{{ $plan->id }}" data-activo="{{ $plan->activo ? 1 : 0 }}"
                                     aria-pressed="{{ $plan->activo ? 'true' : 'false' }}"
-                                    title="{{ $plan->activo ? 'Desactivar plan' : 'Activar plan' }}"
                                     data-tooltip="{{ $plan->activo ? 'Desactivar plan' : 'Activar plan' }}">
                                     <span class="plan-toggle-track">
                                         <span class="plan-toggle-thumb"></span>
@@ -111,7 +109,7 @@
                                 @if ($accion->slug === 'planes.eliminar')
                                 <button type="button" class="btn btn-outline-danger plan-action-btn btn-eliminar-plan"
                                     data-id="{{ $plan->id }}" data-name="{{ $plan->nombre }}"
-                                    title="{{ $accion->nombre }}" data-tooltip="{{ $accion->nombre }}">
+                                    data-tooltip="{{ $accion->nombre }}">
                                     {!! $accion->icono ?: '<i class="fa-regular fa-trash-can"></i>' !!}
                                 </button>
                                 @endif
