@@ -315,3 +315,7 @@
         padding: 0.8rem 1rem;
     }
 }
+
+
+.planes-header-text h1 { font-size: calc(1.325rem + 0.9vw); }
+@media (min-width: 1200px) { .planes-header-text h1 { font-size: 2rem; } }

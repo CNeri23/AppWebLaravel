@@ -414,3 +414,7 @@ html[data-bs-theme="dark"] .ss-content .ss-search input {
         width: 100%;
     }
 }
+
+
+.membresias-header-text h1 { font-size: calc(1.325rem + 0.9vw); }
+@media (min-width: 1200px) { .membresias-header-text h1 { font-size: 2rem; } }

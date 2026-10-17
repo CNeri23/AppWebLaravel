@@ -1,4 +1,5 @@
 @import './pages/perfil.css';
+@import './pages/dashboard.css';
 @import './pages/modulos.css';
 @import './pages/roles.css';
 @import './pages/usuarios.css';
@@ -59,8 +60,3 @@
     margin: 1.25em auto 0 !important;
 }
 
-/* Igualar los títulos principales al tamaño de la vista de módulos. */
-.container-fluid h1.fw-bold.mb-1,
-.container-fluid h1.fw-bold.mb-0 {
-    font-size: calc(1.325rem + 0.9vw);
-}
