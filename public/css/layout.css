@@ -2312,3 +2312,61 @@ html[data-font-scale="medium"] .user-dropdown-header small,
 html[data-font-scale="medium"] .user-dropdown .dropdown-item { font-size: 13px !important; }
 html[data-font-scale="large"] .user-dropdown-header small,
 html[data-font-scale="large"] .user-dropdown .dropdown-item { font-size: 14.56px !important; }
+
+/* Escala tipográfica global para vistas, tablas y controles de los módulos. */
+html[data-font-scale] {
+    --font-scale-factor: 1;
+}
+html[data-font-scale="small"] {
+    --font-scale-factor: .9;
+}
+html[data-font-scale="medium"] {
+    --font-scale-factor: 1;
+}
+html[data-font-scale="large"] {
+    --font-scale-factor: 1.12;
+}
+
+/* Texto habitual del contenido de las páginas. Se usan tamaños base explícitos
+   para evitar que los elementos anidados multipliquen la escala entre sí. */
+html[data-font-scale] main :is(p, li, label, .form-label, .form-text, .form-check-label,
+    .form-control, .form-select, .input-group-text, .btn, .badge, .alert,
+    .card-text, .card-subtitle, .breadcrumb, .nav-link, .dropdown-item,
+    .list-group-item, .pagination .page-link, .small, small) {
+    font-size: calc(14px * var(--font-scale-factor)) !important;
+}
+
+html[data-font-scale] main :is(h1, .h1) {
+    font-size: calc(28px * var(--font-scale-factor)) !important;
+}
+html[data-font-scale] main :is(h2, .h2) {
+    font-size: calc(24px * var(--font-scale-factor)) !important;
+}
+html[data-font-scale] main :is(h3, .h3) {
+    font-size: calc(20px * var(--font-scale-factor)) !important;
+}
+html[data-font-scale] main :is(h4, .h4) {
+    font-size: calc(18px * var(--font-scale-factor)) !important;
+}
+html[data-font-scale] main :is(h5, .h5, .card-title, .modal-title) {
+    font-size: calc(16px * var(--font-scale-factor)) !important;
+}
+html[data-font-scale] main :is(h6, .h6) {
+    font-size: calc(14px * var(--font-scale-factor)) !important;
+}
+
+/* Tablas HTML y DataTables: encabezados, registros, filtros y paginación. */
+html[data-font-scale] main table :is(th, td),
+html[data-font-scale] main .dataTables_wrapper :is(label, input, select, .dataTables_info,
+    .dataTables_length, .dataTables_filter, .dataTables_paginate, .paginate_button,
+    .dt-info, .dt-length, .dt-search, .dt-paging, .dt-column-title),
+html[data-font-scale] main .table-responsive :is(th, td) {
+    font-size: calc(13px * var(--font-scale-factor)) !important;
+}
+
+/* Excluir iconos y elementos gráficos de la escala de texto. */
+html[data-font-scale] main :is(i, svg, .fa, [class^="fa-"], [class*=" fa-"],
+    .bi, .icon, .material-icons, .material-symbols-outlined) {
+    font-size: revert !important;
+}
+
