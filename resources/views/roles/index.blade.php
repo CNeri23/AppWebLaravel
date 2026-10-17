@@ -10,7 +10,7 @@
         @foreach ($accionesRoles as $accion)
             @if ($accion->slug === 'roles.crear')
                 <button type="button" class="btn btn-primary" id="btnNuevoRol" data-bs-toggle="modal"
-                    data-bs-target="#modalNuevoRol" title="{{ $accion->nombre }}">
+                    data-bs-target="#modalNuevoRol" data-tooltip="{{ $accion->nombre }}">
                     {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
                     {{ $accion->nombre }}
                 </button>
@@ -78,7 +78,7 @@
                                                     <button
                                                         type="button"
                                                         class="btn btn-sm btn-outline-primary rol-action-btn"
-                                                        title="{{ $accion->nombre }}"
+                                                        data-tooltip="{{ $accion->nombre }}"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#modalEditarRol"
                                                         data-id="{{ $rol->id }}"
@@ -95,7 +95,7 @@
                                                     <button
                                                         type="button"
                                                         class="btn btn-sm btn-outline-success rol-action-btn"
-                                                        title="{{ $accion->nombre }}"
+                                                        data-tooltip="{{ $accion->nombre }}"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#modalPermisosRol"
                                                         data-id="{{ $rol->id }}"
@@ -111,7 +111,7 @@
                                                     <button
                                                         type="button"
                                                         class="btn btn-sm btn-outline-danger rol-action-btn"
-                                                        title="{{ $accion->nombre }}"
+                                                        data-tooltip="{{ $accion->nombre }}"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#modalEliminarRol"
                                                         data-id="{{ $rol->id }}"
