@@ -273,8 +273,7 @@
 }
 
 /* Acciones de tablas: mismo lenguaje visual de Usuarios y tooltips personalizados. */
-table.table td[data-label="Acciones"] .table-action-btn,
-table.table tbody td:last-child .table-action-btn {
+table.table td[data-label="Acciones"] .table-action-btn {
     --table-action-rgb: 100, 116, 139;
     position: relative;
     isolation: isolate;
@@ -329,13 +328,11 @@ table.table .table-action-btn:hover > svg {
     transform: scale(1.1) rotate(-3deg);
 }
 
-table.table td[data-label="Acciones"] [data-tooltip],
-table.table tbody td:last-child [data-tooltip] {
+table.table td[data-label="Acciones"] [data-tooltip] {
     position: relative;
 }
 
-table.table td[data-label="Acciones"] [data-tooltip]::after,
-table.table tbody td:last-child [data-tooltip]::after {
+table.table td[data-label="Acciones"] [data-tooltip]::after {
     position: absolute;
     z-index: 1080;
     left: 50%;
@@ -364,17 +361,14 @@ table.table tbody td:last-child [data-tooltip]::after {
 }
 
 table.table td[data-label="Acciones"] [data-tooltip]:hover::after,
-table.table td[data-label="Acciones"] [data-tooltip]:focus-visible::after,
-table.table tbody td:last-child [data-tooltip]:hover::after,
-table.table tbody td:last-child [data-tooltip]:focus-visible::after {
+table.table td[data-label="Acciones"] [data-tooltip]:focus-visible::after {
     opacity: 1;
     visibility: visible;
     transform: translate(-50%, 0);
 }
 
 @media (max-width: 767.98px) {
-    table.table td[data-label="Acciones"] [data-tooltip]::after,
-    table.table tbody td:last-child [data-tooltip]::after {
+    table.table td[data-label="Acciones"] [data-tooltip]::after {
         display: none;
     }
 }
