@@ -1,12 +1,12 @@
 <?php
 
-namespace App\\Notifications;
+namespace App\Notifications;
 
-use Illuminate\\Bus\\Queueable;
-use Illuminate\\Notifications\\Messages\\MailMessage;
-use Illuminate\\Notifications\\Notification;
-use Illuminate\\Support\\Facades\\Crypt;
-use Illuminate\\Support\\Facades\\URL;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\URL;
 
 class ResetPasswordNotification extends Notification
 {
