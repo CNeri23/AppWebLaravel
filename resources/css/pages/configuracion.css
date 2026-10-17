@@ -561,34 +561,47 @@
     }
 }
 
-/* SlimSelect: tema global porque el menú puede renderizarse fuera de configuracion-page. */
+/* SlimSelect: conserva el buscador original y adapta el menú a su contenedor. */
 .configuracion-page .ss-main {
-    min-height: 40px !important;
-    border: 1px solid var(--flat-line) !important;
-    border-radius: 9px !important;
-    background: var(--field-bg) !important;
-    color: var(--text-main) !important;
-    font-family: inherit !important;
-    font-size: 12px !important;
+    min-height: 40px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    border: 1px solid var(--flat-line);
+    border-radius: 9px;
+    background: var(--field-bg);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 12px;
     transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .configuracion-page .ss-main:focus,
 .configuracion-page .ss-main:focus-within {
-    border-color: var(--gym) !important;
-    box-shadow: 0 0 0 3px var(--gym-soft) !important;
+    border-color: var(--gym);
+    box-shadow: 0 0 0 3px var(--gym-soft);
+}
+
+.configuracion-page .ss-main .ss-values,
+.configuracion-page .ss-main .ss-values .ss-single {
+    min-width: 0;
+    color: var(--text-main);
 }
 
 .configuracion-page .ss-main .ss-values .ss-single {
-    color: var(--text-main) !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .configuracion-page .ss-main .ss-arrow path {
-    stroke: var(--text-muted) !important;
+    stroke: var(--text-muted);
 }
 
 .ss-content {
     z-index: 1080 !important;
+    box-sizing: border-box !important;
+    max-width: min(100vw - 24px, 520px);
     overflow: hidden !important;
     border: 1px solid var(--flat-line) !important;
     border-radius: 10px !important;
@@ -598,93 +611,89 @@
 }
 
 .ss-content .ss-search {
-    padding: 7px !important;
-    background: var(--surface) !important;
+    box-sizing: border-box;
+    padding: 7px;
+    background: var(--surface);
 }
 
+/* El buscador conserva el estilo predeterminado de SlimSelect. */
 .ss-content .ss-search input {
-    border: 1px solid var(--flat-line) !important;
-    border-radius: 7px !important;
-    background: var(--field-bg) !important;
-    color: var(--text-main) !important;
-    font-family: inherit !important;
-    font-size: 12px !important;
-}
-
-.ss-content .ss-search input:focus {
-    border-color: var(--gym) !important;
-    box-shadow: 0 0 0 3px var(--gym-soft) !important;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-family: inherit;
+    font-size: 12px;
 }
 
 .ss-content .ss-list {
-    scrollbar-width: thin !important;
-    scrollbar-color: color-mix(in srgb, var(--text-muted) 35%, transparent) transparent !important;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden !important;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--text-muted) 35%, transparent) transparent;
 }
 
 .ss-content .ss-list::-webkit-scrollbar,
 .ss-content::-webkit-scrollbar {
-    width: 4px !important;
-    height: 4px !important;
+    width: 4px;
+    height: 4px;
 }
 
 .ss-content .ss-list::-webkit-scrollbar-track,
 .ss-content::-webkit-scrollbar-track {
-    background: transparent !important;
+    background: transparent;
 }
 
 .ss-content .ss-list::-webkit-scrollbar-thumb,
 .ss-content::-webkit-scrollbar-thumb {
-    border: 1px solid transparent !important;
-    border-radius: 10px !important;
-    background: color-mix(in srgb, var(--text-muted) 35%, transparent) !important;
-    background-clip: padding-box !important;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--text-muted) 35%, transparent);
+    background-clip: padding-box;
 }
 
 .ss-content .ss-list::-webkit-scrollbar-thumb:hover,
 .ss-content::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--gym) 65%, transparent) !important;
-    background-clip: padding-box !important;
+    background: color-mix(in srgb, var(--gym) 65%, transparent);
+    background-clip: padding-box;
 }
 
 .ss-content .ss-list .ss-option {
-    padding-right: 12px !important;
-    background: transparent;
-    color: var(--text-main) !important;
-    font-size: 12px !important;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 8px 10px;
+    overflow-wrap: anywhere;
+    color: var(--text-main);
+    font-size: 12px;
+    line-height: 1.4;
 }
 
 .ss-content .ss-list .ss-option:hover,
 .ss-content .ss-list .ss-option.ss-highlighted {
-    background: var(--gym-soft) !important;
-    color: var(--text-strong) !important;
+    background: var(--gym-soft);
+    color: var(--text-strong);
 }
 
 .ss-content .ss-list .ss-option.ss-selected {
-    background: var(--gym) !important;
-    color: var(--on-gym) !important;
+    background: var(--gym);
+    color: var(--on-gym);
 }
 
 .ss-content .ss-list .ss-option.ss-disabled {
-    color: var(--text-muted) !important;
+    color: var(--text-muted);
 }
 
 html[data-bs-theme="light"] .configuracion-page .ss-main,
-html[data-bs-theme="light"] .ss-content,
-html[data-bs-theme="light"] .ss-content .ss-search,
-html[data-bs-theme="light"] .ss-content .ss-search input {
+html[data-bs-theme="light"] .ss-content {
     color-scheme: light;
 }
 
 html[data-bs-theme="dark"] .configuracion-page .ss-main,
-html[data-bs-theme="dark"] .ss-content,
-html[data-bs-theme="dark"] .ss-content .ss-search,
-html[data-bs-theme="dark"] .ss-content .ss-search input {
+html[data-bs-theme="dark"] .ss-content {
     color-scheme: dark;
     background-color: var(--surface) !important;
     color: var(--text-main) !important;
 }
-
-html[data-bs-theme="dark"] .ss-content .ss-search input {
-    background-color: var(--field-bg) !important;
-}
-
