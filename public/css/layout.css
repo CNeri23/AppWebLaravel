@@ -2116,3 +2116,50 @@ html[data-bs-theme="dark"] .app-topbar.scrolled {
         margin: 0 2px;
     }
 }
+
+html[data-font-family="inter"] {
+    --app-font-family: "Inter Variable", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html[data-font-family="system"] {
+    --app-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html[data-font-family="arial"] {
+    --app-font-family: Arial, Helvetica, sans-serif;
+}
+
+html[data-font-family="verdana"] {
+    --app-font-family: Verdana, Geneva, sans-serif;
+}
+
+html[data-font-family="georgia"] {
+    --app-font-family: Georgia, "Times New Roman", serif;
+}
+
+body,
+button,
+input,
+select,
+textarea,
+.form-control,
+.form-select,
+.dropdown-menu,
+.dropdown-item,
+.modal,
+.modal-content,
+.modal-title,
+.modal-body,
+.modal-footer,
+.table,
+.dataTables_wrapper,
+.dataTables_wrapper input,
+.dataTables_wrapper select,
+.dataTables_wrapper button,
+.swal2-popup,
+.swal2-title,
+.swal2-html-container,
+.swal2-confirm,
+.swal2-cancel {
+    font-family: var(--app-font-family, "Inter Variable", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+}
