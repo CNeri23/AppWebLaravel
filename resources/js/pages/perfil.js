@@ -529,7 +529,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 limpiarErrores(formulario);
 
                 if (campos && !validarFormulario(formulario, campos)) {
-                    window.showToast('error', 'Corrige los campos marcados antes de continuar.');
+                    window.showToast('warning', 'Corrige los campos marcados antes de continuar.');
                     return;
                 }
 
