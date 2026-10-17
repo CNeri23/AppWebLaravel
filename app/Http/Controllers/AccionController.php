@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Submodulo;
 use App\Models\Accion;
 use App\Services\AuditLogService;
+use App\Services\TreeOrderService;
 use Illuminate\Http\Request;
 
 class AccionController extends Controller
@@ -16,9 +17,9 @@ class AccionController extends Controller
             'slug' => ['required', 'string', 'max:100', 'unique:acciones,slug'],
             'descripcion' => ['nullable', 'string', 'max:255'],
             'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'],
-            'orden' => ['required', 'integer', 'min:0'],
         ]);
 
+        $datos['orden'] = TreeOrderService::next(Accion::class, 'submodulo_id', $submodulo->id);
         $accion = $submodulo->acciones()->create($datos);
 
         AuditLogService::log(
@@ -51,7 +52,6 @@ class AccionController extends Controller
             ],
             'descripcion' => ['nullable', 'string', 'max:255'],
             'icono' => ['nullable', 'string', 'max:150', 'regex:/^<i\s+class="\s*fa-(?:solid|regular|brands)(?:\s+fa-[a-z0-9]+(?:-[a-z0-9]+)*)+\s*"\s*>\s*<\/i>$/D'],
-            'orden' => ['required', 'integer', 'min:0'],
         ]);
 
         $cambios = [];
@@ -134,6 +134,9 @@ class AccionController extends Controller
             'direccion' => ['required', 'in:arriba,abajo'],
         ]);
 
+        TreeOrderService::normalize(Accion::class, 'submodulo_id', $accion->submodulo_id);
+        $accion->refresh();
+
         $vecino = $datos['direccion'] === 'arriba'
             ? Accion::where('submodulo_id', $accion->submodulo_id)
                 ->where('orden', '<', $accion->orden)
@@ -169,6 +172,7 @@ class AccionController extends Controller
         $vecino->update([
             'orden' => $ordenActual,
         ]);
+        TreeOrderService::normalize(Accion::class, 'submodulo_id', $accion->submodulo_id);
 
         $submoduloNombre = $accion->submodulo?->nombre ?? 'Sin submódulo';
 
@@ -207,7 +211,9 @@ class AccionController extends Controller
             $accion
         );
 
+        $submoduloId = $accion->submodulo_id;
         $accion->delete();
+        TreeOrderService::normalize(Accion::class, 'submodulo_id', $submoduloId);
 
         return response()->json([
             'success' => true,
