@@ -960,3 +960,71 @@ body.dark-mode .swal2-popup.toast .swal-toast-progress {
     background: var(--toast-foreground) !important;
     opacity: 0.55;
 }
+
+
+/* Usar el icono original de éxito de SweetAlert2 y equilibrar el tema oscuro */
+.swal2-popup.toast .swal2-icon.swal2-success::after {
+    content: none !important;
+    display: none !important;
+}
+
+.swal2-popup.toast .swal2-icon.swal2-success .swal2-success-ring {
+    display: block !important;
+    border: 3px solid var(--toast-foreground) !important;
+    opacity: 0.9;
+}
+
+.swal2-popup.toast .swal2-icon.swal2-success .swal2-success-fix,
+.swal2-popup.toast .swal2-icon.swal2-success [class^="swal2-success-circular-line"] {
+    display: none !important;
+}
+
+.swal2-popup.toast .swal2-icon.swal2-success [class^="swal2-success-line"] {
+    display: block !important;
+    background-color: var(--toast-foreground) !important;
+}
+
+[data-bs-theme="dark"] .swal2-popup.toast-success,
+body.dark-mode .swal2-popup.toast-success {
+    --toast-accent: #303f37;
+    --toast-foreground: #d5eadc;
+    --toast-icon-bg: rgba(213, 234, 220, 0.1);
+}
+
+[data-bs-theme="dark"] .swal2-popup.toast-error,
+body.dark-mode .swal2-popup.toast-error {
+    --toast-accent: #493337;
+    --toast-foreground: #f2dadd;
+    --toast-icon-bg: rgba(242, 218, 221, 0.1);
+}
+
+[data-bs-theme="dark"] .swal2-popup.toast-info,
+body.dark-mode .swal2-popup.toast-info {
+    --toast-accent: #303b4b;
+    --toast-foreground: #dbe6f5;
+    --toast-icon-bg: rgba(219, 230, 245, 0.1);
+}
+
+[data-bs-theme="dark"] .swal2-popup.toast-warning,
+body.dark-mode .swal2-popup.toast-warning {
+    --toast-accent: #49402e;
+    --toast-foreground: #f0e5c9;
+    --toast-icon-bg: rgba(240, 229, 201, 0.1);
+}
+
+[data-bs-theme="dark"] .swal2-popup.toast,
+body.dark-mode .swal2-popup.toast {
+    border-color: rgba(255, 255, 255, 0.07) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22) !important;
+}
+
+[data-bs-theme="dark"] .swal2-popup.toast .swal2-timer-progress-bar-container,
+body.dark-mode .swal2-popup.toast .swal2-timer-progress-bar-container {
+    background: rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-bs-theme="dark"] .swal2-popup.toast .swal-toast-progress,
+body.dark-mode .swal2-popup.toast .swal-toast-progress {
+    background: var(--toast-foreground) !important;
+    opacity: 0.42;
+}
