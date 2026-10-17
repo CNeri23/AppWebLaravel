@@ -110,7 +110,7 @@ class SystemSettingsController extends Controller
                 ]),
             ],
 
-            'font_family' => ['sometimes', 'required', Rule::in(['inter', 'system', 'arial', 'verdana', 'georgia'])],
+            'font_family' => ['sometimes', 'required', Rule::in(['inter', 'system', 'arial', 'verdana', 'georgia', 'roboto', 'opensans', 'lato', 'poppins', 'montserrat', 'nunito', 'tahoma', 'trebuchet', 'times', 'courier'])],
 
             // Regional
             'currency' => ['sometimes', 'required', Rule::in(['MXN', 'USD', 'EUR'])],
