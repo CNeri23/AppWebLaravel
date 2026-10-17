@@ -59,12 +59,7 @@
             <div class="theme-style-grid">
                 @foreach ($lightThemeStyles as $value => $style)
                     <label class="theme-style-option">
-                        <input
-                            type="radio"
-                            name="light_theme_style"
-                            value="{{ $value }}"
-                            {{ $preferencias['light_theme_style'] === $value ? 'checked' : '' }}
-                        >
+                        <input type="radio" name="light_theme_style" value="{{ $value }}" {{ $preferencias['light_theme_style'] === $value ? 'checked' : '' }}>
 
                         <span class="theme-style-content">
                             <span class="theme-preview {{ $style['class'] }}">
@@ -237,12 +232,7 @@
             <div class="theme-style-grid">
                 @foreach ($darkThemeStyles as $value => $style)
                     <label class="theme-style-option">
-                        <input
-                            type="radio"
-                            name="dark_theme_style"
-                            value="{{ $value }}"
-                            {{ $preferencias['dark_theme_style'] === $value ? 'checked' : '' }}
-                        >
+                        <input type="radio" name="dark_theme_style" value="{{ $value }}" {{ $preferencias['dark_theme_style'] === $value ? 'checked' : '' }}>
 
                         <span class="theme-style-content">
                             <span class="theme-preview {{ $style['class'] }}">
@@ -381,9 +371,7 @@
                                             <span></span>
                                         </span>
                                     </span>
-
                                 </span>
-
                             </span>
 
                             <span class="theme-style-info">
@@ -401,7 +389,6 @@
                 @endforeach
             </div>
         </section>
-
     </div>
 </div>
 
