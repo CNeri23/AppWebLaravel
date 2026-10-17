@@ -1,25 +1,5 @@
 
 
-.btn.caja-action-btn {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    border-radius: 10px;
-    line-height: 1;
-}
-
-.btn.caja-action-btn>i,
-.btn.caja-action-btn>svg {
-    margin: 0 !important;
-    font-size: 14px;
-    line-height: 1;
-    pointer-events: none;
-}
-
 #tablaCajas th:last-child,
 #tablaCajas td:last-child {
     white-space: nowrap;
@@ -183,7 +163,13 @@
 @media (hover: hover) {
 }
 
-/* Botones de acciones: estilo único, sin fondos permanentes. */
+@media (hover: hover) {
+}
+
+@media (prefers-reduced-motion: reduce) {
+}
+
+/* Botones de acciones: mismo diseño que Usuarios. */
 .caja-actions {
     display: flex;
     align-items: center;
@@ -216,35 +202,27 @@
     transition: color .16s ease, background-color .16s ease, box-shadow .16s ease, transform .2s cubic-bezier(.2,.9,.3,1);
 }
 
-.caja-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
+.caja-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .fa-pen-to-square, .bi-pencil),
 .caja-actions .btn.btn-outline-primary { --ua: 37, 99, 235; }
-
 .caja-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
 .caja-actions .btn.btn-outline-danger { --ua: 220, 53, 69; }
-
 .caja-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people, .fa-arrows-rotate),
 .caja-actions .btn.btn-outline-success { --ua: 22, 163, 74; }
-
 .caja-actions .btn:has(.fa-key, .bi-key, .fa-lock),
 .caja-actions .btn.btn-outline-warning { --ua: 217, 119, 6; }
-
 .caja-actions .btn:has(.fa-eye, .bi-eye),
 .caja-actions .btn.btn-outline-info { --ua: 8, 145, 178; }
 
-[data-bs-theme="dark"] caja-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .bi-pencil),
-[data-bs-theme="dark"] caja-actions .btn.btn-outline-primary { --ua: 96, 165, 250; }
-
-[data-bs-theme="dark"] caja-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
-[data-bs-theme="dark"] caja-actions .btn.btn-outline-danger { --ua: 248, 113, 113; }
-
-[data-bs-theme="dark"] caja-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people, .fa-arrows-rotate),
-[data-bs-theme="dark"] caja-actions .btn.btn-outline-success { --ua: 74, 222, 128; }
-
-[data-bs-theme="dark"] caja-actions .btn:has(.fa-key, .bi-key, .fa-lock),
-[data-bs-theme="dark"] caja-actions .btn.btn-outline-warning { --ua: 251, 191, 36; }
-
-[data-bs-theme="dark"] caja-actions .btn:has(.fa-eye, .bi-eye),
-[data-bs-theme="dark"] caja-actions .btn.btn-outline-info { --ua: 34, 211, 238; }
+[data-bs-theme="dark"] .caja-actions .btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen, .fa-pen-to-square, .bi-pencil),
+[data-bs-theme="dark"] .caja-actions .btn.btn-outline-primary { --ua: 96, 165, 250; }
+[data-bs-theme="dark"] .caja-actions .btn:has(.fa-trash, .fa-ban, .bi-trash),
+[data-bs-theme="dark"] .caja-actions .btn.btn-outline-danger { --ua: 248, 113, 113; }
+[data-bs-theme="dark"] .caja-actions .btn:has(.fa-user-shield, .fa-user-check, .fa-users, .fa-user-plus, .bi-people, .fa-arrows-rotate),
+[data-bs-theme="dark"] .caja-actions .btn.btn-outline-success { --ua: 74, 222, 128; }
+[data-bs-theme="dark"] .caja-actions .btn:has(.fa-key, .bi-key, .fa-lock),
+[data-bs-theme="dark"] .caja-actions .btn.btn-outline-warning { --ua: 251, 191, 36; }
+[data-bs-theme="dark"] .caja-actions .btn:has(.fa-eye, .bi-eye),
+[data-bs-theme="dark"] .caja-actions .btn.btn-outline-info { --ua: 34, 211, 238; }
 
 .caja-actions .btn:hover,
 .caja-actions .btn:focus-visible {
@@ -253,24 +231,15 @@
     border-color: transparent;
     box-shadow: inset 0 0 0 1px rgba(var(--ua), .3), 0 6px 14px -8px rgba(var(--ua), .7);
 }
-
 .caja-actions .btn:active { transform: scale(.94); }
-
 .caja-actions .btn > i,
-.caja-actions .btn > svg {
-    margin: 0 !important;
-    font-size: 14px;
-    line-height: 1;
-    pointer-events: none;
-}
+.caja-actions .btn > svg { margin: 0 !important; font-size: 14px; line-height: 1; pointer-events: none; }
 
 @media (hover: hover) {
     .caja-actions > :hover { transform: translateY(-2px) scale(1.08); }
     .caja-actions > :hover + *,
     .caja-actions > :has(+ :hover) { transform: translateY(-1px) scale(1.03); }
 }
-
 @media (prefers-reduced-motion: reduce) {
-    .caja-actions *,
-    .caja-actions *::before { transition: none !important; }
+    .caja-actions *, .caja-actions *::before { transition: none !important; }
 }
