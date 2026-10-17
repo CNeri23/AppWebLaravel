@@ -200,6 +200,32 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    const campoTipografia = formulario.querySelector('[name="font_family"]');
+
+    if (campoTipografia) {
+        campoTipografia.addEventListener('change', async function () {
+            const anterior = document.documentElement.dataset.fontFamily || 'inter';
+            const seleccionada = this.value;
+            this.disabled = true;
+            document.documentElement.dataset.fontFamily = seleccionada;
+
+            try {
+                const data = await peticion(formulario.action || window.location.href, 'POST', obtenerDatosFormulario('font_family'));
+                if (data.settings && data.settings.font_family) {
+                    document.documentElement.dataset.fontFamily = data.settings.font_family;
+                    this.value = data.settings.font_family;
+                }
+                window.showToast('success', data.mensaje || 'La tipografía se actualizó correctamente.');
+            } catch (error) {
+                document.documentElement.dataset.fontFamily = anterior;
+                this.value = anterior;
+                window.showToast('error', error.message || 'No fue posible actualizar la tipografía.');
+            } finally {
+                this.disabled = false;
+            }
+        });
+    }
+
     const estilosTema = formulario.querySelectorAll('input[name="light_theme_style"], ' + 'input[name="dark_theme_style"]');
 
     estilosTema.forEach(function (campo) {
