@@ -549,3 +549,41 @@
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:hover::before {
     opacity: 0;
 }
+
+.usuarios-header-card {
+    border-radius: 14px;
+    background: var(--bs-card-bg);
+}
+
+.usuarios-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1.25rem;
+}
+
+.usuarios-header-text {
+    min-width: 0;
+}
+
+.usuarios-header-text h1 {
+    overflow-wrap: anywhere;
+}
+
+.usuarios-header-action {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .usuarios-header-content {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 0.8rem 1rem;
+    }
+
+    .usuarios-header-action {
+        width: 100%;
+    }
+}

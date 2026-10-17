@@ -344,3 +344,41 @@
 @media (prefers-reduced-motion: reduce) {
     .rol-actions *, .rol-actions *::before { transition: none !important; }
 }
+
+.roles-header-card {
+    border-radius: 14px;
+    background: var(--bs-card-bg);
+}
+
+.roles-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1.25rem;
+}
+
+.roles-header-text {
+    min-width: 0;
+}
+
+.roles-header-text h1 {
+    overflow-wrap: anywhere;
+}
+
+.roles-header-action {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .roles-header-content {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 0.8rem 1rem;
+    }
+
+    .roles-header-action {
+        width: 100%;
+    }
+}

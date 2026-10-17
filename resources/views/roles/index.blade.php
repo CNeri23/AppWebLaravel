@@ -1,21 +1,23 @@
 @extends('layouts.app')
 @section('content')
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="fw-bold mb-1">Roles</h1>
-            <p class="text-secondary mb-0">Administración de roles del sistema.</p>
-        </div>
+    <div class="card border-0 shadow-sm roles-header-card mb-4">
+        <div class="card-body roles-header-content">
+            <div class="roles-header-text">
+                <h1 class="fw-bold mb-1">Roles</h1>
+                <p class="text-secondary mb-0">Administración de roles del sistema.</p>
+            </div>
 
-        @foreach ($accionesRoles as $accion)
-            @if ($accion->slug === 'roles.crear')
-                <button type="button" class="btn btn-primary" id="btnNuevoRol" data-bs-toggle="modal"
-                    data-bs-target="#modalNuevoRol" data-tooltip="{{ $accion->nombre }}">
-                    {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
-                    {{ $accion->nombre }}
-                </button>
-            @endif
-        @endforeach
+            @foreach ($accionesRoles as $accion)
+                @if ($accion->slug === 'roles.crear')
+                    <button type="button" class="btn btn-primary roles-header-action" id="btnNuevoRol" data-bs-toggle="modal"
+                        data-bs-target="#modalNuevoRol" data-tooltip="{{ $accion->nombre }}">
+                        {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
+                        {{ $accion->nombre }}
+                    </button>
+                @endif
+            @endforeach
+        </div>
     </div>
 
     @php

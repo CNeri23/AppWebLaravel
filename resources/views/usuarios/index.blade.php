@@ -1,21 +1,23 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="fw-bold mb-1">Usuarios</h1>
-        <p class="text-secondary mb-0">Administración de usuarios del sistema.</p>
-    </div>
+<div class="card border-0 shadow-sm usuarios-header-card mb-4">
+    <div class="card-body usuarios-header-content">
+        <div class="usuarios-header-text">
+            <h1 class="fw-bold mb-1">Usuarios</h1>
+            <p class="text-secondary mb-0">Administración de usuarios del sistema.</p>
+        </div>
 
-    @foreach ($accionesUsuarios as $accion)
-        @if ($accion->slug === 'usuarios.crear')
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                data-bs-target="#modalNuevoUsuario" data-tooltip="Agregar usuario">
-                {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
-                {{ $accion->nombre }}
-            </button>
-        @endif
-    @endforeach
+        @foreach ($accionesUsuarios as $accion)
+            @if ($accion->slug === 'usuarios.crear')
+                <button type="button" class="btn btn-primary usuarios-header-action" data-bs-toggle="modal"
+                    data-bs-target="#modalNuevoUsuario" data-tooltip="Agregar usuario">
+                    {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
+                    {{ $accion->nombre }}
+                </button>
+            @endif
+        @endforeach
+    </div>
 </div>
 
 @php
