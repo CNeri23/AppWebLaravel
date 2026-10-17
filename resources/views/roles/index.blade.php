@@ -10,8 +10,7 @@
 
             @foreach ($accionesRoles as $accion)
                 @if ($accion->slug === 'roles.crear')
-                    <button type="button" class="btn btn-primary roles-header-action" id="btnNuevoRol" data-bs-toggle="modal"
-                        data-bs-target="#modalNuevoRol" data-tooltip="{{ $accion->nombre }}">
+                    <button type="button" class="btn btn-primary roles-header-action" id="btnNuevoRol" data-bs-toggle="modal" data-bs-target="#modalNuevoRol">
                         {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
                         {{ $accion->nombre }}
                     </button>
