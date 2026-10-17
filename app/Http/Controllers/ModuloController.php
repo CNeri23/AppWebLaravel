@@ -13,6 +13,16 @@ class ModuloController extends Controller
 {
     public function index()
     {
+        TreeOrderService::normalize(Modulo::class);
+
+        Modulo::query()->pluck('id')->each(function ($moduloId) {
+            TreeOrderService::normalize(Submodulo::class, 'modulo_id', (int) $moduloId);
+        });
+
+        Submodulo::query()->pluck('id')->each(function ($submoduloId) {
+            TreeOrderService::normalize(\App\Models\Accion::class, 'submodulo_id', (int) $submoduloId);
+        });
+
         $modulos = Modulo::with([
             'submodulos' => function ($query) {
                 $query
