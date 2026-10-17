@@ -706,12 +706,20 @@
 
 
 /* Escala tipográfica de Preferencias; los previews de temas conservan su diseño original. */
+html[data-font-scale="small"] .preferencias-page .preferences-card .theme-section-header h2,
+html[data-font-scale="small"] .preferencias-page .preferences-card .theme-section-header p,
+html[data-font-scale="small"] .preferencias-page .preferences-card .display-scale-label,
+html[data-font-scale="small"] .preferencias-page .preferences-card .theme-style-info strong,
+html[data-font-scale="small"] .preferencias-page .preferences-card .theme-style-info small {
+    font-size: .9em;
+}
+
 html[data-font-scale="medium"] .preferencias-page .preferences-card .theme-section-header h2,
 html[data-font-scale="medium"] .preferencias-page .preferences-card .theme-section-header p,
 html[data-font-scale="medium"] .preferencias-page .preferences-card .display-scale-label,
 html[data-font-scale="medium"] .preferencias-page .preferences-card .theme-style-info strong,
 html[data-font-scale="medium"] .preferencias-page .preferences-card .theme-style-info small {
-    font-size: .9em;
+    font-size: 1em;
 }
 
 html[data-font-scale="large"] .preferencias-page .preferences-card .theme-section-header h2,

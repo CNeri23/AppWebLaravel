@@ -709,7 +709,7 @@ html[data-font-scale="medium"] .configuracion-page .form-select,
 html[data-font-scale="medium"] .configuracion-page .form-check-label,
 html[data-font-scale="medium"] .configuracion-page .ss-main,
 html[data-font-scale="medium"] .ss-content .ss-option,
-html[data-font-scale="medium"] .ss-content .ss-search input { font-size: .9em !important; }
+html[data-font-scale="medium"] .ss-content .ss-search input { font-size: 1em !important; }
 
 html[data-font-scale="large"] .configuracion-page .config-card-header,
 html[data-font-scale="large"] .configuracion-page .config-card-header h1,
