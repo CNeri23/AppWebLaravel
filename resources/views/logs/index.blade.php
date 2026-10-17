@@ -5,7 +5,7 @@
         <div class="card border-0 shadow-sm logs-header-card mb-4">
             <div class="card-body logs-header-content">
                 <div class="logs-header-text">
-                    <h1 class="fw-bold mb-1">Logs del sistema</h1>
+                    <h2 class="fw-bold mb-1">Logs del sistema</h2>
                     <p class="text-secondary mb-0">Historial de acciones realizadas en el sistema.</p>
                 </div>
             </div>

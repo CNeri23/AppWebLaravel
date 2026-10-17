@@ -17,7 +17,7 @@
 <div class="card border-0 shadow-sm direcciones-header-card mb-4">
     <div class="card-body direcciones-header-content">
         <div class="direcciones-header-text">
-            <h1 class="fw-bold mb-1">Direcciones</h1>
+            <h2 class="fw-bold mb-1">Direcciones</h2>
             <p class="text-secondary mb-0">Administración de direcciones registradas.</p>
         </div>
 

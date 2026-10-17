@@ -567,7 +567,7 @@
     min-width: 0;
 }
 
-.usuarios-header-text h1 {
+.usuarios-header-text h2 {
     overflow-wrap: anywhere;
 }
 
@@ -587,7 +587,3 @@
         width: 100%;
     }
 }
-
-
-.usuarios-header-text h1 { font-size: calc(1.325rem + 0.9vw); }
-@media (min-width: 1200px) { .usuarios-header-text h1 { font-size: 2rem; } }

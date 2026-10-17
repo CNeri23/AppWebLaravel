@@ -342,7 +342,7 @@
     min-width: 0;
 }
 
-.planes-header-text h1 {
+.planes-header-text h2 {
     overflow-wrap: anywhere;
 }
 
@@ -363,7 +363,3 @@
     }
 }
 
-
-
-.planes-header-text h1 { font-size: calc(1.325rem + 0.9vw); }
-@media (min-width: 1200px) { .planes-header-text h1 { font-size: 2rem; } }

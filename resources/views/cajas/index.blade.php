@@ -4,7 +4,7 @@
 <div class="card border-0 shadow-sm cajas-header-card mb-4">
     <div class="card-body cajas-header-content">
         <div class="cajas-header-text">
-            <h1 class="fw-bold mb-1">Cajas</h1>
+            <h2 class="fw-bold mb-1">Cajas</h2>
             <p class="text-secondary mb-0">Administración de cajas registradoras del sistema.</p>
         </div>
 

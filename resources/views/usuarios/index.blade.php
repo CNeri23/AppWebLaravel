@@ -4,7 +4,7 @@
 <div class="card border-0 shadow-sm usuarios-header-card mb-4">
     <div class="card-body usuarios-header-content">
         <div class="usuarios-header-text">
-            <h1 class="fw-bold mb-1">Usuarios</h1>
+            <h2 class="fw-bold mb-1">Usuarios</h2>
             <p class="text-secondary mb-0">Administración de usuarios del sistema.</p>
         </div>
 

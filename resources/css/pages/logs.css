@@ -252,7 +252,7 @@
     min-width: 0;
 }
 
-.logs-header-text h1,
+.logs-header-text h2,
 .logs-header-text h2 {
     overflow-wrap: anywhere;
 }
@@ -273,7 +273,3 @@
         width: 100%;
     }
 }
-
-
-.logs-header-text h1 { font-size: calc(1.325rem + 0.9vw); }
-@media (min-width: 1200px) { .logs-header-text h1 { font-size: 2rem; } }

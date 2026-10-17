@@ -280,7 +280,7 @@
     min-width: 0;
 }
 
-.cajas-header-text h1 {
+.cajas-header-text h2 {
     overflow-wrap: anywhere;
 }
 
@@ -300,7 +300,3 @@
         width: 100%;
     }
 }
-
-
-.cajas-header-text h1 { font-size: calc(1.325rem + 0.9vw); }
-@media (min-width: 1200px) { .cajas-header-text h1 { font-size: 2rem; } }

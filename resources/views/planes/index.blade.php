@@ -19,7 +19,7 @@
 <div class="card border-0 shadow-sm planes-header-card mb-4">
     <div class="card-body planes-header-content">
         <div class="planes-header-text">
-            <h1 class="fw-bold mb-1">Planes</h1>
+            <h2 class="fw-bold mb-1">Planes</h2>
             <p class="text-secondary mb-0">Administración de planes del gimnasio.</p>
         </div>
 

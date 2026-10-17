@@ -360,7 +360,7 @@ html[data-bs-theme="dark"] .ss-content .ss-search input {
     min-width: 0;
 }
 
-.sesiones-header-text h1 {
+.sesiones-header-text h2 {
     overflow-wrap: anywhere;
 }
 
@@ -393,7 +393,3 @@ html[data-bs-theme="dark"] .ss-content .ss-search input {
         width: 100%;
     }
 }
-
-
-.sesiones-header-text h1 { font-size: calc(1.325rem + 0.9vw); }
-@media (min-width: 1200px) { .sesiones-header-text h1 { font-size: 2rem; } }

@@ -12,7 +12,7 @@ $iconoAnular = optional($accionesAsistencias->firstWhere('slug', 'asistencias.el
 <div class="card border-0 shadow-sm planes-header-card mb-4">
     <div class="card-body planes-header-content">
         <div class="planes-header-text">
-            <h1 class="fw-bold mb-1">Asistencias</h1>
+            <h2 class="fw-bold mb-1">Asistencias</h2>
             <p class="text-secondary mb-0">Registro de entradas de los miembros al gimnasio.</p>
         </div>
     </div>

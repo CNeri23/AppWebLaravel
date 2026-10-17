@@ -4,7 +4,7 @@
 <div class="card border-0 shadow-sm sesiones-header-card mb-4">
     <div class="card-body sesiones-header-content">
         <div class="sesiones-header-text">
-            <h1 class="fw-bold mb-1">Sesiones de caja</h1>
+            <h2 class="fw-bold mb-1">Sesiones de caja</h2>
 
             <p class="text-secondary mb-0">
                 @if ($cajaFiltro)

@@ -19,7 +19,7 @@
     <div class="card border-0 shadow-sm membresias-header-card mb-4">
         <div class="card-body membresias-header-content">
             <div class="membresias-header-text">
-                <h1 class="fw-bold mb-1">Membresías</h1>
+                <h2 class="fw-bold mb-1">Membresías</h2>
                 <p class="text-secondary mb-0">Administración de membresías del gimnasio.</p>
             </div>
             @foreach ($accionesMembresias as $accion)

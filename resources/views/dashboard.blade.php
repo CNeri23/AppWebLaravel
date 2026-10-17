@@ -2,7 +2,7 @@
 @section('content')
 
     <div class="mb-4">
-        <h1 class="fw-bold mb-1 dashboard-page-title">Dashboard</h1>
+        <h2 class="fw-bold mb-1">Dashboard</h2>
         <p class="text-secondary mb-0">Resumen general del sistema.</p>
     </div>
 

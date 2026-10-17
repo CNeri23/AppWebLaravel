@@ -36,9 +36,9 @@
                     <i class="fa-solid fa-arrow-left"></i>
                 </a>
 
-                <h1 class="fw-bold mb-0">
+                <h2 class="fw-bold mb-0">
                     Membresía
-                </h1>
+                </h2>
             </div>
 
             <p class="text-secondary mb-0">
