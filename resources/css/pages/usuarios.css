@@ -571,48 +571,6 @@
     }
 }
 
-
-/* Modo oscuro: botones sólidos, con presencia similar al paginado activo. */
-[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn {
-    color: #ffffff !important;
-    border-color: rgb(var(--ua)) !important;
-    background: rgb(var(--ua)) !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-primary,
-[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
-    --ua: 41, 101, 168;
-}
-
-[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-success,
-[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-user-shield, .fa-user-check, .fa-arrows-rotate) {
-    --ua: 34, 126, 79;
-}
-
-[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-danger,
-[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
-    --ua: 176, 57, 64;
-}
-
-[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-warning,
-[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-key) {
-    --ua: 166, 105, 25;
-}
-
-[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn.btn-outline-info,
-[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:has(.fa-eye) {
-    --ua: 25, 119, 143;
-}
-
-[data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn:hover {
-    color: #ffffff !important;
-    border-color: rgb(var(--ua)) !important;
-    background: rgb(var(--ua)) !important;
-    filter: brightness(1.12);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.28);
-}
-
 /* Acciones: solo ícono en reposo; en hover se rellena con azul suave (como el menú del treeview). */
 #tablaUsuarios .btn.usuario-action-btn,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn {
