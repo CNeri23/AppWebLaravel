@@ -2259,49 +2259,56 @@ html[data-font-scale] .swal2-popup:not(.swal2-toast) .swal2-actions button {
     font-size: calc(13px * var(--font-scale-factor)) !important;
 }
 
-/* Escala tipográfica para modales y menú de usuario del topbar. */
-html[data-font-scale] .modal-content .modal-title,
-html[data-font-scale] .modal-content .modal-body,
-html[data-font-scale] .modal-content .modal-body p,
-html[data-font-scale] .modal-content .modal-body label,
-html[data-font-scale] .modal-content .modal-body .form-label,
-html[data-font-scale] .modal-content .modal-body .form-text,
-html[data-font-scale] .modal-content .modal-body .form-control,
-html[data-font-scale] .modal-content .modal-body .form-select,
-html[data-font-scale] .modal-content .modal-body .input-group-text,
-html[data-font-scale] .modal-content .modal-body .form-check-label,
-html[data-font-scale] .modal-content .modal-footer .btn {
-    font-size: calc(14px * var(--font-scale-factor)) !important;
+
+
+/* Escala tipográfica para el contenido real de los modales y el menú de usuario. */
+html[data-font-scale="small"] .modal .modal-content,
+html[data-font-scale="small"] .modal .modal-content * {
+    --modal-font-scale: .9;
+}
+html[data-font-scale="medium"] .modal .modal-content,
+html[data-font-scale="medium"] .modal .modal-content * {
+    --modal-font-scale: 1;
+}
+html[data-font-scale="large"] .modal .modal-content,
+html[data-font-scale="large"] .modal .modal-content * {
+    --modal-font-scale: 1.12;
 }
 
-html[data-font-scale] .modal-content .modal-title {
-    font-size: calc(16px * var(--font-scale-factor)) !important;
+html[data-font-scale] .modal .modal-content .modal-title { font-size: calc(16px * var(--modal-font-scale)) !important; }
+html[data-font-scale] .modal .modal-content .modal-body,
+html[data-font-scale] .modal .modal-content .modal-body p,
+html[data-font-scale] .modal .modal-content .modal-body label,
+html[data-font-scale] .modal .modal-content .modal-body .form-label,
+html[data-font-scale] .modal .modal-content .modal-body .form-text,
+html[data-font-scale] .modal .modal-content .modal-body .form-control,
+html[data-font-scale] .modal .modal-content .modal-body .form-select,
+html[data-font-scale] .modal .modal-content .modal-body .input-group-text,
+html[data-font-scale] .modal .modal-content .modal-body .form-check-label,
+html[data-font-scale] .modal .modal-content .modal-footer .btn,
+html[data-font-scale] .modal .modal-content .modal-body .btn {
+    font-size: calc(14px * var(--modal-font-scale)) !important;
+}
+html[data-font-scale] .modal .modal-content .modal-body h1,
+html[data-font-scale] .modal .modal-content .modal-body h2,
+html[data-font-scale] .modal .modal-content .modal-body h3,
+html[data-font-scale] .modal .modal-content .modal-body h4,
+html[data-font-scale] .modal .modal-content .modal-body h5,
+html[data-font-scale] .modal .modal-content .modal-body h6 {
+    font-size: calc(16px * var(--modal-font-scale)) !important;
+}
+html[data-font-scale] .modal .modal-content .modal-body small,
+html[data-font-scale] .modal .modal-content .modal-body .small,
+html[data-font-scale] .modal .modal-content .modal-body .invalid-feedback {
+    font-size: calc(12px * var(--modal-font-scale)) !important;
 }
 
-html[data-font-scale] .modal-content .modal-body h1,
-html[data-font-scale] .modal-content .modal-body h2,
-html[data-font-scale] .modal-content .modal-body h3,
-html[data-font-scale] .modal-content .modal-body h4,
-html[data-font-scale] .modal-content .modal-body h5,
-html[data-font-scale] .modal-content .modal-body h6 {
-    font-size: calc(16px * var(--font-scale-factor)) !important;
-}
-
-html[data-font-scale] .modal-content .modal-body small,
-html[data-font-scale] .modal-content .modal-body .small,
-html[data-font-scale] .modal-content .modal-body .invalid-feedback {
-    font-size: calc(12px * var(--font-scale-factor)) !important;
-}
-
-html[data-font-scale] .user-dropdown-header strong {
-    font-size: calc(14px * var(--font-scale-factor)) !important;
-}
-
-html[data-font-scale] .user-dropdown-header small {
-    font-size: calc(11px * var(--font-scale-factor)) !important;
-}
-
-html[data-font-scale] .user-dropdown .dropdown-menu .dropdown-item {
-    font-size: calc(13px * var(--font-scale-factor)) !important;
-}
-
+html[data-font-scale="small"] .user-dropdown-header strong { font-size: 12.6px !important; }
+html[data-font-scale="medium"] .user-dropdown-header strong { font-size: 14px !important; }
+html[data-font-scale="large"] .user-dropdown-header strong { font-size: 15.68px !important; }
+html[data-font-scale="small"] .user-dropdown-header small,
+html[data-font-scale="small"] .user-dropdown .dropdown-item { font-size: 11.7px !important; }
+html[data-font-scale="medium"] .user-dropdown-header small,
+html[data-font-scale="medium"] .user-dropdown .dropdown-item { font-size: 13px !important; }
+html[data-font-scale="large"] .user-dropdown-header small,
+html[data-font-scale="large"] .user-dropdown .dropdown-item { font-size: 14.56px !important; }
