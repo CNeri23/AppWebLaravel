@@ -186,7 +186,7 @@ $iconoAnular = optional($accionesAsistencias->firstWhere('slug', 'asistencias.el
                                 <div class="asistencia-actions">
                                     <button type="button"
                                         class="btn btn-sm btn-outline-danger asistencia-action-btn btn-anular-asistencia"
-                                        title="Anular registro" data-url="{{ $registro['url_eliminar'] }}"
+                                        data-tooltip="Anular registro" data-url="{{ $registro['url_eliminar'] }}"
                                         data-nombre="{{ $registro['nombre'] }}">
                                         {!! $iconoAnular !!}
                                     </button>
