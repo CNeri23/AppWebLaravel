@@ -693,7 +693,7 @@ html[data-font-scale="small"] .configuracion-page .form-select,
 html[data-font-scale="small"] .configuracion-page .form-check-label,
 html[data-font-scale="small"] .configuracion-page .ss-main,
 html[data-font-scale="small"] .ss-content .ss-option,
-html[data-font-scale="small"] .ss-content .ss-search input { font-size: .9em !important; }
+html[data-font-scale="small"] .ss-content .ss-search input { font-size: .8em !important; }
 
 /* Escala tipográfica propia de Configuración. */
 html[data-font-scale="medium"] .configuracion-page .config-card-header,
