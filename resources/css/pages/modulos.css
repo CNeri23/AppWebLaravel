@@ -636,3 +636,18 @@ html[data-font-scale="medium"] .modulos-treeview .tree-item .tree-status,
 html[data-font-scale="medium"] .modulos-treeview .tree-item .badge { font-size: .66rem !important; }
 html[data-font-scale="large"] .modulos-treeview .tree-item .tree-status,
 html[data-font-scale="large"] .modulos-treeview .tree-item .badge { font-size: .739rem !important; }
+
+/* Escala tipográfica explícita para el menú contextual del TreeView.
+   El menú puede estar fuera de main, por lo que se aplica desde html. */
+html[data-font-scale] .context-menu .context-menu-item {
+    font-size: calc(13px * var(--font-scale-factor, 1)) !important;
+    line-height: 1.4;
+}
+
+html[data-font-scale] .context-menu .context-menu-item i {
+    font-size: 13px !important;
+}
+
+html[data-font-scale] .context-menu .context-menu-divider {
+    height: 1px;
+}
