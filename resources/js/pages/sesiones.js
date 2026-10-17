@@ -1,3 +1,6 @@
+import SlimSelect from 'slim-select';
+import 'slim-select/styles';
+
 document.addEventListener('DOMContentLoaded', function () {
     const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfTokenElement ? csrfTokenElement.content : '';
@@ -9,6 +12,60 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalDetalleSesionEl = document.getElementById('modalDetalleSesion');
     const modalAbrirSesion = modalAbrirSesionEl ? new bootstrap.Modal(modalAbrirSesionEl) : null;
     const formAbrirSesion = document.getElementById('formAbrirSesion');
+
+    const slimSelectsSesiones = {};
+
+    [
+        '#abrir_caja_id',
+        '#retiro_concepto',
+        '#cerrar_autorizador',
+    ].forEach(function (selector) {
+        const elemento = document.querySelector(selector);
+
+        if (elemento && !elemento.dataset.slimSelectInicializado) {
+            slimSelectsSesiones[selector] = new SlimSelect({
+                select: selector,
+                settings: {
+                    showSearch: true,
+                    searchText: 'Sin resultados',
+                    searchPlaceholder: 'Buscar...',
+                },
+            });
+
+            elemento.dataset.slimSelectInicializado = 'true';
+        }
+    });
+
+    function establecerSeleccionSlim(selector, valor) {
+        const slimSelect = slimSelectsSesiones[selector];
+        const elemento = document.querySelector(selector);
+        const seleccion = valor === null || valor === undefined ? '' : String(valor);
+
+        if (slimSelect) {
+            slimSelect.setSelected(seleccion);
+        } else if (elemento) {
+            elemento.value = seleccion;
+        }
+    }
+
+    function sincronizarSeleccionSlim(selector) {
+        const elemento = document.querySelector(selector);
+
+        if (elemento) {
+            establecerSeleccionSlim(selector, elemento.value);
+        }
+    }
+
+    function sincronizarFormularioSlim(formulario, selectores) {
+        if (!formulario) {
+            return;
+        }
+
+        formulario.reset();
+        window.setTimeout(function () {
+            selectores.forEach(sincronizarSeleccionSlim);
+        }, 0);
+    }
 
     function peticion(url, method, body = null) {
         const opciones = {
@@ -426,7 +483,15 @@ document.addEventListener('DOMContentLoaded', function () {
             abrir_observaciones: { validate: function (valor) { return valor.length > 255 ? 'Máximo 255 caracteres.' : ''; } }
         });
 
-        if (modalAbrirSesionEl) modalAbrirSesionEl.addEventListener('show.bs.modal', validacionApertura.limpiar);
+        if (modalAbrirSesionEl) {
+            modalAbrirSesionEl.addEventListener('show.bs.modal', function () {
+                validacionApertura.limpiar();
+                sincronizarSeleccionSlim('#abrir_caja_id');
+            });
+            modalAbrirSesionEl.addEventListener('hidden.bs.modal', function () {
+                sincronizarFormularioSlim(formAbrirSesion, ['#abrir_caja_id']);
+            });
+        }
 
         formAbrirSesion.addEventListener('submit', function (event) {
             event.preventDefault();
@@ -449,7 +514,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     window.showToast('success', data.mensaje || 'Caja abierta correctamente.');
                     agregarSesionATabla(data.sesion);
-                    formAbrirSesion.reset();
+                    sincronizarFormularioSlim(formAbrirSesion, ['#abrir_caja_id']);
                 })
                 .catch(mostrarError)
                 .finally(function () {
@@ -595,7 +660,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
             const id = button.dataset.id;
-            formRetiroSesion.reset();
+            sincronizarFormularioSlim(formRetiroSesion, ['#retiro_concepto']);
             formRetiroSesion.action = button.dataset.url || `/sesiones-caja/${id}/retiros`;
             texto('retiro_caja_nombre', button.dataset.caja);
             botonRetiroActual = button;
@@ -613,7 +678,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         modalRetiroSesionEl.addEventListener('hidden.bs.modal', function () {
-            formRetiroSesion.reset();
+            sincronizarFormularioSlim(formRetiroSesion, ['#retiro_concepto']);
             formRetiroSesion.action = '';
         });
 
@@ -694,7 +759,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
             const id = button.dataset.id;
-            formCerrarSesion.reset();
+            sincronizarFormularioSlim(formCerrarSesion, ['#cerrar_autorizador']);
             formCerrarSesion.action = button.dataset.url || `/sesiones-caja/${id}/cerrar`;
             formCerrarSesion.dataset.esperado = '';
 
@@ -722,7 +787,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         modalCerrarSesionEl.addEventListener('hidden.bs.modal', function () {
-            formCerrarSesion.reset();
+            sincronizarFormularioSlim(formCerrarSesion, ['#cerrar_autorizador']);
             formCerrarSesion.action = '';
             formCerrarSesion.dataset.esperado = '';
         });
