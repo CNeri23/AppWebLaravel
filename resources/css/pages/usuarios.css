@@ -550,9 +550,7 @@
 
 
 #tablaUsuarios .usuario-actions [data-tooltip]:hover::after,
-#tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::after,
-#tablaUsuarios .usuario-actions [data-tooltip]:hover::before,
-#tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::before {
+#tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::after {
     opacity: 1;
     visibility: visible;
 }
@@ -563,8 +561,7 @@
 }
 
 @media (max-width: 767.98px) {
-    #tablaUsuarios .usuario-actions [data-tooltip]::after,
-    #tablaUsuarios .usuario-actions [data-tooltip]::before {
+    #tablaUsuarios .usuario-actions [data-tooltip]::after {
         display: none;
     }
 }
