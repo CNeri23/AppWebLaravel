@@ -807,6 +807,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
     const formNuevoUsuario = document.getElementById('formNuevoUsuario');
+    const formEditarUsuario = document.getElementById('formEditarUsuario');
 
     inicializarValidacionesUsuario(formNuevoUsuario, modalNuevoUsuarioEl);
     inicializarValidacionesUsuario(formEditarUsuario, modalEditarUsuarioEl);
@@ -841,8 +842,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         );
     }
-    const formEditarUsuario = document.getElementById('formEditarUsuario');
-
     if (formEditarUsuario) {
         formEditarUsuario.addEventListener('submit',
             function (event) {
