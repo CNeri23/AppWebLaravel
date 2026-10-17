@@ -1,3 +1,6 @@
+import SlimSelect from 'slim-select';
+import 'slim-select/styles';
+
 document.addEventListener('DOMContentLoaded', function () {
     const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfTokenElement ? csrfTokenElement.content : '';
@@ -10,6 +13,27 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalNuevoMiembro = modalNuevoMiembroEl ? new bootstrap.Modal(modalNuevoMiembroEl) : null;
     const modalEditarMiembro = modalEditarMiembroEl ? new bootstrap.Modal(modalEditarMiembroEl) : null;
     const modalEliminarMiembro = modalEliminarMiembroEl ? new bootstrap.Modal(modalEliminarMiembroEl) : null;
+
+    [
+        '#direccion_id',
+        '#editar_direccion_id',
+        '#usuario_miembro_existente',
+    ].forEach(function (selector) {
+        const elemento = document.querySelector(selector);
+
+        if (elemento && !elemento.dataset.slimSelectInicializado) {
+            new SlimSelect({
+                select: selector,
+                settings: {
+                    showSearch: true,
+                    searchText: 'Sin resultados',
+                    searchPlaceholder: 'Buscar...',
+                },
+            });
+
+            elemento.dataset.slimSelectInicializado = 'true';
+        }
+    });
 
     function peticion(url, method, body = null) {
         const opciones = {
