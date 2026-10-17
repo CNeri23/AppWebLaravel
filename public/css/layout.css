@@ -2017,7 +2017,7 @@ html[data-bs-theme="dark"] .app-topbar.scrolled {
 }
 
 .sidebar-group-toggle.active::before {
-    opacity: 0;
+    opacity: 1;
 }
 
 .sidebar-group-toggle.active > i:first-child {
