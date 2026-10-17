@@ -1524,7 +1524,7 @@ html.theme-switching *::after {
 .app-content {
     width: 100%;
     max-width: none;
-    padding: 16px;
+    padding: 0;
 }
 
 html[data-bs-theme] .card {
@@ -1937,7 +1937,7 @@ html[data-bs-theme] .modal-content .form-select:focus {
     }
 
     .app-content {
-        padding: 12px;
+        padding: 0;
     }
 }
 
