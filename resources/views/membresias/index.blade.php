@@ -24,7 +24,7 @@
         @foreach ($accionesMembresias as $accion)
             @if ($accion->slug === 'membresias.crear')
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevaMembresia"
-                    title="{{ $accion->nombre }}">
+                    data-tooltip="{{ $accion->nombre }}">
                     {!! $accion->icono ?: '<i class="fa-solid fa-id-card me-2"></i>' !!}
                     {{ $accion->nombre }}
                 </button>
@@ -140,7 +140,7 @@
                                             @if ($accion->slug === 'membresias.ver')
                                                 <a href="{{ route('membresias.show', $membresia) }}"
                                                     class="btn btn-sm btn-outline-primary membresia-action-btn"
-                                                    data-tooltip="{{ $accion->nombre }}" title="{{ $accion->nombre }}">
+                                                    data-tooltip="{{ $accion->nombre }}">
                                                     {!! $accion->icono ?: '<i class="fa-solid fa-eye"></i>' !!}
                                                 </a>
                                             @endif
@@ -148,7 +148,7 @@
                                             @if ($accion->slug === 'membresias.editar')
                                                 <button type="button"
                                                     class="btn btn-sm btn-outline-secondary membresia-action-btn btn-editar-membresia"
-                                                    title="{{ $accion->nombre }}" data-tooltip="{{ $accion->nombre }}"
+                                                    data-tooltip="{{ $accion->nombre }}"
                                                     data-id="{{ $membresia->id }}" data-name="{{ $nombreMiembro }}"
                                                     data-plan="{{ $membresia->plan->nombre }}" data-estado="{{ $membresia->estado }}"
                                                     data-observaciones="{{ $membresia->observaciones ?? '' }}"
@@ -162,7 +162,7 @@
                                             @if ($accion->slug === 'membresias.renovar' && $membresia->estado !== 'cancelada')
                                                 <button type="button"
                                                     class="btn btn-sm btn-outline-success membresia-action-btn btn-renovar-membresia"
-                                                    title="{{ $accion->nombre }}" data-tooltip="{{ $accion->nombre }}"
+                                                    data-tooltip="{{ $accion->nombre }}"
                                                     data-id="{{ $membresia->id }}" data-name="{{ $nombreMiembro }}"
                                                     data-plan="{{ $membresia->plan->nombre }}" data-estado="{{ $membresia->estado }}"
                                                     data-fecha-fin="{{ $membresia->fecha_fin->format($dateFormat) }}"
@@ -174,7 +174,7 @@
                                             @if ($accion->slug === 'membresias.cancelar' && $membresia->estado === 'activa')
                                                 <button type="button"
                                                     class="btn btn-sm btn-outline-danger membresia-action-btn btn-cancelar-membresia"
-                                                    title="{{ $accion->nombre }}" data-tooltip="{{ $accion->nombre }}"
+                                                    data-tooltip="{{ $accion->nombre }}"
                                                     data-id="{{ $membresia->id }}" data-name="{{ $nombreMiembro }}"
                                                     data-plan="{{ $membresia->plan->nombre }}"
                                                     data-url="{{ route('membresias.cancelar', $membresia) }}">
