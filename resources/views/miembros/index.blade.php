@@ -23,7 +23,7 @@ return [
     @foreach ($accionesMiembros as $accion)
     @if ($accion->slug === 'miembros.crear')
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoMiembro"
-        title="{{ $accion->nombre }}">
+        data-tooltip="{{ $accion->nombre }}">
         {!! $accion->icono ?: '<i class="fa-solid fa-user-plus me-2"></i>' !!}
         {{ $accion->nombre }}
     </button>
@@ -98,7 +98,7 @@ window.politicaPassword = @json($politicaPassword ?? []);
 
                                 @if ($accion->slug === 'miembros.editar')
                                 <button type="button" class="btn btn-sm btn-outline-primary miembro-action-btn"
-                                    title="{{ $accion->nombre }}" data-bs-toggle="modal"
+                                    data-tooltip="{{ $accion->nombre }}" data-bs-toggle="modal"
                                     data-bs-target="#modalEditarMiembro" data-id="{{ $miembro->id }}"
                                     data-nombre="{{ $miembro->nombre }}"
                                     data-apellido-paterno="{{ $miembro->apellido_paterno }}"
@@ -112,12 +112,12 @@ window.politicaPassword = @json($politicaPassword ?? []);
                                 @elseif ($accion->slug === 'miembros.usuario')
                                 @if ($miembro->usuario_id)
                                 <button type="button" class="btn btn-sm btn-success miembro-action-btn miembro-usuario-btn"
-                                    title="Ya tiene usuario" data-id="{{ $miembro->id }}" data-tiene-usuario="1" disabled>
+                                    data-tooltip="Ya tiene usuario" data-id="{{ $miembro->id }}" data-tiene-usuario="1" disabled>
                                     <i class="fa-solid fa-user-check"></i>
                                 </button>
                                 @else
                                 <button type="button" class="btn btn-sm btn-outline-success miembro-action-btn miembro-usuario-btn"
-                                    title="{{ $accion->nombre }}" data-bs-toggle="modal"
+                                    data-tooltip="{{ $accion->nombre }}" data-bs-toggle="modal"
                                     data-bs-target="#modalUsuarioMiembro" data-id="{{ $miembro->id }}"
                                     data-name="{{ trim($miembro->nombre . ' ' . $miembro->apellido_paterno . ' ' . ($miembro->apellido_materno ?? '')) }}"
                                     data-url="{{ route('miembros.usuario', $miembro) }}">
@@ -127,7 +127,7 @@ window.politicaPassword = @json($politicaPassword ?? []);
 
                                 @elseif ($accion->slug === 'miembros.eliminar')
                                 <button type="button" class="btn btn-sm btn-outline-danger miembro-action-btn"
-                                    title="{{ $accion->nombre }}" data-bs-toggle="modal" data-bs-target="#modalEliminarMiembro" data-id="{{ $miembro->id }}" 
+                                    data-tooltip="{{ $accion->nombre }}" data-bs-toggle="modal" data-bs-target="#modalEliminarMiembro" data-id="{{ $miembro->id }}" 
                                     data-name="
                                     {{ trim(
                                         $miembro->nombre . ' ' .
