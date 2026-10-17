@@ -546,3 +546,77 @@
     line-height: 1 !important;
     color: inherit !important;
 }
+
+
+/* Sobrescribe estilos anteriores: apariencia de icono limpio como en Usuarios. */
+.rol-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+.rol-actions .btn.rol-action-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 35px !important;
+    width: 35px !important;
+    min-width: 35px !important;
+    max-width: 35px !important;
+    height: 35px !important;
+    min-height: 35px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid transparent !important;
+    border-radius: 9px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+    line-height: 1 !important;
+}
+.rol-actions .btn.rol-action-btn > i,
+.rol-actions .btn.rol-action-btn > svg {
+    margin: 0 !important;
+    font-size: 13px !important;
+    line-height: 1 !important;
+    color: inherit !important;
+}
+.rol-actions .btn.rol-action-btn.btn-outline-primary,
+.rol-actions .btn.rol-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-pen-to-square, .fa-user-pen) {
+    --ua: 37, 99, 235 !important;
+    color: rgb(37, 99, 235) !important;
+}
+.rol-actions .btn.rol-action-btn.btn-outline-danger,
+.rol-actions .btn.rol-action-btn:has(.fa-trash, .fa-trash-can, .fa-ban) {
+    --ua: 220, 53, 69 !important;
+    color: rgb(220, 53, 69) !important;
+}
+.rol-actions .btn.rol-action-btn.btn-outline-success,
+.rol-actions .btn.rol-action-btn:has(.fa-user-check, .fa-user-shield, .fa-users, .fa-user-plus, .fa-arrows-rotate, .fa-shield) {
+    --ua: 22, 163, 74 !important;
+    color: rgb(22, 163, 74) !important;
+}
+.rol-actions .btn.rol-action-btn.btn-outline-warning,
+.rol-actions .btn.rol-action-btn:has(.fa-key, .fa-lock, .fa-user-lock) {
+    --ua: 217, 119, 6 !important;
+    color: rgb(217, 119, 6) !important;
+}
+.rol-actions .btn.rol-action-btn.btn-outline-info,
+.rol-actions .btn.rol-action-btn:has(.fa-eye, .fa-circle-info) {
+    --ua: 8, 145, 178 !important;
+    color: rgb(8, 145, 178) !important;
+}
+.rol-actions .btn.rol-action-btn:hover,
+.rol-actions .btn.rol-action-btn:focus-visible {
+    color: rgb(var(--ua)) !important;
+    border-color: transparent !important;
+    background: rgba(var(--ua), .13) !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
