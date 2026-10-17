@@ -88,7 +88,7 @@
                                 @if ($accion->slug === 'usuarios.editar')
                                 <button type="button"
                                     class="btn btn-sm btn-outline-primary usuario-action-btn"
-                                    data-tooltip="{{ $accion->nombre }}"
+                                    title="{{ $accion->nombre }}"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalEditarUsuario"
                                     data-id="{{ $usuario->id }}"
@@ -107,8 +107,7 @@
                                 @elseif ($accion->slug === 'usuarios.toggle')
                                 <button type="button"
                                     class="usuario-toggle-btn btn-estado-usuario {{ $usuario->activo ? 'activo' : 'inactivo' }}"
-                                    data-tooltip="{{ $usuario->activo ? 'Desactivar usuario' : 'Activar usuario' }}"
-                                    data-tooltip="{{ $usuario->activo ? 'Desactivar usuario' : 'Activar usuario' }}"
+                                    title="{{ $usuario->activo ? 'Desactivar usuario' : 'Activar usuario' }}"
                                     data-id="{{ $usuario->id }}"
                                     data-name="{{ $usuario->username }}"
                                     data-activo="{{ $usuario->activo ? 1 : 0 }}"
