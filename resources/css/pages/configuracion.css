@@ -616,14 +616,24 @@
     background: var(--surface);
 }
 
-/* El buscador conserva el estilo predeterminado de SlimSelect. */
+/* Buscador integrado al tema, sin el aro circular de enfoque. */
 .ss-content .ss-search input {
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    border: 1px solid var(--flat-line);
+    border-radius: 7px;
+    background: var(--field-bg);
+    color: var(--text-main);
     font-family: inherit;
     font-size: 12px;
+}
+
+.ss-content .ss-search input:focus {
+    border-color: var(--gym);
+    box-shadow: none;
+    outline: none;
 }
 
 .ss-content .ss-list {
