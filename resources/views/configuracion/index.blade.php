@@ -123,6 +123,7 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                         </select>
                         <small>Se aplicará en toda la interfaz: menú lateral, barra superior, tablas, formularios, modales y mensajes.</small>
                     </div>
+                    @endif
                 </div>
             </section>
             @endif
