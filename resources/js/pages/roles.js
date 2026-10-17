@@ -164,6 +164,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 name: (name || '').trim(),
                 description: (description || '').trim(),
             };
+            ['editar_name', 'editar_description'].forEach(function (idCampo) {
+                limpiarValidacionRol(document.getElementById(idCampo));
+            });
 
             document.getElementById('editar_id').value = id;
             document.getElementById('editar_name').value = name;
@@ -861,11 +864,95 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    const formNuevoRol =document.getElementById('formNuevoRol');
+    const formNuevoRol = document.getElementById('formNuevoRol');
+    const formEditarRol = document.getElementById('formEditarRol');
+
+    function limpiarValidacionRol(input) {
+        if (!input) return;
+        input.classList.remove('is-invalid', 'is-valid');
+        input.removeAttribute('aria-invalid');
+        const aviso = input.parentElement.querySelector('.invalid-feedback');
+        if (aviso) aviso.textContent = '';
+    }
+
+    function validarCampoRol(input, mostrarValido = true) {
+        if (!input) return true;
+        limpiarValidacionRol(input);
+        const valor = input.value.trim();
+        let mensaje = '';
+
+        if (input.name === 'name') {
+            if (!valor) {
+                mensaje = 'El nombre del rol es obligatorio.';
+            } else if (valor.length > 100) {
+                mensaje = 'El nombre del rol no puede superar 100 caracteres.';
+            }
+        } else if (input.name === 'description' && valor.length > 255) {
+            mensaje = 'La descripción no puede superar 255 caracteres.';
+        }
+
+        let aviso = input.parentElement.querySelector('.invalid-feedback');
+        if (!aviso) {
+            aviso = document.createElement('div');
+            aviso.className = 'invalid-feedback';
+            input.insertAdjacentElement('afterend', aviso);
+        }
+
+        if (mensaje) {
+            input.classList.add('is-invalid');
+            input.setAttribute('aria-invalid', 'true');
+            aviso.textContent = mensaje;
+            return false;
+        }
+
+        if (mostrarValido && (valor || input.name === 'name')) {
+            input.classList.add('is-valid');
+            input.setAttribute('aria-invalid', 'false');
+        }
+        return true;
+    }
+
+    function validarFormularioRol(form) {
+        let valido = true;
+        let primero = null;
+        form.querySelectorAll('input[name="name"], textarea[name="description"]').forEach(function (input) {
+            if (!validarCampoRol(input, true)) {
+                valido = false;
+                if (!primero) primero = input;
+            }
+        });
+        if (primero) primero.focus();
+        return valido;
+    }
+
+    function inicializarValidacionesRol(form, modal) {
+        if (!form) return;
+        form.querySelectorAll('input[name="name"], textarea[name="description"]').forEach(function (input) {
+            input.addEventListener('input', function () {
+                validarCampoRol(input, true);
+            });
+            input.addEventListener('change', function () {
+                validarCampoRol(input, true);
+            });
+        });
+        if (modal) {
+            modal.addEventListener('shown.bs.modal', function () {
+                form.querySelectorAll('input[name="name"], textarea[name="description"]').forEach(limpiarValidacionRol);
+            });
+        }
+    }
+
+    inicializarValidacionesRol(formNuevoRol, modalNuevo);
+    inicializarValidacionesRol(formEditarRol, modalEditar);
 
     if (formNuevoRol) {
         formNuevoRol.addEventListener('submit', function (event) {
             event.preventDefault();
+
+            if (!validarFormularioRol(formNuevoRol)) {
+                window.showToast('warning', 'Revisa los campos marcados antes de continuar.');
+                return;
+            }
 
             enviarFormulario(formNuevoRol, modalNuevoRol, 'Rol creado correctamente.',
                 function (data) {
@@ -881,8 +968,6 @@ document.addEventListener('DOMContentLoaded', function () {
             ).catch(() => { });
         });
     }
-    const formEditarRol = document.getElementById('formEditarRol');
-
     if (formEditarRol) {
         formEditarRol.addEventListener('submit',
             function (event) {
@@ -893,6 +978,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (datosOriginalesEditar && nombreActual === datosOriginalesEditar.name && descripcionActual === datosOriginalesEditar.description
                 ) {
                     window.showToast('info', MENSAJE_SIN_CAMBIOS);
+                    return;
+                }
+                if (!validarFormularioRol(formEditarRol)) {
+                    window.showToast('warning', 'Revisa los campos marcados antes de continuar.');
                     return;
                 }
                 const id = document.getElementById('editar_id').value;
