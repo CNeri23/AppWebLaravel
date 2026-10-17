@@ -16,6 +16,7 @@ class SystemSettings
 
         // Apariencia
         'accent_color' => 'orange',
+        'font_family' => 'inter',
 
         // Regional
         'currency' => 'MXN',
@@ -46,7 +47,7 @@ class SystemSettings
 
     private const GROUPS = [
         'general' => ['system_name', 'logo_path'],
-        'appearance' => ['accent_color'],
+        'appearance' => ['accent_color', 'font_family'],
         'regional' => ['currency', 'timezone', 'date_format', 'time_format'],
         'business' => [
             'business_name',
