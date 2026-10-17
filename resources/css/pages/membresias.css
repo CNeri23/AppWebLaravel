@@ -223,3 +223,47 @@
 @media (prefers-reduced-motion: reduce) {
     .membresia-actions *, .membresia-actions *::before { transition: none !important; }
 }
+
+
+/* Igualar especificidad y apariencia de los botones de acciones de Usuarios. */
+.membresia-actions .btn.membresia-action-btn {
+    --bs-btn-color: rgb(var(--ua));
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: transparent;
+    --bs-btn-hover-color: rgb(var(--ua));
+    --bs-btn-hover-bg: rgba(var(--ua), 0.13);
+    --bs-btn-hover-border-color: transparent;
+    --bs-btn-active-color: rgb(var(--ua));
+    --bs-btn-active-bg: rgba(var(--ua), 0.2);
+    --bs-btn-active-border-color: transparent;
+    --bs-btn-disabled-color: rgb(var(--ua));
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: transparent;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    color: rgb(var(--ua));
+    background: transparent;
+    box-shadow: none;
+}
+.membresia-actions .btn.membresia-action-btn:hover,
+.membresia-actions .btn.membresia-action-btn:focus-visible {
+    color: rgb(var(--ua));
+    background: rgba(var(--ua), 0.13);
+    border-color: transparent;
+    box-shadow: none;
+}
+[data-bs-theme="dark"] .membresia-actions .btn.membresia-action-btn {
+    color: rgb(var(--ua));
+    background: transparent;
+    border-color: transparent;
+}
+[data-bs-theme="dark"] .membresia-actions .btn.membresia-action-btn:hover,
+[data-bs-theme="dark"] .membresia-actions .btn.membresia-action-btn:focus-visible {
+    color: rgb(var(--ua));
+    background: rgba(var(--ua), 0.2);
+    border-color: transparent;
+}
