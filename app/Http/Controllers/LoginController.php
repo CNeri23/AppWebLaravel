@@ -334,6 +334,18 @@ class LoginController extends Controller
 
     public function showResetPassword(Request $request, string $token): View
     {
+        $tokenCodificado = strtr($token, '-_', '+/');
+        $tokenCodificado .= str_repeat('=', (4 - strlen($tokenCodificado) % 4) % 4);
+        $tokenCifrado = base64_decode($tokenCodificado, true);
+
+        abort_if($tokenCifrado === false, 403);
+
+        try {
+            $token = Crypt::decryptString($tokenCifrado);
+        } catch (DecryptException $exception) {
+            abort(403);
+        }
+
         return view('auth.login', array_merge([
             'token' => $token,
             'email' => $request->query('email'),

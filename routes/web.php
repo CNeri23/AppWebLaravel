@@ -38,6 +38,7 @@ Route::post('/recuperar-password', [LoginController::class, 'forgotPassword'])
     ->name('password.email');
 
 Route::get('/restablecer-password/{token}', [LoginController::class, 'showResetPassword'])
+    ->middleware('signed')
     ->name('password.reset');
 
 Route::post('/restablecer-password', [LoginController::class, 'resetPassword'])

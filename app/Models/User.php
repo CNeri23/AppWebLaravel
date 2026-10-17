@@ -45,6 +45,11 @@ class User extends Authenticatable implements CanResetPasswordContract
         ];
     }
 
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new \\App\\Notifications\\ResetPasswordNotification($token));
+    }
+
     public function persona(): HasOne
     {
         return $this->hasOne(Persona::class, 'usuario_id');
