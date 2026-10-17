@@ -244,8 +244,7 @@
 
 /* SlimSelect en los modales de membresías: adapta colores y scroll al tema activo. */
 #modalNuevaMembresia .ss-main,
-#modalRenovarMembresia .ss-main,
-#modalNuevaMembresia, #modalRenovarMembresia .ss-main {
+#modalRenovarMembresia .ss-main {
     min-height: 40px !important;
     border: 1px solid var(--flat-line) !important;
     border-radius: 9px !important;
@@ -259,22 +258,18 @@
 #modalNuevaMembresia .ss-main:focus,
 #modalNuevaMembresia .ss-main:focus-within,
 #modalRenovarMembresia .ss-main:focus,
-#modalRenovarMembresia .ss-main:focus-within,
-#modalNuevaMembresia, #modalRenovarMembresia .ss-main:focus,
-#modalNuevaMembresia, #modalRenovarMembresia .ss-main:focus-within {
+#modalRenovarMembresia .ss-main:focus-within {
     border-color: var(--gym) !important;
     box-shadow: 0 0 0 3px var(--gym-soft) !important;
 }
 
 #modalNuevaMembresia .ss-main .ss-values .ss-single,
-#modalRenovarMembresia .ss-main .ss-values .ss-single,
-#modalNuevaMembresia, #modalRenovarMembresia .ss-main .ss-values .ss-single {
+#modalRenovarMembresia .ss-main .ss-values .ss-single {
     color: var(--text-main) !important;
 }
 
 #modalNuevaMembresia .ss-main .ss-arrow path,
-#modalRenovarMembresia .ss-main .ss-arrow path,
-#modalNuevaMembresia, #modalRenovarMembresia .ss-main .ss-arrow path {
+#modalRenovarMembresia .ss-main .ss-arrow path {
     stroke: var(--text-muted) !important;
 }
 
