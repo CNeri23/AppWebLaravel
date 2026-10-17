@@ -520,57 +520,6 @@
 }
 
 
-/* Tooltips propios: tipografía legible y contraste consistente en ambos temas. */
-#tablaUsuarios .usuario-actions [data-tooltip] {
-    position: relative;
-}
-
-#tablaUsuarios .usuario-actions [data-tooltip]::after {
-    position: absolute;
-    z-index: 1080;
-    left: 50%;
-    bottom: calc(100% + 11px);
-    width: max-content;
-    max-width: 220px;
-    padding: 9px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 9px;
-    background: #000000;
-    color: #ffffff;
-    content: attr(data-tooltip);
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.35;
-    letter-spacing: 0.01em;
-    text-align: center;
-    white-space: normal;
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22), 0 2px 5px rgba(0, 0, 0, 0.14);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: translate(-50%, 4px);
-    transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
-}
-
-
-#tablaUsuarios .usuario-actions [data-tooltip]:hover::after,
-#tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::after {
-    opacity: 1;
-    visibility: visible;
-}
-
-#tablaUsuarios .usuario-actions [data-tooltip]:hover::after,
-#tablaUsuarios .usuario-actions [data-tooltip]:focus-visible::after {
-    transform: translate(-50%, 0);
-}
-
-@media (max-width: 767.98px) {
-    #tablaUsuarios .usuario-actions [data-tooltip]::after {
-        display: none;
-    }
-}
-
 /* Acciones: solo ícono en reposo; en hover se rellena con azul suave (como el menú del treeview). */
 #tablaUsuarios .btn.usuario-action-btn,
 [data-bs-theme="dark"] #tablaUsuarios .btn.usuario-action-btn {
