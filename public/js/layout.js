@@ -919,6 +919,21 @@ document.addEventListener('DOMContentLoaded', function (event) {
             // Refleja la ruta activa usando los identificadores del menú recibido del servidor.
             const menuRespuesta = documento.querySelector('.sidebar-menu');
             if (menuRespuesta) {
+                const dashboardActivo = Boolean(menuRespuesta.querySelector('.sidebar-link.active[href]'));
+                const enlaceDashboard = sidebar.querySelector('.sidebar-link[href]');
+
+                if (enlaceDashboard) {
+                    enlaceDashboard.classList.toggle('active', dashboardActivo);
+                }
+
+                if (dashboardActivo) {
+                    sidebar.querySelectorAll('.sidebar-sublink').forEach(enlace => enlace.classList.remove('active'));
+                    sidebar.querySelectorAll('.sidebar-group-toggle').forEach(boton => {
+                        boton.classList.remove('active');
+                        cerrarSubmenu(boton, obtenerSubmenu(boton));
+                    });
+                }
+
                 const activos = new Set(
                     Array.from(menuRespuesta.querySelectorAll('.sidebar-sublink.active'))
                         .map(enlace => enlace.dataset.submoduloId)
@@ -1100,7 +1115,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
     });
 
     sidebar.addEventListener('click', function (event) {
-        const enlace = event.target.closest('a.sidebar-sublink');
+        const enlace = event.target.closest('a.sidebar-sublink, a.sidebar-link[href]');
         if (!enlace || enlace.classList.contains('sidebar-link-pendiente')) {
             return;
         }
