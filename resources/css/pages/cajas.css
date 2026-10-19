@@ -300,3 +300,24 @@
         width: 100%;
     }
 }
+
+
+/* Estados de tabla en texto compacto, como en Planes. */
+#tablaCajas tbody td .badge {
+    display: inline;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent !important;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    vertical-align: baseline;
+    white-space: nowrap;
+}
+
+#tablaCajas tbody td .badge.text-bg-success { color: var(--bs-success) !important; }
+#tablaCajas tbody td .badge.text-bg-primary { color: var(--bs-success) !important; }
+#tablaCajas tbody td .badge.text-bg-secondary { color: var(--bs-secondary-color) !important; }
+#tablaCajas tbody td .badge.text-bg-danger { color: var(--bs-danger) !important; }
+#tablaCajas tbody td .badge.text-bg-warning { color: var(--bs-warning-text-emphasis, #997404) !important; }
