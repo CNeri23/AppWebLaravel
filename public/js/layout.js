@@ -948,18 +948,54 @@ document.addEventListener('DOMContentLoaded', function () {
                 tituloActual.dataset.customTitle = 'true';
             }
 
-            // Ejecuta los scripts de la vista nueva para inicializar sus tablas y controles.
-            const scriptsNuevos = Array.from(nuevoContenido.querySelectorAll('script'));
-            nuevoContenido.querySelectorAll('script').forEach(script => script.remove());
+            // Recupera los scripts específicos de la vista, que Laravel coloca normalmente
+            // en @stack('scripts') al final del body y no dentro de .app-content.
+            document.querySelectorAll('script[data-pjax-view-script]').forEach(script => script.remove());
 
-            scriptsNuevos.forEach(scriptOriginal => {
+            const scriptsVista = Array.from(documento.body.querySelectorAll('script')).filter(script => {
+                const src = script.getAttribute('src') || '';
+                return !src.includes('/js/layout.js') &&
+                    !src.includes('/vendor/datatables/') &&
+                    !src.includes('/vendor/bootstrap/') &&
+                    !src.includes('/js/toast.js') &&
+                    !src.includes('/build/assets/') &&
+                    !src.includes('/resources/');
+            });
+
+            for (const scriptOriginal of scriptsVista) {
                 const script = document.createElement('script');
                 Array.from(scriptOriginal.attributes).forEach(atributo => {
                     script.setAttribute(atributo.name, atributo.value);
                 });
-                script.textContent = scriptOriginal.textContent;
-                contenidoActual.appendChild(script);
-            });
+                script.dataset.pjaxViewScript = 'true';
+
+                if (scriptOriginal.src) {
+                    await new Promise((resolve, reject) => {
+                        script.onload = resolve;
+                        script.onerror = reject;
+                        document.body.appendChild(script);
+                    });
+                } else {
+                    let codigo = scriptOriginal.textContent;
+
+                    // Los inicializadores de vista suelen esperar DOMContentLoaded.
+                    // En navegación parcial el DOM ya está listo: ejecuta ese callback ahora.
+                    codigo = codigo.replace(
+                        /document\\.addEventListener\\(['"]DOMContentLoaded['"],\\s*function\\s*\\(\\)\\s*\\{/g,
+                        '(function () {'
+                    );
+                    codigo = codigo.replace(
+                        /document\\.addEventListener\\(['"]DOMContentLoaded['"],\\s*\\(\\)\\s*=>\\s*\\{/g,
+                        '(() => {'
+                    );
+
+                    script.textContent = codigo;
+                    document.body.appendChild(script);
+                }
+            }
+
+            // Permite que los componentes que usan inicialización propia se actualicen también.
+            document.dispatchEvent(new CustomEvent('ironpulse:navigated', { detail: { url } }));
 
             if (agregarHistorial) {
                 window.history.pushState({ navegacionIronPulse: true }, '', url);
