@@ -25,7 +25,12 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                     @if ($puedeConfigurar('configuracion.nombre'))
                     <div class="config-field">
                         <label for="system_name">Nombre del sistema</label>
-                        <input type="text" id="system_name" name="system_name" class="form-control" value="{{ $settings['system_name'] }}" maxlength="100" required>
+                        <div class="config-input">
+                            <input type="text" id="system_name" name="system_name" class="form-control" value="{{ $settings['system_name'] }}" maxlength="100" required>
+                            <button type="button" class="config-input-save" hidden aria-label="Guardar nombre del sistema" title="Guardar (Enter)">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                        </div>
 
                         <small>
                             Este nombre se utilizará en las diferentes áreas del sistema.
