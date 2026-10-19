@@ -919,22 +919,26 @@ document.addEventListener('DOMContentLoaded', function () {
                         .filter(Boolean)
                 );
 
-                sidebar.querySelectorAll('.sidebar-sublink[data-submodulo-id]').forEach(enlace => {
-                    enlace.classList.toggle('active', activos.has(enlace.dataset.submoduloId));
-                });
+                // Solo modifica el estado del menú si la ruta corresponde a un submódulo.
+                // Perfil y Preferencias no deben borrar el submódulo que estaba activo.
+                if (activos.size > 0) {
+                    sidebar.querySelectorAll('.sidebar-sublink[data-submodulo-id]').forEach(enlace => {
+                        enlace.classList.toggle('active', activos.has(enlace.dataset.submoduloId));
+                    });
 
-                sidebar.querySelectorAll('.sidebar-group-toggle[data-modulo-id]').forEach(boton => {
-                    const moduloId = boton.dataset.moduloId;
-                    const tieneActivo = Array.from(
-                        sidebar.querySelectorAll('.sidebar-sublink.active')
-                    ).some(enlace => enlace.dataset.moduloId === moduloId);
-                    const submenu = obtenerSubmenu(boton);
+                    sidebar.querySelectorAll('.sidebar-group-toggle[data-modulo-id]').forEach(boton => {
+                        const moduloId = boton.dataset.moduloId;
+                        const tieneActivo = Array.from(
+                            sidebar.querySelectorAll('.sidebar-sublink.active')
+                        ).some(enlace => enlace.dataset.moduloId === moduloId);
+                        const submenu = obtenerSubmenu(boton);
 
-                    boton.classList.toggle('active', tieneActivo);
-                    if (submenu && tieneActivo) {
-                        abrirSubmenu(boton, submenu);
-                    }
-                });
+                        boton.classList.toggle('active', tieneActivo);
+                        if (submenu && tieneActivo) {
+                            abrirSubmenu(boton, submenu);
+                        }
+                    });
+                }
             }
 
             const tituloNuevo = documento.querySelector('title');
@@ -971,6 +975,40 @@ document.addEventListener('DOMContentLoaded', function () {
             navegacionParcialEnCurso = false;
         }
     }
+
+    // Mi perfil y Preferencias reutilizan la navegación parcial sin desmontar el sidebar.
+    document.addEventListener('click', function (event) {
+        const enlace = event.target.closest('.user-dropdown .dropdown-menu a.dropdown-item');
+        if (!enlace) {
+            return;
+        }
+
+        if (
+            event.defaultPrevented ||
+            event.button !== 0 ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey ||
+            enlace.target === '_blank'
+        ) {
+            return;
+        }
+
+        const destino = new URL(enlace.href, window.location.href);
+        if (
+            destino.origin !== window.location.origin ||
+            (destino.pathname !== new URL(document.querySelector('.user-dropdown a[href*="perfil"]')?.href || '/perfil', window.location.origin).pathname &&
+             destino.pathname !== new URL(document.querySelector('.user-dropdown a[href*="preferencias"]')?.href || '/preferencias', window.location.origin).pathname)
+        ) {
+            return;
+        }
+
+        event.preventDefault();
+        if (destino.href !== window.location.href) {
+            navegarSubmoduloSinRecargar(destino.href);
+        }
+    });
 
     sidebar.addEventListener('click', function (event) {
         const enlace = event.target.closest('a.sidebar-sublink');
