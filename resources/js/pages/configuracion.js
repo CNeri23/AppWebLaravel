@@ -373,8 +373,20 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function aplicarGlobal(nombre, settings) {
-            if (nombre === 'session_timeout' && settings && typeof window.aplicarConfiguracionGlobal === 'function') {
-                window.aplicarConfiguracionGlobal({session_timeout: settings.session_timeout,});
+            if (!settings || typeof window.aplicarConfiguracionGlobal !== 'function') {
+                return;
+            }
+
+            if (nombre === 'session_timeout') {
+                window.aplicarConfiguracionGlobal({
+                    session_timeout: settings.session_timeout,
+                });
+            }
+
+            if (nombre === 'system_name') {
+                window.aplicarConfiguracionGlobal({
+                    system_name: settings.system_name,
+                });
             }
         }
 
