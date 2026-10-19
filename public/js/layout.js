@@ -870,6 +870,141 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    // Navegación parcial: conserva el sidebar montado y solo actualiza el contenido principal.
+    let navegacionParcialEnCurso = false;
+
+    async function navegarSubmoduloSinRecargar(url, agregarHistorial = true) {
+        if (navegacionParcialEnCurso) {
+            return;
+        }
+
+        navegacionParcialEnCurso = true;
+        sidebar.classList.add('sidebar-navigating');
+
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                credentials: 'same-origin',
+                headers: {
+                    'Accept': 'text/html',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                cache: 'no-store',
+            });
+
+            if (!response.ok || response.redirected) {
+                window.location.href = response.url || url;
+                return;
+            }
+
+            const htmlRespuesta = await response.text();
+            const documento = new DOMParser().parseFromString(htmlRespuesta, 'text/html');
+            const nuevoContenido = documento.querySelector('.app-content');
+            const contenidoActual = document.querySelector('.app-content');
+
+            if (!nuevoContenido || !contenidoActual) {
+                window.location.href = url;
+                return;
+            }
+
+            // Actualiza únicamente el contenido; el elemento #appSidebar no se reemplaza.
+            contenidoActual.innerHTML = nuevoContenido.innerHTML;
+
+            // Refleja la ruta activa usando los identificadores del menú recibido del servidor.
+            const menuRespuesta = documento.querySelector('.sidebar-menu');
+            if (menuRespuesta) {
+                const activos = new Set(
+                    Array.from(menuRespuesta.querySelectorAll('.sidebar-sublink.active'))
+                        .map(enlace => enlace.dataset.submoduloId)
+                        .filter(Boolean)
+                );
+
+                sidebar.querySelectorAll('.sidebar-sublink[data-submodulo-id]').forEach(enlace => {
+                    enlace.classList.toggle('active', activos.has(enlace.dataset.submoduloId));
+                });
+
+                sidebar.querySelectorAll('.sidebar-group-toggle[data-modulo-id]').forEach(boton => {
+                    const moduloId = boton.dataset.moduloId;
+                    const tieneActivo = Array.from(
+                        sidebar.querySelectorAll('.sidebar-sublink.active')
+                    ).some(enlace => enlace.dataset.moduloId === moduloId);
+                    const submenu = obtenerSubmenu(boton);
+
+                    boton.classList.toggle('active', tieneActivo);
+                    if (submenu && tieneActivo) {
+                        abrirSubmenu(boton, submenu);
+                    }
+                });
+            }
+
+            const tituloNuevo = documento.querySelector('title');
+            const tituloActual = document.querySelector('title');
+            if (tituloNuevo && tituloActual) {
+                tituloActual.textContent = tituloNuevo.textContent;
+                tituloActual.dataset.customTitle = 'true';
+            }
+
+            // Ejecuta los scripts de la vista nueva para inicializar sus tablas y controles.
+            const scriptsNuevos = Array.from(nuevoContenido.querySelectorAll('script'));
+            nuevoContenido.querySelectorAll('script').forEach(script => script.remove());
+
+            scriptsNuevos.forEach(scriptOriginal => {
+                const script = document.createElement('script');
+                Array.from(scriptOriginal.attributes).forEach(atributo => {
+                    script.setAttribute(atributo.name, atributo.value);
+                });
+                script.textContent = scriptOriginal.textContent;
+                contenidoActual.appendChild(script);
+            });
+
+            if (agregarHistorial) {
+                window.history.pushState({ navegacionIronPulse: true }, '', url);
+            }
+
+            window.scrollTo({ top: 0, behavior: 'auto' });
+            document.dispatchEvent(new CustomEvent('ironpulse:navigated', { detail: { url } }));
+        } catch (error) {
+            console.error('Error al navegar al submódulo:', error);
+            window.location.href = url;
+        } finally {
+            sidebar.classList.remove('sidebar-navigating');
+            navegacionParcialEnCurso = false;
+        }
+    }
+
+    sidebar.addEventListener('click', function (event) {
+        const enlace = event.target.closest('a.sidebar-sublink');
+        if (!enlace || enlace.classList.contains('sidebar-link-pendiente')) {
+            return;
+        }
+
+        if (
+            event.defaultPrevented ||
+            event.button !== 0 ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey ||
+            enlace.target === '_blank'
+        ) {
+            return;
+        }
+
+        const destino = new URL(enlace.href, window.location.href);
+        if (destino.origin !== window.location.origin) {
+            return;
+        }
+
+        event.preventDefault();
+        if (destino.href !== window.location.href) {
+            navegarSubmoduloSinRecargar(destino.href);
+        }
+    });
+
+    window.addEventListener('popstate', function () {
+        navegarSubmoduloSinRecargar(window.location.href, false);
+    });
+
     inicializarGruposSidebar();
 
     // Tooltip propio para el sidebar colapsado (reemplaza el title nativo).
