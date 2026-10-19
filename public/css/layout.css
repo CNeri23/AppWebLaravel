@@ -149,47 +149,47 @@ html[data-bs-theme="light"][data-theme-style="white"] {
     --modal-line: #e5e7eb;
     --modal-border: #e5e7eb;
     --flat-line: #e5e7eb;
-    --line: rgba(20, 30, 60, 0.11);
-    --line-soft: rgba(20, 30, 60, 0.06);
-    --hover-bg: rgba(20, 30, 60, 0.04);
+    --line: rgba(15, 23, 42, 0.10);
+    --line-soft: rgba(15, 23, 42, 0.055);
+    --hover-bg: rgba(15, 23, 42, 0.035);
     --flat-dropdown-bg: #ffffff;
     --nav-bg: #ffffff;
 }
 
 html[data-bs-theme="light"][data-theme-style="mist"] {
-    --content-bg: #eef1f5;
-    --surface: #f8f9fb;
+    --content-bg: #f1f3f6;
+    --surface: #ffffff;
     --surface-strong: #ffffff;
-    --surface-solid: #f8f9fb;
-    --topbar-bg: #e9edf2;
-    --modal-bg: #f8f9fb;
-    --modal-field-bg: #eef1f5;
-    --modal-line: #d9dee6;
-    --modal-border: #d9dee6;
-    --flat-line: #d9dee6;
-    --line: rgba(20, 30, 60, 0.1);
-    --line-soft: rgba(20, 30, 60, 0.055);
-    --hover-bg: rgba(20, 30, 60, 0.045);
-    --flat-dropdown-bg: #f8f9fb;
-    --nav-bg: #f4f5f7;
+    --surface-solid: #fbfcfd;
+    --topbar-bg: #ffffff;
+    --modal-bg: #ffffff;
+    --modal-field-bg: #f7f8fa;
+    --modal-line: #e1e5eb;
+    --modal-border: #e1e5eb;
+    --flat-line: #e1e5eb;
+    --line: rgba(30, 41, 59, 0.10);
+    --line-soft: rgba(30, 41, 59, 0.05);
+    --hover-bg: rgba(30, 41, 59, 0.04);
+    --flat-dropdown-bg: #ffffff;
+    --nav-bg: #f8f9fb;
 }
 
 html[data-bs-theme="light"][data-theme-style="sky"] {
-    --content-bg: #eaf3fb;
+    --content-bg: #f3f8fc;
     --surface: #ffffff;
     --surface-strong: #ffffff;
-    --surface-solid: #f8fbff;
-    --topbar-bg: #eaf3fb;
-    --modal-bg: #f8fbff;
-    --modal-field-bg: #eaf3fb;
-    --modal-line: #d4e1ee;
-    --modal-border: #d4e1ee;
-    --flat-line: #d4e1ee;
-    --line: rgba(20, 65, 105, 0.11);
-    --line-soft: rgba(20, 65, 105, 0.06);
-    --hover-bg: rgba(20, 65, 105, 0.05);
+    --surface-solid: #ffffff;
+    --topbar-bg: #ffffff;
+    --modal-bg: #ffffff;
+    --modal-field-bg: #f5f9fd;
+    --modal-line: #dce7f0;
+    --modal-border: #dce7f0;
+    --flat-line: #dce7f0;
+    --line: rgba(30, 64, 90, 0.10);
+    --line-soft: rgba(30, 64, 90, 0.05);
+    --hover-bg: rgba(30, 64, 90, 0.04);
     --flat-dropdown-bg: #ffffff;
-    --nav-bg: #f6faff;
+    --nav-bg: #f8fbfe;
 }
 
 html[data-bs-theme="dark"] {
