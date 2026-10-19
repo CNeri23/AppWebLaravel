@@ -33,6 +33,10 @@
     --surface-strong: #ffffff;
     --surface-solid: #ffffff;
     --topbar-bg: #ffffff;
+    --modal-bg: #ffffff;
+    --modal-field-bg: #f6f7f9;
+    --modal-line: #dbe1e8;
+    --modal-border: transparent;
     --flat-line: #dbe1e8;
     --line: rgba(20, 30, 60, 0.11);
     --line-soft: rgba(20, 30, 60, 0.06);
@@ -154,6 +158,10 @@ html[data-bs-theme="light"][data-theme-style="mist"] {
     --surface-strong: #ffffff;
     --surface-solid: #f8f9fb;
     --topbar-bg: #e9edf2;
+    --modal-bg: #f8f9fb;
+    --modal-field-bg: #eef1f5;
+    --modal-line: #d9dee6;
+    --modal-border: #d9dee6;
     --flat-line: #d9dee6;
     --line: rgba(20, 30, 60, 0.1);
     --line-soft: rgba(20, 30, 60, 0.055);
@@ -168,6 +176,10 @@ html[data-bs-theme="light"][data-theme-style="sky"] {
     --surface-strong: #ffffff;
     --surface-solid: #f8fbff;
     --topbar-bg: #eaf3fb;
+    --modal-bg: #f8fbff;
+    --modal-field-bg: #eaf3fb;
+    --modal-line: #d4e1ee;
+    --modal-border: #d4e1ee;
     --flat-line: #d4e1ee;
     --line: rgba(20, 65, 105, 0.11);
     --line-soft: rgba(20, 65, 105, 0.06);
