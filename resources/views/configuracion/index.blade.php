@@ -192,7 +192,9 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                             <label for="timezone">Zona horaria</label>
 
                             <select id="timezone" name="timezone" class="form-select">
-                                <option value="America/Mexico_City" {{ $settings['timezone'] === 'America/Mexico_City' ? 'selected' : '' }}>Ciudad de México</option>
+                                @foreach ($timezones as $value => $label)
+                                <option value="{{ $value }}" {{ $settings['timezone'] === $value ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
                             </select>
                         </div>
                         @endif

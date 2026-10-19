@@ -74,7 +74,61 @@ class SystemSettingsController extends Controller
         return view('configuracion.index', [
             'settings' => $settings->all(),
             'timezones' => collect(\DateTimeZone::listIdentifiers())
-                ->mapWithKeys(fn (string $timezone) => [$timezone => str_replace(['_', '/'], [' ', ' / '], $timezone)])
+                ->mapWithKeys(function (string $timezone): array {
+                    $ciudad = substr($timezone, strrpos($timezone, '/') !== false ? strrpos($timezone, '/') + 1 : 0);
+
+                    $traducciones = [
+                        'Mexico_City' => 'Ciudad de México',
+                        'Tijuana' => 'Tijuana',
+                        'Cancun' => 'Cancún',
+                        'Merida' => 'Mérida',
+                        'Monterrey' => 'Monterrey',
+                        'Chihuahua' => 'Chihuahua',
+                        'Hermosillo' => 'Hermosillo',
+                        'Mazatlan' => 'Mazatlán',
+                        'Matamoros' => 'Matamoros',
+                        'Ojinaga' => 'Ojinaga',
+                        'Bahia_Banderas' => 'Bahía de Banderas',
+                        'New_York' => 'Nueva York',
+                        'Los_Angeles' => 'Los Ángeles',
+                        'Chicago' => 'Chicago',
+                        'Denver' => 'Denver',
+                        'Phoenix' => 'Phoenix',
+                        'Toronto' => 'Toronto',
+                        'Vancouver' => 'Vancouver',
+                        'Sao_Paulo' => 'São Paulo',
+                        'Buenos_Aires' => 'Buenos Aires',
+                        'Bogota' => 'Bogotá',
+                        'Lima' => 'Lima',
+                        'Santiago' => 'Santiago',
+                        'London' => 'Londres',
+                        'Paris' => 'París',
+                        'Madrid' => 'Madrid',
+                        'Rome' => 'Roma',
+                        'Berlin' => 'Berlín',
+                        'Athens' => 'Atenas',
+                        'Moscow' => 'Moscú',
+                        'Istanbul' => 'Estambul',
+                        'Cairo' => 'El Cairo',
+                        'Johannesburg' => 'Johannesburgo',
+                        'Dubai' => 'Dubái',
+                        'Kolkata' => 'Calcuta',
+                        'Mumbai' => 'Bombay',
+                        'Tokyo' => 'Tokio',
+                        'Seoul' => 'Seúl',
+                        'Shanghai' => 'Shanghái',
+                        'Hong_Kong' => 'Hong Kong',
+                        'Singapore' => 'Singapur',
+                        'Sydney' => 'Sídney',
+                        'Melbourne' => 'Melbourne',
+                        'Auckland' => 'Auckland',
+                    ];
+
+                    $label = $traducciones[$ciudad] ?? str_replace('_', ' ', $ciudad);
+
+                    return [$timezone => $label];
+                })
+                ->sort(fn (string $a, string $b): int => strcasecmp($a, $b))
                 ->all(),
         ]);
     }
