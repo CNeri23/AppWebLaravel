@@ -2332,26 +2332,26 @@ html[data-font-scale="large"] {
 html[data-font-scale] main :is(p, li, label, .form-label, .form-text, .form-check-label,
     .form-control, .form-select, .input-group-text, .btn, .badge, .alert,
     .card-text, .card-subtitle, .breadcrumb, .nav-link, .dropdown-item,
-    .list-group-item, .pagination .page-link, .small, small) {
+    .list-group-item, .pagination .page-link, .small, small):not(.theme-preview *):not(.theme-preview) {
     font-size: calc(14px * var(--font-scale-factor)) !important;
 }
 
-html[data-font-scale] main :is(h1, .h1) {
+html[data-font-scale] main :is(h1, .h1):not(.theme-preview *):not(.theme-preview) {
     font-size: calc(28px * var(--font-scale-factor)) !important;
 }
-html[data-font-scale] main :is(h2, .h2) {
+html[data-font-scale] main :is(h2, .h2):not(.theme-preview *):not(.theme-preview) {
     font-size: calc(24px * var(--font-scale-factor)) !important;
 }
-html[data-font-scale] main :is(h3, .h3) {
+html[data-font-scale] main :is(h3, .h3):not(.theme-preview *):not(.theme-preview) {
     font-size: calc(20px * var(--font-scale-factor)) !important;
 }
-html[data-font-scale] main :is(h4, .h4) {
+html[data-font-scale] main :is(h4, .h4):not(.theme-preview *):not(.theme-preview) {
     font-size: calc(18px * var(--font-scale-factor)) !important;
 }
-html[data-font-scale] main :is(h5, .h5, .card-title, .modal-title) {
+html[data-font-scale] main :is(h5, .h5, .card-title, .modal-title):not(.theme-preview *):not(.theme-preview) {
     font-size: calc(16px * var(--font-scale-factor)) !important;
 }
-html[data-font-scale] main :is(h6, .h6) {
+html[data-font-scale] main :is(h6, .h6):not(.theme-preview *):not(.theme-preview) {
     font-size: calc(14px * var(--font-scale-factor)) !important;
 }
 
