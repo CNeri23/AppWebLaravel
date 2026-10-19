@@ -249,6 +249,7 @@ class SystemSettingsController extends Controller
         if ($request->boolean('remove_logo') && !$request->hasFile('logo')) {
             $datos['logo_path'] = null;
         }
+        unset($datos['remove_logo']);
 
         if ($request->hasFile('logo')) {
             $datos['logo_path'] = $request->file('logo')
