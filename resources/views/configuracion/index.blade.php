@@ -46,6 +46,7 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                             <div class="logo-preview" id="logoPreview">
                                 @if (!empty($settings['logo_path']))
                                 <img src="{{ asset('storage/' . $settings['logo_path']) }}" alt="Logotipo">
+                                <button type="button" id="eliminarLogo" class="btn btn-outline-danger btn-sm logo-remove" aria-label="Eliminar logotipo" title="Eliminar logotipo"><i class="fa-solid fa-trash"></i></button>
                                 @else
                                 <i class="fa-solid fa-image"></i>
                                 @endif
