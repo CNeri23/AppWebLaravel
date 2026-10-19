@@ -153,7 +153,7 @@ html[data-bs-theme="light"][data-theme-style="white"] {
     --line-soft: rgba(15, 23, 42, 0.055);
     --hover-bg: rgba(15, 23, 42, 0.035);
     --flat-dropdown-bg: #ffffff;
-    --nav-bg: #ffffff;
+    --nav-bg: #f8fafc;
 }
 
 html[data-bs-theme="light"][data-theme-style="mist"] {
@@ -171,7 +171,7 @@ html[data-bs-theme="light"][data-theme-style="mist"] {
     --line-soft: rgba(30, 41, 59, 0.05);
     --hover-bg: rgba(30, 41, 59, 0.04);
     --flat-dropdown-bg: #ffffff;
-    --nav-bg: #ffffff;
+    --nav-bg: #eef1f5;
 }
 
 html[data-bs-theme="light"][data-theme-style="sky"] {
@@ -189,7 +189,7 @@ html[data-bs-theme="light"][data-theme-style="sky"] {
     --line-soft: rgba(30, 64, 90, 0.05);
     --hover-bg: rgba(30, 64, 90, 0.04);
     --flat-dropdown-bg: #ffffff;
-    --nav-bg: #ffffff;
+    --nav-bg: #e5efff;
 }
 
 html[data-bs-theme="dark"] {
