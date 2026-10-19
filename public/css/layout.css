@@ -143,13 +143,17 @@ html[data-bs-theme="light"][data-theme-style="white"] {
     --surface: #ffffff;
     --surface-strong: #ffffff;
     --surface-solid: #ffffff;
-    --topbar-bg: #ffffff;
-    --flat-line: #dbe1e8;
-    --line: rgba(20, 30, 60, 0.11);
-    --line-soft: rgba(20, 30, 60, 0.06);
+    --topbar-bg: #f1f3f6;
+    --modal-bg: #ffffff;
+    --modal-field-bg: #f5f7fa;
+    --modal-line: #d7dde6;
+    --modal-border: #d7dde6;
+    --flat-line: #d7dde6;
+    --line: rgba(20, 30, 60, 0.13);
+    --line-soft: rgba(20, 30, 60, 0.07);
     --hover-bg: rgba(20, 30, 60, 0.05);
     --flat-dropdown-bg: #ffffff;
-    --nav-bg: #fbfaf7;
+    --nav-bg: #f0f2f6;
 }
 
 html[data-bs-theme="light"][data-theme-style="mist"] {
