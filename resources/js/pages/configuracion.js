@@ -310,17 +310,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    const nombreSistema = document.getElementById('system_name');
-
-    if (nombreSistema) {
-        nombreSistema.addEventListener('blur', function () {
-            if (!this.value.trim()) {
-                return;
-            }
-            guardarConfiguracion(this.name);
-        });
-    }
-
     function inicializarCampos(tarjeta) {
         if (!tarjeta) {
             return;
@@ -493,6 +482,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
+    inicializarCampos(document.querySelector('.config-card'));
     inicializarCampos(document.getElementById('formNegocio'));
     inicializarCampos(document.getElementById('formSeguridad'));
 });
