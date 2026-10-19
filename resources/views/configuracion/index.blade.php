@@ -122,28 +122,28 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                     <div class="config-field">
                         <label for="font_family">Tipo de letra</label>
                         <select id="font_family" name="font_family" class="form-select">
-                            <option value="inter" {{ ($settings['font_family'] ?? 'inter') === 'inter' ? 'selected' : '' }}>Inter</option>
-                            <option value="system" {{ ($settings['font_family'] ?? 'inter') === 'system' ? 'selected' : '' }}>Sistema</option>
                             <option value="arial" {{ ($settings['font_family'] ?? 'inter') === 'arial' ? 'selected' : '' }}>Arial</option>
                             <option value="arial_narrow" {{ ($settings['font_family'] ?? 'inter') === 'arial_narrow' ? 'selected' : '' }}>Arial Narrow</option>
                             <option value="calibri" {{ ($settings['font_family'] ?? 'inter') === 'calibri' ? 'selected' : '' }}>Calibri</option>
                             <option value="cambria" {{ ($settings['font_family'] ?? 'inter') === 'cambria' ? 'selected' : '' }}>Cambria</option>
                             <option value="candara" {{ ($settings['font_family'] ?? 'inter') === 'candara' ? 'selected' : '' }}>Candara</option>
                             <option value="century_gothic" {{ ($settings['font_family'] ?? 'inter') === 'century_gothic' ? 'selected' : '' }}>Century Gothic</option>
+                            <option value="comic" {{ ($settings['font_family'] ?? 'inter') === 'comic' ? 'selected' : '' }}>Comic Sans MS</option>
                             <option value="consolas" {{ ($settings['font_family'] ?? 'inter') === 'consolas' ? 'selected' : '' }}>Consolas</option>
                             <option value="courier" {{ ($settings['font_family'] ?? 'inter') === 'courier' ? 'selected' : '' }}>Courier New</option>
                             <option value="franklin" {{ ($settings['font_family'] ?? 'inter') === 'franklin' ? 'selected' : '' }}>Franklin Gothic</option>
                             <option value="garamond" {{ ($settings['font_family'] ?? 'inter') === 'garamond' ? 'selected' : '' }}>Garamond</option>
                             <option value="georgia" {{ ($settings['font_family'] ?? 'inter') === 'georgia' ? 'selected' : '' }}>Georgia</option>
+                            <option value="impact" {{ ($settings['font_family'] ?? 'inter') === 'impact' ? 'selected' : '' }}>Impact</option>
+                            <option value="inter" {{ ($settings['font_family'] ?? 'inter') === 'inter' ? 'selected' : '' }}>Inter</option>
                             <option value="lucida" {{ ($settings['font_family'] ?? 'inter') === 'lucida' ? 'selected' : '' }}>Lucida Sans</option>
                             <option value="palatino" {{ ($settings['font_family'] ?? 'inter') === 'palatino' ? 'selected' : '' }}>Palatino</option>
                             <option value="segoe" {{ ($settings['font_family'] ?? 'inter') === 'segoe' ? 'selected' : '' }}>Segoe UI</option>
+                            <option value="system" {{ ($settings['font_family'] ?? 'inter') === 'system' ? 'selected' : '' }}>Sistema</option>
                             <option value="tahoma" {{ ($settings['font_family'] ?? 'inter') === 'tahoma' ? 'selected' : '' }}>Tahoma</option>
                             <option value="times" {{ ($settings['font_family'] ?? 'inter') === 'times' ? 'selected' : '' }}>Times New Roman</option>
                             <option value="trebuchet" {{ ($settings['font_family'] ?? 'inter') === 'trebuchet' ? 'selected' : '' }}>Trebuchet MS</option>
                             <option value="verdana" {{ ($settings['font_family'] ?? 'inter') === 'verdana' ? 'selected' : '' }}>Verdana</option>
-                            <option value="impact" {{ ($settings['font_family'] ?? 'inter') === 'impact' ? 'selected' : '' }}>Impact</option>
-                            <option value="comic" {{ ($settings['font_family'] ?? 'inter') === 'comic' ? 'selected' : '' }}>Comic Sans MS</option>
                         </select>
                         <small>Se aplicará en toda la interfaz: menú lateral, barra superior, tablas, formularios, modales y mensajes.</small>
                     </div>
@@ -192,9 +192,7 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                             <label for="timezone">Zona horaria</label>
 
                             <select id="timezone" name="timezone" class="form-select">
-                                @foreach ($timezones as $timezone => $label)
-                                <option value="{{ $timezone }}" {{ $settings['timezone'] === $timezone ? 'selected' : '' }}>{{ $label }}</option>
-                                @endforeach
+                                <option value="America/Mexico_City" {{ $settings['timezone'] === 'America/Mexico_City' ? 'selected' : '' }}>Ciudad de México</option>
                             </select>
                         </div>
                         @endif
