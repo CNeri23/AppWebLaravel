@@ -9,6 +9,7 @@ use App\Models\RolePermission;
 use App\Models\Submodulo;
 use App\Services\AuditLogService;
 use App\Services\PermissionService;
+use App\Services\SystemSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -91,7 +92,7 @@ class RoleController extends Controller
             'success' => true,
             'mensaje' => 'Rol creado correctamente.',
             'rol' => $rol,
-            'fecha_registro' => $rol->created_at?->format('d/m/Y H:i'),
+            'fecha_registro' => $rol->created_at?->timezone(app(SystemSettings::class)->get('timezone', config('app.timezone')))->format(app(SystemSettings::class)->get('date_format', 'd/m/Y') . ' ' . app(SystemSettings::class)->get('time_format', 'H:i')),
             'urls' => [
                 'update' => route('roles.update', $rol),
                 'delete' => route('roles.destroy', $rol),

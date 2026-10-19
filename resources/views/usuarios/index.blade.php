@@ -1,6 +1,11 @@
 @extends('layouts.app')
 @section('content')
 
+@php
+    $settingsFechaHora = app(\App\Services\SystemSettings::class)->all();
+@endphp
+
+
 <div class="card border-0 shadow-sm usuarios-header-card mb-4">
     <div class="card-body usuarios-header-content">
         <div class="usuarios-header-text">
@@ -77,7 +82,7 @@
 
                         <td>
                             <span class="text-secondary">
-                                {{ $usuario->created_at?->format('d/m/Y H:i') }}
+                                {{ $usuario->created_at?->timezone($settingsFechaHora['timezone'])->format($settingsFechaHora['date_format'] . ' ' . $settingsFechaHora['time_format']) }}
                             </span>
                         </td>
 
