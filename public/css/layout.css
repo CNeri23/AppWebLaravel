@@ -139,21 +139,21 @@ html[data-accent-color="petroleo"] {
 }
 
 html[data-bs-theme="light"][data-theme-style="white"] {
-    --content-bg: #e6e9f0;
+    --content-bg: #ffffff;
     --surface: #ffffff;
     --surface-strong: #ffffff;
     --surface-solid: #ffffff;
-    --topbar-bg: #f1f3f6;
+    --topbar-bg: #ffffff;
     --modal-bg: #ffffff;
-    --modal-field-bg: #f5f7fa;
-    --modal-line: #d7dde6;
-    --modal-border: #d7dde6;
-    --flat-line: #d7dde6;
-    --line: rgba(20, 30, 60, 0.13);
-    --line-soft: rgba(20, 30, 60, 0.07);
-    --hover-bg: rgba(20, 30, 60, 0.05);
+    --modal-field-bg: #ffffff;
+    --modal-line: #e5e7eb;
+    --modal-border: #e5e7eb;
+    --flat-line: #e5e7eb;
+    --line: rgba(20, 30, 60, 0.11);
+    --line-soft: rgba(20, 30, 60, 0.06);
+    --hover-bg: rgba(20, 30, 60, 0.04);
     --flat-dropdown-bg: #ffffff;
-    --nav-bg: #f0f2f6;
+    --nav-bg: #ffffff;
 }
 
 html[data-bs-theme="light"][data-theme-style="mist"] {
