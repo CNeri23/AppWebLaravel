@@ -976,20 +976,35 @@ document.addEventListener('DOMContentLoaded', function () {
                         document.body.appendChild(script);
                     });
                 } else {
-                    let codigo = scriptOriginal.textContent;
+                    const codigo = scriptOriginal.textContent;
 
-                    // Los inicializadores de vista suelen esperar DOMContentLoaded.
-                    // En navegación parcial el DOM ya está listo: ejecuta ese callback ahora.
-                    codigo = codigo.replace(
-                        /document\\.addEventListener\\(['"]DOMContentLoaded['"],\\s*function\\s*\\(\\)\\s*\\{/g,
-                        '(function () {'
-                    );
-                    codigo = codigo.replace(
-                        /document\\.addEventListener\\(['"]DOMContentLoaded['"],\\s*\\(\\)\\s*=>\\s*\\{/g,
-                        '(() => {'
-                    );
+                    // En navegación parcial DOMContentLoaded ya ocurrió. Intercepta
+                    // suscripciones durante la ejecución para inicializar la vista ahora,
+                    // sin reescribir expresiones regulares ni alterar los cierres del código.
+                    script.textContent = `
+                        (function () {
+                            const addEventListenerOriginal = document.addEventListener;
+                            document.addEventListener = function (tipo, listener, opciones) {
+                                if (tipo === 'DOMContentLoaded') {
+                                    const evento = new Event('DOMContentLoaded');
+                                    if (typeof listener === 'function') {
+                                        listener.call(document, evento);
+                                    } else if (listener && typeof listener.handleEvent === 'function') {
+                                        listener.handleEvent(evento);
+                                    }
+                                    return;
+                                }
 
-                    script.textContent = codigo;
+                                return addEventListenerOriginal.call(this, tipo, listener, opciones);
+                            };
+
+                            try {
+                                ${codigo}
+                            } finally {
+                                document.addEventListener = addEventListenerOriginal;
+                            }
+                        })();
+                    `;
                     document.body.appendChild(script);
                 }
             }
