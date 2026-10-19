@@ -125,8 +125,22 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
     background: transparent !important;
 }
 
+/* Error: la X nativa está dimensionada para un icono de 2em; con el icono de 2.1em
+   y el rebote de la animación (sube y escala 1.15) las puntas chocan con el aro y
+   se ven cortadas. Se acortan los trazos y se centran en la caja del icono
+   (2.1em); la animación nativa no se toca. */
 .swal2-popup.toast .swal2-icon.swal2-error [class^="swal2-x-mark-line"] {
+    top: 0.89375em !important;
+    width: 1.05em !important;
     background-color: var(--toast-color) !important;
+}
+
+.swal2-popup.toast .swal2-icon.swal2-error [class^="swal2-x-mark-line"][class$="left"] {
+    left: 0.525em !important;
+}
+
+.swal2-popup.toast .swal2-icon.swal2-error [class^="swal2-x-mark-line"][class$="right"] {
+    right: 0.525em !important;
 }
 
 /* Warning: triángulo con "!" para distinguirlo del icono de info (círculo).
@@ -155,13 +169,13 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
 .swal2-popup.toast-warning .swal2-icon.swal2-warning .swal2-icon-content {
     position: relative;
     z-index: 1;
-    margin-top: 7px;
+    margin-top: 3px;
     color: var(--toast-color) !important;
     font-size: 17px !important;
     font-weight: 800;
     line-height: 1;
     animation: none !important;
-    transform-origin: center 80%;
+    transform-origin: center center;
 }
 
 @keyframes toast-warn-bang {
@@ -533,4 +547,3 @@ body.swal2-toast-shown .swal2-container .swal2-popup,
         transition: none;
     }
 }
-
