@@ -2191,12 +2191,12 @@ html[data-bs-theme="dark"] .app-topbar.scrolled {
 }
 
 html[data-font-family="inter"] {
-    --app-font-family: "Inter Variable", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family: Inter Variable, Inter, sans-serif;
     --font-sans: var(--app-font-family);
 }
 
 html[data-font-family="system"] {
-    --app-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --app-font-family: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif;
     --font-sans: var(--app-font-family);
 }
 
@@ -2205,43 +2205,68 @@ html[data-font-family="arial"] {
     --font-sans: var(--app-font-family);
 }
 
-html[data-font-family="verdana"] {
-    --app-font-family: Verdana, Geneva, sans-serif;
+html[data-font-family="arial_narrow"] {
+    --app-font-family: Arial Narrow, Arial, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="calibri"] {
+    --app-font-family: Calibri, Candara, Segoe, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="cambria"] {
+    --app-font-family: Cambria, Georgia, serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="candara"] {
+    --app-font-family: Candara, Calibri, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="century_gothic"] {
+    --app-font-family: Century Gothic, AppleGothic, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="consolas"] {
+    --app-font-family: Consolas, Courier New, monospace;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="courier"] {
+    --app-font-family: Courier New, Courier, monospace;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="franklin"] {
+    --app-font-family: Franklin Gothic Medium, Arial, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="garamond"] {
+    --app-font-family: Garamond, Georgia, serif;
     --font-sans: var(--app-font-family);
 }
 
 html[data-font-family="georgia"] {
-    --app-font-family: Georgia, "Times New Roman", serif;
+    --app-font-family: Georgia, Times New Roman, serif;
     --font-sans: var(--app-font-family);
 }
 
-html[data-font-family="roboto"] {
-    --app-font-family: Roboto, "Segoe UI", Arial, sans-serif;
+html[data-font-family="lucida"] {
+    --app-font-family: Lucida Sans Unicode, Lucida Grande, sans-serif;
     --font-sans: var(--app-font-family);
 }
 
-html[data-font-family="opensans"] {
-    --app-font-family: "Open Sans", "Segoe UI", Arial, sans-serif;
+html[data-font-family="palatino"] {
+    --app-font-family: Palatino Linotype, Book Antiqua, Palatino, serif;
     --font-sans: var(--app-font-family);
 }
 
-html[data-font-family="lato"] {
-    --app-font-family: Lato, "Segoe UI", Arial, sans-serif;
-    --font-sans: var(--app-font-family);
-}
-
-html[data-font-family="poppins"] {
-    --app-font-family: Poppins, "Segoe UI", Arial, sans-serif;
-    --font-sans: var(--app-font-family);
-}
-
-html[data-font-family="montserrat"] {
-    --app-font-family: Montserrat, "Segoe UI", Arial, sans-serif;
-    --font-sans: var(--app-font-family);
-}
-
-html[data-font-family="nunito"] {
-    --app-font-family: Nunito, "Segoe UI", Arial, sans-serif;
+html[data-font-family="segoe"] {
+    --app-font-family: Segoe UI, system-ui, sans-serif;
     --font-sans: var(--app-font-family);
 }
 
@@ -2250,18 +2275,28 @@ html[data-font-family="tahoma"] {
     --font-sans: var(--app-font-family);
 }
 
-html[data-font-family="trebuchet"] {
-    --app-font-family: "Trebuchet MS", Arial, sans-serif;
-    --font-sans: var(--app-font-family);
-}
-
 html[data-font-family="times"] {
-    --app-font-family: "Times New Roman", Times, serif;
+    --app-font-family: Times New Roman, Times, serif;
     --font-sans: var(--app-font-family);
 }
 
-html[data-font-family="courier"] {
-    --app-font-family: "Courier New", Courier, monospace;
+html[data-font-family="trebuchet"] {
+    --app-font-family: Trebuchet MS, Arial, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="verdana"] {
+    --app-font-family: Verdana, Geneva, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="impact"] {
+    --app-font-family: Impact, Haettenschweiler, Arial Narrow Bold, sans-serif;
+    --font-sans: var(--app-font-family);
+}
+
+html[data-font-family="comic"] {
+    --app-font-family: Comic Sans MS, Comic Sans, cursive;
     --font-sans: var(--app-font-family);
 }
 

@@ -73,6 +73,9 @@ class SystemSettingsController extends Controller
     {
         return view('configuracion.index', [
             'settings' => $settings->all(),
+            'timezones' => collect(\\DateTimeZone::listIdentifiers())
+                ->mapWithKeys(fn (string $timezone) => [$timezone => str_replace(['_', '/'], [' ', ' / '], $timezone)])
+                ->all(),
         ]);
     }
 
@@ -110,7 +113,7 @@ class SystemSettingsController extends Controller
                 ]),
             ],
 
-            'font_family' => ['sometimes', 'required', Rule::in(['inter', 'system', 'arial', 'verdana', 'georgia', 'roboto', 'opensans', 'lato', 'poppins', 'montserrat', 'nunito', 'tahoma', 'trebuchet', 'times', 'courier'])],
+            'font_family' => ['sometimes', 'required', Rule::in(['inter', 'system', 'arial', 'arial_narrow', 'calibri', 'cambria', 'candara', 'century_gothic', 'consolas', 'courier', 'franklin', 'garamond', 'georgia', 'lucida', 'palatino', 'segoe', 'tahoma', 'times', 'trebuchet', 'verdana', 'impact', 'comic'])],
 
             // Regional
             'currency' => ['sometimes', 'required', Rule::in(['MXN', 'USD', 'EUR'])],
