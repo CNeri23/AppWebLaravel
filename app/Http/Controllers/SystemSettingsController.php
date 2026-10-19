@@ -73,7 +73,7 @@ class SystemSettingsController extends Controller
     {
         return view('configuracion.index', [
             'settings' => $settings->all(),
-            'timezones' => collect(\\DateTimeZone::listIdentifiers())
+            'timezones' => collect(\DateTimeZone::listIdentifiers())
                 ->mapWithKeys(fn (string $timezone) => [$timezone => str_replace(['_', '/'], [' ', ' / '], $timezone)])
                 ->all(),
         ]);
