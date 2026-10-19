@@ -724,3 +724,37 @@ html[data-font-scale="large"] .preferencias-page .preferences-card .display-scal
     font-size: 1.12em;
 }
 
+/* La miniatura es una maqueta fija: la escala de accesibilidad no debe alterar sus textos. */
+html[data-font-scale] main .preferencias-page .theme-preview .theme-preview-sidebar-section {
+    font-size: 4px !important;
+}
+html[data-font-scale] main .preferencias-page .theme-preview .theme-preview-sidebar-link {
+    font-size: 4.5px !important;
+}
+html[data-font-scale] main .preferencias-page .theme-preview .theme-preview-sidebar-link i {
+    font-size: 5px !important;
+}
+html[data-font-scale] main .preferencias-page .theme-preview .theme-preview-caret {
+    font-size: 3.5px !important;
+}
+html[data-font-scale] main .preferencias-page .theme-preview .theme-preview-brand-icon i {
+    font-size: 7px !important;
+}
+html[data-font-scale] main .preferencias-page .theme-preview .theme-preview-search i {
+    font-size: 4px !important;
+}
+html[data-font-scale] main .preferencias-page .theme-preview .theme-preview-topbar-icon i {
+    font-size: 5px !important;
+}
+html[data-font-scale] main .preferencias-page .theme-preview .theme-preview-toggle-icon i {
+    font-size: 3.5px !important;
+}
+html[data-font-scale] main .preferencias-page .theme-preview .theme-preview-avatar {
+    font-size: 5px !important;
+}
+html[data-font-scale] main .preferencias-page .theme-preview .theme-preview-action i {
+    font-size: 5px !important;
+}
+html[data-font-scale] main .preferencias-page .theme-preview .theme-preview-stat-icon i {
+    font-size: 4px !important;
+}
