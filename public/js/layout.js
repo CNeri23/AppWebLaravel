@@ -1009,8 +1009,40 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            // Permite que los componentes que usan inicialización propia se actualicen también.
+            // Recalcula DataTables después de insertar el contenido y ejecutar los scripts
+            // de la vista. Sin esto, las tablas pueden conservar anchos incorrectos al navegar
+            // sin recargar el documento completo.
+            function ajustarTablasDeVista() {
+                if (!window.jQuery || !jQuery.fn || !jQuery.fn.dataTable) {
+                    return;
+                }
+
+                document.querySelectorAll('.app-content table').forEach(tabla => {
+                    if (!jQuery.fn.dataTable.isDataTable(tabla)) {
+                        return;
+                    }
+
+                    try {
+                        const instancia = jQuery(tabla).DataTable();
+                        instancia.columns.adjust();
+
+                        if (instancia.responsive && typeof instancia.responsive.recalc === 'function') {
+                            instancia.responsive.recalc();
+                        }
+
+                        instancia.draw(false);
+                    } catch (error) {
+                        console.warn('No fue posible ajustar una tabla tras la navegación:', error);
+                    }
+                });
+            }
+
             document.dispatchEvent(new CustomEvent('ironpulse:navigated', { detail: { url } }));
+
+            // Espera dos frames para que el navegador calcule el ancho real del contenido.
+            requestAnimationFrame(() => {
+                requestAnimationFrame(ajustarTablasDeVista);
+            });
 
             if (agregarHistorial) {
                 window.history.pushState({ navegacionIronPulse: true }, '', url);
