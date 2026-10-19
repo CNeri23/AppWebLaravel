@@ -90,14 +90,14 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                         <div class="accent-grid">
                             @php
                             $accentColors = [
-                            'blue' => ['name' => 'Azul', 'color' => '#007aff'],
-                            'azul_oscuro' => ['name' => 'Azul oscuro', 'color' => '#1d4ed8'],
-                            'green' => ['name' => 'Verde', 'color' => '#34c759'],
-                            'orange' => ['name' => 'Naranja', 'color' => '#ff9500'],
-                            'purple' => ['name' => 'Morado', 'color' => '#af52de'],
-                            'red' => ['name' => 'Rojo', 'color' => '#ff3b30'],
-                            'indigo' => ['name' => 'Índigo', 'color' => '#5856d6'],
-                            'petroleo' => ['name' => 'Petróleo', 'color' => '#0f766e'],
+                                'blue' => ['name' => 'Azul', 'color' => '#007aff'],
+                                'azul_oscuro' => ['name' => 'Azul oscuro', 'color' => '#1d4ed8'],
+                                'green' => ['name' => 'Verde', 'color' => '#34c759'],
+                                'orange' => ['name' => 'Naranja', 'color' => '#ff9500'],
+                                'purple' => ['name' => 'Morado', 'color' => '#af52de'],
+                                'red' => ['name' => 'Rojo', 'color' => '#ff3b30'],
+                                'indigo' => ['name' => 'Índigo', 'color' => '#5856d6'],
+                                'petroleo' => ['name' => 'Petróleo', 'color' => '#0f766e'],
                             ];
                             @endphp
 
@@ -122,21 +122,21 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                     <div class="config-field">
                         <label for="font_family">Tipo de letra</label>
                         <select id="font_family" name="font_family" class="form-select">
-                            <option value="inter" {{ ($settings['font_family'] ?? 'inter') === 'inter' ? 'selected' : '' }}>Inter — Moderna y equilibrada</option>
-                            <option value="system" {{ ($settings['font_family'] ?? 'inter') === 'system' ? 'selected' : '' }}>System UI — Nativa del sistema</option>
                             <option value="arial" {{ ($settings['font_family'] ?? 'inter') === 'arial' ? 'selected' : '' }}>Arial — Clásica y clara</option>
-                            <option value="verdana" {{ ($settings['font_family'] ?? 'inter') === 'verdana' ? 'selected' : '' }}>Verdana — Alta legibilidad</option>
+                            <option value="courier" {{ ($settings['font_family'] ?? 'inter') === 'courier' ? 'selected' : '' }}>Courier New — Monoespaciada</option>
                             <option value="georgia" {{ ($settings['font_family'] ?? 'inter') === 'georgia' ? 'selected' : '' }}>Georgia — Serif tradicional</option>
-                            <option value="roboto" {{ ($settings['font_family'] ?? 'inter') === 'roboto' ? 'selected' : '' }}>Roboto — Moderna y versátil</option>
-                            <option value="opensans" {{ ($settings['font_family'] ?? 'inter') === 'opensans' ? 'selected' : '' }}>Open Sans — Limpia y legible</option>
+                            <option value="inter" {{ ($settings['font_family'] ?? 'inter') === 'inter' ? 'selected' : '' }}>Inter — Moderna y equilibrada</option>
                             <option value="lato" {{ ($settings['font_family'] ?? 'inter') === 'lato' ? 'selected' : '' }}>Lato — Profesional</option>
-                            <option value="poppins" {{ ($settings['font_family'] ?? 'inter') === 'poppins' ? 'selected' : '' }}>Poppins — Geométrica</option>
                             <option value="montserrat" {{ ($settings['font_family'] ?? 'inter') === 'montserrat' ? 'selected' : '' }}>Montserrat — Contemporánea</option>
                             <option value="nunito" {{ ($settings['font_family'] ?? 'inter') === 'nunito' ? 'selected' : '' }}>Nunito — Suave y amigable</option>
+                            <option value="opensans" {{ ($settings['font_family'] ?? 'inter') === 'opensans' ? 'selected' : '' }}>Open Sans — Limpia y legible</option>
+                            <option value="poppins" {{ ($settings['font_family'] ?? 'inter') === 'poppins' ? 'selected' : '' }}>Poppins — Geométrica</option>
+                            <option value="roboto" {{ ($settings['font_family'] ?? 'inter') === 'roboto' ? 'selected' : '' }}>Roboto — Moderna y versátil</option>
+                            <option value="system" {{ ($settings['font_family'] ?? 'inter') === 'system' ? 'selected' : '' }}>System UI — Nativa del sistema</option>
                             <option value="tahoma" {{ ($settings['font_family'] ?? 'inter') === 'tahoma' ? 'selected' : '' }}>Tahoma — Compacta</option>
-                            <option value="trebuchet" {{ ($settings['font_family'] ?? 'inter') === 'trebuchet' ? 'selected' : '' }}>Trebuchet MS — Humanista</option>
                             <option value="times" {{ ($settings['font_family'] ?? 'inter') === 'times' ? 'selected' : '' }}>Times New Roman — Serif clásica</option>
-                            <option value="courier" {{ ($settings['font_family'] ?? 'inter') === 'courier' ? 'selected' : '' }}>Courier New — Monoespaciada</option>
+                            <option value="trebuchet" {{ ($settings['font_family'] ?? 'inter') === 'trebuchet' ? 'selected' : '' }}>Trebuchet MS — Humanista</option>
+                            <option value="verdana" {{ ($settings['font_family'] ?? 'inter') === 'verdana' ? 'selected' : '' }}>Verdana — Alta legibilidad</option>
                         </select>
                         <small>Se aplicará en toda la interfaz: menú lateral, barra superior, tablas, formularios, modales y mensajes.</small>
                     </div>
@@ -185,56 +185,35 @@ $puedeConfigurar = fn (string $slug): bool => app(\App\Services\PermissionServic
                             <label for="timezone">Zona horaria</label>
 
                             <select id="timezone" name="timezone" class="form-select">
-                                <option value="America/Mexico_City" {{ $settings['timezone'] === 'America/Mexico_City' ? 'selected' : '' }}>
-                                    Ciudad de México
-                                </option>
-
-                                <option value="America/Monterrey" {{ $settings['timezone'] === 'America/Monterrey' ? 'selected' : '' }}>
-                                    Monterrey
-                                </option>
-
-                                <option value="America/Tijuana" {{ $settings['timezone'] === 'America/Tijuana' ? 'selected' : '' }}>
-                                    Tijuana
-                                </option>
-
-                                <option value="America/Cancun" {{ $settings['timezone'] === 'America/Cancun' ? 'selected' : '' }}>
-                                    Cancún
-                                </option>
-
-                                <option value="America/New_York" {{ $settings['timezone'] === 'America/New_York' ? 'selected' : '' }}>
-                                    Nueva York
-                                </option>
-
-                                <option value="America/Los_Angeles" {{ $settings['timezone'] === 'America/Los_Angeles' ? 'selected' : '' }}>
-                                    Los Ángeles
-                                </option>
-
-                                <option value="Europe/Madrid" {{ $settings['timezone'] === 'Europe/Madrid' ? 'selected' : '' }}>
-                                    Madrid
-                                </option>
-
-                                <option value="America/Hermosillo" {{ $settings['timezone'] === 'America/Hermosillo' ? 'selected' : '' }}>Hermosillo</option>
-                                <option value="America/Chihuahua" {{ $settings['timezone'] === 'America/Chihuahua' ? 'selected' : '' }}>Chihuahua</option>
-                                <option value="America/Mazatlan" {{ $settings['timezone'] === 'America/Mazatlan' ? 'selected' : '' }}>Mazatlán</option>
-                                <option value="America/Matamoros" {{ $settings['timezone'] === 'America/Matamoros' ? 'selected' : '' }}>Matamoros</option>
-                                <option value="America/Merida" {{ $settings['timezone'] === 'America/Merida' ? 'selected' : '' }}>Mérida</option>
-                                <option value="America/Ojinaga" {{ $settings['timezone'] === 'America/Ojinaga' ? 'selected' : '' }}>Ojinaga</option>
-                                <option value="America/Chicago" {{ $settings['timezone'] === 'America/Chicago' ? 'selected' : '' }}>Chicago</option>
-                                <option value="America/Denver" {{ $settings['timezone'] === 'America/Denver' ? 'selected' : '' }}>Denver</option>
-                                <option value="America/Toronto" {{ $settings['timezone'] === 'America/Toronto' ? 'selected' : '' }}>Toronto</option>
-                                <option value="America/Vancouver" {{ $settings['timezone'] === 'America/Vancouver' ? 'selected' : '' }}>Vancouver</option>
-                                <option value="America/Bogota" {{ $settings['timezone'] === 'America/Bogota' ? 'selected' : '' }}>Bogotá</option>
-                                <option value="America/Lima" {{ $settings['timezone'] === 'America/Lima' ? 'selected' : '' }}>Lima</option>
-                                <option value="America/Sao_Paulo" {{ $settings['timezone'] === 'America/Sao_Paulo' ? 'selected' : '' }}>São Paulo</option>
-                                <option value="America/Argentina/Buenos_Aires" {{ $settings['timezone'] === 'America/Argentina/Buenos_Aires' ? 'selected' : '' }}>Buenos Aires</option>
-                                <option value="Europe/London" {{ $settings['timezone'] === 'Europe/London' ? 'selected' : '' }}>Londres</option>
-                                <option value="Europe/Paris" {{ $settings['timezone'] === 'Europe/Paris' ? 'selected' : '' }}>París</option>
                                 <option value="Europe/Berlin" {{ $settings['timezone'] === 'Europe/Berlin' ? 'selected' : '' }}>Berlín</option>
-                                <option value="Europe/Rome" {{ $settings['timezone'] === 'Europe/Rome' ? 'selected' : '' }}>Roma</option>
+                                <option value="America/Bogota" {{ $settings['timezone'] === 'America/Bogota' ? 'selected' : '' }}>Bogotá</option>
+                                <option value="America/Argentina/Buenos_Aires" {{ $settings['timezone'] === 'America/Argentina/Buenos_Aires' ? 'selected' : '' }}>Buenos Aires</option>
+                                <option value="America/Cancun" {{ $settings['timezone'] === 'America/Cancun' ? 'selected' : '' }}>Cancún</option>
+                                <option value="America/Chicago" {{ $settings['timezone'] === 'America/Chicago' ? 'selected' : '' }}>Chicago</option>
+                                <option value="America/Chihuahua" {{ $settings['timezone'] === 'America/Chihuahua' ? 'selected' : '' }}>Chihuahua</option>
+                                <option value="America/Mexico_City" {{ $settings['timezone'] === 'America/Mexico_City' ? 'selected' : '' }}>Ciudad de México</option>
+                                <option value="America/Denver" {{ $settings['timezone'] === 'America/Denver' ? 'selected' : '' }}>Denver</option>
                                 <option value="Asia/Dubai" {{ $settings['timezone'] === 'Asia/Dubai' ? 'selected' : '' }}>Dubái</option>
-                                <option value="Asia/Tokyo" {{ $settings['timezone'] === 'Asia/Tokyo' ? 'selected' : '' }}>Tokio</option>
+                                <option value="America/Hermosillo" {{ $settings['timezone'] === 'America/Hermosillo' ? 'selected' : '' }}>Hermosillo</option>
+                                <option value="America/Lima" {{ $settings['timezone'] === 'America/Lima' ? 'selected' : '' }}>Lima</option>
+                                <option value="Europe/London" {{ $settings['timezone'] === 'Europe/London' ? 'selected' : '' }}>Londres</option>
+                                <option value="America/Los_Angeles" {{ $settings['timezone'] === 'America/Los_Angeles' ? 'selected' : '' }}>Los Ángeles</option>
+                                <option value="Europe/Madrid" {{ $settings['timezone'] === 'Europe/Madrid' ? 'selected' : '' }}>Madrid</option>
+                                <option value="America/Matamoros" {{ $settings['timezone'] === 'America/Matamoros' ? 'selected' : '' }}>Matamoros</option>
+                                <option value="America/Mazatlan" {{ $settings['timezone'] === 'America/Mazatlan' ? 'selected' : '' }}>Mazatlán</option>
+                                <option value="America/Merida" {{ $settings['timezone'] === 'America/Merida' ? 'selected' : '' }}>Mérida</option>
+                                <option value="America/Monterrey" {{ $settings['timezone'] === 'America/Monterrey' ? 'selected' : '' }}>Monterrey</option>
+                                <option value="America/New_York" {{ $settings['timezone'] === 'America/New_York' ? 'selected' : '' }}>Nueva York</option>
+                                <option value="America/Ojinaga" {{ $settings['timezone'] === 'America/Ojinaga' ? 'selected' : '' }}>Ojinaga</option>
+                                <option value="Europe/Paris" {{ $settings['timezone'] === 'Europe/Paris' ? 'selected' : '' }}>París</option>
+                                <option value="Europe/Rome" {{ $settings['timezone'] === 'Europe/Rome' ? 'selected' : '' }}>Roma</option>
+                                <option value="America/Sao_Paulo" {{ $settings['timezone'] === 'America/Sao_Paulo' ? 'selected' : '' }}>São Paulo</option>
                                 <option value="Asia/Shanghai" {{ $settings['timezone'] === 'Asia/Shanghai' ? 'selected' : '' }}>Shanghái</option>
                                 <option value="Australia/Sydney" {{ $settings['timezone'] === 'Australia/Sydney' ? 'selected' : '' }}>Sídney</option>
+                                <option value="America/Tijuana" {{ $settings['timezone'] === 'America/Tijuana' ? 'selected' : '' }}>Tijuana</option>
+                                <option value="Asia/Tokyo" {{ $settings['timezone'] === 'Asia/Tokyo' ? 'selected' : '' }}>Tokio</option>
+                                <option value="America/Toronto" {{ $settings['timezone'] === 'America/Toronto' ? 'selected' : '' }}>Toronto</option>
+                                <option value="America/Vancouver" {{ $settings['timezone'] === 'America/Vancouver' ? 'selected' : '' }}>Vancouver</option>
                             </select>
                         </div>
                         @endif
