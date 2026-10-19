@@ -40,7 +40,6 @@ class SystemSettingsController extends Controller
     private const PERMISOS_CONFIGURACION = [
         'system_name' => 'configuracion.nombre',
         'logo' => 'configuracion.logotipo',
-        'remove_logo' => 'configuracion.logotipo',
         'accent_color' => 'configuracion.apariencia',
         'font_family' => 'configuracion.tipografia',
         'currency' => 'configuracion.moneda',
@@ -93,7 +92,6 @@ class SystemSettingsController extends Controller
                 'mimes:png,jpg,jpeg,webp',
                 'max:2048',
             ],
-            'remove_logo' => ['sometimes', 'required', 'boolean'],
 
             // Apariencia
             'accent_color' => [
@@ -246,11 +244,6 @@ class SystemSettingsController extends Controller
 
         unset($datos['logo']);
 
-        if ($request->boolean('remove_logo') && !$request->hasFile('logo')) {
-            $datos['logo_path'] = null;
-        }
-        unset($datos['remove_logo']);
-
         if ($request->hasFile('logo')) {
             $datos['logo_path'] = $request->file('logo')
                 ->store('settings', 'public');
@@ -265,7 +258,7 @@ class SystemSettingsController extends Controller
         $settings->update($datos);
 
         if (
-            array_key_exists('logo_path', $datos) &&
+            isset($datos['logo_path']) &&
             $logoAnterior &&
             $logoAnterior !== $datos['logo_path']
         ) {
