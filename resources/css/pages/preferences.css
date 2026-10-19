@@ -724,20 +724,3 @@ html[data-font-scale="large"] .preferencias-page .preferences-card .display-scal
     font-size: 1.12em;
 }
 
-/* Mantener las miniaturas de temas con su escala original, independientemente de la preferencia tipográfica. */
-html[data-font-scale] main .preferencias-page .theme-preview,
-html[data-font-scale] main .preferencias-page .theme-preview * {
-    font-size: revert !important;
-}
-
-html[data-font-scale] main .preferencias-page .theme-style-info strong {
-    font-size: 13px !important;
-}
-
-html[data-font-scale] main .preferencias-page .theme-style-info small {
-    font-size: 11px !important;
-}
-
-html[data-font-scale] main .preferencias-page .theme-style-option {
-    font-size: 16px;
-}
