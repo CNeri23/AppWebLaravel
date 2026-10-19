@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const logoInput = document.getElementById('logo');
     const logoPreview = document.getElementById('logoPreview');
     const logoNombre = document.getElementById('logoNombre');
+    const eliminarLogo = document.getElementById('eliminarLogo');
     const TEXTO_SIN_ARCHIVO = 'Ningún archivo seleccionado';
 
     function mostrarNombreLogo(texto) {
@@ -197,6 +198,74 @@ document.addEventListener('DOMContentLoaded', function () {
             logoPreview.appendChild(imagen);
         };
         lector.readAsDataURL(archivo);
+    }
+
+    function temaAlertaConfiguracion() {
+        const cuerpo = getComputedStyle(document.body);
+        const referencia = document.querySelector('.modal-content');
+        let fondo = referencia ? getComputedStyle(referencia).backgroundColor : cuerpo.backgroundColor;
+        if (!fondo || fondo === 'transparent' || fondo === 'rgba(0, 0, 0, 0)') fondo = cuerpo.backgroundColor;
+        return { background: fondo, color: cuerpo.color };
+    }
+
+    if (eliminarLogo && logoPreview) {
+        eliminarLogo.addEventListener('click', async function () {
+            const confirmado = window.Swal
+                ? (await window.Swal.fire({
+                    ...temaAlertaConfiguracion(),
+                    icon: 'warning',
+                    title: '¿Eliminar el logotipo?',
+                    text: 'Se quitará el logotipo actual del sistema.',
+                    showCancelButton: true,
+                    reverseButtons: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                    buttonsStyling: false,
+                    heightAuto: false,
+                    customClass: {
+                        popup: 'ip-confirmation-popup',
+                        icon: 'ip-confirmation-icon',
+                        title: 'ip-confirmation-title',
+                        actions: 'ip-confirmation-actions',
+                        confirmButton: 'btn btn-danger mx-1',
+                        cancelButton: 'btn btn-secondary mx-1'
+                    }
+                })).isConfirmed
+                : window.confirm('¿Deseas eliminar el logotipo actual?');
+
+            if (!confirmado) return;
+            eliminarLogo.disabled = true;
+            const datos = new FormData();
+            datos.append('_method', 'PUT');
+            datos.append('remove_logo', '1');
+
+            try {
+                const respuesta = await fetch(formulario.action || window.location.href, {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+                    body: datos
+                });
+                const data = await respuesta.json().catch(() => ({}));
+                if (!respuesta.ok || data.success === false) {
+                    throw new Error(data.message || data.mensaje || 'No se pudo eliminar el logotipo.');
+                }
+                logoPreview.innerHTML = '<i class="fa-solid fa-image"></i>';
+                eliminarLogo.remove();
+                if (logoInput) logoInput.value = '';
+                mostrarNombreLogo(TEXTO_SIN_ARCHIVO);
+                if (data.settings && typeof window.aplicarConfiguracionGlobal === 'function') {
+                    window.aplicarConfiguracionGlobal(data.settings);
+                }
+                window.showToast('success', 'El logotipo se eliminó correctamente.');
+            } catch (error) {
+                window.showToast('error', error.message || 'No se pudo eliminar el logotipo.');
+            } finally {
+                if (eliminarLogo.isConnected) eliminarLogo.disabled = false;
+            }
+        });
     }
 
     if (logoInput && logoPreview) {
