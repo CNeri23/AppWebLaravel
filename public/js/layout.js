@@ -36,7 +36,13 @@
     } catch (e) { }
 })();
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function (event) {
+    // La navegación parcial dispara este evento para reinicializar módulos de vista.
+    // Evita repetir la inicialización global del layout y los listeners del sidebar.
+    if (event && event.__ironpulsePartialNavigation) {
+        return;
+    }
+
     const html = document.documentElement;
     const themeSwitch = document.getElementById('themeSwitch');
     const esTemaDeInvitado = html.dataset.themeGuest === 'true';
@@ -1009,39 +1015,39 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            // Recalcula DataTables después de insertar el contenido y ejecutar los scripts
-            // de la vista. Sin esto, las tablas pueden conservar anchos incorrectos al navegar
-            // sin recargar el documento completo.
-            function ajustarTablasDeVista() {
-                if (!window.jQuery || !jQuery.fn || !jQuery.fn.dataTable) {
-                    return;
-                }
-
-                document.querySelectorAll('.app-content table').forEach(tabla => {
-                    if (!jQuery.fn.dataTable.isDataTable(tabla)) {
-                        return;
-                    }
-
-                    try {
-                        const instancia = jQuery(tabla).DataTable();
-                        instancia.columns.adjust();
-
-                        if (instancia.responsive && typeof instancia.responsive.recalc === 'function') {
-                            instancia.responsive.recalc();
-                        }
-
-                        instancia.draw(false);
-                    } catch (error) {
-                        console.warn('No fue posible ajustar una tabla tras la navegación:', error);
-                    }
-                });
-            }
+            // Notifica a los módulos JavaScript de las vistas que el contenido cambió.
+            // Los módulos de tablas escuchan DOMContentLoaded; se reutiliza ese evento
+            // de forma controlada sin volver a inicializar el layout ni el sidebar.
+            const eventoVista = new Event('DOMContentLoaded');
+            eventoVista.__ironpulsePartialNavigation = true;
+            document.dispatchEvent(eventoVista);
 
             document.dispatchEvent(new CustomEvent('ironpulse:navigated', { detail: { url } }));
 
-            // Espera dos frames para que el navegador calcule el ancho real del contenido.
+            // Ajusta columnas de tablas que ya estuvieran inicializadas.
             requestAnimationFrame(() => {
-                requestAnimationFrame(ajustarTablasDeVista);
+                requestAnimationFrame(() => {
+                    if (!window.jQuery || !jQuery.fn || !jQuery.fn.dataTable) {
+                        return;
+                    }
+
+                    document.querySelectorAll('.app-content table').forEach(tabla => {
+                        if (!jQuery.fn.dataTable.isDataTable(tabla)) {
+                            return;
+                        }
+
+                        try {
+                            const instancia = jQuery(tabla).DataTable();
+                            instancia.columns.adjust();
+
+                            if (instancia.responsive && typeof instancia.responsive.recalc === 'function') {
+                                instancia.responsive.recalc();
+                            }
+                        } catch (error) {
+                            console.warn('No fue posible ajustar una tabla tras la navegación:', error);
+                        }
+                    });
+                });
             });
 
             if (agregarHistorial) {
