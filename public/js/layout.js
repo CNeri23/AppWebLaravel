@@ -638,10 +638,28 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
         elementoTooltipTopbar = elemento;
         tooltipTopbar.textContent = texto;
-        const caja = elemento.getBoundingClientRect();
-        tooltipTopbar.style.left = (caja.left + caja.width / 2 - tooltipTopbar.offsetWidth / 2) + 'px';
-        tooltipTopbar.style.top = (caja.bottom + 8) + 'px';
+
+        // Medir el tooltip ya visible para calcular su posición real y mantenerlo dentro del viewport.
         tooltipTopbar.classList.add('show');
+        const caja = elemento.getBoundingClientRect();
+        const margen = 8;
+        const separacion = 8;
+        const anchoTooltip = tooltipTopbar.offsetWidth;
+        const altoTooltip = tooltipTopbar.offsetHeight;
+        const centro = caja.left + caja.width / 2;
+        const izquierda = Math.min(
+            Math.max(margen, centro - anchoTooltip / 2),
+            Math.max(margen, window.innerWidth - anchoTooltip - margen)
+        );
+
+        let arriba = caja.bottom + separacion;
+        if (arriba + altoTooltip > window.innerHeight - margen) {
+            arriba = caja.top - altoTooltip - separacion;
+        }
+        arriba = Math.max(margen, Math.min(arriba, window.innerHeight - altoTooltip - margen));
+
+        tooltipTopbar.style.left = izquierda + 'px';
+        tooltipTopbar.style.top = arriba + 'px';
     }
 
     function ocultarTooltipTopbar() {
