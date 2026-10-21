@@ -663,16 +663,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 throw new Error('No fue posible encontrar el menú lateral.');
             }
 
-            const gruposActuales = Array.from(sidebar.querySelectorAll(':scope > .sidebar-group'));
             const gruposNuevos = Array.from(nuevoMenu.querySelectorAll(':scope > .sidebar-group'));
-            const idsNuevos = new Set(
-                gruposNuevos
-                    .map(function (grupo) {
-                        return grupo.querySelector('.sidebar-group-toggle')?.dataset.moduloId;
-                    })
-                    .filter(Boolean)
-            );
+            const gruposActuales = Array.from(sidebar.querySelectorAll(':scope > .sidebar-group'));
+            const idsNuevos = new Set(gruposNuevos.map(function (grupo) {
+                return grupo.querySelector('.sidebar-group-toggle')?.dataset.moduloId;
+            }).filter(Boolean));
 
+            // Retira únicamente módulos que ya no estén permitidos. No reconstruye el sidebar.
             gruposActuales.forEach(function (grupo) {
                 const id = grupo.querySelector('.sidebar-group-toggle')?.dataset.moduloId;
 
@@ -686,48 +683,91 @@ document.addEventListener('DOMContentLoaded', function () {
                     return seccion.textContent.trim() === 'Administración';
                 });
 
-            let referencia = seccionAdministracion ? seccionAdministracion.nextElementSibling : null;
-
             gruposNuevos.forEach(function (grupoNuevo) {
                 const botonNuevo = grupoNuevo.querySelector('.sidebar-group-toggle');
-                const id = botonNuevo?.dataset.moduloId;
+                const idModulo = botonNuevo?.dataset.moduloId;
 
-                if (!id) {
+                if (!idModulo) {
                     return;
                 }
 
-                const selector = '.sidebar-group-toggle[data-modulo-id="' + CSS.escape(id) + '"]';
-                const grupoActual = sidebar.querySelector(selector)?.closest('.sidebar-group');
-                const estabaAbierto = Boolean(
-                    grupoActual?.querySelector('.sidebar-submenu')?.classList.contains('show')
-                );
-                const grupoActualizado = grupoNuevo.cloneNode(true);
+                const botonActual = Array.from(sidebar.querySelectorAll('.sidebar-group-toggle[data-modulo-id]'))
+                    .find(function (boton) {
+                        return boton.dataset.moduloId === idModulo;
+                    });
 
-                if (estabaAbierto) {
-                    const submenu = grupoActualizado.querySelector('.sidebar-submenu');
-                    const boton = grupoActualizado.querySelector('.sidebar-group-toggle');
+                if (!botonActual) {
+                    const grupoInsertado = grupoNuevo.cloneNode(true);
+                    let referencia = seccionAdministracion ? seccionAdministracion.nextElementSibling : null;
 
-                    submenu?.classList.add('show');
-                    boton?.setAttribute('aria-expanded', 'true');
-                }
-
-                if (grupoActual) {
-                    // No reemplazar grupos cuyo contenido no cambió: evita el parpadeo.
-                    if (grupoActual.outerHTML !== grupoActualizado.outerHTML) {
-                        grupoActual.replaceWith(grupoActualizado);
+                    while (referencia && !referencia.classList.contains('sidebar-group')) {
+                        referencia = referencia.nextElementSibling;
                     }
-                } else if (referencia && referencia.parentElement === sidebar) {
-                    sidebar.insertBefore(grupoActualizado, referencia);
-                } else {
-                    sidebar.appendChild(grupoActualizado);
+
+                    if (referencia) {
+                        sidebar.insertBefore(grupoInsertado, referencia);
+                    } else {
+                        sidebar.appendChild(grupoInsertado);
+                    }
+
+                    // Inicializa exclusivamente el módulo recién agregado.
+                    if (typeof window.inicializarGruposSidebar === 'function') {
+                        window.inicializarGruposSidebar(grupoInsertado);
+                    }
+                    return;
                 }
 
-                referencia = (sidebar.querySelector(selector)?.closest('.sidebar-group') || grupoActualizado).nextElementSibling;
-            });
+                const grupoActual = botonActual.closest('.sidebar-group');
+                const submenuActual = grupoActual?.querySelector('.sidebar-submenu');
+                const submenuNuevo = grupoNuevo.querySelector('.sidebar-submenu');
 
-            if (typeof window.inicializarGruposSidebar === 'function') {
-                window.inicializarGruposSidebar();
-            }
+                if (!submenuActual || !submenuNuevo) {
+                    return;
+                }
+
+                const enlacesNuevos = Array.from(submenuNuevo.querySelectorAll(':scope > .sidebar-sublink'));
+                const idsSubmodulosNuevos = new Set(enlacesNuevos.map(function (enlace) {
+                    return enlace.dataset.submoduloId;
+                }).filter(Boolean));
+
+                // Quita solo los enlaces revocados, manteniendo intactos el acordeón y su botón.
+                Array.from(submenuActual.querySelectorAll(':scope > .sidebar-sublink')).forEach(function (enlace) {
+                    if (!idsSubmodulosNuevos.has(enlace.dataset.submoduloId)) {
+                        enlace.remove();
+                    }
+                });
+
+                // Agrega solo los submódulos nuevos en la posición correspondiente.
+                enlacesNuevos.forEach(function (enlaceNuevo, indice) {
+                    const idSubmodulo = enlaceNuevo.dataset.submoduloId;
+                    if (!idSubmodulo) {
+                        return;
+                    }
+
+                    const existe = Array.from(submenuActual.querySelectorAll(':scope > .sidebar-sublink'))
+                        .some(function (enlace) {
+                            return enlace.dataset.submoduloId === idSubmodulo;
+                        });
+
+                    if (existe) {
+                        return;
+                    }
+
+                    let siguiente = null;
+                    for (let i = indice + 1; i < enlacesNuevos.length; i++) {
+                        const idSiguiente = enlacesNuevos[i].dataset.submoduloId;
+                        siguiente = Array.from(submenuActual.querySelectorAll(':scope > .sidebar-sublink'))
+                            .find(function (enlace) {
+                                return enlace.dataset.submoduloId === idSiguiente;
+                            }) || null;
+                        if (siguiente) {
+                            break;
+                        }
+                    }
+
+                    submenuActual.insertBefore(enlaceNuevo.cloneNode(true), siguiente);
+                });
+            });
         }).catch(function (error) {
             if (typeof window.showToast === 'function') {
                 window.showToast('error', error.message || 'No fue posible actualizar el menú lateral.');
