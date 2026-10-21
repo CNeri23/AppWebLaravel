@@ -718,12 +718,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
         }
         sidebarToggleBtn.dataset.state = estado;
         sidebarToggleBtn.setAttribute('aria-expanded', expandido ? 'true' : 'false');
-        actualizarTooltipTopbar(
-            sidebarToggleBtn,
-            esMovil()
-                ? (expandido ? 'Cerrar menú' : 'Expandir menú')
-                : (expandido ? 'Colapsar menú' : 'Expandir menú')
-        );
+        const textoTooltip = esMovil()
+            ? (expandido ? 'Cerrar menú' : 'Expandir menú')
+            : (expandido ? 'Colapsar menú' : 'Expandir menú');
+        sidebarToggleBtn.setAttribute('aria-label', textoTooltip);
+        actualizarTooltipTopbar(sidebarToggleBtn, textoTooltip);
     }
 
     function toggleMobileSidebar() {
