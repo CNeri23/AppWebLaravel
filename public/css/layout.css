@@ -2500,13 +2500,10 @@ html[data-font-scale] main :is(i, svg, .fa, [class^="fa-"], [class*=" fa-"],
     font-size: revert !important;
 }
 
-/* Tooltip del topbar con el color de acento de la aplicación. */
+/* Tooltip personalizado para los controles del topbar. */
 .topbar-tooltip {
     z-index: 2100;
-    background: var(--gym);
-    color: var(--on-gym);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
-    transform: translateX(-4px);
+    transform: translateY(-4px);
 }
 
 .topbar-tooltip.show {
