@@ -87,7 +87,7 @@
 <body>
     <header class="app-topbar">
         <div class="topbar-brand">
-            <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Colapsar / expandir menú">
+            <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" data-tooltip="Colapsar menú">
                 <span class="sidebar-toggle-icon" aria-hidden="true">
                     <span class="sidebar-toggle-bar"></span>
                     <span class="sidebar-toggle-bar"></span>
@@ -113,7 +113,7 @@
             </span>
 
             <button type="button" class="theme-switch" id="themeSwitch" role="switch" aria-checked="false"
-                aria-label="Cambiar entre modo claro y oscuro" title="Cambiar tema">
+                aria-label="Cambiar entre modo claro y oscuro" data-tooltip="Cambiar tema">
                 <span class="theme-switch-track">
                     <span class="theme-switch-thumb">
                         <i class="fa-solid fa-sun theme-switch-sun"></i>
@@ -155,7 +155,7 @@
 
             <div class="dropdown notification-dropdown">
                 <button class="dropdown-toggle topbar-icon-btn" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false" title="Notificaciones">
+                    aria-expanded="false" data-tooltip="Notificaciones">
                     <i class="fa-solid fa-bell"></i>
 
                     @if ($notificacionesNoLeidas > 0)
@@ -212,7 +212,7 @@
 
             <div class="dropdown user-dropdown">
                 <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                    title="{{ auth()->user()->name }}">
+                    data-tooltip="{{ auth()->user()->name }}">
                     @if (auth()->user()->profile_image)
                         <img src="{{ asset('storage/' . auth()->user()->profile_image) }}"
                             alt="Foto de {{ auth()->user()->name }}" class="user-avatar" id="topbarUserAvatar">
