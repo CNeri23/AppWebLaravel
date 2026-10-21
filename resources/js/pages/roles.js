@@ -618,11 +618,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         }
 
-                        if (
-                            typeof window.actualizarSidebar === 'function'
-                        ) {
-                            window.actualizarSidebar();
-                        }
+                        sincronizarSidebarPermisos();
 
                     })
                     .catch(function (error) {
@@ -636,6 +632,102 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
             }
         );
+    }
+
+    function sincronizarSidebarPermisos() {
+        const sidebar = document.querySelector('#appSidebar .sidebar-menu');
+
+        if (!sidebar) {
+            return Promise.resolve();
+        }
+
+        return fetch(window.location.href, {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'text/html',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            cache: 'no-store',
+        }).then(function (response) {
+            if (!response.ok) {
+                throw new Error('No fue posible sincronizar el menú lateral.');
+            }
+
+            return response.text();
+        }).then(function (html) {
+            const documento = new DOMParser().parseFromString(html, 'text/html');
+            const nuevoMenu = documento.querySelector('#appSidebar .sidebar-menu');
+
+            if (!nuevoMenu) {
+                throw new Error('No fue posible encontrar el menú lateral.');
+            }
+
+            const gruposActuales = Array.from(sidebar.querySelectorAll(':scope > .sidebar-group'));
+            const gruposNuevos = Array.from(nuevoMenu.querySelectorAll(':scope > .sidebar-group'));
+            const idsNuevos = new Set(
+                gruposNuevos
+                    .map(function (grupo) {
+                        return grupo.querySelector('.sidebar-group-toggle')?.dataset.moduloId;
+                    })
+                    .filter(Boolean)
+            );
+
+            gruposActuales.forEach(function (grupo) {
+                const id = grupo.querySelector('.sidebar-group-toggle')?.dataset.moduloId;
+
+                if (id && !idsNuevos.has(id)) {
+                    grupo.remove();
+                }
+            });
+
+            const seccionAdministracion = Array.from(sidebar.querySelectorAll(':scope > .sidebar-section'))
+                .find(function (seccion) {
+                    return seccion.textContent.trim() === 'Administración';
+                });
+
+            let referencia = seccionAdministracion ? seccionAdministracion.nextElementSibling : null;
+
+            gruposNuevos.forEach(function (grupoNuevo) {
+                const botonNuevo = grupoNuevo.querySelector('.sidebar-group-toggle');
+                const id = botonNuevo?.dataset.moduloId;
+
+                if (!id) {
+                    return;
+                }
+
+                const selector = '.sidebar-group-toggle[data-modulo-id="' + CSS.escape(id) + '"]';
+                const grupoActual = sidebar.querySelector(selector)?.closest('.sidebar-group');
+                const estabaAbierto = Boolean(
+                    grupoActual?.querySelector('.sidebar-submenu')?.classList.contains('show')
+                );
+                const grupoActualizado = grupoNuevo.cloneNode(true);
+
+                if (estabaAbierto) {
+                    const submenu = grupoActualizado.querySelector('.sidebar-submenu');
+                    const boton = grupoActualizado.querySelector('.sidebar-group-toggle');
+
+                    submenu?.classList.add('show');
+                    boton?.setAttribute('aria-expanded', 'true');
+                }
+
+                if (grupoActual) {
+                    grupoActual.replaceWith(grupoActualizado);
+                } else if (referencia && referencia.parentElement === sidebar) {
+                    sidebar.insertBefore(grupoActualizado, referencia);
+                } else {
+                    sidebar.appendChild(grupoActualizado);
+                }
+            });
+
+            if (typeof window.inicializarGruposSidebar === 'function') {
+                window.inicializarGruposSidebar();
+            }
+        }).catch(function (error) {
+            if (typeof window.showToast === 'function') {
+                window.showToast('error', error.message || 'No fue posible actualizar el menú lateral.');
+            }
+        });
     }
 
     function actualizarBotonNuevoRol() {
