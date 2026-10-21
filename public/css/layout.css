@@ -2499,3 +2499,13 @@ html[data-font-scale] main :is(i, svg, .fa, [class^="fa-"], [class*=" fa-"],
     .bi, .icon, .material-icons, .material-symbols-outlined) {
     font-size: revert !important;
 }
+
+/* Tooltip personalizado para los controles del topbar. */
+.topbar-tooltip {
+    z-index: 2100;
+    transform: translateY(-4px);
+}
+
+.topbar-tooltip.show {
+    transform: none;
+}
