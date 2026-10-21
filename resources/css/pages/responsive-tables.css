@@ -271,7 +271,7 @@
     }
 }
 
-/* Tooltip global para acciones de tablas: mismo diseño que el topbar. */
+/* Tooltip global para acciones de tablas: replica el estilo original del topbar. */
 [data-tooltip] {
     position: relative;
 }
@@ -285,20 +285,17 @@
     transform: translate(-50%, 4px);
     width: max-content;
     max-width: 220px;
-    padding: 6px 9px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 7px;
-    background: #000;
-    color: #fff;
+    padding: 6px 11px;
+    border-radius: 8px;
+    background: var(--nav-text-strong);
+    color: var(--nav-bg);
     font-size: 12px;
     font-weight: 600;
-    line-height: 1.25;
-    text-align: center;
-    white-space: normal;
+    white-space: nowrap;
     pointer-events: none;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+    transition: opacity 0.14s ease, transform 0.14s ease, visibility 0.14s ease;
 }
 
 [data-tooltip]:hover::after,
@@ -306,27 +303,6 @@
     opacity: 1;
     visibility: visible;
     transform: translate(-50%, 0);
-}
-
-[data-tooltip]::before {
-    content: "";
-    position: absolute;
-    z-index: 1085;
-    left: 50%;
-    bottom: calc(100% + 2px);
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-top-color: #000;
-    pointer-events: none;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.16s ease, visibility 0.16s ease;
-}
-
-[data-tooltip]:hover::before,
-[data-tooltip]:focus-visible::before {
-    opacity: 1;
-    visibility: visible;
 }
 
 /* La escala de tablas incluye los iconos de los botones de acción. */
