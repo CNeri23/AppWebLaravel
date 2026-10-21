@@ -768,8 +768,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
         });
     }
 
-    function inicializarGruposSidebar() {
-        const sidebarGroups = obtenerGruposSidebar();
+    function inicializarGruposSidebar(scope = sidebar) {
+        const raiz = scope || sidebar;
+        const sidebarGroups = Array.from(raiz.querySelectorAll('.sidebar-group-toggle'));
         sidebarGroups.forEach(button => {
             if (button.dataset.sidebarInitialized === '1') {
                 return;
