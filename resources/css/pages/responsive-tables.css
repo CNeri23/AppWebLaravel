@@ -287,8 +287,9 @@
     max-width: 220px;
     padding: 6px 11px;
     border-radius: 8px;
-    background: var(--nav-text-strong);
-    color: var(--nav-bg);
+    background: var(--gym);
+    color: var(--on-gym);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
     font-size: 12px;
     font-weight: 600;
     white-space: nowrap;
