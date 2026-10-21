@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
             themeSwitch.classList.toggle('is-light', theme !== 'dark');
             themeSwitch.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
             themeSwitch.setAttribute('aria-label', theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
-            themeSwitch.title = theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
+            actualizarTooltipTopbar(themeSwitch, theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
         }
 
         document.dispatchEvent(
@@ -607,6 +607,85 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
     const topbar = document.querySelector('.app-topbar');
 
+    // Tooltips propios del topbar: evita los tooltips nativos del navegador.
+    const tooltipTopbar = document.createElement('div');
+    tooltipTopbar.className = 'sidebar-tooltip topbar-tooltip';
+    tooltipTopbar.setAttribute('role', 'tooltip');
+    document.body.appendChild(tooltipTopbar);
+
+    let elementoTooltipTopbar = null;
+
+    function actualizarTooltipTopbar(elemento, texto) {
+        if (!elemento) {
+            return;
+        }
+
+        elemento.dataset.tooltip = texto;
+        elemento.setAttribute('aria-label', elemento.getAttribute('aria-label') || texto);
+
+        if (elemento === elementoTooltipTopbar) {
+            mostrarTooltipTopbar(elemento);
+        }
+    }
+
+    function mostrarTooltipTopbar(elemento) {
+        const texto = elemento?.dataset.tooltip;
+
+        if (!texto || esMovil()) {
+            ocultarTooltipTopbar();
+            return;
+        }
+
+        elementoTooltipTopbar = elemento;
+        tooltipTopbar.textContent = texto;
+        const caja = elemento.getBoundingClientRect();
+        tooltipTopbar.style.left = (caja.left + caja.width / 2 - tooltipTopbar.offsetWidth / 2) + 'px';
+        tooltipTopbar.style.top = (caja.bottom + 8) + 'px';
+        tooltipTopbar.classList.add('show');
+    }
+
+    function ocultarTooltipTopbar() {
+        tooltipTopbar.classList.remove('show');
+        elementoTooltipTopbar = null;
+    }
+
+    document.querySelectorAll('.app-topbar [title]').forEach(elemento => {
+        elemento.dataset.tooltip = elemento.getAttribute('title');
+        elemento.removeAttribute('title');
+    });
+
+    document.addEventListener('mouseover', function (event) {
+        const elemento = event.target.closest('.app-topbar [data-tooltip]');
+
+        if (elemento) {
+            mostrarTooltipTopbar(elemento);
+        }
+    });
+
+    document.addEventListener('mouseout', function (event) {
+        const elemento = event.target.closest('.app-topbar [data-tooltip]');
+
+        if (elemento && !elemento.contains(event.relatedTarget)) {
+            ocultarTooltipTopbar();
+        }
+    });
+
+    document.addEventListener('focusin', function (event) {
+        const elemento = event.target.closest('.app-topbar [data-tooltip]');
+
+        if (elemento) {
+            mostrarTooltipTopbar(elemento);
+        }
+    });
+
+    document.addEventListener('focusout', function (event) {
+        if (event.target.closest('.app-topbar [data-tooltip]')) {
+            ocultarTooltipTopbar();
+        }
+    });
+
+    window.addEventListener('scroll', ocultarTooltipTopbar, { passive: true });
+
     function actualizarSombraTopbar() {
         topbar?.classList.toggle('scrolled', window.scrollY > 4);
     }
@@ -639,6 +718,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
         }
         sidebarToggleBtn.dataset.state = estado;
         sidebarToggleBtn.setAttribute('aria-expanded', expandido ? 'true' : 'false');
+        actualizarTooltipTopbar(
+            sidebarToggleBtn,
+            esMovil()
+                ? (expandido ? 'Cerrar menú' : 'Expandir menú')
+                : (expandido ? 'Colapsar menú' : 'Expandir menú')
+        );
     }
 
     function toggleMobileSidebar() {
