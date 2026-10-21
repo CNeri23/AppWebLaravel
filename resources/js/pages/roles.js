@@ -713,11 +713,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (grupoActual) {
                     grupoActual.replaceWith(grupoActualizado);
-                } else if (referencia && referencia.parentElement === sidebar) {
+                }
+
+                if (referencia && referencia !== grupoActualizado && referencia.parentElement === sidebar) {
                     sidebar.insertBefore(grupoActualizado, referencia);
-                } else {
+                } else if (!grupoActualizado.parentElement) {
                     sidebar.appendChild(grupoActualizado);
                 }
+
+                referencia = grupoActualizado.nextElementSibling;
             });
 
             if (typeof window.inicializarGruposSidebar === 'function') {
