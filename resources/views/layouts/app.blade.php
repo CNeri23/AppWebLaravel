@@ -50,7 +50,7 @@
 
 <!DOCTYPE html>
 
-<html lang="es" data-current-user-id="{{ $usuarioActual->id }}" data-bs-theme="{{ $userPreferences['theme_mode'] === 'dark' ? 'dark' : 'light' }}"
+<html lang="es" data-current-user-id="{{ $usuarioActual->id }}" data-sidebar-sync-url="{{ route('dashboard') }}" data-bs-theme="{{ $userPreferences['theme_mode'] === 'dark' ? 'dark' : 'light' }}"
     data-theme-mode="{{ $userPreferences['theme_mode'] }}"
     data-light-theme-style="{{ $userPreferences['light_theme_style'] }}"
     data-dark-theme-style="{{ $userPreferences['dark_theme_style'] }}"
