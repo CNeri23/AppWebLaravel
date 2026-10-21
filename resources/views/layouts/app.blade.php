@@ -69,13 +69,13 @@
 
     <title>@yield('title', $settings['system_name'])</title>
 
-    <script src="{{ asset('js/layout.js') }}"></script>
+    <script src="{{ asset('js/layout.js') }}?v={{ @filemtime(public_path('js/layout.js')) }}"></script>
 
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/datatables/css/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
-<link rel="stylesheet" href="{{ asset('css/layout.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/layout.css') }}?v={{ @filemtime(public_path('css/layout.css')) }}">
     <link rel="stylesheet" href="{{ asset('css/toast.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modals.css') }}">
 
@@ -345,6 +345,12 @@
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true">
+    </div>
+
+    {{-- Tooltip único de la aplicación (lo posiciona layout.js) --}}
+    <div class="app-tooltip" id="appTooltip" role="tooltip" hidden>
+        <span class="app-tooltip-text"></span>
+        <span class="app-tooltip-arrow"></span>
     </div>
 
     <div class="app-main">

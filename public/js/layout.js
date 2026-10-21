@@ -607,13 +607,125 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
     const topbar = document.querySelector('.app-topbar');
 
-    // Tooltips propios del topbar: evita los tooltips nativos del navegador.
-    const tooltipTopbar = document.createElement('div');
-    tooltipTopbar.className = 'sidebar-tooltip topbar-tooltip';
-    tooltipTopbar.setAttribute('role', 'tooltip');
-    document.body.appendChild(tooltipTopbar);
+    // Tooltip único de la aplicación (topbar y sidebar colapsado).
+    // Un solo elemento (#appTooltip) que permanece con display:none mientras no se usa.
+    let tooltipApp = document.getElementById('appTooltip');
 
-    let elementoTooltipTopbar = null;
+    if (!tooltipApp) {
+        tooltipApp = document.createElement('div');
+        tooltipApp.id = 'appTooltip';
+        tooltipApp.className = 'app-tooltip';
+        tooltipApp.setAttribute('role', 'tooltip');
+        tooltipApp.hidden = true;
+        tooltipApp.innerHTML = '<span class="app-tooltip-text"></span><span class="app-tooltip-arrow"></span>';
+        document.body.appendChild(tooltipApp);
+    }
+
+    const textoTooltipApp = tooltipApp.querySelector('.app-tooltip-text');
+    const SELECTOR_TOOLTIP_APP = '[data-tooltip], .sidebar-link[data-label], .sidebar-group-toggle[data-label]';
+    let elementoTooltipApp = null;
+    let temporizadorTooltip = null;
+
+    function infoTooltip(elemento) {
+        if (!elemento) {
+            return null;
+        }
+
+        if (elemento.closest('.app-topbar')) {
+            const texto = elemento.dataset.tooltip;
+            return texto ? { texto, lado: 'bottom' } : null;
+        }
+
+        // Botones de tablas, modales y demás vistas: aparece arriba (o abajo si no hay espacio).
+        if (elemento.dataset.tooltip) {
+            return { texto: elemento.dataset.tooltip, lado: 'top' };
+        }
+
+        // Sidebar: solo cuando está colapsado (en escritorio).
+        if (sidebar && sidebar.classList.contains('collapsed') && !esMovil()) {
+            const texto = elemento.dataset.label;
+            return texto ? { texto, lado: 'right' } : null;
+        }
+        return null;
+    }
+
+    function posicionarTooltipApp(elemento, lado) {
+        textoTooltipApp.textContent = tooltipApp.dataset.texto;
+        tooltipApp.hidden = false;
+
+        const caja = elemento.getBoundingClientRect();
+        const ancho = tooltipApp.offsetWidth;
+        const alto = tooltipApp.offsetHeight;
+        const margen = 8;
+        const separacion = 10;
+        let izquierda;
+        let arriba;
+
+        // Si no cabe arriba, se muestra abajo.
+        if (lado === 'top' && caja.top - alto - separacion < margen) {
+            lado = 'bottom';
+        }
+        tooltipApp.dataset.placement = lado;
+
+        if (lado === 'right') {
+            izquierda = caja.right + separacion;
+            arriba = caja.top + caja.height / 2 - alto / 2;
+            arriba = Math.max(margen, Math.min(arriba, window.innerHeight - alto - margen));
+            tooltipApp.style.setProperty('--arrow-y', (caja.top + caja.height / 2 - arriba) + 'px');
+        } else {
+            izquierda = caja.left + caja.width / 2 - ancho / 2;
+            izquierda = Math.max(margen, Math.min(izquierda, window.innerWidth - ancho - margen));
+            arriba = lado === 'top' ? caja.top - alto - separacion : caja.bottom + separacion;
+            const centro = caja.left + caja.width / 2 - izquierda;
+            tooltipApp.style.setProperty('--arrow-x', Math.max(14, Math.min(centro, ancho - 14)) + 'px');
+        }
+
+        tooltipApp.style.left = Math.round(izquierda) + 'px';
+        tooltipApp.style.top = Math.round(arriba) + 'px';
+
+        // Reinicia la animación de entrada.
+        tooltipApp.classList.remove('show');
+        void tooltipApp.offsetWidth;
+        tooltipApp.classList.add('show');
+    }
+
+    function mostrarTooltipApp(elemento, inmediato = false) {
+        const info = infoTooltip(elemento);
+
+        clearTimeout(temporizadorTooltip);
+
+        if (!info) {
+            ocultarTooltipApp();
+            return;
+        }
+
+        elementoTooltipApp = elemento;
+        tooltipApp.dataset.texto = info.texto;
+
+        const yaVisible = !tooltipApp.hidden;
+
+        if (inmediato || yaVisible) {
+            posicionarTooltipApp(elemento, info.lado);
+            return;
+        }
+
+        temporizadorTooltip = setTimeout(function () {
+            if (elementoTooltipApp === elemento) {
+                posicionarTooltipApp(elemento, info.lado);
+            }
+        }, 160);
+    }
+
+    function ocultarTooltipApp() {
+        clearTimeout(temporizadorTooltip);
+        tooltipApp.classList.remove('show');
+        tooltipApp.hidden = true;
+        elementoTooltipApp = null;
+    }
+
+    // Compatibilidad con el resto del código.
+    function ocultarTooltipTopbar() { ocultarTooltipApp(); }
+    function ocultarTooltipSidebar() { ocultarTooltipApp(); }
 
     function actualizarTooltipTopbar(elemento, texto) {
         if (!elemento) {
@@ -621,50 +733,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
         }
 
         elemento.dataset.tooltip = texto;
-        elemento.setAttribute('aria-label', elemento.getAttribute('aria-label') || texto);
+        elemento.setAttribute('aria-label', texto);
 
-        if (elemento === elementoTooltipTopbar) {
-            mostrarTooltipTopbar(elemento);
+        if (elemento === elementoTooltipApp && !tooltipApp.hidden) {
+            mostrarTooltipApp(elemento, true);
         }
-    }
-
-    function mostrarTooltipTopbar(elemento) {
-        const texto = elemento?.dataset.tooltip;
-
-        if (!texto || esMovil()) {
-            ocultarTooltipTopbar();
-            return;
-        }
-
-        elementoTooltipTopbar = elemento;
-        tooltipTopbar.textContent = texto;
-
-        // Medir el tooltip ya visible para calcular su posición real y mantenerlo dentro del viewport.
-        tooltipTopbar.classList.add('show');
-        const caja = elemento.getBoundingClientRect();
-        const margen = 8;
-        const separacion = 8;
-        const anchoTooltip = tooltipTopbar.offsetWidth;
-        const altoTooltip = tooltipTopbar.offsetHeight;
-        const centro = caja.left + caja.width / 2;
-        const izquierda = Math.min(
-            Math.max(margen, centro - anchoTooltip / 2),
-            Math.max(margen, window.innerWidth - anchoTooltip - margen)
-        );
-
-        let arriba = caja.bottom + separacion;
-        if (arriba + altoTooltip > window.innerHeight - margen) {
-            arriba = caja.top - altoTooltip - separacion;
-        }
-        arriba = Math.max(margen, Math.min(arriba, window.innerHeight - altoTooltip - margen));
-
-        tooltipTopbar.style.left = izquierda + 'px';
-        tooltipTopbar.style.top = arriba + 'px';
-    }
-
-    function ocultarTooltipTopbar() {
-        tooltipTopbar.classList.remove('show');
-        elementoTooltipTopbar = null;
     }
 
     document.querySelectorAll('.app-topbar [title]').forEach(elemento => {
@@ -673,36 +746,39 @@ document.addEventListener('DOMContentLoaded', function (event) {
     });
 
     document.addEventListener('mouseover', function (event) {
-        const elemento = event.target.closest('.app-topbar [data-tooltip]');
+        const elemento = event.target.closest(SELECTOR_TOOLTIP_APP);
 
-        if (elemento) {
-            mostrarTooltipTopbar(elemento);
+        if (elemento && elemento !== elementoTooltipApp) {
+            mostrarTooltipApp(elemento);
         }
     });
 
     document.addEventListener('mouseout', function (event) {
-        const elemento = event.target.closest('.app-topbar [data-tooltip]');
+        const elemento = event.target.closest(SELECTOR_TOOLTIP_APP);
 
         if (elemento && !elemento.contains(event.relatedTarget)) {
-            ocultarTooltipTopbar();
+            ocultarTooltipApp();
         }
     });
 
     document.addEventListener('focusin', function (event) {
-        const elemento = event.target.closest('.app-topbar [data-tooltip]');
+        const elemento = event.target.closest(SELECTOR_TOOLTIP_APP);
 
-        if (elemento) {
-            mostrarTooltipTopbar(elemento);
+        // Solo con teclado: al hacer clic con el mouse no debe quedarse el tooltip.
+        if (elemento && event.target.matches(':focus-visible')) {
+            mostrarTooltipApp(elemento, true);
         }
     });
 
-    document.addEventListener('focusout', function (event) {
-        if (event.target.closest('.app-topbar [data-tooltip]')) {
-            ocultarTooltipTopbar();
+    document.addEventListener('focusout', ocultarTooltipApp);
+    document.addEventListener('mousedown', ocultarTooltipApp, true);
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            ocultarTooltipApp();
         }
     });
-
-    window.addEventListener('scroll', ocultarTooltipTopbar, { passive: true });
+    window.addEventListener('scroll', ocultarTooltipApp, { passive: true, capture: true });
+    window.addEventListener('resize', ocultarTooltipApp);
 
     function actualizarSombraTopbar() {
         topbar?.classList.toggle('scrolled', window.scrollY > 4);
@@ -1346,62 +1422,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
     inicializarGruposSidebar();
 
-    // Tooltip propio para el sidebar colapsado (reemplaza el title nativo).
-    const tooltipSidebar = document.createElement('div');
-    tooltipSidebar.className = 'sidebar-tooltip';
-    tooltipSidebar.setAttribute('role', 'tooltip');
-    document.body.appendChild(tooltipSidebar);
-
-    function mostrarTooltipSidebar(elemento) {
-        if (!sidebar.classList.contains('collapsed') || esMovil()) {
-            return;
-        }
-        const texto = elemento.dataset.label;
-
-        if (!texto) {
-            return;
-        }
-        tooltipSidebar.textContent = texto;
-        const caja = elemento.getBoundingClientRect();
-        tooltipSidebar.style.left = (caja.right + 10) + 'px';
-        tooltipSidebar.style.top = (caja.top + caja.height / 2 - tooltipSidebar.offsetHeight / 2) + 'px';
-        tooltipSidebar.classList.add('show');
-    }
-
-    function ocultarTooltipSidebar() {
-        tooltipSidebar.classList.remove('show');
-    }
-
-    const SELECTOR_TOOLTIP = '.sidebar-link[data-label], .sidebar-group-toggle[data-label]';
-
-    sidebar.addEventListener('mouseover', function (event) {
-        const elemento = event.target.closest(SELECTOR_TOOLTIP);
-
-        if (elemento) {
-            mostrarTooltipSidebar(elemento);
-        }
-    });
-
-    sidebar.addEventListener('mouseout', function (event) {
-        if (event.target.closest(SELECTOR_TOOLTIP)) {
-            ocultarTooltipSidebar();
-        }
-    });
-
-    sidebar.addEventListener('focusin', function (event) {
-        const elemento = event.target.closest(SELECTOR_TOOLTIP);
-
-        if (elemento) {
-            mostrarTooltipSidebar(elemento);
-        }
-    });
-
-    sidebar.addEventListener('focusout', ocultarTooltipSidebar);
-    sidebar.addEventListener('click', ocultarTooltipSidebar);
-
     function actualizarTitulos() {
         ocultarTooltipSidebar();
-        sidebar.querySelectorAll(SELECTOR_TOOLTIP)
+        sidebar.querySelectorAll('.sidebar-link[data-label], .sidebar-group-toggle[data-label]')
             .forEach(elemento => elemento.removeAttribute('title'));
     }
 
