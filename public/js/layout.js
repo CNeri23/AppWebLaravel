@@ -817,12 +817,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
     window.inicializarGruposSidebar = inicializarGruposSidebar;
 
-    // Sincroniza permisos sin reemplazar el sidebar ni reiniciar sus acordeones.
+    // Sincroniza permisos desde Dashboard, cuya vista no depende del permiso
+    // de Usuarios que acaba de modificarse.
     window.sincronizarSidebarPermisos = async function () {
         const menu = sidebar.querySelector('.sidebar-menu');
         if (!menu) return;
 
-        const response = await fetch(window.location.href, {
+        const urlMenu = html.dataset.sidebarSyncUrl || '/dashboard';
+        const response = await fetch(urlMenu, {
             method: 'GET',
             credentials: 'same-origin',
             headers: {
