@@ -39,10 +39,10 @@
     window.monedaPlanes = @json($moneda);
 </script>
 
-<div class="card border-0 shadow-sm planes-card">
-    <div class="card-body">
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
         <div class="table-responsive planes-table-wrap">
-            <table id="tablaPlanes" class="table table-hover align-middle mb-0">
+            <table id="tablaPlanes" class="table table-hover align-middle mb-0 w-100">
                 <thead>
                     <tr>
                         <th>Nombre</th>

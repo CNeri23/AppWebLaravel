@@ -1,4 +1,3 @@
-/* Tablas adaptables: en móviles cada registro se presenta como una tarjeta. */
 @media (max-width: 767.98px) {
     .table-responsive table.responsive-cards-table {
         display: block !important;
@@ -272,7 +271,6 @@
     }
 }
 
-
 /* Tooltip global para acciones de tablas. */
 [data-tooltip] {
     position: relative;
@@ -330,8 +328,6 @@
     opacity: 1;
     visibility: visible;
 }
-
-
 
 /* La escala de tablas incluye los iconos de los botones de acción. */
 html[data-font-scale="small"] .table-responsive table.responsive-cards-table tbody td[data-label="Acciones"] .btn i,
