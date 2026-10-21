@@ -1254,6 +1254,14 @@ html.theme-switching *::after {
 }
 
 .app-sidebar .sidebar-menu {
+    transition: opacity 140ms ease;
+}
+
+.app-sidebar .sidebar-menu.sidebar-menu-refreshing {
+    opacity: 0.88;
+}
+
+.app-sidebar .sidebar-menu {
     position: relative;
     z-index: 1;
     flex: 1 1 auto;

@@ -826,6 +826,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
             }
         });
         const estabaColapsado = sidebar.classList.contains('collapsed');
+        sidebarMenu.classList.add('sidebar-menu-refreshing');
 
         try {
             const response = await fetch(
@@ -873,6 +874,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
             actualizarTitulos(estabaColapsado);
         } catch (error) {
             console.error('Error al actualizar el sidebar:', error);
+        } finally {
+            sidebarMenu.classList.remove('sidebar-menu-refreshing');
         }
     };
 
