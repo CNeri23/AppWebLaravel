@@ -52,6 +52,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function sincronizarSidebarSiEsUsuarioActual(usuario) {
+        const idActual = document.documentElement.dataset.currentUserId;
+        if (!usuario || !idActual || String(usuario.id) !== String(idActual)) {
+            return Promise.resolve();
+        }
+        if (typeof window.sincronizarSidebarPermisos !== 'function') {
+            return Promise.resolve();
+        }
+        return window.sincronizarSidebarPermisos();
+    }
+
     function mostrarError(error) {
         window.showToast('error', error.message);
     }
@@ -916,6 +927,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
 
                         actualizarRolesEnTabla(data.usuario);
+                        return sincronizarSidebarSiEsUsuarioActual(data.usuario);
                     })
                     .catch(mostrarError);
             }
