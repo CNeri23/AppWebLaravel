@@ -835,8 +835,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
         });
         if (!response.ok) throw new Error('No fue posible sincronizar los permisos del menú lateral.');
 
-        const html = await response.text();
-        const documento = new DOMParser().parseFromString(html, 'text/html');
+        const htmlRespuesta = await response.text();
+        const documento = new DOMParser().parseFromString(htmlRespuesta, 'text/html');
         const menuNuevo = documento.querySelector('.sidebar-menu');
         if (!menuNuevo) throw new Error('No fue posible encontrar el menú lateral actualizado.');
 
@@ -933,8 +933,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
             if (!response.ok) {
                 throw new Error('No fue posible actualizar el menú lateral.');
             }
-            const html = await response.text();
-            const documento = new DOMParser().parseFromString(html, 'text/html');
+            const htmlRespuesta = await response.text();
+            const documento = new DOMParser().parseFromString(htmlRespuesta, 'text/html');
             const nuevoSidebarMenu = documento.querySelector('.sidebar-menu');
 
             if (!nuevoSidebarMenu) {
