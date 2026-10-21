@@ -712,16 +712,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 if (grupoActual) {
-                    grupoActual.replaceWith(grupoActualizado);
-                }
-
-                if (referencia && referencia !== grupoActualizado && referencia.parentElement === sidebar) {
+                    // No reemplazar grupos cuyo contenido no cambió: evita el parpadeo.
+                    if (grupoActual.outerHTML !== grupoActualizado.outerHTML) {
+                        grupoActual.replaceWith(grupoActualizado);
+                    }
+                } else if (referencia && referencia.parentElement === sidebar) {
                     sidebar.insertBefore(grupoActualizado, referencia);
-                } else if (!grupoActualizado.parentElement) {
+                } else {
                     sidebar.appendChild(grupoActualizado);
                 }
 
-                referencia = grupoActualizado.nextElementSibling;
+                referencia = (sidebar.querySelector(selector)?.closest('.sidebar-group') || grupoActualizado).nextElementSibling;
             });
 
             if (typeof window.inicializarGruposSidebar === 'function') {
