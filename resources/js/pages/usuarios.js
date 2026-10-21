@@ -57,10 +57,27 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!usuario || !idActual || String(usuario.id) !== String(idActual)) {
             return Promise.resolve();
         }
-        if (typeof window.sincronizarSidebarPermisos !== 'function') {
-            return Promise.resolve();
+
+        // Si se modifican los roles de la sesión actual, la vista Usuarios puede
+        // dejar de estar autorizada. Ir a Dashboard mediante navegación parcial
+        // y después sincronizar el menú calculado con los permisos nuevos.
+        const enlaceDashboard = document.querySelector('.sidebar-menu a.sidebar-link[href]');
+        const urlDashboard = enlaceDashboard?.getAttribute('href') || '/dashboard';
+
+        if (typeof window.navegarSubmoduloSinRecargar === 'function') {
+            return window.navegarSubmoduloSinRecargar(urlDashboard)
+                .then(() => {
+                    if (typeof window.sincronizarSidebarPermisos === 'function') {
+                        return window.sincronizarSidebarPermisos();
+                    }
+                });
         }
-        return window.sincronizarSidebarPermisos();
+
+        if (typeof window.sincronizarSidebarPermisos === 'function') {
+            return window.sincronizarSidebarPermisos();
+        }
+
+        return Promise.resolve();
     }
 
     function mostrarError(error) {
