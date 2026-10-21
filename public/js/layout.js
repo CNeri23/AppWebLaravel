@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
             themeSwitch.classList.toggle('is-light', theme !== 'dark');
             themeSwitch.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
             themeSwitch.setAttribute('aria-label', theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
-            actualizarTooltipTopbar(themeSwitch, theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+            themeSwitch.dataset.tooltip = theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
         }
 
         document.dispatchEvent(
