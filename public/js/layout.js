@@ -1172,6 +1172,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
         }
     }
 
+    // Permite que otros módulos naveguen sin recargar la página.
+    window.navegarSubmoduloSinRecargar = navegarSubmoduloSinRecargar;
+
     // Mi perfil y Preferencias reutilizan la navegación parcial sin desmontar el sidebar.
     document.addEventListener('click', function (event) {
         const enlace = event.target.closest('.user-dropdown .dropdown-menu a.dropdown-item');
