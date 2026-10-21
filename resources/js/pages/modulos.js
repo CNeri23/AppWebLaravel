@@ -146,6 +146,121 @@ document.addEventListener('DOMContentLoaded', function () {
         return Promise.resolve();
     }
 
+    // Sincroniza únicamente el elemento afectado del sidebar, sin reemplazar todo el menú.
+    function actualizarElementoSidebar(tipo, id) {
+        const sidebar = document.querySelector('#appSidebar .sidebar-menu');
+        if (!sidebar) {
+            return Promise.resolve();
+        }
+
+        return fetch(window.location.href, {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'text/html',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            cache: 'no-store',
+        }).then((response) => {
+            if (!response.ok) {
+                throw new Error('No fue posible sincronizar el menú lateral.');
+            }
+            return response.text();
+        }).then((html) => {
+            const documento = new DOMParser().parseFromString(html, 'text/html');
+            const nuevoMenu = documento.querySelector('#appSidebar .sidebar-menu');
+            if (!nuevoMenu) {
+                throw new Error('No fue posible encontrar el menú lateral.');
+            }
+
+            if (tipo === 'modulo') {
+                const selector = '.sidebar-group-toggle[data-modulo-id="' + id + '"]';
+                const actualToggle = sidebar.querySelector(selector);
+                const nuevoToggle = nuevoMenu.querySelector(selector);
+                const grupoActual = actualToggle?.closest('.sidebar-group');
+                const grupoNuevo = nuevoToggle?.closest('.sidebar-group');
+
+                if (grupoActual && grupoNuevo) {
+                    const submenuActual = grupoActual.querySelector('.sidebar-submenu');
+                    const submenuNuevo = grupoNuevo.querySelector('.sidebar-submenu');
+                    const abierto = Boolean(submenuActual?.classList.contains('show'));
+                    grupoActual.replaceWith(grupoNuevo.cloneNode(true));
+                    const grupoInsertado = sidebar.querySelector(selector)?.closest('.sidebar-group');
+                    const submenuInsertado = grupoInsertado?.querySelector('.sidebar-submenu');
+                    if (abierto && submenuInsertado) {
+                        submenuInsertado.classList.add('show');
+                        const boton = grupoInsertado.querySelector('.sidebar-group-toggle');
+                        boton?.setAttribute('aria-expanded', 'true');
+                    }
+                } else if (grupoActual && !grupoNuevo) {
+                    grupoActual.remove();
+                } else if (!grupoActual && grupoNuevo) {
+                    const gruposNuevos = Array.from(nuevoMenu.querySelectorAll('.sidebar-group'));
+                    const indice = gruposNuevos.findIndex((grupo) => grupo.querySelector(selector));
+                    const siguienteId = gruposNuevos.slice(indice + 1)
+                        .map((grupo) => grupo.querySelector('.sidebar-group-toggle')?.dataset.moduloId)
+                        .find((moduloId) => moduloId && sidebar.querySelector('.sidebar-group-toggle[data-modulo-id="' + moduloId + '"]'));
+                    const siguienteGrupo = siguienteId
+                        ? sidebar.querySelector('.sidebar-group-toggle[data-modulo-id="' + siguienteId + '"]')?.closest('.sidebar-group')
+                        : null;
+                    const administracion = Array.from(sidebar.querySelectorAll('.sidebar-section'))
+                        .find((seccion) => seccion.textContent.trim() === 'Administración');
+                    if (siguienteGrupo) {
+                        siguienteGrupo.before(grupoNuevo.cloneNode(true));
+                    } else if (administracion) {
+                        let ultimoGrupo = administracion.nextElementSibling;
+                        while (ultimoGrupo && ultimoGrupo.classList.contains('sidebar-group')) {
+                            ultimoGrupo = ultimoGrupo.nextElementSibling;
+                        }
+                        if (ultimoGrupo) {
+                            ultimoGrupo.before(grupoNuevo.cloneNode(true));
+                        } else {
+                            sidebar.append(grupoNuevo.cloneNode(true));
+                        }
+                    } else {
+                        sidebar.append(grupoNuevo.cloneNode(true));
+                    }
+                }
+            } else {
+                const selector = '.sidebar-sublink[data-submodulo-id="' + id + '"]';
+                const actualLink = sidebar.querySelector(selector);
+                const nuevoLink = nuevoMenu.querySelector(selector);
+                const contenedorActual = actualLink?.closest('.sidebar-submenu');
+                const contenedorNuevo = nuevoLink?.closest('.sidebar-submenu');
+                if (actualLink && nuevoLink) {
+                    actualLink.replaceWith(nuevoLink.cloneNode(true));
+                } else if (actualLink && !nuevoLink) {
+                    actualLink.remove();
+                } else if (!actualLink && nuevoLink && contenedorNuevo) {
+                    const moduloId = contenedorNuevo.dataset.moduloId;
+                    const contenedorDestino = sidebar.querySelector('.sidebar-submenu[data-modulo-id="' + moduloId + '"]');
+                    if (contenedorDestino) {
+                        const nuevosLinks = Array.from(contenedorNuevo.querySelectorAll('.sidebar-sublink'));
+                        const indice = nuevosLinks.findIndex((link) => link.dataset.submoduloId === String(id));
+                        const siguienteId = nuevosLinks.slice(indice + 1)
+                            .map((link) => link.dataset.submoduloId)
+                            .find((subId) => contenedorDestino.querySelector('.sidebar-sublink[data-submodulo-id="' + subId + '"]'));
+                        const siguienteLink = siguienteId
+                            ? contenedorDestino.querySelector('.sidebar-sublink[data-submodulo-id="' + siguienteId + '"]')
+                            : null;
+                        if (siguienteLink) {
+                            siguienteLink.before(nuevoLink.cloneNode(true));
+                        } else {
+                            contenedorDestino.append(nuevoLink.cloneNode(true));
+                        }
+                    } else {
+                        // Si el módulo padre tampoco existe, sincronizar solo ese grupo.
+                        return actualizarElementoSidebar('modulo', moduloId);
+                    }
+                }
+            }
+
+            if (typeof window.inicializarGruposSidebar === 'function') {
+                window.inicializarGruposSidebar();
+            }
+        });
+    }
+
     function obtenerTreeview() {
         const treeview = document.getElementById('modulosTree');
         if (!treeview) {
@@ -341,7 +456,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 window.showToast('success', data.mensaje);
-                return actualizarSidebar();
+                return actualizarElementoSidebar('modulo', item.dataset.id);
             })
             .catch((error) => {
                 window.showToast('error', error.message);
@@ -371,7 +486,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 window.showToast('success', data.mensaje);
-                return actualizarSidebar();
+                return actualizarElementoSidebar('submodulo', item.dataset.id);
             })
             .catch((error) => {
                 window.showToast('error', error.message);
