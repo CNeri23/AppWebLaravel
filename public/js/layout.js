@@ -771,6 +771,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
     function inicializarGruposSidebar() {
         const sidebarGroups = obtenerGruposSidebar();
         sidebarGroups.forEach(button => {
+            if (button.dataset.sidebarInitialized === '1') {
+                return;
+            }
+            button.dataset.sidebarInitialized = '1';
             button.removeAttribute('data-bs-toggle');
             button.addEventListener('click', function (event) {
                 event.preventDefault();
@@ -809,6 +813,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
             }
         });
     }
+
+    window.inicializarGruposSidebar = inicializarGruposSidebar;
 
     window.actualizarSidebar = async function () {
         const sidebarMenu = sidebar.querySelector('.sidebar-menu');
