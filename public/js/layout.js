@@ -817,6 +817,86 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
     window.inicializarGruposSidebar = inicializarGruposSidebar;
 
+    // Sincroniza permisos sin reemplazar el sidebar ni reiniciar sus acordeones.
+    window.sincronizarSidebarPermisos = async function () {
+        const menu = sidebar.querySelector('.sidebar-menu');
+        if (!menu) return;
+
+        const response = await fetch(window.location.href, {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'text/html',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            cache: 'no-store',
+        });
+        if (!response.ok) throw new Error('No fue posible sincronizar los permisos del menú lateral.');
+
+        const html = await response.text();
+        const documento = new DOMParser().parseFromString(html, 'text/html');
+        const menuNuevo = documento.querySelector('.sidebar-menu');
+        if (!menuNuevo) throw new Error('No fue posible encontrar el menú lateral actualizado.');
+
+        const gruposNuevos = Array.from(menuNuevo.querySelectorAll(':scope > .sidebar-group'));
+        const gruposActuales = Array.from(menu.querySelectorAll(':scope > .sidebar-group'));
+        const idsNuevos = new Set(gruposNuevos.map(grupo =>
+            grupo.querySelector('.sidebar-group-toggle')?.dataset.moduloId
+        ).filter(Boolean));
+
+        gruposActuales.forEach(grupo => {
+            const id = grupo.querySelector('.sidebar-group-toggle')?.dataset.moduloId;
+            if (id && !idsNuevos.has(id)) grupo.remove();
+        });
+
+        gruposNuevos.forEach((grupoNuevo, index) => {
+            const moduloId = grupoNuevo.querySelector('.sidebar-group-toggle')?.dataset.moduloId;
+            if (!moduloId) return;
+
+            let grupoActual = Array.from(menu.querySelectorAll(':scope > .sidebar-group'))
+                .find(grupo => grupo.querySelector('.sidebar-group-toggle')?.dataset.moduloId === moduloId);
+
+            if (!grupoActual) {
+                let referencia = null;
+                for (let i = index + 1; i < gruposNuevos.length; i++) {
+                    const idSiguiente = gruposNuevos[i].querySelector('.sidebar-group-toggle')?.dataset.moduloId;
+                    referencia = Array.from(menu.querySelectorAll(':scope > .sidebar-group'))
+                        .find(grupo => grupo.querySelector('.sidebar-group-toggle')?.dataset.moduloId === idSiguiente) || null;
+                    if (referencia) break;
+                }
+                const grupoClonado = grupoNuevo.cloneNode(true);
+                menu.insertBefore(grupoClonado, referencia);
+                inicializarGruposSidebar(grupoClonado);
+                return;
+            }
+
+            const submenuActual = grupoActual.querySelector('.sidebar-submenu');
+            const submenuNuevo = grupoNuevo.querySelector('.sidebar-submenu');
+            if (!submenuActual || !submenuNuevo) return;
+
+            const enlacesNuevos = Array.from(submenuNuevo.querySelectorAll(':scope > .sidebar-sublink'));
+            const idsEnlacesNuevos = new Set(enlacesNuevos.map(enlace => enlace.dataset.submoduloId).filter(Boolean));
+
+            Array.from(submenuActual.querySelectorAll(':scope > .sidebar-sublink')).forEach(enlace => {
+                if (!idsEnlacesNuevos.has(enlace.dataset.submoduloId)) enlace.remove();
+            });
+
+            enlacesNuevos.forEach((enlaceNuevo, enlaceIndex) => {
+                const id = enlaceNuevo.dataset.submoduloId;
+                if (!id) return;
+                const existentes = Array.from(submenuActual.querySelectorAll(':scope > .sidebar-sublink'));
+                if (existentes.some(enlace => enlace.dataset.submoduloId === id)) return;
+
+                let referencia = null;
+                for (let i = enlaceIndex + 1; i < enlacesNuevos.length; i++) {
+                    referencia = existentes.find(enlace => enlace.dataset.submoduloId === enlacesNuevos[i].dataset.submoduloId) || null;
+                    if (referencia) break;
+                }
+                submenuActual.insertBefore(enlaceNuevo.cloneNode(true), referencia);
+            });
+        });
+    };
+
     window.actualizarSidebar = async function () {
         const sidebarMenu = sidebar.querySelector('.sidebar-menu');
 
