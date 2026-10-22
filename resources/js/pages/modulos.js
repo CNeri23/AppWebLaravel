@@ -757,6 +757,57 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Actualiza los datos visibles del elemento editado sin reemplazar todo el treeview.
+    function actualizarElementoTreeview(tipo, id, form) {
+        const esModulo = tipo === 'modulo';
+        const selector = esModulo
+            ? '.modulo-tree-item[data-id="' + CSS.escape(String(id)) + '"]'
+            : '.submodulo-tree-item[data-id="' + CSS.escape(String(id)) + '"]';
+        const item = document.querySelector(selector);
+
+        if (!item) {
+            return;
+        }
+
+        const prefijo = esModulo ? 'editar_' : 'editar_submodulo_';
+        const nombre = document.getElementById(prefijo + 'nombre')?.value.trim() || '';
+        const slug = document.getElementById(prefijo + 'slug')?.value.trim() || '';
+        const descripcion = document.getElementById(prefijo + 'descripcion')?.value.trim() || '';
+        const icono = document.getElementById(prefijo + 'icono')?.value.trim() || '';
+
+        item.dataset.nombre = nombre;
+        item.dataset.slug = slug;
+        item.dataset.descripcion = descripcion;
+        item.dataset.icono = icono;
+
+        if (!esModulo) {
+            item.dataset.ruta = document.getElementById(prefijo + 'ruta')?.value.trim() || '';
+        }
+
+        const nombreElemento = item.querySelector(':scope > .tree-name');
+        if (nombreElemento) {
+            nombreElemento.textContent = nombre;
+        }
+
+        const iconoElemento = item.querySelector(':scope > .tree-icon');
+        if (iconoElemento) {
+            iconoElemento.innerHTML = icono || (esModulo
+                ? '<i class="fa-solid fa-layer-group"></i>'
+                : '<i class="fa-solid fa-circle-dot"></i>');
+        }
+
+        const botonMenu = item.querySelector(':scope > .tree-more-btn');
+        if (botonMenu) {
+            botonMenu.setAttribute('aria-label', 'Más acciones para ' + nombre);
+        }
+
+        if (esModulo) {
+            item.querySelectorAll('.submodulo-tree-item').forEach((submodulo) => {
+                submodulo.dataset.moduloNombre = nombre;
+            });
+        }
+    }
+
     function enviarFormulario(form, modal, mensajePorDefecto) {
         if (form.matches(FORMULARIOS_SELECTOR)) {
             if (!validarFormulario(form)) {
@@ -794,8 +845,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return peticion(form.action, 'POST', formData)
             .then((data) => {
+                // En ediciones, modifica el nodo existente para evitar el parpadeo
+                // que provocaba reemplazar el treeview completo.
+                if (esEdicionModulo && moduloIdEditado) {
+                    actualizarElementoTreeview('modulo', moduloIdEditado, form);
+                } else if (esEdicionSubmodulo && submoduloIdEditado) {
+                    actualizarElementoTreeview('submodulo', submoduloIdEditado, form);
+                }
+
                 cerrarModal(modal);
                 window.showToast('success', data.mensaje || mensajePorDefecto);
+
+                if (esEdicionModulo || esEdicionSubmodulo) {
+                    return Promise.resolve();
+                }
+
                 return actualizarTreeview();
             })
             .then(() => {
