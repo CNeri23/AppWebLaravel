@@ -139,10 +139,10 @@ html[data-bs-theme] .modal-content .modal-footer .btn-save:hover {
 
 .modal-backdrop {
     --bs-backdrop-bg: #020617;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
 }
 
 .modal-backdrop.show {
     --bs-backdrop-opacity: 0.55;
-    -webkit-backdrop-filter: blur(4px);
-    backdrop-filter: blur(4px);
 }

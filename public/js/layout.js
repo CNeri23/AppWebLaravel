@@ -870,6 +870,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
         }
 
         clearTimeout(submenu._timer);
+        clearTimeout(submenu._timerEntrada);
+        submenu.classList.remove('is-opening');
         button.setAttribute('aria-expanded', 'false');
         const visible = submenu.classList.contains('show');
 
@@ -913,6 +915,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
         }
         const desdeAltura = yaVisible ? submenu.offsetHeight : 0;
         submenu.classList.add('show');
+
+        // La entrada escalonada de los enlaces solo se reproduce al abrir el submenú,
+        // no cada vez que un enlace se crea o se actualiza dentro de un submenú ya abierto.
+        clearTimeout(submenu._timerEntrada);
+        submenu.classList.add('is-opening');
+        submenu._timerEntrada = setTimeout(function () {
+            submenu.classList.remove('is-opening');
+        }, 900);
         limpiarEstilosSubmenu(submenu);
         const alto = submenu.scrollHeight;
         submenu.style.overflow = 'hidden';

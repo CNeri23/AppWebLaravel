@@ -705,23 +705,23 @@
 @media(max-width:700px){.display-scale-options{grid-template-columns:1fr}}
 
 
-/* Escala tipográfica de Preferencias; los previews de temas conservan su diseño original. */
-html[data-font-scale="small"] .preferencias-page .preferences-card .theme-section-header h2,
-html[data-font-scale="small"] .preferencias-page .preferences-card .theme-section-header p,
-html[data-font-scale="small"] .preferencias-page .preferences-card .display-scale-label {
-    font-size: .9em;
+/* Escala tipográfica de Preferencias: px base × --font-scale-factor (.9 / 1 / 1.12).
+   Los previews de temas conservan su diseño original. */
+html[data-font-scale] .preferencias-page .preferences-card .theme-section-header h2 {
+    font-size: calc(17px * var(--font-scale-factor, 1));
 }
-
-html[data-font-scale="medium"] .preferencias-page .preferences-card .theme-section-header h2,
-html[data-font-scale="medium"] .preferencias-page .preferences-card .theme-section-header p,
-html[data-font-scale="medium"] .preferencias-page .preferences-card .display-scale-label {
-    font-size: 1em;
+html[data-font-scale] .preferencias-page .preferences-card .theme-section-header p {
+    font-size: calc(13px * var(--font-scale-factor, 1));
 }
-
-html[data-font-scale="large"] .preferencias-page .preferences-card .theme-section-header h2,
-html[data-font-scale="large"] .preferencias-page .preferences-card .theme-section-header p,
-html[data-font-scale="large"] .preferencias-page .preferences-card .display-scale-label {
-    font-size: 1.12em;
+html[data-font-scale] .preferencias-page .preferences-card .display-scale-label,
+html[data-font-scale] .preferencias-page .preferences-card .theme-style-info strong {
+    font-size: calc(14px * var(--font-scale-factor, 1));
+}
+html[data-font-scale] .preferencias-page .preferences-card .theme-style-info strong {
+    font-size: calc(13px * var(--font-scale-factor, 1));
+}
+html[data-font-scale] .preferencias-page .preferences-card .theme-style-info small {
+    font-size: calc(11px * var(--font-scale-factor, 1));
 }
 
 /* La miniatura es una maqueta fija: la escala de accesibilidad no debe alterar sus textos. */

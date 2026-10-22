@@ -920,11 +920,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Las ediciones actualizan solo el elemento afectado del sidebar,
                 // igual que activar/desactivar, para evitar el pantallazo del menú completo.
                 if (esEdicionModulo && moduloIdEditado) {
-                    return actualizarElementoSidebar('modulo', moduloIdEditado, true);
+                    return actualizarElementoSidebar('modulo', moduloIdEditado);
                 }
 
                 if (esEdicionSubmodulo && submoduloIdEditado) {
-                    return actualizarElementoSidebar('submodulo', submoduloIdEditado, true);
+                    return actualizarElementoSidebar('submodulo', submoduloIdEditado);
                 }
 
                 return actualizarSidebar();
