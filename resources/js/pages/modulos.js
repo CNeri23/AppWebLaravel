@@ -777,6 +777,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         const botonSubmit = form.querySelector('button[type="submit"]');
         const textoOriginal = botonSubmit?.innerHTML;
+        const esEdicionModulo = form.id === 'formEditarModulo';
+        const esEdicionSubmodulo = form.id === 'formEditarSubmodulo';
+        const moduloIdEditado = esEdicionModulo
+            ? document.getElementById('editar_id')?.value
+            : null;
+        const submoduloIdEditado = esEdicionSubmodulo
+            ? document.getElementById('editar_submodulo_id')?.value
+            : null;
 
         if (botonSubmit) {
             botonSubmit.disabled = true;
@@ -791,6 +799,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 return actualizarTreeview();
             })
             .then(() => {
+                // Las ediciones actualizan solo el elemento afectado del sidebar,
+                // igual que activar/desactivar, para evitar el pantallazo del menú completo.
+                if (esEdicionModulo && moduloIdEditado) {
+                    return actualizarElementoSidebar('modulo', moduloIdEditado);
+                }
+
+                if (esEdicionSubmodulo && submoduloIdEditado) {
+                    return actualizarElementoSidebar('submodulo', submoduloIdEditado);
+                }
+
                 return actualizarSidebar();
             })
             .catch((error) => {
