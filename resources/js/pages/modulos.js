@@ -146,8 +146,22 @@ document.addEventListener('DOMContentLoaded', function () {
         return Promise.resolve();
     }
 
+    // Actualiza un enlace conservando su nodo para evitar parpadeos y mantener listeners.
+    function sincronizarEnlaceSidebar(actual, nuevo) {
+        actual.href = nuevo.getAttribute('href') || '#';
+        actual.className = nuevo.className;
+
+        if (nuevo.hasAttribute('title')) {
+            actual.setAttribute('title', nuevo.getAttribute('title'));
+        } else {
+            actual.removeAttribute('title');
+        }
+
+        actual.innerHTML = nuevo.innerHTML;
+    }
+
     // Sincroniza únicamente el elemento afectado del sidebar, sin reemplazar todo el menú.
-    function actualizarElementoSidebar(tipo, id) {
+    function actualizarElementoSidebar(tipo, id, conservarNodos = false) {
         const sidebar = document.querySelector('#appSidebar .sidebar-menu');
         if (!sidebar) {
             return Promise.resolve();
@@ -184,13 +198,46 @@ document.addEventListener('DOMContentLoaded', function () {
                     const submenuActual = grupoActual.querySelector('.sidebar-submenu');
                     const submenuNuevo = grupoNuevo.querySelector('.sidebar-submenu');
                     const abierto = Boolean(submenuActual?.classList.contains('show'));
-                    grupoActual.replaceWith(grupoNuevo.cloneNode(true));
-                    const grupoInsertado = sidebar.querySelector(selector)?.closest('.sidebar-group');
-                    const submenuInsertado = grupoInsertado?.querySelector('.sidebar-submenu');
-                    if (abierto && submenuInsertado) {
-                        submenuInsertado.classList.add('show');
-                        const boton = grupoInsertado.querySelector('.sidebar-group-toggle');
-                        boton?.setAttribute('aria-expanded', 'true');
+
+                    if (conservarNodos) {
+                        const iconoActual = actualToggle.querySelector(':scope > i:not(.sidebar-group-caret)');
+                        const iconoNuevo = nuevoToggle.querySelector(':scope > i:not(.sidebar-group-caret)');
+                        const nombreActual = actualToggle.querySelector(':scope > span');
+                        const nombreNuevo = nuevoToggle.querySelector(':scope > span');
+
+                        if (iconoActual && iconoNuevo) {
+                            iconoActual.replaceWith(iconoNuevo.cloneNode(true));
+                        } else if (iconoActual && !iconoNuevo) {
+                            iconoActual.remove();
+                        } else if (!iconoActual && iconoNuevo) {
+                            actualToggle.insertBefore(iconoNuevo.cloneNode(true), nombreActual || actualToggle.firstChild);
+                        }
+
+                        if (nombreActual && nombreNuevo) {
+                            nombreActual.textContent = nombreNuevo.textContent;
+                        }
+                        actualToggle.dataset.label = nuevoToggle.dataset.label || '';
+                        actualToggle.classList.toggle('active', nuevoToggle.classList.contains('active'));
+
+                        if (submenuActual && submenuNuevo) {
+                            submenuActual.querySelectorAll('.sidebar-sublink').forEach((linkActual) => {
+                                const linkNuevo = submenuNuevo.querySelector('.sidebar-sublink[data-submodulo-id="' + linkActual.dataset.submoduloId + '"]');
+                                if (!linkNuevo) {
+                                    linkActual.remove();
+                                    return;
+                                }
+                                sincronizarEnlaceSidebar(linkActual, linkNuevo);
+                            });
+                        }
+                    } else {
+                        grupoActual.replaceWith(grupoNuevo.cloneNode(true));
+                        const grupoInsertado = sidebar.querySelector(selector)?.closest('.sidebar-group');
+                        const submenuInsertado = grupoInsertado?.querySelector('.sidebar-submenu');
+                        if (abierto && submenuInsertado) {
+                            submenuInsertado.classList.add('show');
+                            const boton = grupoInsertado.querySelector('.sidebar-group-toggle');
+                            boton?.setAttribute('aria-expanded', 'true');
+                        }
                     }
                 } else if (grupoActual && !grupoNuevo) {
                     grupoActual.remove();
@@ -228,7 +275,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const contenedorActual = actualLink?.closest('.sidebar-submenu');
                 const contenedorNuevo = nuevoLink?.closest('.sidebar-submenu');
                 if (actualLink && nuevoLink) {
-                    actualLink.replaceWith(nuevoLink.cloneNode(true));
+                    if (conservarNodos) {
+                        sincronizarEnlaceSidebar(actualLink, nuevoLink);
+                    } else {
+                        actualLink.replaceWith(nuevoLink.cloneNode(true));
+                    }
                 } else if (actualLink && !nuevoLink) {
                     actualLink.remove();
                 } else if (!actualLink && nuevoLink && contenedorNuevo) {
@@ -866,11 +917,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Las ediciones actualizan solo el elemento afectado del sidebar,
                 // igual que activar/desactivar, para evitar el pantallazo del menú completo.
                 if (esEdicionModulo && moduloIdEditado) {
-                    return actualizarElementoSidebar('modulo', moduloIdEditado);
+                    return actualizarElementoSidebar('modulo', moduloIdEditado, true);
                 }
 
                 if (esEdicionSubmodulo && submoduloIdEditado) {
-                    return actualizarElementoSidebar('submodulo', submoduloIdEditado);
+                    return actualizarElementoSidebar('submodulo', submoduloIdEditado, true);
                 }
 
                 return actualizarSidebar();
