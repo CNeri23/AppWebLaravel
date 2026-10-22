@@ -306,7 +306,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            if (typeof window.inicializarGruposSidebar === 'function') {
+            // En ediciones solo cambiamos el contenido del nodo existente.
+            // Reinicializar todos los grupos aquí vuelve a abrir/cerrar los submenús
+            // y provoca el parpadeo que no ocurre al activar o desactivar.
+            if (!conservarNodos && typeof window.inicializarGruposSidebar === 'function') {
                 window.inicializarGruposSidebar();
             }
         });
