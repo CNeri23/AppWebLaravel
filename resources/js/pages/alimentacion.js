@@ -191,4 +191,145 @@ document.addEventListener('DOMContentLoaded', function () {
 
     inicializarValidacionFormularios();
 
+    // Evita envíos duplicados y recargas completas; los cambios se envían por AJAX.
+    function serializarFormulario(formulario) {
+        return Array.from(new FormData(formulario).entries())
+            .filter(([key]) => !['_token', '_method'].includes(key))
+            .map(([key, value]) => [key, String(value).trim()])
+            .sort(([a], [b]) => a.localeCompare(b));
+    }
+
+    function sinCambios(formulario) {
+        const inicial = formulario.dataset.valoresIniciales;
+        if (!inicial) return false;
+        return JSON.stringify(serializarFormulario(formulario)) === inicial;
+    }
+
+    function guardarSnapshot(formulario) {
+        if (formulario) formulario.dataset.valoresIniciales = JSON.stringify(serializarFormulario(formulario));
+    }
+
+    function actualizarFilaAlimento(data) {
+        const tabla = document.getElementById('tablaAlimentos');
+        if (!tabla) return;
+        const alimento = data.alimento;
+        const dt = DataTable.isDataTable(tabla) ? new DataTable.Api(tabla) : null;
+        const fila = tabla.querySelector('tbody tr[data-id="' + alimento.id + '"]');
+        if (!fila) {
+            // El alta se refleja en el DOM sin recargar la página.
+            const tr = document.createElement('tr');
+            tr.dataset.id = alimento.id;
+            const porcion = alimento.nombre_porcion
+                ? '<small class="d-block text-secondary">' + escapeHtml(alimento.nombre_porcion) + ' = ' + escapeHtml(alimento.cantidad_porcion) + ' ' + escapeHtml(alimento.unidad_base) + '</small>'
+                : '';
+            const estado = Number(alimento.activo) ? 'Activo' : 'Inactivo';
+            const clase = Number(alimento.activo) ? 'text-bg-success' : 'text-bg-secondary';
+            tr.innerHTML = '<td class="ps-4"><span class="fw-semibold">' + escapeHtml(alimento.nombre) + '</span></td>' +
+                '<td>' + escapeHtml(alimento.categoria || '—') + '</td>' +
+                '<td><span>' + escapeHtml(String(alimento.unidad_base).toUpperCase()) + '</span>' + porcion + '</td>' +
+                '<td>' + Number(alimento.calorias).toFixed(1) + ' kcal</td><td>' + Number(alimento.proteinas).toFixed(1) + ' g</td>' +
+                '<td>' + Number(alimento.carbohidratos).toFixed(1) + ' g</td><td>' + Number(alimento.grasas).toFixed(1) + ' g</td>' +
+                '<td class="text-center"><span class="badge rounded-pill ' + clase + '">' + estado + '</span></td><td class="text-center px-4">—</td>';
+            if (dt) dt.row.add(tr).draw(false); else tabla.querySelector('tbody').appendChild(tr);
+            return;
+        }
+        fila.querySelectorAll('td')[0].innerHTML = '<span class="fw-semibold">' + escapeHtml(alimento.nombre) + '</span>';
+        fila.querySelectorAll('td')[1].textContent = alimento.categoria || '—';
+        fila.querySelectorAll('td')[2].innerHTML = '<span>' + escapeHtml(String(alimento.unidad_base).toUpperCase()) + '</span>' +
+            (alimento.nombre_porcion ? '<small class="d-block text-secondary">' + escapeHtml(alimento.nombre_porcion) + ' = ' + escapeHtml(alimento.cantidad_porcion) + ' ' + escapeHtml(alimento.unidad_base) + '</small>' : '');
+        [3,4,5,6].forEach((index, offset) => {
+            const val = [alimento.calorias, alimento.proteinas, alimento.carbohidratos, alimento.grasas][offset];
+            fila.querySelectorAll('td')[index].textContent = Number(val).toFixed(1) + (index === 3 ? ' kcal' : ' g');
+        });
+        fila.querySelectorAll('td')[7].innerHTML = '<span class="badge rounded-pill ' + (Number(alimento.activo) ? 'text-bg-success' : 'text-bg-secondary') + '">' + (Number(alimento.activo) ? 'Activo' : 'Inactivo') + '</span>';
+        fila.querySelectorAll('td')[8].querySelectorAll('[data-bs-target="#modalEditarAlimento"]').forEach(btn => {
+            Object.entries({id: alimento.id, nombre: alimento.nombre, categoria: alimento.categoria, unidad: alimento.unidad_base,
+                nombrePorcion: alimento.nombre_porcion, cantidadPorcion: alimento.cantidad_porcion, calorias: alimento.calorias,
+                proteinas: alimento.proteinas, carbohidratos: alimento.carbohidratos, grasas: alimento.grasas, activo: alimento.activo ? 1 : 0})
+                .forEach(([key, value]) => btn.dataset[key] = value ?? '');
+        });
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    }
+
+    function inicializarEnviosAjax() {
+        const forms = [
+            document.getElementById('formCrearAlimento'),
+            document.getElementById('formEditarAlimento'),
+            document.getElementById('formRegistroComida'),
+            document.getElementById('formEliminarAlimento'),
+            document.getElementById('formEliminarRegistro')
+        ].filter(Boolean);
+
+        forms.forEach(formulario => {
+            guardarSnapshot(formulario);
+            formulario.addEventListener('submit', async evento => {
+                if (!['formCrearAlimento','formEditarAlimento','formRegistroComida','formEliminarAlimento','formEliminarRegistro'].includes(formulario.id)) return;
+                evento.preventDefault();
+
+                if (formulario.id === 'formEditarAlimento' && sinCambios(formulario)) {
+                    window.showToast?.('info', 'No hay cambios para guardar.');
+                    return;
+                }
+
+                const submit = formulario.querySelector('[type="submit"]');
+                if (submit?.disabled) return;
+                if (submit) { submit.disabled = true; submit.dataset.textoOriginal = submit.innerHTML; }
+                try {
+                    const respuesta = await fetch(formulario.action, {
+                        method: 'POST',
+                        body: new FormData(formulario),
+                        headers: {'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest'}
+                    });
+                    const resultado = await respuesta.json().catch(() => ({}));
+                    if (respuesta.status === 422 && resultado.errors) {
+                        Object.entries(resultado.errors).forEach(([campo, mensajes]) => {
+                            const input = formulario.querySelector('[name="' + CSS.escape(campo) + '"]');
+                            if (input) {
+                                input.classList.add('is-invalid');
+                                let feedback = input.parentElement.querySelector('.invalid-feedback');
+                                if (!feedback) { feedback = document.createElement('div'); feedback.className = 'invalid-feedback js-campo-feedback'; input.insertAdjacentElement('afterend', feedback); }
+                                feedback.textContent = mensajes[0];
+                            }
+                        });
+                        window.showToast?.('warning', resultado.message || 'Revisa los campos marcados.');
+                        return;
+                    }
+                    if (!respuesta.ok || !resultado.success) throw new Error(resultado.message || 'No fue posible guardar los cambios.');
+
+                    if (resultado.alimento) actualizarFilaAlimento(resultado);
+                    if (formulario.id === 'formRegistroComida' && resultado.registro) {
+                        window.showToast?.('success', resultado.mensaje || 'Comida registrada correctamente.');
+                        bootstrap.Modal.getInstance(formulario.closest('.modal'))?.hide();
+                        // El registro alimentario modifica los totales y la tabla de la fecha; conserva la página y solicita actualizar la vista explícitamente.
+                        document.dispatchEvent(new CustomEvent('alimentacion:registro-actualizado', {detail: resultado}));
+                    } else if (formulario.id.startsWith('formEliminar')) {
+                        const modal = formulario.closest('.modal');
+                        bootstrap.Modal.getInstance(modal)?.hide();
+                        const id = resultado.id;
+                        const tabla = formulario.id === 'formEliminarAlimento' ? document.getElementById('tablaAlimentos') : document.getElementById('tablaRegistrosComida');
+                        const tr = tabla?.querySelector('tbody tr[data-id="' + id + '"]');
+                        if (tr && DataTable.isDataTable(tabla)) new DataTable.Api(tabla).row(tr).remove().draw(false);
+                        else tr?.remove();
+                        window.showToast?.('success', resultado.mensaje || 'Registro eliminado correctamente.');
+                    } else {
+                        window.showToast?.('success', resultado.mensaje || 'Cambios guardados correctamente.');
+                        bootstrap.Modal.getInstance(formulario.closest('.modal'))?.hide();
+                        guardarSnapshot(formulario);
+                    }
+                } catch (error) {
+                    window.showToast?.('error', error.message || 'Ocurrió un error al guardar.');
+                } finally {
+                    if (submit) { submit.disabled = false; submit.innerHTML = submit.dataset.textoOriginal || submit.innerHTML; }
+                }
+            });
+        });
+
+        document.getElementById('modalEditarAlimento')?.addEventListener('shown.bs.modal', () => guardarSnapshot(document.getElementById('formEditarAlimento')));
+    }
+
+    inicializarEnviosAjax();
+
 });
