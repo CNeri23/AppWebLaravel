@@ -7,6 +7,14 @@
     $puedeEliminar = $accionesRegistros->contains('slug', 'registro-comidas.eliminar');
     $accionCrearRegistro = $accionesRegistros->firstWhere('slug', 'registro-comidas.crear');
     $accionEliminarRegistro = $accionesRegistros->firstWhere('slug', 'registro-comidas.eliminar');
+    $alimentosParaJs = $alimentos->map(function ($a) {
+        return [
+            'id' => $a->id,
+            'nombre' => $a->nombre,
+            'unidad' => $a->unidad_base,
+            'porcion' => (bool) ($a->nombre_porcion && $a->cantidad_porcion),
+        ];
+    })->values();
 @endphp
 
 <div class="card border-0 shadow-sm usuarios-header-card mb-4">
@@ -150,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('filasAlimentos');
     const addButton = document.getElementById('agregarAlimento');
     let index = 1;
-    const foods = @json($alimentos->map(function ($a) { return ['id' => $a->id, 'nombre' => $a->nombre, 'unidad' => $a->unidad_base, 'porcion' => (bool) ($a->nombre_porcion && $a->cantidad_porcion)]; })->values());
+    const foods = @json($alimentosParaJs);
 
     function configureUnit(row) {
         const food = row.querySelector('.alimento-select');
