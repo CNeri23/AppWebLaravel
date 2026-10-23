@@ -68,9 +68,9 @@
                         <td>{{ number_format((float) $registro->detalles->sum('proteinas'), 1) }} g</td>
                         <td>{{ number_format((float) $registro->detalles->sum('carbohidratos'), 1) }} g</td>
                         <td>{{ number_format((float) $registro->detalles->sum('grasas'), 1) }} g</td>
-                        <td class="text-end pe-4">
-                            <div class="d-inline-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn" data-tooltip="Ver alimentos"
+                        <td class="text-center px-4">
+                            <div class="usuario-actions">
+                                <button type="button" class="btn btn-sm btn-outline-info usuario-action-btn" data-tooltip="Ver alimentos"
                                     data-bs-toggle="modal" data-bs-target="#modalDetalleComida"
                                     data-tipo="{{ ucfirst($registro->tipo_comida) }}" data-notas="{{ $registro->notas }}"
                                     data-detalles="{{ json_encode($registro->detalles->map(fn ($d) => ['nombre' => $d->nombre_alimento, 'cantidad' => $d->cantidad, 'unidad' => $d->unidad, 'calorias' => $d->calorias, 'proteinas' => $d->proteinas, 'carbohidratos' => $d->carbohidratos, 'grasas' => $d->grasas])->values()) }}">
@@ -147,29 +147,6 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const formRegistro = document.getElementById('formRegistroComida');
-    formRegistro?.addEventListener('submit', function (event) {
-        formRegistro.querySelectorAll('.is-invalid').forEach(input => input.classList.remove('is-invalid'));
-        let firstInvalid = null;
-        formRegistro.querySelectorAll('[required], input[type="number"]').forEach(input => {
-            let message = '';
-            if (input.required && !input.value.trim()) message = 'Este campo es obligatorio.';
-            else if (input.type === 'number' && input.value !== '' && !input.checkValidity()) message = 'Ingresa una cantidad mayor que cero.';
-            if (message) {
-                input.classList.add('is-invalid');
-                let feedback = input.parentElement.querySelector('.invalid-feedback');
-                if (!feedback) { feedback = document.createElement('div'); feedback.className = 'invalid-feedback'; input.parentElement.appendChild(feedback); }
-                feedback.textContent = message;
-                firstInvalid ||= input;
-            }
-        });
-        if (firstInvalid) { event.preventDefault(); firstInvalid.focus(); }
-    });
-    formRegistro?.querySelectorAll('input, select').forEach(input => input.addEventListener('input', () => {
-        input.classList.remove('is-invalid');
-        const feedback = input.parentElement.querySelector('.invalid-feedback');
-        if (feedback) feedback.textContent = '';
-    }));
     const container = document.getElementById('filasAlimentos');
     const addButton = document.getElementById('agregarAlimento');
     let index = 1;
