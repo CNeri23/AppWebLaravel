@@ -40,8 +40,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($alimentos as $alimento)
-                    <tr>
+                    @foreach ($alimentos as $alimento)<tr>
                         <td class="ps-4"><span class="fw-semibold">{{ $alimento->nombre }}</span></td>
                         <td>{{ $alimento->categoria ?: '—' }}</td>
                         <td>
@@ -83,9 +82,7 @@
                             </div>
                         </td>
                     </tr>
-                    @empty
-                    <tr><td colspan="9" class="text-center text-secondary py-5"><i class="fa-solid fa-carrot d-block fs-3 mb-2"></i>No hay alimentos registrados todavía.</td></tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
             </table>
         </div>
