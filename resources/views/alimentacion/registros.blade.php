@@ -77,7 +77,7 @@
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
                                 @if ($puedeEliminar)
-                                <button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn" data-tooltip="{{ $accionEliminarRegistro->nombre }}"
+                                <button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn" data-action-icon="{{ e($accionEliminarRegistro->icono ?: '<i class="fa-solid fa-trash"></i>') }}" data-tooltip="{{ $accionEliminarRegistro->nombre }}"
                                     data-bs-toggle="modal" data-bs-target="#modalEliminarRegistro"
                                     data-url="{{ route('alimentacion.registros.destroy', $registro) }}" data-tipo="{{ ucfirst($registro->tipo_comida) }}">
                                     {!! $accionEliminarRegistro->icono ?: '<i class="fa-solid fa-trash"></i>' !!}
