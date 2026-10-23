@@ -11,8 +11,8 @@
     $accionEliminarAlimento = $accionesAlimentos->firstWhere('slug', 'alimentos.eliminar');
 @endphp
 
-<div class="card border-0 shadow-sm mb-4">
-    <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+<div class="card border-0 shadow-sm usuarios-header-card mb-4">
+    <div class="card-body usuarios-header-content">
         <div>
             <h2 class="fw-bold mb-1">Catálogo de alimentos</h2>
             <p class="text-secondary mb-0">Administra los alimentos y sus valores nutricionales por cada 100 g o 100 ml.</p>
