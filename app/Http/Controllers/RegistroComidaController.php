@@ -87,13 +87,16 @@ class RegistroComidaController extends Controller
         });
 
         AuditLogService::log('alimentacion', 'REGISTRAR_COMIDA', 'Se registró '.$registro->tipo_comida.' del '.$registro->fecha->format('d/m/Y').'.', $registro);
+        if ($request->expectsJson()) return response()->json(['success' => true, 'id' => $registro->id, 'fecha' => $datos['fecha'], 'mensaje' => 'Comida registrada correctamente.']);
         return redirect()->route('alimentacion.registros.index', ['fecha' => $datos['fecha']])->with('success', 'Comida registrada correctamente.');
     }
 
-    public function destroy(RegistroComida $registro)
+    public function destroy(Request $request, RegistroComida $registro)
     {
         abort_unless($registro->usuario_id === auth()->id(), 403);
+        $id = $registro->id;
         $registro->delete();
+        if ($request->expectsJson()) return response()->json(['success' => true, 'id' => $id, 'mensaje' => 'Registro eliminado correctamente.']);
         return redirect()->route('alimentacion.registros.index')->with('success', 'Registro eliminado correctamente.');
     }
 
