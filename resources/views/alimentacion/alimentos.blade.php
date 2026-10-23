@@ -101,7 +101,7 @@
                 <h5 class="modal-title fw-semibold" id="modalCrearAlimentoLabel"><i class="fa-solid fa-carrot me-2"></i>Nuevo alimento</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <form method="POST" action="{{ route('alimentacion.alimentos.store') }}" class="js-toast-form" novalidate autocomplete="off">
+            <form method="POST" id="formCrearAlimento" action="{{ route('alimentacion.alimentos.store') }}" class="js-toast-form" novalidate autocomplete="off">
                 @csrf
                 <div class="modal-body">
                     <div class="row g-3">
