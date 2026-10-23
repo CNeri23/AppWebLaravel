@@ -73,7 +73,7 @@
                                 <button type="button" class="btn btn-sm btn-outline-info usuario-action-btn" data-tooltip="Ver alimentos"
                                     data-bs-toggle="modal" data-bs-target="#modalDetalleComida"
                                     data-tipo="{{ ucfirst($registro->tipo_comida) }}" data-notas="{{ $registro->notas }}"
-                                    data-detalles="{{ json_encode($registro->detalles->map(fn ($d) => ['nombre' => $d->nombre_alimento, 'cantidad' => $d->cantidad, 'unidad' => $d->unidad, 'calorias' => $d->calorias, 'proteinas' => $d->proteinas, 'carbohidratos' => $d->carbohidratos, 'grasas' => $d->grasas])->values()) }}">
+                                    data-detalles="{{ json_encode($registro->detalles->map(function ($d) { return ['nombre' => $d->nombre_alimento, 'cantidad' => $d->cantidad, 'unidad' => $d->unidad, 'calorias' => $d->calorias, 'proteinas' => $d->proteinas, 'carbohidratos' => $d->carbohidratos, 'grasas' => $d->grasas]; })->values()) }}">
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
                                 @if ($puedeEliminar)
