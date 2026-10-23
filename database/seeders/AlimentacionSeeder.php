@@ -61,6 +61,7 @@ class AlimentacionSeeder extends Seeder
                 ]
             );
 
+            $ordenAccion = 1;
             foreach ($config['acciones'] as $accionSlug => [$nombre, $icono]) {
                 Accion::updateOrCreate(
                     ['slug' => $accionSlug],
@@ -69,6 +70,7 @@ class AlimentacionSeeder extends Seeder
                         'nombre' => $nombre,
                         'descripcion' => $nombre.' dentro del módulo de alimentación.',
                         'icono' => '<i class="fa-solid '.$icono.'"></i>',
+                        'orden' => $ordenAccion++,
                         'activo' => true,
                     ]
                 );
