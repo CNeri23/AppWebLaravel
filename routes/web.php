@@ -19,6 +19,9 @@ use App\Http\Controllers\CajaController;
 use App\Http\Controllers\SesionCajaController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\AsistenciaController;
+use App\Http\Controllers\AlimentoController;
+use App\Http\Controllers\RegistroComidaController;
+use App\Http\Controllers\PanelNutricionalController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
