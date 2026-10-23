@@ -54,104 +54,140 @@ document.addEventListener('DOMContentLoaded', function () {
 
         new DataTable(tabla, config);
 
-    // Validación de formularios con el mismo patrón visual de Usuarios:
-    // validar al escribir/cambiar, mostrar is-invalid/is-valid y enfocar el primer error.
-    function feedback(input) {
-        return input.parentElement?.querySelector('.invalid-feedback')
-            || input.closest('.mb-3, .col-md-3, .col-md-4, .col-md-6, .col-md-8, .col-md-12')?.querySelector('.invalid-feedback')
-            || input.parentElement?.parentElement?.querySelector('.invalid-feedback');
+    // Validación en vivo siguiendo el patrón usado por los módulos Planes y Usuarios.
+    function camposFormulario(formulario) {
+        return Array.from(formulario.querySelectorAll(
+            'input:not([type="hidden"]):not([type="submit"]):not([type="button"]), select, textarea'
+        ));
     }
 
-    function limpiarValidacion(input) {
-        input.classList.remove('is-invalid', 'is-valid');
-        input.removeAttribute('aria-invalid');
-        const aviso = feedback(input);
-        if (aviso) aviso.textContent = '';
+    function limpiarValidacionCampo(campo) {
+        campo.classList.remove('is-invalid', 'is-valid');
+        campo.setCustomValidity('');
+        campo.removeAttribute('aria-invalid');
+        const feedbackExistente = campo.parentElement?.querySelector('.js-campo-feedback');
+        if (feedbackExistente) feedbackExistente.remove();
+        const feedbackFijo = campo.parentElement?.querySelector('.invalid-feedback[data-error-for]');
+        if (feedbackFijo) feedbackFijo.textContent = '';
     }
 
-    function validarCampo(input) {
-        limpiarValidacion(input);
-        let mensaje = '';
-        const valor = String(input.value ?? '').trim();
+    function mensajeValidacionCampo(campo, formulario) {
+        const valor = String(campo.value ?? '').trim();
+        if (campo.required && valor === '') return 'Este campo es obligatorio.';
+        if (valor === '') return '';
 
-        if (input.required && !valor) {
-            mensaje = 'Este campo es obligatorio.';
-        } else if (input.type === 'number' && valor !== '' && !input.checkValidity()) {
-            mensaje = Number(input.min) > 0
-                ? 'Ingresa una cantidad mayor que cero.'
-                : 'Ingresa un valor numérico válido, igual o mayor que cero.';
-        } else if (input.name === 'nombre' && valor.length > 150) {
-            mensaje = 'No puede superar 150 caracteres.';
-        } else if (input.name === 'categoria' && valor.length > 80) {
-            mensaje = 'No puede superar 80 caracteres.';
-        } else if (input.name === 'nombre_porcion' && valor.length > 80) {
-            mensaje = 'No puede superar 80 caracteres.';
-        } else if (input.name === 'notas' && valor.length > 2000) {
-            mensaje = 'No puede superar 2000 caracteres.';
+        if (campo.type === 'number') {
+            const numero = Number(valor);
+            const minimo = campo.min !== '' ? Number(campo.min) : -Infinity;
+            const maximo = campo.max !== '' ? Number(campo.max) : Infinity;
+            if (!Number.isFinite(numero) || numero < minimo || numero > maximo || !campo.checkValidity()) {
+                return minimo > 0
+                    ? 'Ingresa una cantidad mayor que cero y válida.'
+                    : 'Ingresa un valor numérico válido igual o mayor que cero.';
+            }
         }
 
-        const aviso = feedback(input);
-        if (mensaje) {
-            input.classList.add('is-invalid');
-            input.setAttribute('aria-invalid', 'true');
-            if (aviso) aviso.textContent = mensaje;
+        if (campo.name === 'nombre' && valor.length > 150) return 'El nombre no puede superar los 150 caracteres.';
+        if (campo.name === 'categoria' && valor.length > 80) return 'La categoría no puede superar los 80 caracteres.';
+        if (campo.name === 'nombre_porcion' && valor.length > 80) return 'El nombre de porción no puede superar los 80 caracteres.';
+        if (campo.name === 'notas' && valor.length > 2000) return 'Las notas no pueden superar los 2000 caracteres.';
+
+        if (formulario.id === 'formRegistroComida' && campo.name.endsWith('[cantidad]')) {
+            if (!Number.isFinite(Number(valor)) || Number(valor) <= 0) return 'La cantidad debe ser mayor que cero.';
+        }
+        return '';
+    }
+
+    function validarCampo(campo, formulario) {
+        limpiarValidacionCampo(campo);
+        const mensaje = mensajeValidacionCampo(campo, formulario);
+        if (!mensaje) {
+            if (String(campo.value ?? '').trim() !== '' || campo.required) campo.classList.add('is-valid');
+            campo.setAttribute('aria-invalid', 'false');
+            return true;
+        }
+
+        campo.classList.add('is-invalid');
+        campo.setAttribute('aria-invalid', 'true');
+        campo.setCustomValidity(mensaje);
+
+        const feedbackFijo = campo.parentElement?.querySelector('.invalid-feedback[data-error-for]');
+        if (feedbackFijo) {
+            feedbackFijo.textContent = mensaje;
+        } else {
+            const feedback = document.createElement('div');
+            feedback.className = 'invalid-feedback js-campo-feedback';
+            feedback.textContent = mensaje;
+            campo.insertAdjacentElement('afterend', feedback);
+        }
+        return false;
+    }
+
+    function validarFormulario(formulario) {
+        let primerInvalido = null;
+        camposFormulario(formulario).forEach(function (campo) {
+            if (!validarCampo(campo, formulario) && !primerInvalido) primerInvalido = campo;
+        });
+        if (primerInvalido) {
+            primerInvalido.focus();
             return false;
         }
-
-        if (valor || input.required) {
-            input.classList.add('is-valid');
-            input.setAttribute('aria-invalid', 'false');
-        }
+        camposFormulario(formulario).forEach(campo => {
+            if (typeof campo.value === 'string') campo.value = campo.value.trim();
+        });
         return true;
     }
 
-    function inicializarValidacion(form, modal) {
-        if (!form) return;
-        const campos = () => Array.from(form.querySelectorAll('input[name], select[name], textarea[name]'))
-            .filter(input => ![' _token', '_method'].includes(input.name) && input.type !== 'hidden');
+    function inicializarValidacionFormularios() {
+        const formularios = [
+            ['formCrearAlimento', 'modalCrearAlimento'],
+            ['formEditarAlimento', 'modalEditarAlimento'],
+            ['formRegistroComida', 'modalRegistrarComida']
+        ];
 
-        campos().forEach(input => {
-            input.addEventListener('input', () => validarCampo(input));
-            input.addEventListener('change', () => validarCampo(input));
-        });
+        formularios.forEach(([formId, modalId]) => {
+            const formulario = document.getElementById(formId);
+            const modal = document.getElementById(modalId);
+            if (!formulario) return;
 
-        form.addEventListener('submit', function (event) {
-            let valido = true;
-            let primero = null;
-            campos().forEach(input => {
-                if (!validarCampo(input)) {
-                    valido = false;
-                    primero ||= input;
+            camposFormulario(formulario).forEach(campo => {
+                campo.addEventListener('input', () => validarCampo(campo, formulario));
+                campo.addEventListener('change', () => validarCampo(campo, formulario));
+            });
+
+            formulario.addEventListener('submit', function (evento) {
+                if (!validarFormulario(formulario)) {
+                    evento.preventDefault();
+                    window.showToast?.('warning', 'Completa correctamente los campos marcados.');
                 }
             });
-            // Cada fila de alimento exige alimento, cantidad positiva y unidad.
-            if (form.id === 'formRegistroComida') {
-                form.querySelectorAll('.fila-alimento').forEach(row => {
-                    row.querySelectorAll('[required]').forEach(input => {
-                        if (!validarCampo(input)) {
-                            valido = false;
-                            primero ||= input;
-                        }
-                    });
+
+            if (modal) {
+                modal.addEventListener('show.bs.modal', () => {
+                    camposFormulario(formulario).forEach(limpiarValidacionCampo);
                 });
-            }
-            if (!valido) {
-                event.preventDefault();
-                primero?.focus();
+                modal.addEventListener('hidden.bs.modal', () => {
+                    camposFormulario(formulario).forEach(limpiarValidacionCampo);
+                });
             }
         });
 
-        if (modal) {
-            modal.addEventListener('shown.bs.modal', () => campos().forEach(limpiarValidacion));
-            modal.addEventListener('hidden.bs.modal', () => {
-                form.querySelectorAll('.is-invalid, .is-valid').forEach(input => limpiarValidacion(input));
-                form.querySelectorAll('.invalid-feedback').forEach(el => { el.textContent = ''; });
-            });
-        }
+        // Las filas de alimentos se crean dinámicamente: también deben validar al escribir.
+        const formularioComida = document.getElementById('formRegistroComida');
+        formularioComida?.addEventListener('input', function (evento) {
+            const campo = evento.target;
+            if (campo.matches('.fila-alimento input, .fila-alimento select')) {
+                validarCampo(campo, formularioComida);
+            }
+        });
+        formularioComida?.addEventListener('change', function (evento) {
+            const campo = evento.target;
+            if (campo.matches('.fila-alimento input, .fila-alimento select')) {
+                validarCampo(campo, formularioComida);
+            }
+        });
     }
 
-    inicializarValidacion(document.getElementById('formCrearAlimento'), document.getElementById('modalCrearAlimento'));
-    inicializarValidacion(document.getElementById('formEditarAlimento'), document.getElementById('modalEditarAlimento'));
-    inicializarValidacion(document.getElementById('formRegistroComida'), document.getElementById('modalRegistrarComida'));
-    });
+    inicializarValidacionFormularios();
+
 });
