@@ -229,7 +229,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 '<td><span>' + escapeHtml(String(alimento.unidad_base).toUpperCase()) + '</span>' + porcion + '</td>' +
                 '<td>' + Number(alimento.calorias).toFixed(1) + ' kcal</td><td>' + Number(alimento.proteinas).toFixed(1) + ' g</td>' +
                 '<td>' + Number(alimento.carbohidratos).toFixed(1) + ' g</td><td>' + Number(alimento.grasas).toFixed(1) + ' g</td>' +
-                '<td class="text-center"><span class="badge rounded-pill ' + clase + '">' + estado + '</span></td><td class="text-center px-4">—</td>';
+                '<td class="text-center"><span class="badge rounded-pill ' + clase + '">' + estado + '</span></td>' +
+                '<td class="text-center px-4"><div class="usuario-actions">' +
+                '<button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn" data-bs-toggle="modal" data-bs-target="#modalEditarAlimento" data-tooltip="Editar alimento" data-id="' + escapeHtml(alimento.id) + '" data-nombre="' + escapeHtml(alimento.nombre) + '" data-categoria="' + escapeHtml(alimento.categoria || '') + '" data-unidad="' + escapeHtml(alimento.unidad_base || '') + '" data-nombre-porcion="' + escapeHtml(alimento.nombre_porcion || '') + '" data-cantidad-porcion="' + escapeHtml(alimento.cantidad_porcion ?? '') + '" data-calorias="' + escapeHtml(alimento.calorias) + '" data-proteinas="' + escapeHtml(alimento.proteinas) + '" data-carbohidratos="' + escapeHtml(alimento.carbohidratos) + '" data-grasas="' + escapeHtml(alimento.grasas) + '" data-activo="' + (Number(alimento.activo) ? '1' : '0') + '" data-url="/alimentacion/alimentos/' + encodeURIComponent(alimento.id) + '">' + (tabla.dataset.iconEditar || '<i class="fa-solid fa-pen"></i>') + '</button>' +
+                '<button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn" data-tooltip="Eliminar alimento" data-bs-toggle="modal" data-bs-target="#modalEliminarAlimento" data-nombre="' + escapeHtml(alimento.nombre) + '" data-url="/alimentacion/alimentos/' + encodeURIComponent(alimento.id) + '">' + (tabla.dataset.iconEliminar || '<i class="fa-solid fa-trash"></i>') + '</button>' +
+                '</div></td>';
             if (dt) dt.row.add(tr).draw(false); else tabla.querySelector('tbody').appendChild(tr);
             return;
         }
