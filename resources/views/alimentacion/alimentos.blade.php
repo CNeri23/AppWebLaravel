@@ -63,7 +63,7 @@
                         <td class="text-center px-4">
                             <div class="usuario-actions">
                                 @if ($puedeEditar)
-                                <button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn" data-tooltip="{{ $accionEditarAlimento->nombre }}"
+                                <button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn" data-action-icon="{{ e($accionEditarAlimento->icono ?: '<i class="fa-solid fa-pen"></i>') }}" data-tooltip="{{ $accionEditarAlimento->nombre }}"
                                     data-bs-toggle="modal" data-bs-target="#modalEditarAlimento"
                                     data-id="{{ $alimento->id }}" data-nombre="{{ $alimento->nombre }}"
                                     data-categoria="{{ $alimento->categoria }}" data-unidad="{{ $alimento->unidad_base }}"
@@ -77,7 +77,7 @@
                                 </button>
                                 @endif
                                 @if ($puedeEliminar)
-                                <button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn" data-tooltip="{{ $accionEliminarAlimento->nombre }}"
+                                <button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn" data-action-icon="{{ e($accionEliminarAlimento->icono ?: '<i class="fa-solid fa-trash"></i>') }}" data-tooltip="{{ $accionEliminarAlimento->nombre }}"
                                     data-bs-toggle="modal" data-bs-target="#modalEliminarAlimento"
                                     data-nombre="{{ $alimento->nombre }}" data-url="{{ route('alimentacion.alimentos.destroy', $alimento) }}">
                                     {!! $accionEliminarAlimento->icono ?: '<i class="fa-solid fa-trash"></i>' !!}
