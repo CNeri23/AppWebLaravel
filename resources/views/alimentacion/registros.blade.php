@@ -60,7 +60,7 @@
             <table id="tablaRegistrosComida" class="table table-hover align-middle mb-0 w-100">
                 <thead><tr><th class="ps-4">Comida</th><th>Notas</th><th>Alimentos</th><th>Calorías</th><th>Proteínas</th><th>Carbohidratos</th><th>Grasas</th><th class="text-center pe-4">Acciones</th></tr></thead>
                 <tbody>
-                @foreach ($registros as $registro)<tr>
+                @foreach ($registros as $registro)<tr data-id="{{ $registro->id }}">
                         <td class="ps-4"><span class="fw-semibold">{{ ucfirst($registro->tipo_comida) }}</span><small class="d-block text-secondary">{{ $registro->created_at?->format('H:i') }}</small></td>
                         <td>{{ $registro->notas ?: '—' }}</td>
                         <td>{{ $registro->detalles->count() }}</td>
