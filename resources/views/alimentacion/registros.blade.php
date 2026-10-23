@@ -9,8 +9,8 @@
     $accionEliminarRegistro = $accionesRegistros->firstWhere('slug', 'registro-comidas.eliminar');
 @endphp
 
-<div class="card border-0 shadow-sm mb-4">
-    <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+<div class="card border-0 shadow-sm usuarios-header-card mb-4">
+    <div class="card-body usuarios-header-content">
         <div>
             <h2 class="fw-bold mb-1">Registro de comidas</h2>
             <p class="text-secondary mb-0">Registra tus comidas y consulta sus calorías y macronutrientes.</p>
