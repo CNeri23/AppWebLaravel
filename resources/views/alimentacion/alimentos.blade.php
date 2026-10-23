@@ -1,85 +1,215 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $accionesAlimentos = $accionesAlimentos ?? collect();
+    $puedeCrear = $accionesAlimentos->contains('slug', 'alimentos.crear');
+    $puedeEditar = $accionesAlimentos->contains('slug', 'alimentos.editar');
+    $puedeEliminar = $accionesAlimentos->contains('slug', 'alimentos.eliminar');
+@endphp
+
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
         <div>
             <h2 class="fw-bold mb-1">Catálogo de alimentos</h2>
-            <p class="text-secondary mb-0">Administra los valores nutricionales por cada 100 g o 100 ml.</p>
+            <p class="text-secondary mb-0">Administra los alimentos y sus valores nutricionales por cada 100 g o 100 ml.</p>
         </div>
+        @if ($puedeCrear)
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearAlimento">
+                <i class="fa-solid fa-plus me-2"></i>Nuevo alimento
+            </button>
+        @endif
     </div>
 </div>
-
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-    </div>
-@endif
-
-@if ($errors->any())
-    <div class="alert alert-danger"><ul class="mb-0">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
-@endif
-
-@if (($accionesAlimentos ?? collect())->contains('alimentos.crear'))
-<div class="card border-0 shadow-sm mb-4">
-    <div class="card-header bg-transparent border-0 pt-4 px-4"><h5 class="fw-semibold mb-0">Agregar alimento</h5></div>
-    <div class="card-body px-4">
-        <form method="POST" action="{{ route('alimentacion.alimentos.store') }}" class="row g-3">
-            @csrf
-            <div class="col-md-4"><label class="form-label">Nombre</label><input name="nombre" class="form-control" required maxlength="150" value="{{ old('nombre') }}"></div>
-            <div class="col-md-3"><label class="form-label">Categoría</label><input name="categoria" class="form-control" maxlength="80" value="{{ old('categoria') }}" placeholder="Proteína, fruta, cereal..."></div>
-            <div class="col-md-2"><label class="form-label">Unidad base</label><select name="unidad_base" class="form-select" required><option value="g">Gramos (g)</option><option value="ml">Mililitros (ml)</option></select></div>
-            <div class="col-md-3"><label class="form-label">Nombre de porción</label><input name="nombre_porcion" class="form-control" maxlength="80" placeholder="1 pieza, 1 taza..."></div>
-            <div class="col-md-3"><label class="form-label">Cantidad de porción (g/ml)</label><input name="cantidad_porcion" type="number" min="0.01" step="0.01" class="form-control" placeholder="Ej. 120"></div>
-            <div class="col-md-2"><label class="form-label">Calorías</label><input name="calorias" type="number" min="0" step="0.01" class="form-control" value="0" required></div>
-            <div class="col-md-2"><label class="form-label">Proteínas (g)</label><input name="proteinas" type="number" min="0" step="0.01" class="form-control" value="0" required></div>
-            <div class="col-md-2"><label class="form-label">Carbohidratos (g)</label><input name="carbohidratos" type="number" min="0" step="0.01" class="form-control" value="0" required></div>
-            <div class="col-md-2"><label class="form-label">Grasas (g)</label><input name="grasas" type="number" min="0" step="0.01" class="form-control" value="0" required></div>
-            <div class="col-12"><button class="btn btn-primary"><i class="fa-solid fa-plus me-2"></i>Guardar alimento</button></div>
-        </form>
-    </div>
-</div>
-@endif
 
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead><tr><th class="ps-4">Alimento</th><th>Categoría</th><th>Base / porción</th><th>Calorías</th><th>Proteína</th><th>Carbohidratos</th><th>Grasas</th><th>Estado</th><th class="text-end pe-4">Acciones</th></tr></thead>
-                <tbody>
-                @forelse ($alimentos as $alimento)
+            <table id="tablaAlimentos" class="table table-hover align-middle mb-0 w-100">
+                <thead>
                     <tr>
-                        <td class="ps-4 fw-semibold">{{ $alimento->nombre }}</td><td>{{ $alimento->categoria ?: '—' }}</td>
-                        <td>{{ $alimento->unidad_base }} @if($alimento->nombre_porcion)<span class="text-secondary d-block small">{{ $alimento->nombre_porcion }} = {{ $alimento->cantidad_porcion }} {{ $alimento->unidad_base }}</span>@endif</td>
-                        <td>{{ number_format($alimento->calorias, 1) }} kcal</td><td>{{ number_format($alimento->proteinas, 1) }} g</td><td>{{ number_format($alimento->carbohidratos, 1) }} g</td><td>{{ number_format($alimento->grasas, 1) }} g</td>
-                        <td><span class="badge {{ $alimento->activo ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' }}">{{ $alimento->activo ? 'Activo' : 'Inactivo' }}</span></td>
+                        <th class="ps-4">Alimento</th>
+                        <th>Categoría</th>
+                        <th>Unidad / porción</th>
+                        <th>Calorías</th>
+                        <th>Proteínas</th>
+                        <th>Carbohidratos</th>
+                        <th>Grasas</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center pe-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($alimentos as $alimento)
+                    <tr>
+                        <td class="ps-4"><span class="fw-semibold">{{ $alimento->nombre }}</span></td>
+                        <td>{{ $alimento->categoria ?: '—' }}</td>
+                        <td>
+                            <span>{{ strtoupper($alimento->unidad_base) }}</span>
+                            @if ($alimento->nombre_porcion)
+                                <small class="d-block text-secondary">{{ $alimento->nombre_porcion }} = {{ $alimento->cantidad_porcion }} {{ $alimento->unidad_base }}</small>
+                            @endif
+                        </td>
+                        <td>{{ number_format((float) $alimento->calorias, 1) }} kcal</td>
+                        <td>{{ number_format((float) $alimento->proteinas, 1) }} g</td>
+                        <td>{{ number_format((float) $alimento->carbohidratos, 1) }} g</td>
+                        <td>{{ number_format((float) $alimento->grasas, 1) }} g</td>
+                        <td class="text-center">
+                            <span class="badge rounded-pill {{ $alimento->activo ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $alimento->activo ? 'Activo' : 'Inactivo' }}</span>
+                        </td>
                         <td class="text-end pe-4">
-                            @if (($accionesAlimentos ?? collect())->contains('alimentos.editar'))<button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#editarAlimento{{ $alimento->id }}" aria-expanded="false" title="Editar"><i class="fa-solid fa-pen"></i></button>@endif
-                            @if (($accionesAlimentos ?? collect())->contains('alimentos.eliminar'))<form class="d-inline" method="POST" action="{{ route('alimentacion.alimentos.destroy', $alimento) }}" onsubmit="return confirm('¿Eliminar o desactivar este alimento?')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="fa-solid fa-trash"></i></button></form>@endif
+                            <div class="d-inline-flex align-items-center gap-2">
+                                @if ($puedeEditar)
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-tooltip="Editar alimento"
+                                    data-bs-toggle="modal" data-bs-target="#modalEditarAlimento"
+                                    data-id="{{ $alimento->id }}" data-nombre="{{ $alimento->nombre }}"
+                                    data-categoria="{{ $alimento->categoria }}" data-unidad="{{ $alimento->unidad_base }}"
+                                    data-nombre-porcion="{{ $alimento->nombre_porcion }}"
+                                    data-cantidad-porcion="{{ $alimento->cantidad_porcion }}"
+                                    data-calorias="{{ $alimento->calorias }}" data-proteinas="{{ $alimento->proteinas }}"
+                                    data-carbohidratos="{{ $alimento->carbohidratos }}" data-grasas="{{ $alimento->grasas }}"
+                                    data-activo="{{ $alimento->activo ? 1 : 0 }}"
+                                    data-url="{{ route('alimentacion.alimentos.update', $alimento) }}">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                @endif
+                                @if ($puedeEliminar)
+                                <button type="button" class="btn btn-sm btn-outline-danger" data-tooltip="Eliminar alimento"
+                                    data-bs-toggle="modal" data-bs-target="#modalEliminarAlimento"
+                                    data-nombre="{{ $alimento->nombre }}" data-url="{{ route('alimentacion.alimentos.destroy', $alimento) }}">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                                @endif
+                            </div>
                         </td>
                     </tr>
-                    @if (($accionesAlimentos ?? collect())->contains('alimentos.editar'))<tr class="collapse" id="editarAlimento{{ $alimento->id }}"><td colspan="9" class="p-4">
-                        <form method="POST" action="{{ route('alimentacion.alimentos.update', $alimento) }}" class="row g-3">@csrf @method('PUT')
-                            <div class="col-md-3"><label class="form-label">Nombre</label><input name="nombre" class="form-control" required value="{{ $alimento->nombre }}"></div>
-                            <div class="col-md-2"><label class="form-label">Categoría</label><input name="categoria" class="form-control" value="{{ $alimento->categoria }}"></div>
-                            <div class="col-md-2"><label class="form-label">Unidad base</label><select name="unidad_base" class="form-select"><option value="g" @selected($alimento->unidad_base === 'g')>Gramos</option><option value="ml" @selected($alimento->unidad_base === 'ml')>Mililitros</option></select></div>
-                            <div class="col-md-2"><label class="form-label">Nombre porción</label><input name="nombre_porcion" class="form-control" value="{{ $alimento->nombre_porcion }}"></div>
-                            <div class="col-md-2"><label class="form-label">Cantidad porción</label><input name="cantidad_porcion" type="number" min="0.01" step="0.01" class="form-control" value="{{ $alimento->cantidad_porcion }}"></div>
-                            <div class="col-md-2"><label class="form-label">Calorías</label><input name="calorias" type="number" min="0" step="0.01" class="form-control" required value="{{ $alimento->calorias }}"></div>
-                            <div class="col-md-2"><label class="form-label">Proteínas</label><input name="proteinas" type="number" min="0" step="0.01" class="form-control" required value="{{ $alimento->proteinas }}"></div>
-                            <div class="col-md-2"><label class="form-label">Carbohidratos</label><input name="carbohidratos" type="number" min="0" step="0.01" class="form-control" required value="{{ $alimento->carbohidratos }}"></div>
-                            <div class="col-md-2"><label class="form-label">Grasas</label><input name="grasas" type="number" min="0" step="0.01" class="form-control" required value="{{ $alimento->grasas }}"></div>
-                            <div class="col-md-2"><label class="form-label">Estado</label><select name="activo" class="form-select"><option value="1" @selected($alimento->activo)>Activo</option><option value="0" @selected(!$alimento->activo)>Inactivo</option></select></div>
-                            <div class="col-12"><button class="btn btn-primary">Guardar cambios</button></div>
-                        </form>
-                    </td></tr>@endif
-                @empty
-                    <tr><td colspan="9" class="text-center text-secondary py-5">Todavía no hay alimentos registrados.</td></tr>
-                @endforelse
+                    @empty
+                    <tr><td colspan="9" class="text-center text-secondary py-5"><i class="fa-solid fa-carrot d-block fs-3 mb-2"></i>No hay alimentos registrados todavía.</td></tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+@if ($puedeCrear)
+<div class="modal fade" id="modalCrearAlimento" tabindex="-1" aria-labelledby="modalCrearAlimentoLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-semibold" id="modalCrearAlimentoLabel"><i class="fa-solid fa-carrot me-2"></i>Nuevo alimento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form method="POST" action="{{ route('alimentacion.alimentos.store') }}" class="js-toast-form" autocomplete="off">
+                @csrf
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label" for="nuevo_nombre">Nombre</label><input id="nuevo_nombre" name="nombre" class="form-control" maxlength="150" required placeholder="Ej. Pechuga de pollo"></div>
+                        <div class="col-md-6"><label class="form-label" for="nuevo_categoria">Categoría</label><input id="nuevo_categoria" name="categoria" class="form-control" maxlength="80" placeholder="Proteína, fruta, cereal..."></div>
+                        <div class="col-md-4"><label class="form-label" for="nuevo_unidad">Unidad base</label><select id="nuevo_unidad" name="unidad_base" class="form-select" required><option value="g">Gramos (g)</option><option value="ml">Mililitros (ml)</option></select></div>
+                        <div class="col-md-4"><label class="form-label" for="nuevo_nombre_porcion">Nombre de porción</label><input id="nuevo_nombre_porcion" name="nombre_porcion" class="form-control" maxlength="80" placeholder="Ej. 1 pieza"></div>
+                        <div class="col-md-4"><label class="form-label" for="nuevo_cantidad_porcion">Cantidad por porción</label><input id="nuevo_cantidad_porcion" name="cantidad_porcion" type="number" min="0.01" step="0.01" class="form-control" placeholder="Ej. 120"></div>
+                        <div class="col-md-3"><label class="form-label" for="nuevo_calorias">Calorías (kcal)</label><input id="nuevo_calorias" name="calorias" type="number" min="0" step="0.01" class="form-control" value="0" required></div>
+                        <div class="col-md-3"><label class="form-label" for="nuevo_proteinas">Proteínas (g)</label><input id="nuevo_proteinas" name="proteinas" type="number" min="0" step="0.01" class="form-control" value="0" required></div>
+                        <div class="col-md-3"><label class="form-label" for="nuevo_carbohidratos">Carbohidratos (g)</label><input id="nuevo_carbohidratos" name="carbohidratos" type="number" min="0" step="0.01" class="form-control" value="0" required></div>
+                        <div class="col-md-3"><label class="form-label" for="nuevo_grasas">Grasas (g)</label><input id="nuevo_grasas" name="grasas" type="number" min="0" step="0.01" class="form-control" value="0" required></div>
+                    </div>
+                    <p class="form-text mt-3 mb-0">Los valores nutricionales se capturan por cada 100 g o 100 ml.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk me-2"></i>Guardar alimento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+@if ($puedeEditar)
+<div class="modal fade" id="modalEditarAlimento" tabindex="-1" aria-labelledby="modalEditarAlimentoLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-semibold" id="modalEditarAlimentoLabel"><i class="fa-solid fa-pen-to-square me-2"></i>Editar alimento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form method="POST" id="formEditarAlimento" class="js-toast-form" autocomplete="off">
+                @csrf @method('PUT')
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label" for="editar_nombre">Nombre</label><input id="editar_nombre" name="nombre" class="form-control" maxlength="150" required></div>
+                        <div class="col-md-6"><label class="form-label" for="editar_categoria">Categoría</label><input id="editar_categoria" name="categoria" class="form-control" maxlength="80"></div>
+                        <div class="col-md-4"><label class="form-label" for="editar_unidad">Unidad base</label><select id="editar_unidad" name="unidad_base" class="form-select" required><option value="g">Gramos (g)</option><option value="ml">Mililitros (ml)</option></select></div>
+                        <div class="col-md-4"><label class="form-label" for="editar_nombre_porcion">Nombre de porción</label><input id="editar_nombre_porcion" name="nombre_porcion" class="form-control" maxlength="80"></div>
+                        <div class="col-md-4"><label class="form-label" for="editar_cantidad_porcion">Cantidad por porción</label><input id="editar_cantidad_porcion" name="cantidad_porcion" type="number" min="0.01" step="0.01" class="form-control"></div>
+                        <div class="col-md-3"><label class="form-label" for="editar_calorias">Calorías (kcal)</label><input id="editar_calorias" name="calorias" type="number" min="0" step="0.01" class="form-control" required></div>
+                        <div class="col-md-3"><label class="form-label" for="editar_proteinas">Proteínas (g)</label><input id="editar_proteinas" name="proteinas" type="number" min="0" step="0.01" class="form-control" required></div>
+                        <div class="col-md-3"><label class="form-label" for="editar_carbohidratos">Carbohidratos (g)</label><input id="editar_carbohidratos" name="carbohidratos" type="number" min="0" step="0.01" class="form-control" required></div>
+                        <div class="col-md-3"><label class="form-label" for="editar_grasas">Grasas (g)</label><input id="editar_grasas" name="grasas" type="number" min="0" step="0.01" class="form-control" required></div>
+                        <div class="col-md-4"><label class="form-label" for="editar_activo">Estado</label><select id="editar_activo" name="activo" class="form-select"><option value="1">Activo</option><option value="0">Inactivo</option></select></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk me-2"></i>Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+@if ($puedeEliminar)
+<div class="modal fade" id="modalEliminarAlimento" tabindex="-1" aria-labelledby="modalEliminarAlimentoLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title fw-semibold" id="modalEliminarAlimentoLabel"><i class="fa-solid fa-trash text-danger me-2"></i>Eliminar alimento</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+            <form method="POST" id="formEliminarAlimento" class="js-toast-form">
+                @csrf @method('DELETE')
+                <div class="modal-body text-center">
+                    <div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center" style="width:58px;height:58px"><i class="fa-solid fa-trash fa-lg"></i></div>
+                    <p class="mb-0">¿Quieres eliminar o desactivar el alimento <strong id="eliminarAlimentoNombre">seleccionado</strong>?</p>
+                    <p class="text-secondary small mt-2 mb-0">Si tiene registros históricos, se desactivará para conservar el historial nutricional.</p>
+                </div>
+                <div class="modal-footer justify-content-center"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash me-2"></i>Confirmar</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const editarModal = document.getElementById('modalEditarAlimento');
+    editarModal?.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const form = document.getElementById('formEditarAlimento');
+        form.action = button.dataset.url;
+        const campos = {
+            nombre: 'nombre', categoria: 'categoria', unidad: 'unidad', nombrePorcion: 'nombre-porcion',
+            cantidadPorcion: 'cantidad-porcion', calorias: 'calorias', proteinas: 'proteinas',
+            carbohidratos: 'carbohidratos', grasas: 'grasas', activo: 'activo'
+        };
+        Object.entries(campos).forEach(([id, data]) => {
+            const input = document.getElementById('editar_' + id.replace(/[A-Z]/g, m => '_' + m.toLowerCase()));
+            if (input) input.value = button.dataset[data] ?? '';
+        });
+    });
+    const eliminarModal = document.getElementById('modalEliminarAlimento');
+    eliminarModal?.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        document.getElementById('formEliminarAlimento').action = button.dataset.url;
+        document.getElementById('eliminarAlimentoNombre').textContent = button.dataset.nombre;
+    });
+    @if (session('success'))
+        if (typeof window.showToast === 'function') window.showToast('success', @json(session('success')));
+    @endif
+    @if ($errors->any())
+        if (typeof window.showToast === 'function') window.showToast('error', @json($errors->first()));
+    @endif
+});
+</script>
+@endpush
