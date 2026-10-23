@@ -29,7 +29,7 @@
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table id="tablaAlimentos" class="table table-hover align-middle mb-0 w-100">
+            <table id="tablaAlimentos" class="table table-hover align-middle mb-0 w-100" data-icon-editar="{{ e($accionEditarAlimento?->icono ?: '<i class="fa-solid fa-pen"></i>') }}" data-icon-eliminar="{{ e($accionEliminarAlimento?->icono ?: '<i class="fa-solid fa-trash"></i>') }}">
                 <thead>
                     <tr>
                         <th class="ps-4">Alimento</th>
