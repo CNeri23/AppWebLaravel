@@ -38,8 +38,7 @@
             <table id="tablaPanelNutricional" class="table table-hover align-middle mb-0 w-100">
                 <thead><tr><th class="ps-4">Comida</th><th>Alimentos registrados</th><th>Calorías</th><th>Proteínas</th><th>Carbohidratos</th><th class="pe-4">Grasas</th></tr></thead>
                 <tbody>
-                    @forelse ($registros as $registro)
-                    <tr>
+                    @foreach ($registros as $registro)<tr>
                         <td class="ps-4 fw-semibold">{{ ucfirst($registro->tipo_comida) }}<small class="d-block text-secondary fw-normal">{{ $registro->created_at?->format('H:i') }}</small></td>
                         <td>{{ $registro->detalles->count() }}</td>
                         <td>{{ number_format((float) $registro->detalles->sum('calorias'), 1) }} kcal</td>
@@ -47,9 +46,7 @@
                         <td>{{ number_format((float) $registro->detalles->sum('carbohidratos'), 1) }} g</td>
                         <td class="pe-4">{{ number_format((float) $registro->detalles->sum('grasas'), 1) }} g</td>
                     </tr>
-                    @empty
-                    <tr><td colspan="6" class="text-center text-secondary py-5"><i class="fa-solid fa-chart-pie d-block fs-3 mb-2"></i>No hay comidas registradas para esta fecha.</td></tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
                 @if ($registros->isNotEmpty())
                 <tfoot><tr class="fw-semibold"><td class="ps-4">Total del día</td><td>{{ $registros->sum(fn ($r) => $r->detalles->count()) }}</td><td>{{ number_format((float) $totales['calorias'], 1) }} kcal</td><td>{{ number_format((float) $totales['proteinas'], 1) }} g</td><td>{{ number_format((float) $totales['carbohidratos'], 1) }} g</td><td class="pe-4">{{ number_format((float) $totales['grasas'], 1) }} g</td></tr></tfoot>
