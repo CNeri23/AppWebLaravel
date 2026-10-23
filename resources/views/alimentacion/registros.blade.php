@@ -5,6 +5,8 @@
     $accionesRegistros = $accionesRegistros ?? collect();
     $puedeCrear = $accionesRegistros->contains('slug', 'registro-comidas.crear');
     $puedeEliminar = $accionesRegistros->contains('slug', 'registro-comidas.eliminar');
+    $accionCrearRegistro = $accionesRegistros->firstWhere('slug', 'registro-comidas.crear');
+    $accionEliminarRegistro = $accionesRegistros->firstWhere('slug', 'registro-comidas.eliminar');
 @endphp
 
 <div class="card border-0 shadow-sm mb-4">
@@ -20,8 +22,9 @@
                 <button class="btn btn-outline-primary" type="submit" data-tooltip="Consultar fecha"><i class="fa-solid fa-magnifying-glass me-1"></i>Consultar</button>
             </form>
             @if ($puedeCrear && $alimentos->isNotEmpty())
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRegistrarComida">
-                <i class="fa-solid fa-plus me-2"></i>Registrar comida
+            <button type="button" class="btn btn-primary usuarios-header-action" data-bs-toggle="modal" data-bs-target="#modalRegistrarComida">
+                {!! $accionCrearRegistro->icono ?: '<i class="fa-solid fa-plus me-2"></i>' !!}
+                {{ $accionCrearRegistro->nombre }}
             </button>
             @endif
         </div>
@@ -67,17 +70,17 @@
                         <td>{{ number_format((float) $registro->detalles->sum('grasas'), 1) }} g</td>
                         <td class="text-end pe-4">
                             <div class="d-inline-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-sm btn-outline-primary" data-tooltip="Ver alimentos"
+                                <button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn" data-tooltip="Ver alimentos"
                                     data-bs-toggle="modal" data-bs-target="#modalDetalleComida"
                                     data-tipo="{{ ucfirst($registro->tipo_comida) }}" data-notas="{{ $registro->notas }}"
                                     data-detalles="{{ json_encode($registro->detalles->map(fn ($d) => ['nombre' => $d->nombre_alimento, 'cantidad' => $d->cantidad, 'unidad' => $d->unidad, 'calorias' => $d->calorias, 'proteinas' => $d->proteinas, 'carbohidratos' => $d->carbohidratos, 'grasas' => $d->grasas])->values()) }}">
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
                                 @if ($puedeEliminar)
-                                <button type="button" class="btn btn-sm btn-outline-danger" data-tooltip="Eliminar registro"
+                                <button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn" data-tooltip="{{ $accionEliminarRegistro->nombre }}"
                                     data-bs-toggle="modal" data-bs-target="#modalEliminarRegistro"
                                     data-url="{{ route('alimentacion.registros.destroy', $registro) }}" data-tipo="{{ ucfirst($registro->tipo_comida) }}">
-                                    <i class="fa-regular fa-trash-can"></i>
+                                    {!! $accionEliminarRegistro->icono ?: '<i class="fa-solid fa-trash"></i>' !!}
                                 </button>
                                 @endif
                             </div>
@@ -95,13 +98,13 @@
     <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header"><h5 class="modal-title fw-semibold" id="modalRegistrarComidaLabel"><i class="fa-solid fa-utensils me-2"></i>Registrar comida</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
-            <form method="POST" action="{{ route('alimentacion.registros.store') }}" id="formRegistroComida" autocomplete="off">
+            <form method="POST" action="{{ route('alimentacion.registros.store') }}" id="formRegistroComida" novalidate autocomplete="off">
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" name="fecha" value="{{ $fecha }}">
                     <div class="row g-3 mb-4">
-                        <div class="col-md-4"><label class="form-label" for="tipo_comida">Tipo de comida</label><select class="form-select" id="tipo_comida" name="tipo_comida" required><option value="desayuno">Desayuno</option><option value="comida">Comida</option><option value="cena">Cena</option><option value="colacion">Colación</option></select></div>
-                        <div class="col-md-8"><label class="form-label" for="notas_comida">Notas (opcional)</label><input class="form-control" id="notas_comida" name="notas" maxlength="2000" placeholder="Ej. comida después del entrenamiento"></div>
+                        <div class="col-md-4"><label class="form-label" for="tipo_comida">Tipo de comida</label><select class="form-select" id="tipo_comida" name="tipo_comida" required><option value="desayuno">Desayuno</option><option value="comida">Comida</option><option value="cena">Cena</option><option value="colacion">Colación</option></select><div class="invalid-feedback" data-error-for="tipo_comida"></div></div>
+                        <div class="col-md-8"><label class="form-label" for="notas_comida">Notas (opcional)</label><input class="form-control" id="notas_comida" name="notas" maxlength="2000" placeholder="Ej. comida después del entrenamiento"><div class="invalid-feedback" data-error-for="notas"></div></div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center gap-2 mb-3"><h6 class="fw-semibold mb-0">Alimentos consumidos</h6><button type="button" class="btn btn-sm btn-outline-primary" id="agregarAlimento"><i class="fa-solid fa-plus me-1"></i>Agregar alimento</button></div>
                     <div id="filasAlimentos" class="d-grid gap-3">
@@ -132,7 +135,7 @@
 <div class="modal fade" id="modalEliminarRegistro" tabindex="-1" aria-labelledby="modalEliminarRegistroLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
         <div class="modal-header"><h5 class="modal-title fw-semibold" id="modalEliminarRegistroLabel"><i class="fa-solid fa-trash text-danger me-2"></i>Eliminar registro</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
-        <form method="POST" id="formEliminarRegistro">@csrf @method('DELETE')
+        <form method="POST" id="formEliminarRegistro" novalidate>@csrf @method('DELETE')
             <div class="modal-body text-center"><div class="mx-auto mb-3 rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center" style="width:58px;height:58px"><i class="fa-solid fa-trash fa-lg"></i></div><p class="mb-0">¿Eliminar el registro de <strong id="eliminarTipoRegistro">esta comida</strong>? Esta acción no se puede deshacer.</p></div>
             <div class="modal-footer justify-content-center"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash me-2"></i>Eliminar</button></div>
         </form>
@@ -144,6 +147,29 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const formRegistro = document.getElementById('formRegistroComida');
+    formRegistro?.addEventListener('submit', function (event) {
+        formRegistro.querySelectorAll('.is-invalid').forEach(input => input.classList.remove('is-invalid'));
+        let firstInvalid = null;
+        formRegistro.querySelectorAll('[required], input[type="number"]').forEach(input => {
+            let message = '';
+            if (input.required && !input.value.trim()) message = 'Este campo es obligatorio.';
+            else if (input.type === 'number' && input.value !== '' && !input.checkValidity()) message = 'Ingresa una cantidad mayor que cero.';
+            if (message) {
+                input.classList.add('is-invalid');
+                let feedback = input.parentElement.querySelector('.invalid-feedback');
+                if (!feedback) { feedback = document.createElement('div'); feedback.className = 'invalid-feedback'; input.parentElement.appendChild(feedback); }
+                feedback.textContent = message;
+                firstInvalid ||= input;
+            }
+        });
+        if (firstInvalid) { event.preventDefault(); firstInvalid.focus(); }
+    });
+    formRegistro?.querySelectorAll('input, select').forEach(input => input.addEventListener('input', () => {
+        input.classList.remove('is-invalid');
+        const feedback = input.parentElement.querySelector('.invalid-feedback');
+        if (feedback) feedback.textContent = '';
+    }));
     const container = document.getElementById('filasAlimentos');
     const addButton = document.getElementById('agregarAlimento');
     let index = 1;
