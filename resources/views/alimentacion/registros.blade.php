@@ -3,8 +3,8 @@
 @section('content')
 @php
     $accionesRegistros = $accionesRegistros ?? collect();
-    $puedeCrear = $accionesRegistros->contains('registro-comidas.crear');
-    $puedeEliminar = $accionesRegistros->contains('registro-comidas.eliminar');
+    $puedeCrear = $accionesRegistros->contains('slug', 'registro-comidas.crear');
+    $puedeEliminar = $accionesRegistros->contains('slug', 'registro-comidas.eliminar');
 @endphp
 
 <div class="card border-0 shadow-sm mb-4">
