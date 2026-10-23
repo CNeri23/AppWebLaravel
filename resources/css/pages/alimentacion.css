@@ -1,0 +1,150 @@
+/* Alimentación: mismos botones de acción compactos que Usuarios. */
+#tablaAlimentos .usuario-actions,
+#tablaRegistrosComida .usuario-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 2px;
+    width: fit-content;
+    min-width: max-content;
+    margin-inline: auto;
+    padding: 3px;
+    border-radius: 12px;
+    background: transparent;
+}
+
+#tablaAlimentos .btn.usuario-action-btn,
+#tablaRegistrosComida .btn.usuario-action-btn {
+    --ua: 100, 116, 139;
+    --bs-btn-color: var(--text-soft);
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: transparent;
+    --bs-btn-hover-color: rgb(var(--ua));
+    --bs-btn-hover-bg: rgba(var(--ua), 0.14);
+    --bs-btn-hover-border-color: transparent;
+    --bs-btn-active-color: rgb(var(--ua));
+    --bs-btn-active-bg: rgba(var(--ua), 0.22);
+    --bs-btn-active-border-color: transparent;
+    --bs-btn-disabled-color: var(--text-soft);
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: transparent;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    line-height: 1;
+    box-shadow: none;
+    transition: background-color 0.16s ease, color 0.16s ease, transform 0.2s ease;
+}
+
+#tablaAlimentos .btn.usuario-action-btn > i,
+#tablaAlimentos .btn.usuario-action-btn > svg,
+#tablaRegistrosComida .btn.usuario-action-btn > i,
+#tablaRegistrosComida .btn.usuario-action-btn > svg {
+    margin: 0 !important;
+    font-size: 14px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+#tablaAlimentos .btn.usuario-action-btn.btn-outline-primary,
+#tablaAlimentos .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen),
+#tablaRegistrosComida .btn.usuario-action-btn.btn-outline-primary,
+#tablaRegistrosComida .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
+    --ua: 37, 99, 235;
+}
+
+#tablaAlimentos .btn.usuario-action-btn.btn-outline-success,
+#tablaRegistrosComida .btn.usuario-action-btn.btn-outline-success {
+    --ua: 22, 163, 74;
+}
+
+#tablaAlimentos .btn.usuario-action-btn.btn-outline-danger,
+#tablaAlimentos .btn.usuario-action-btn:has(.fa-trash, .fa-ban),
+#tablaRegistrosComida .btn.usuario-action-btn.btn-outline-danger,
+#tablaRegistrosComida .btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
+    --ua: 220, 53, 69;
+}
+
+#tablaAlimentos .btn.usuario-action-btn.btn-outline-info,
+#tablaAlimentos .btn.usuario-action-btn:has(.fa-eye),
+#tablaRegistrosComida .btn.usuario-action-btn.btn-outline-info,
+#tablaRegistrosComida .btn.usuario-action-btn:has(.fa-eye) {
+    --ua: 8, 145, 178;
+}
+
+#tablaAlimentos .btn.usuario-action-btn,
+#tablaRegistrosComida .btn.usuario-action-btn {
+    color: rgb(var(--ua));
+    background: transparent;
+}
+
+#tablaAlimentos .btn.usuario-action-btn:hover,
+#tablaRegistrosComida .btn.usuario-action-btn:hover,
+#tablaAlimentos .btn.usuario-action-btn:focus-visible,
+#tablaRegistrosComida .btn.usuario-action-btn:focus-visible {
+    border-color: transparent;
+    color: rgb(var(--ua));
+    background: rgba(var(--ua), 0.13);
+    box-shadow: none;
+}
+
+#tablaAlimentos .btn.usuario-action-btn:active,
+#tablaRegistrosComida .btn.usuario-action-btn:active {
+    transform: scale(0.92);
+}
+
+[data-bs-theme="dark"] #tablaAlimentos .btn.usuario-action-btn,
+[data-bs-theme="dark"] #tablaRegistrosComida .btn.usuario-action-btn {
+    color: color-mix(in srgb, rgb(var(--ua)) 80%, #ffffff);
+}
+
+[data-bs-theme="dark"] #tablaAlimentos .btn.usuario-action-btn:hover,
+[data-bs-theme="dark"] #tablaRegistrosComida .btn.usuario-action-btn:hover {
+    background: rgba(var(--ua), 0.2);
+}
+
+@media (hover: hover) {
+    #tablaAlimentos .usuario-actions > :hover,
+    #tablaRegistrosComida .usuario-actions > :hover {
+        transform: translateY(-2px) scale(1.05);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #tablaAlimentos .usuario-actions *,
+    #tablaRegistrosComida .usuario-actions * {
+        transition: none !important;
+    }
+}
+
+/* Validación de formularios con el mismo lenguaje visual del resto del ERP. */
+#modalCrearAlimento .form-control.is-valid,
+#modalCrearAlimento .form-select.is-valid,
+#modalEditarAlimento .form-control.is-valid,
+#modalEditarAlimento .form-select.is-valid,
+#modalRegistrarComida .form-control.is-valid,
+#modalRegistrarComida .form-select.is-valid {
+    border-color: var(--bs-form-valid-border-color);
+}
+
+#modalCrearAlimento .form-control.is-invalid,
+#modalCrearAlimento .form-select.is-invalid,
+#modalEditarAlimento .form-control.is-invalid,
+#modalEditarAlimento .form-select.is-invalid,
+#modalRegistrarComida .form-control.is-invalid,
+#modalRegistrarComida .form-select.is-invalid {
+    border-color: var(--bs-form-invalid-border-color);
+}
+
+#modalCrearAlimento .invalid-feedback,
+#modalEditarAlimento .invalid-feedback,
+#modalRegistrarComida .invalid-feedback {
+    display: block;
+}
