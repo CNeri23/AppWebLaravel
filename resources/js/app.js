@@ -9,6 +9,7 @@ import './pages/miembros.js';
 import './pages/direcciones.js';
 import './pages/planes.js';
 import './pages/membresias.js';
+import './pages/alimentacion.js';
 import './pages/asistencias.js';
 import './pages/cajas.js';
 import './pages/sesiones.js';

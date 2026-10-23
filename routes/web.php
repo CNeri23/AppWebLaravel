@@ -19,6 +19,9 @@ use App\Http\Controllers\CajaController;
 use App\Http\Controllers\SesionCajaController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\AsistenciaController;
+use App\Http\Controllers\AlimentoController;
+use App\Http\Controllers\RegistroComidaController;
+use App\Http\Controllers\PanelNutricionalController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -376,6 +379,41 @@ Route::middleware('auth')->group(function () {
     Route::patch('/acciones/{accion}/reordenar', [AccionController::class, 'reorder'])
         ->middleware('permiso:accion,acciones.reordenar')
         ->name('acciones.reordenar');
+
+
+    // Rutas alimentación
+
+    Route::get('/alimentacion/alimentos', [AlimentoController::class, 'index'])
+        ->middleware('permiso:submodulo,alimentos')
+        ->name('alimentacion.alimentos.index');
+
+    Route::post('/alimentacion/alimentos', [AlimentoController::class, 'store'])
+        ->middleware('permiso:accion,alimentos.crear')
+        ->name('alimentacion.alimentos.store');
+
+    Route::put('/alimentacion/alimentos/{alimento}', [AlimentoController::class, 'update'])
+        ->middleware('permiso:accion,alimentos.editar')
+        ->name('alimentacion.alimentos.update');
+
+    Route::delete('/alimentacion/alimentos/{alimento}', [AlimentoController::class, 'destroy'])
+        ->middleware('permiso:accion,alimentos.eliminar')
+        ->name('alimentacion.alimentos.destroy');
+
+    Route::get('/alimentacion/registros', [RegistroComidaController::class, 'index'])
+        ->middleware('permiso:submodulo,registro-comidas')
+        ->name('alimentacion.registros.index');
+
+    Route::post('/alimentacion/registros', [RegistroComidaController::class, 'store'])
+        ->middleware('permiso:accion,registro-comidas.crear')
+        ->name('alimentacion.registros.store');
+
+    Route::delete('/alimentacion/registros/{registro}', [RegistroComidaController::class, 'destroy'])
+        ->middleware('permiso:accion,registro-comidas.eliminar')
+        ->name('alimentacion.registros.destroy');
+
+    Route::get('/alimentacion/panel', [PanelNutricionalController::class, 'index'])
+        ->middleware('permiso:submodulo,panel-nutricional')
+        ->name('alimentacion.panel.index');
 
     // Rutas perfil
 
