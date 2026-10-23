@@ -6,6 +6,9 @@
     $puedeCrear = $accionesAlimentos->contains('slug', 'alimentos.crear');
     $puedeEditar = $accionesAlimentos->contains('slug', 'alimentos.editar');
     $puedeEliminar = $accionesAlimentos->contains('slug', 'alimentos.eliminar');
+    $accionCrearAlimento = $accionesAlimentos->firstWhere('slug', 'alimentos.crear');
+    $accionEditarAlimento = $accionesAlimentos->firstWhere('slug', 'alimentos.editar');
+    $accionEliminarAlimento = $accionesAlimentos->firstWhere('slug', 'alimentos.eliminar');
 @endphp
 
 <div class="card border-0 shadow-sm mb-4">
@@ -15,8 +18,9 @@
             <p class="text-secondary mb-0">Administra los alimentos y sus valores nutricionales por cada 100 g o 100 ml.</p>
         </div>
         @if ($puedeCrear)
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearAlimento">
-                <i class="fa-solid fa-plus me-2"></i>Nuevo alimento
+            <button type="button" class="btn btn-primary usuarios-header-action" data-bs-toggle="modal" data-bs-target="#modalCrearAlimento">
+                {!! $accionCrearAlimento->icono ?: '<i class="fa-solid fa-plus me-2"></i>' !!}
+                {{ $accionCrearAlimento->nombre }}
             </button>
         @endif
     </div>
@@ -59,7 +63,7 @@
                         <td class="text-end pe-4">
                             <div class="d-inline-flex align-items-center gap-2">
                                 @if ($puedeEditar)
-                                <button type="button" class="btn btn-sm btn-outline-primary" data-tooltip="Editar alimento"
+                                <button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn" data-tooltip="{{ $accionEditarAlimento->nombre }}"
                                     data-bs-toggle="modal" data-bs-target="#modalEditarAlimento"
                                     data-id="{{ $alimento->id }}" data-nombre="{{ $alimento->nombre }}"
                                     data-categoria="{{ $alimento->categoria }}" data-unidad="{{ $alimento->unidad_base }}"
@@ -69,14 +73,14 @@
                                     data-carbohidratos="{{ $alimento->carbohidratos }}" data-grasas="{{ $alimento->grasas }}"
                                     data-activo="{{ $alimento->activo ? 1 : 0 }}"
                                     data-url="{{ route('alimentacion.alimentos.update', $alimento) }}">
-                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    {!! $accionEditarAlimento->icono ?: '<i class="fa-solid fa-pen"></i>' !!}
                                 </button>
                                 @endif
                                 @if ($puedeEliminar)
-                                <button type="button" class="btn btn-sm btn-outline-danger" data-tooltip="Eliminar alimento"
+                                <button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn" data-tooltip="{{ $accionEliminarAlimento->nombre }}"
                                     data-bs-toggle="modal" data-bs-target="#modalEliminarAlimento"
                                     data-nombre="{{ $alimento->nombre }}" data-url="{{ route('alimentacion.alimentos.destroy', $alimento) }}">
-                                    <i class="fa-regular fa-trash-can"></i>
+                                    {!! $accionEliminarAlimento->icono ?: '<i class="fa-solid fa-trash"></i>' !!}
                                 </button>
                                 @endif
                             </div>
@@ -97,19 +101,19 @@
                 <h5 class="modal-title fw-semibold" id="modalCrearAlimentoLabel"><i class="fa-solid fa-carrot me-2"></i>Nuevo alimento</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <form method="POST" action="{{ route('alimentacion.alimentos.store') }}" class="js-toast-form" autocomplete="off">
+            <form method="POST" action="{{ route('alimentacion.alimentos.store') }}" class="js-toast-form" novalidate autocomplete="off">
                 @csrf
                 <div class="modal-body">
                     <div class="row g-3">
-                        <div class="col-md-6"><label class="form-label" for="nuevo_nombre">Nombre</label><input id="nuevo_nombre" name="nombre" class="form-control" maxlength="150" required placeholder="Ej. Pechuga de pollo"></div>
-                        <div class="col-md-6"><label class="form-label" for="nuevo_categoria">Categoría</label><input id="nuevo_categoria" name="categoria" class="form-control" maxlength="80" placeholder="Proteína, fruta, cereal..."></div>
-                        <div class="col-md-4"><label class="form-label" for="nuevo_unidad">Unidad base</label><select id="nuevo_unidad" name="unidad_base" class="form-select" required><option value="g">Gramos (g)</option><option value="ml">Mililitros (ml)</option></select></div>
-                        <div class="col-md-4"><label class="form-label" for="nuevo_nombre_porcion">Nombre de porción</label><input id="nuevo_nombre_porcion" name="nombre_porcion" class="form-control" maxlength="80" placeholder="Ej. 1 pieza"></div>
-                        <div class="col-md-4"><label class="form-label" for="nuevo_cantidad_porcion">Cantidad por porción</label><input id="nuevo_cantidad_porcion" name="cantidad_porcion" type="number" min="0.01" step="0.01" class="form-control" placeholder="Ej. 120"></div>
-                        <div class="col-md-3"><label class="form-label" for="nuevo_calorias">Calorías (kcal)</label><input id="nuevo_calorias" name="calorias" type="number" min="0" step="0.01" class="form-control" value="0" required></div>
-                        <div class="col-md-3"><label class="form-label" for="nuevo_proteinas">Proteínas (g)</label><input id="nuevo_proteinas" name="proteinas" type="number" min="0" step="0.01" class="form-control" value="0" required></div>
-                        <div class="col-md-3"><label class="form-label" for="nuevo_carbohidratos">Carbohidratos (g)</label><input id="nuevo_carbohidratos" name="carbohidratos" type="number" min="0" step="0.01" class="form-control" value="0" required></div>
-                        <div class="col-md-3"><label class="form-label" for="nuevo_grasas">Grasas (g)</label><input id="nuevo_grasas" name="grasas" type="number" min="0" step="0.01" class="form-control" value="0" required></div>
+                        <div class="col-md-6"><label class="form-label" for="nuevo_nombre">Nombre</label><input id="nuevo_nombre" name="nombre" class="form-control" maxlength="150" required placeholder="Ej. Pechuga de pollo"><div class="invalid-feedback" data-error-for="nombre"></div></div>
+                        <div class="col-md-6"><label class="form-label" for="nuevo_categoria">Categoría</label><input id="nuevo_categoria" name="categoria" class="form-control" maxlength="80" placeholder="Proteína, fruta, cereal..."><div class="invalid-feedback" data-error-for="categoria"></div></div>
+                        <div class="col-md-4"><label class="form-label" for="nuevo_unidad">Unidad base</label><select id="nuevo_unidad" name="unidad_base" class="form-select" required><div class="invalid-feedback" data-error-for="unidad_base"></div><option value="g">Gramos (g)</option><option value="ml">Mililitros (ml)</option></select></div>
+                        <div class="col-md-4"><label class="form-label" for="nuevo_nombre_porcion">Nombre de porción</label><input id="nuevo_nombre_porcion" name="nombre_porcion" class="form-control" maxlength="80" placeholder="Ej. 1 pieza"><div class="invalid-feedback" data-error-for="nombre_porcion"></div></div>
+                        <div class="col-md-4"><label class="form-label" for="nuevo_cantidad_porcion">Cantidad por porción</label><input id="nuevo_cantidad_porcion" name="cantidad_porcion" type="number" min="0.01" step="0.01" class="form-control" placeholder="Ej. 120"><div class="invalid-feedback" data-error-for="cantidad_porcion"></div></div>
+                        <div class="col-md-3"><label class="form-label" for="nuevo_calorias">Calorías (kcal)</label><input id="nuevo_calorias" name="calorias" type="number" min="0" step="0.01" class="form-control" value="0" required><div class="invalid-feedback" data-error-for="calorias"></div></div>
+                        <div class="col-md-3"><label class="form-label" for="nuevo_proteinas">Proteínas (g)</label><input id="nuevo_proteinas" name="proteinas" type="number" min="0" step="0.01" class="form-control" value="0" required><div class="invalid-feedback" data-error-for="proteinas"></div></div>
+                        <div class="col-md-3"><label class="form-label" for="nuevo_carbohidratos">Carbohidratos (g)</label><input id="nuevo_carbohidratos" name="carbohidratos" type="number" min="0" step="0.01" class="form-control" value="0" required><div class="invalid-feedback" data-error-for="carbohidratos"></div></div>
+                        <div class="col-md-3"><label class="form-label" for="nuevo_grasas">Grasas (g)</label><input id="nuevo_grasas" name="grasas" type="number" min="0" step="0.01" class="form-control" value="0" required><div class="invalid-feedback" data-error-for="grasas"></div></div>
                     </div>
                     <p class="form-text mt-3 mb-0">Los valores nutricionales se capturan por cada 100 g o 100 ml.</p>
                 </div>
@@ -135,16 +139,16 @@
                 @csrf @method('PUT')
                 <div class="modal-body">
                     <div class="row g-3">
-                        <div class="col-md-6"><label class="form-label" for="editar_nombre">Nombre</label><input id="editar_nombre" name="nombre" class="form-control" maxlength="150" required></div>
-                        <div class="col-md-6"><label class="form-label" for="editar_categoria">Categoría</label><input id="editar_categoria" name="categoria" class="form-control" maxlength="80"></div>
-                        <div class="col-md-4"><label class="form-label" for="editar_unidad">Unidad base</label><select id="editar_unidad" name="unidad_base" class="form-select" required><option value="g">Gramos (g)</option><option value="ml">Mililitros (ml)</option></select></div>
-                        <div class="col-md-4"><label class="form-label" for="editar_nombre_porcion">Nombre de porción</label><input id="editar_nombre_porcion" name="nombre_porcion" class="form-control" maxlength="80"></div>
-                        <div class="col-md-4"><label class="form-label" for="editar_cantidad_porcion">Cantidad por porción</label><input id="editar_cantidad_porcion" name="cantidad_porcion" type="number" min="0.01" step="0.01" class="form-control"></div>
-                        <div class="col-md-3"><label class="form-label" for="editar_calorias">Calorías (kcal)</label><input id="editar_calorias" name="calorias" type="number" min="0" step="0.01" class="form-control" required></div>
-                        <div class="col-md-3"><label class="form-label" for="editar_proteinas">Proteínas (g)</label><input id="editar_proteinas" name="proteinas" type="number" min="0" step="0.01" class="form-control" required></div>
-                        <div class="col-md-3"><label class="form-label" for="editar_carbohidratos">Carbohidratos (g)</label><input id="editar_carbohidratos" name="carbohidratos" type="number" min="0" step="0.01" class="form-control" required></div>
-                        <div class="col-md-3"><label class="form-label" for="editar_grasas">Grasas (g)</label><input id="editar_grasas" name="grasas" type="number" min="0" step="0.01" class="form-control" required></div>
-                        <div class="col-md-4"><label class="form-label" for="editar_activo">Estado</label><select id="editar_activo" name="activo" class="form-select"><option value="1">Activo</option><option value="0">Inactivo</option></select></div>
+                        <div class="col-md-6"><label class="form-label" for="editar_nombre">Nombre</label><input id="editar_nombre" name="nombre" class="form-control" maxlength="150" required><div class="invalid-feedback" data-error-for="nombre"></div></div>
+                        <div class="col-md-6"><label class="form-label" for="editar_categoria">Categoría</label><input id="editar_categoria" name="categoria" class="form-control" maxlength="80"><div class="invalid-feedback" data-error-for="categoria"></div></div>
+                        <div class="col-md-4"><label class="form-label" for="editar_unidad">Unidad base</label><select id="editar_unidad" name="unidad_base" class="form-select" required><div class="invalid-feedback" data-error-for="unidad_base"></div><option value="g">Gramos (g)</option><option value="ml">Mililitros (ml)</option></select></div>
+                        <div class="col-md-4"><label class="form-label" for="editar_nombre_porcion">Nombre de porción</label><input id="editar_nombre_porcion" name="nombre_porcion" class="form-control" maxlength="80"><div class="invalid-feedback" data-error-for="nombre_porcion"></div></div>
+                        <div class="col-md-4"><label class="form-label" for="editar_cantidad_porcion">Cantidad por porción</label><input id="editar_cantidad_porcion" name="cantidad_porcion" type="number" min="0.01" step="0.01" class="form-control"><div class="invalid-feedback" data-error-for="cantidad_porcion"></div></div>
+                        <div class="col-md-3"><label class="form-label" for="editar_calorias">Calorías (kcal)</label><input id="editar_calorias" name="calorias" type="number" min="0" step="0.01" class="form-control" required><div class="invalid-feedback" data-error-for="calorias"></div></div>
+                        <div class="col-md-3"><label class="form-label" for="editar_proteinas">Proteínas (g)</label><input id="editar_proteinas" name="proteinas" type="number" min="0" step="0.01" class="form-control" required><div class="invalid-feedback" data-error-for="proteinas"></div></div>
+                        <div class="col-md-3"><label class="form-label" for="editar_carbohidratos">Carbohidratos (g)</label><input id="editar_carbohidratos" name="carbohidratos" type="number" min="0" step="0.01" class="form-control" required><div class="invalid-feedback" data-error-for="carbohidratos"></div></div>
+                        <div class="col-md-3"><label class="form-label" for="editar_grasas">Grasas (g)</label><input id="editar_grasas" name="grasas" type="number" min="0" step="0.01" class="form-control" required><div class="invalid-feedback" data-error-for="grasas"></div></div>
+                        <div class="col-md-4"><label class="form-label" for="editar_activo">Estado</label><select id="editar_activo" name="activo" class="form-select"><div class="invalid-feedback" data-error-for="activo"></div><option value="1">Activo</option><option value="0">Inactivo</option></select></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -180,6 +184,29 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.js-toast-form').forEach(form => {
+        form.addEventListener('submit', function (event) {
+            form.querySelectorAll('.is-invalid').forEach(input => input.classList.remove('is-invalid'));
+            let firstInvalid = null;
+            form.querySelectorAll('[required], [type="number"], [type="email"]').forEach(input => {
+                let message = '';
+                if (input.required && !input.value.trim()) message = 'Este campo es obligatorio.';
+                else if (input.type === 'number' && input.value !== '' && !input.checkValidity()) message = 'Ingresa un valor válido dentro del rango permitido.';
+                if (message) {
+                    input.classList.add('is-invalid');
+                    const feedback = input.parentElement.querySelector('.invalid-feedback');
+                    if (feedback) feedback.textContent = message;
+                    firstInvalid ||= input;
+                }
+            });
+            if (firstInvalid) { event.preventDefault(); firstInvalid.focus(); }
+        });
+        form.querySelectorAll('input, select, textarea').forEach(input => input.addEventListener('input', () => {
+            input.classList.remove('is-invalid');
+            const feedback = input.parentElement.querySelector('.invalid-feedback');
+            if (feedback) feedback.textContent = '';
+        }));
+    });
     const editarModal = document.getElementById('modalEditarAlimento');
     editarModal?.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget;
