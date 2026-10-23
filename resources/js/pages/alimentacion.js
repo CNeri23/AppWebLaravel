@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         new DataTable(tabla, config);
+    });
 
     // Validación en vivo siguiendo el patrón usado por los módulos Planes y Usuarios.
     function camposFormulario(formulario) {
