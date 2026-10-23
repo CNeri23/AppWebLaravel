@@ -57,8 +57,7 @@
             <table id="tablaRegistrosComida" class="table table-hover align-middle mb-0 w-100">
                 <thead><tr><th class="ps-4">Comida</th><th>Notas</th><th>Alimentos</th><th>Calorías</th><th>Proteínas</th><th>Carbohidratos</th><th>Grasas</th><th class="text-center pe-4">Acciones</th></tr></thead>
                 <tbody>
-                @forelse ($registros as $registro)
-                    <tr>
+                @foreach ($registros as $registro)<tr>
                         <td class="ps-4"><span class="fw-semibold">{{ ucfirst($registro->tipo_comida) }}</span><small class="d-block text-secondary">{{ $registro->created_at?->format('H:i') }}</small></td>
                         <td>{{ $registro->notas ?: '—' }}</td>
                         <td>{{ $registro->detalles->count() }}</td>
@@ -84,9 +83,7 @@
                             </div>
                         </td>
                     </tr>
-                @empty
-                    <tr><td colspan="8" class="text-center text-secondary py-5"><i class="fa-solid fa-utensils d-block fs-3 mb-2"></i>No hay comidas registradas para esta fecha.</td></tr>
-                @endforelse
+                @endforeach
                 </tbody>
             </table>
         </div>
