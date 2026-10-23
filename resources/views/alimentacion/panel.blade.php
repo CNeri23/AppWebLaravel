@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="card border-0 shadow-sm mb-4">
-    <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+<div class="card border-0 shadow-sm usuarios-header-card mb-4">
+    <div class="card-body usuarios-header-content">
         <div>
             <h2 class="fw-bold mb-1">Panel nutricional</h2>
             <p class="text-secondary mb-0">Resumen de calorías y macronutrientes registrados por día.</p>
@@ -57,7 +57,7 @@
 </div>
 
 <div class="d-flex flex-wrap gap-2">
-    <a href="{{ route('alimentacion.registros.index', ['fecha' => $fecha]) }}" class="btn btn-primary"><i class="fa-solid fa-book-open me-2"></i>Ver registro de comidas</a>
+    <a href="{{ route('alimentacion.registros.index', ['fecha' => $fecha]) }}" class="btn btn-primary usuarios-header-action"><i class="fa-solid fa-book-open me-2"></i>Ver registro de comidas</a>
     <a href="{{ route('alimentacion.alimentos.index') }}" class="btn btn-outline-primary"><i class="fa-solid fa-apple-whole me-2"></i>Catálogo de alimentos</a>
 </div>
 @endsection
