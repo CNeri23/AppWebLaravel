@@ -20,7 +20,7 @@ class AlimentoController extends Controller
         $permisos = app(PermissionService::class);
         $accionesAlimentos = $submodulo?->acciones->filter(
             fn ($accion) => $permisos->tieneAccion(auth()->user(), $accion->id)
-        )->pluck('slug')->values() ?? collect();
+        ) ?? collect();
         return view('alimentacion.alimentos', compact('alimentos', 'accionesAlimentos'));
     }
 
