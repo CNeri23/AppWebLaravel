@@ -87,7 +87,10 @@ class RegistroComidaController extends Controller
         });
 
         AuditLogService::log('alimentacion', 'REGISTRAR_COMIDA', 'Se registró '.$registro->tipo_comida.' del '.$registro->fecha->format('d/m/Y').'.', $registro);
-        if ($request->expectsJson()) return response()->json(['success' => true, 'id' => $registro->id, 'fecha' => $datos['fecha'], 'mensaje' => 'Comida registrada correctamente.']);
+        if ($request->expectsJson()) {
+            $registro->load('detalles');
+            return response()->json(['success' => true, 'registro' => $registro, 'fecha' => $datos['fecha'], 'mensaje' => 'Comida registrada correctamente.']);
+        }
         return redirect()->route('alimentacion.registros.index', ['fecha' => $datos['fecha']])->with('success', 'Comida registrada correctamente.');
     }
 
