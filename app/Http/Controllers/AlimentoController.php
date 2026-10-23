@@ -29,6 +29,7 @@ class AlimentoController extends Controller
         $datos = $this->validar($request);
         $alimento = Alimento::create($datos);
         AuditLogService::log('alimentacion', 'CREAR_ALIMENTO', 'Se creó el alimento "'.$alimento->nombre.'".', $alimento);
+        if ($request->expectsJson()) return response()->json(['success' => true, 'id' => $alimento->id, 'mensaje' => 'Alimento creado correctamente.']);
         return redirect()->route('alimentacion.alimentos.index')->with('success', 'Alimento creado correctamente.');
     }
 
@@ -36,20 +37,24 @@ class AlimentoController extends Controller
     {
         $datos = $this->validar($request, $alimento);
         $alimento->update($datos);
+        $alimento->refresh();
         AuditLogService::log('alimentacion', 'EDITAR_ALIMENTO', 'Se actualizó el alimento "'.$alimento->nombre.'".', $alimento);
+        if ($request->expectsJson()) return response()->json(['success' => true, 'id' => $alimento->id, 'mensaje' => 'Alimento actualizado correctamente.']);
         return redirect()->route('alimentacion.alimentos.index')->with('success', 'Alimento actualizado correctamente.');
     }
 
-    public function destroy(Alimento $alimento)
+    public function destroy(Request $request, Alimento $alimento)
     {
         if ($alimento->detallesComida()->exists()) {
             $alimento->update(['activo' => false]);
+            if ($request->expectsJson()) return response()->json(['success' => true, 'id' => $alimento->id, 'mensaje' => 'El alimento tiene registros históricos y se desactivó para conservarlos.']);
             return redirect()->route('alimentacion.alimentos.index')->with('success', 'El alimento tiene registros históricos y se desactivó para conservarlos.');
         }
 
         $nombre = $alimento->nombre;
         $alimento->delete();
         AuditLogService::log('alimentacion', 'ELIMINAR_ALIMENTO', 'Se eliminó el alimento "'.$nombre.'".', $alimento);
+        if ($request->expectsJson()) return response()->json(['success' => true, 'id' => $alimento->id, 'mensaje' => 'Alimento eliminado correctamente.']);
         return redirect()->route('alimentacion.alimentos.index')->with('success', 'Alimento eliminado correctamente.');
     }
 
