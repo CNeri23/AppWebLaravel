@@ -95,7 +95,7 @@
 
 @if ($puedeCrear)
 <div class="modal fade" id="modalCrearAlimento" tabindex="-1" aria-labelledby="modalCrearAlimentoLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title fw-semibold" id="modalCrearAlimentoLabel"><i class="fa-solid fa-carrot me-2"></i>Nuevo alimento</h5>
@@ -129,7 +129,7 @@
 
 @if ($puedeEditar)
 <div class="modal fade" id="modalEditarAlimento" tabindex="-1" aria-labelledby="modalEditarAlimentoLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title fw-semibold" id="modalEditarAlimentoLabel"><i class="fa-solid fa-pen-to-square me-2"></i>Editar alimento</h5>
