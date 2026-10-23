@@ -189,12 +189,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('formEditarAlimento');
         form.action = button.dataset.url;
         const campos = {
-            nombre: 'nombre', categoria: 'categoria', unidad: 'unidad', nombrePorcion: 'nombre-porcion',
-            cantidadPorcion: 'cantidad-porcion', calorias: 'calorias', proteinas: 'proteinas',
+            nombre: 'nombre', categoria: 'categoria', unidad: 'unidad',
+            nombre_porcion: 'nombrePorcion', cantidad_porcion: 'cantidadPorcion',
+            calorias: 'calorias', proteinas: 'proteinas',
             carbohidratos: 'carbohidratos', grasas: 'grasas', activo: 'activo'
         };
         Object.entries(campos).forEach(([id, data]) => {
-            const input = document.getElementById('editar_' + id.replace(/[A-Z]/g, m => '_' + m.toLowerCase()));
+            const input = document.getElementById('editar_' + id);
             if (input) input.value = button.dataset[data] ?? '';
         });
     });
