@@ -29,7 +29,7 @@ class RegistroComidaController extends Controller
         $permisos = app(PermissionService::class);
         $accionesRegistros = $submodulo?->acciones->filter(
             fn ($accion) => $permisos->tieneAccion(auth()->user(), $accion->id)
-        )->pluck('slug')->values() ?? collect();
+        ) ?? collect();
         return view('alimentacion.registros', compact('registros', 'alimentos', 'fecha', 'totales', 'accionesRegistros'));
     }
 
