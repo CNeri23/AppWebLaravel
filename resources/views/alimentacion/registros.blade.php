@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('filasAlimentos');
     const addButton = document.getElementById('agregarAlimento');
     let index = 1;
-    const foods = @json($alimentos->map(fn ($a) => ['id' => $a->id, 'nombre' => $a->nombre, 'unidad' => $a->unidad_base, 'porcion' => (bool) ($a->nombre_porcion && $a->cantidad_porcion)])->values());
+    const foods = @json($alimentos->map(function ($a) { return ['id' => $a->id, 'nombre' => $a->nombre, 'unidad' => $a->unidad_base, 'porcion' => (bool) ($a->nombre_porcion && $a->cantidad_porcion)]; })->values());
 
     function configureUnit(row) {
         const food = row.querySelector('.alimento-select');
