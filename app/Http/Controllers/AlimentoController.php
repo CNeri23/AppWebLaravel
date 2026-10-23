@@ -29,7 +29,7 @@ class AlimentoController extends Controller
         $datos = $this->validar($request);
         $alimento = Alimento::create($datos);
         AuditLogService::log('alimentacion', 'CREAR_ALIMENTO', 'Se creó el alimento "'.$alimento->nombre.'".', $alimento);
-        if ($request->expectsJson()) return response()->json(['success' => true, 'id' => $alimento->id, 'mensaje' => 'Alimento creado correctamente.']);
+        if ($request->expectsJson()) return response()->json(['success' => true, 'alimento' => $alimento, 'mensaje' => 'Alimento creado correctamente.']);
         return redirect()->route('alimentacion.alimentos.index')->with('success', 'Alimento creado correctamente.');
     }
 
@@ -39,7 +39,7 @@ class AlimentoController extends Controller
         $alimento->update($datos);
         $alimento->refresh();
         AuditLogService::log('alimentacion', 'EDITAR_ALIMENTO', 'Se actualizó el alimento "'.$alimento->nombre.'".', $alimento);
-        if ($request->expectsJson()) return response()->json(['success' => true, 'id' => $alimento->id, 'mensaje' => 'Alimento actualizado correctamente.']);
+        if ($request->expectsJson()) return response()->json(['success' => true, 'alimento' => $alimento, 'mensaje' => 'Alimento actualizado correctamente.']);
         return redirect()->route('alimentacion.alimentos.index')->with('success', 'Alimento actualizado correctamente.');
     }
 
