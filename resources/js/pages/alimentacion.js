@@ -269,9 +269,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!['formCrearAlimento','formEditarAlimento','formRegistroComida','formEliminarAlimento','formEliminarRegistro'].includes(formulario.id)) return;
                 evento.preventDefault();
 
-                if (formulario.id === 'formEditarAlimento' && sinCambios(formulario)) {
-                    window.showToast?.('info', 'No hay cambios para guardar.');
-                    return;
+                // Validar primero, igual que en los demás formularios del ERP.
+                // La comprobación de cambios solo debe ejecutarse si los datos son válidos.
+                if (formulario.id === 'formEditarAlimento') {
+                    if (!validarFormulario(formulario)) {
+                        evento.preventDefault();
+                        window.showToast?.('warning', 'Revisa los campos marcados antes de actualizar.');
+                        return;
+                    }
+
+                    if (sinCambios(formulario)) {
+                        window.showToast?.('info', 'No hay cambios para guardar.');
+                        return;
+                    }
                 }
 
                 const submit = formulario.querySelector('[type="submit"]');
