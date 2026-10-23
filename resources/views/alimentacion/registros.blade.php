@@ -11,6 +11,7 @@
 @endforeach
 </div>
 
+@if (($accionesRegistros ?? collect())->contains('registro-comidas.crear'))
 <div class="card border-0 shadow-sm mb-4"><div class="card-header bg-transparent border-0 pt-4 px-4"><h5 class="fw-semibold mb-0">Registrar comida</h5></div><div class="card-body px-4">
 @if($alimentos->isEmpty())
 <div class="alert alert-info mb-0">Primero agrega alimentos al <a href="{{ route('alimentacion.alimentos.index') }}">catálogo de alimentos</a>.</div>
@@ -30,10 +31,11 @@
 </form>
 @endif
 </div></div>
+@endif
 
 <div class="card border-0 shadow-sm"><div class="card-header bg-transparent border-0 pt-4 px-4"><h5 class="fw-semibold mb-0">Comidas del {{ \Illuminate\Support\Carbon::parse($fecha)->format('d/m/Y') }}</h5></div><div class="card-body">
 @forelse($registros as $registro)
-<div class="border rounded-3 p-3 mb-3"><div class="d-flex flex-wrap justify-content-between gap-2"><div><h6 class="fw-bold mb-1">{{ ucfirst($registro->tipo_comida) }}</h6><div class="text-secondary small">{{ $registro->notas ?: 'Sin notas' }}</div></div><form method="POST" action="{{ route('alimentacion.registros.destroy', $registro) }}" onsubmit="return confirm('¿Eliminar este registro de comida?')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash me-1"></i>Eliminar</button></form></div>
+<div class="border rounded-3 p-3 mb-3"><div class="d-flex flex-wrap justify-content-between gap-2"><div><h6 class="fw-bold mb-1">{{ ucfirst($registro->tipo_comida) }}</h6><div class="text-secondary small">{{ $registro->notas ?: 'Sin notas' }}</div></div>@if (($accionesRegistros ?? collect())->contains('registro-comidas.eliminar'))<form method="POST" action="{{ route('alimentacion.registros.destroy', $registro) }}" onsubmit="return confirm('¿Eliminar este registro de comida?')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash me-1"></i>Eliminar</button></form>@endif</div>
 <div class="table-responsive mt-3"><table class="table table-sm align-middle mb-0"><thead><tr><th>Alimento</th><th>Cantidad</th><th>Calorías</th><th>Proteínas</th><th>Carbohidratos</th><th>Grasas</th></tr></thead><tbody>@foreach($registro->detalles as $detalle)<tr><td>{{ $detalle->nombre_alimento }}</td><td>{{ $detalle->cantidad }} {{ $detalle->unidad }}</td><td>{{ number_format($detalle->calorias,1) }}</td><td>{{ number_format($detalle->proteinas,1) }} g</td><td>{{ number_format($detalle->carbohidratos,1) }} g</td><td>{{ number_format($detalle->grasas,1) }} g</td></tr>@endforeach</tbody></table></div></div>
 @empty<div class="text-center text-secondary py-4">No hay comidas registradas para esta fecha.</div>@endforelse
 </div></div>
