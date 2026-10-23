@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Alimento;
 use App\Models\RegistroComida;
+use App\Models\Submodulo;
+use App\Services\PermissionService;
 use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +24,13 @@ class RegistroComidaController extends Controller
             ->get();
         $alimentos = Alimento::where('activo', true)->orderBy('nombre')->get();
         $totales = $this->totales($registros);
-        return view('alimentacion.registros', compact('registros', 'alimentos', 'fecha', 'totales'));
+        $submodulo = Submodulo::with(['acciones' => fn ($query) => $query->where('activo', true)->orderBy('orden')])
+            ->where('slug', 'registro-comidas')->where('activo', true)->first();
+        $permisos = app(PermissionService::class);
+        $accionesRegistros = $submodulo?->acciones->filter(
+            fn ($accion) => $permisos->tieneAccion(auth()->user(), $accion->id)
+        )->pluck('slug')->values() ?? collect();
+        return view('alimentacion.registros', compact('registros', 'alimentos', 'fecha', 'totales', 'accionesRegistros'));
     }
 
     public function store(Request $request)
