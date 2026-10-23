@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alimento;
+use App\Models\Submodulo;
+use App\Services\PermissionService;
 use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -13,7 +15,13 @@ class AlimentoController extends Controller
     public function index(): View
     {
         $alimentos = Alimento::query()->orderBy('nombre')->get();
-        return view('alimentacion.alimentos', compact('alimentos'));
+        $submodulo = Submodulo::with(['acciones' => fn ($query) => $query->where('activo', true)->orderBy('orden')])
+            ->where('slug', 'alimentos')->where('activo', true)->first();
+        $permisos = app(PermissionService::class);
+        $accionesAlimentos = $submodulo?->acciones->filter(
+            fn ($accion) => $permisos->tieneAccion(auth()->user(), $accion->id)
+        )->pluck('slug')->values() ?? collect();
+        return view('alimentacion.alimentos', compact('alimentos', 'accionesAlimentos'));
     }
 
     public function store(Request $request)
