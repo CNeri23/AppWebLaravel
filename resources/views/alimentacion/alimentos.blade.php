@@ -60,8 +60,8 @@
                         <td class="text-center">
                             <span class="badge rounded-pill {{ $alimento->activo ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $alimento->activo ? 'Activo' : 'Inactivo' }}</span>
                         </td>
-                        <td class="text-end pe-4">
-                            <div class="d-inline-flex align-items-center gap-2">
+                        <td class="text-center px-4">
+                            <div class="usuario-actions">
                                 @if ($puedeEditar)
                                 <button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn" data-tooltip="{{ $accionEditarAlimento->nombre }}"
                                     data-bs-toggle="modal" data-bs-target="#modalEditarAlimento"
@@ -135,7 +135,7 @@
                 <h5 class="modal-title fw-semibold" id="modalEditarAlimentoLabel"><i class="fa-solid fa-pen-to-square me-2"></i>Editar alimento</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <form method="POST" id="formEditarAlimento" class="js-toast-form" autocomplete="off">
+            <form method="POST" id="formEditarAlimento" class="js-toast-form" novalidate autocomplete="off">
                 @csrf @method('PUT')
                 <div class="modal-body">
                     <div class="row g-3">
@@ -184,29 +184,6 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.js-toast-form').forEach(form => {
-        form.addEventListener('submit', function (event) {
-            form.querySelectorAll('.is-invalid').forEach(input => input.classList.remove('is-invalid'));
-            let firstInvalid = null;
-            form.querySelectorAll('[required], [type="number"], [type="email"]').forEach(input => {
-                let message = '';
-                if (input.required && !input.value.trim()) message = 'Este campo es obligatorio.';
-                else if (input.type === 'number' && input.value !== '' && !input.checkValidity()) message = 'Ingresa un valor válido dentro del rango permitido.';
-                if (message) {
-                    input.classList.add('is-invalid');
-                    const feedback = input.parentElement.querySelector('.invalid-feedback');
-                    if (feedback) feedback.textContent = message;
-                    firstInvalid ||= input;
-                }
-            });
-            if (firstInvalid) { event.preventDefault(); firstInvalid.focus(); }
-        });
-        form.querySelectorAll('input, select, textarea').forEach(input => input.addEventListener('input', () => {
-            input.classList.remove('is-invalid');
-            const feedback = input.parentElement.querySelector('.invalid-feedback');
-            if (feedback) feedback.textContent = '';
-        }));
-    });
     const editarModal = document.getElementById('modalEditarAlimento');
     editarModal?.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget;
