@@ -103,7 +103,7 @@
 
 @if ($puedeCrear && $alimentos->isNotEmpty())
 <div class="modal fade" id="modalRegistrarComida" tabindex="-1" aria-labelledby="modalRegistrarComidaLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header"><h5 class="modal-title fw-semibold" id="modalRegistrarComidaLabel"><i class="fa-solid fa-utensils me-2"></i>Registrar comida</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
             <form method="POST" action="{{ route('alimentacion.registros.store') }}" id="formRegistroComida" novalidate autocomplete="off">
