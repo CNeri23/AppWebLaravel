@@ -44,7 +44,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($alimentos as $alimento)<tr>
+                    @foreach ($alimentos as $alimento)<tr data-id="{{ $alimento->id }}">
                         <td class="ps-4"><span class="fw-semibold">{{ $alimento->nombre }}</span></td>
                         <td>{{ $alimento->categoria ?: '—' }}</td>
                         <td>
