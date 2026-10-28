@@ -184,12 +184,30 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function inicializarDataTable() {
-        if (!window.jQuery || !jQuery.fn.DataTable) return;
-        if (jQuery.fn.DataTable.isDataTable(tabla)) jQuery(tabla).DataTable().destroy();
-        dataTable = jQuery(tabla).DataTable({
-            language: { url: '/vendor/datatables/i18n/es-ES.json' },
-            responsive: true,
+        if (!window.DataTable) return;
+        if (DataTable.isDataTable(tabla)) {
+            DataTable.getInstance(tabla)?.destroy();
+        }
+        dataTable = new DataTable(tabla, {
             autoWidth: false,
+            responsive: true,
+            language: {
+                search: 'Buscar:',
+                lengthMenu: 'Mostrar _MENU_ registros',
+                info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+                infoFiltered: '(filtrado de _MAX_ registros)',
+                zeroRecords: 'No se encontraron categorías',
+                emptyTable: 'No hay categorías registradas',
+                paginate: {
+                    first: '<i class="fa-solid fa-angles-left"></i>',
+                    previous: '<i class="fa-solid fa-angle-left"></i>',
+                    next: '<i class="fa-solid fa-angle-right"></i>',
+                    last: '<i class="fa-solid fa-angles-right"></i>'
+                }
+            },
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
             order: [[1, 'asc'], [0, 'asc']],
             columnDefs: [{ targets: 4, orderable: false, searchable: false }]
         });
