@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     [
-        { id: 'tablaAlimentos', orden: [[0, 'asc']], acciones: 8 },
         { id: 'tablaRegistrosComida', orden: [[0, 'asc']], acciones: 7 },
         { id: 'tablaPanelNutricional', orden: [[0, 'asc']], acciones: null }
     ].forEach(function (opciones) {
@@ -195,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function serializarFormulario(formulario) {
         return Array.from(new FormData(formulario).entries())
             .filter(([key]) => !['_token', '_method'].includes(key))
-            .map(([key, value]) => [key, String(value).trim()])
+            .map(([key, value]) => [key, value instanceof File ? (value.name ? value.name + ':' + value.size + ':' + value.lastModified : '') : String(value).trim()])
             .sort(([a], [b]) => a.localeCompare(b));
     }
 
@@ -209,49 +208,26 @@ document.addEventListener('DOMContentLoaded', function () {
         if (formulario) formulario.dataset.valoresIniciales = JSON.stringify(serializarFormulario(formulario));
     }
 
+    function crearTarjetaAlimento(alimento, catalogo) {
+        const id = escapeHtml(alimento.id);
+        const url = (catalogo.dataset.urlBase || '/alimentacion/alimentos') + '/' + encodeURIComponent(alimento.id);
+        const imagen = alimento.imagen_url || '';
+        const activo = Number(alimento.activo);
+        const porcion = alimento.nombre_porcion ? '<small>' + escapeHtml(alimento.nombre_porcion) + ' · ' + escapeHtml(alimento.cantidad_porcion) + ' ' + escapeHtml(alimento.unidad_base) + '</small>' : '';
+        const media = imagen ? '<img src="' + escapeHtml(imagen) + '" alt="' + escapeHtml(alimento.nombre) + '" loading="lazy">' : '<div class="alimento-card-placeholder" aria-label="Sin imagen"><i class="fa-solid fa-utensils"></i><span>Sin imagen</span></div>';
+        const editar = catalogo.dataset.puedeEditar === '1' ? '<button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn" data-bs-toggle="modal" data-bs-target="#modalEditarAlimento" data-id="' + id + '" data-nombre="' + escapeHtml(alimento.nombre) + '" data-categoria="' + escapeHtml(alimento.categoria || '') + '" data-unidad="' + escapeHtml(alimento.unidad_base || 'g') + '" data-nombre-porcion="' + escapeHtml(alimento.nombre_porcion || '') + '" data-cantidad-porcion="' + escapeHtml(alimento.cantidad_porcion ?? '') + '" data-calorias="' + escapeHtml(alimento.calorias) + '" data-proteinas="' + escapeHtml(alimento.proteinas) + '" data-carbohidratos="' + escapeHtml(alimento.carbohidratos) + '" data-grasas="' + escapeHtml(alimento.grasas) + '" data-activo="' + (activo ? '1' : '0') + '" data-imagen="' + escapeHtml(imagen) + '" data-url="' + escapeHtml(url) + '" data-tooltip="Editar alimento">' + (catalogo.dataset.iconEditar || '<i class="fa-solid fa-pen"></i>') + '<span>Editar</span></button>' : '';
+        const eliminar = catalogo.dataset.puedeEliminar === '1' ? '<button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn" data-bs-toggle="modal" data-bs-target="#modalEliminarAlimento" data-nombre="' + escapeHtml(alimento.nombre) + '" data-url="' + escapeHtml(url) + '" data-tooltip="Eliminar alimento">' + (catalogo.dataset.iconEliminar || '<i class="fa-solid fa-trash"></i>') + '<span>Eliminar</span></button>' : '';
+        return '<article class="alimento-card ' + (activo ? '' : 'is-inactive') + '" data-id="' + id + '"><div class="alimento-card-media">' + media + '<span class="badge rounded-pill alimento-card-status ' + (activo ? 'text-bg-success' : 'text-bg-secondary') + '">' + (activo ? 'Activo' : 'Inactivo') + '</span></div><div class="alimento-card-body"><span class="alimento-card-category">' + escapeHtml(alimento.categoria || 'Alimento') + '</span><h3>' + escapeHtml(alimento.nombre) + '</h3><div class="alimento-card-portion"><i class="fa-solid fa-scale-balanced"></i><span>' + escapeHtml(String(alimento.unidad_base || 'g').toUpperCase()) + ' por cada 100 ' + escapeHtml(alimento.unidad_base || 'g') + '</span>' + porcion + '</div><div class="alimento-card-calories"><strong>' + Number(alimento.calorias || 0).toFixed(1) + '</strong><span>kcal <small>/ 100 ' + escapeHtml(alimento.unidad_base || 'g') + '</small></span></div><div class="alimento-card-macros"><div><span class="macro-dot macro-protein"></span><small>Proteínas</small><strong>' + Number(alimento.proteinas || 0).toFixed(1) + ' g</strong></div><div><span class="macro-dot macro-carbs"></span><small>Carbohidratos</small><strong>' + Number(alimento.carbohidratos || 0).toFixed(1) + ' g</strong></div><div><span class="macro-dot macro-fat"></span><small>Grasas</small><strong>' + Number(alimento.grasas || 0).toFixed(1) + ' g</strong></div></div>' + ((editar || eliminar) ? '<div class="alimento-card-actions">' + editar + eliminar + '</div>' : '') + '</div></article>';
+    }
+
     function actualizarFilaAlimento(data) {
-        const tabla = document.getElementById('tablaAlimentos');
-        if (!tabla) return;
-        const alimento = data.alimento;
-        const dt = DataTable.isDataTable(tabla) ? new DataTable.Api(tabla) : null;
-        const fila = tabla.querySelector('tbody tr[data-id="' + alimento.id + '"]');
-        if (!fila) {
-            // El alta se refleja en el DOM sin recargar la página.
-            const tr = document.createElement('tr');
-            tr.dataset.id = alimento.id;
-            const porcion = alimento.nombre_porcion
-                ? '<small class="d-block text-secondary">' + escapeHtml(alimento.nombre_porcion) + ' = ' + escapeHtml(alimento.cantidad_porcion) + ' ' + escapeHtml(alimento.unidad_base) + '</small>'
-                : '';
-            const estado = Number(alimento.activo) ? 'Activo' : 'Inactivo';
-            const clase = Number(alimento.activo) ? 'text-bg-success' : 'text-bg-secondary';
-            tr.innerHTML = '<td class="ps-4"><span class="fw-semibold">' + escapeHtml(alimento.nombre) + '</span></td>' +
-                '<td>' + escapeHtml(alimento.categoria || '—') + '</td>' +
-                '<td><span>' + escapeHtml(String(alimento.unidad_base).toUpperCase()) + '</span>' + porcion + '</td>' +
-                '<td>' + Number(alimento.calorias).toFixed(1) + ' kcal</td><td>' + Number(alimento.proteinas).toFixed(1) + ' g</td>' +
-                '<td>' + Number(alimento.carbohidratos).toFixed(1) + ' g</td><td>' + Number(alimento.grasas).toFixed(1) + ' g</td>' +
-                '<td class="text-center"><span class="badge rounded-pill ' + clase + '">' + estado + '</span></td>' +
-                '<td class="text-center px-4"><div class="usuario-actions">' +
-                '<button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn" data-bs-toggle="modal" data-bs-target="#modalEditarAlimento" data-tooltip="Editar alimento" data-id="' + escapeHtml(alimento.id) + '" data-nombre="' + escapeHtml(alimento.nombre) + '" data-categoria="' + escapeHtml(alimento.categoria || '') + '" data-unidad="' + escapeHtml(alimento.unidad_base || '') + '" data-nombre-porcion="' + escapeHtml(alimento.nombre_porcion || '') + '" data-cantidad-porcion="' + escapeHtml(alimento.cantidad_porcion ?? '') + '" data-calorias="' + escapeHtml(alimento.calorias) + '" data-proteinas="' + escapeHtml(alimento.proteinas) + '" data-carbohidratos="' + escapeHtml(alimento.carbohidratos) + '" data-grasas="' + escapeHtml(alimento.grasas) + '" data-activo="' + (Number(alimento.activo) ? '1' : '0') + '" data-url="/alimentacion/alimentos/' + encodeURIComponent(alimento.id) + '">' + (tabla.dataset.iconEditar || '<i class="fa-solid fa-pen"></i>') + '</button>' +
-                '<button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn" data-tooltip="Eliminar alimento" data-bs-toggle="modal" data-bs-target="#modalEliminarAlimento" data-nombre="' + escapeHtml(alimento.nombre) + '" data-url="/alimentacion/alimentos/' + encodeURIComponent(alimento.id) + '">' + (tabla.dataset.iconEliminar || '<i class="fa-solid fa-trash"></i>') + '</button>' +
-                '</div></td>';
-            if (dt) dt.row.add(tr).draw(false); else tabla.querySelector('tbody').appendChild(tr);
-            return;
-        }
-        fila.querySelectorAll('td')[0].innerHTML = '<span class="fw-semibold">' + escapeHtml(alimento.nombre) + '</span>';
-        fila.querySelectorAll('td')[1].textContent = alimento.categoria || '—';
-        fila.querySelectorAll('td')[2].innerHTML = '<span>' + escapeHtml(String(alimento.unidad_base).toUpperCase()) + '</span>' +
-            (alimento.nombre_porcion ? '<small class="d-block text-secondary">' + escapeHtml(alimento.nombre_porcion) + ' = ' + escapeHtml(alimento.cantidad_porcion) + ' ' + escapeHtml(alimento.unidad_base) + '</small>' : '');
-        [3,4,5,6].forEach((index, offset) => {
-            const val = [alimento.calorias, alimento.proteinas, alimento.carbohidratos, alimento.grasas][offset];
-            fila.querySelectorAll('td')[index].textContent = Number(val).toFixed(1) + (index === 3 ? ' kcal' : ' g');
-        });
-        fila.querySelectorAll('td')[7].innerHTML = '<span class="badge rounded-pill ' + (Number(alimento.activo) ? 'text-bg-success' : 'text-bg-secondary') + '">' + (Number(alimento.activo) ? 'Activo' : 'Inactivo') + '</span>';
-        fila.querySelectorAll('td')[8].querySelectorAll('[data-bs-target="#modalEditarAlimento"]').forEach(btn => {
-            Object.entries({id: alimento.id, nombre: alimento.nombre, categoria: alimento.categoria, unidad: alimento.unidad_base,
-                nombrePorcion: alimento.nombre_porcion, cantidadPorcion: alimento.cantidad_porcion, calorias: alimento.calorias,
-                proteinas: alimento.proteinas, carbohidratos: alimento.carbohidratos, grasas: alimento.grasas, activo: alimento.activo ? 1 : 0})
-                .forEach(([key, value]) => btn.dataset[key] = value ?? '');
-        });
+        const catalogo = document.getElementById('catalogoAlimentos');
+        if (!catalogo || !data.alimento) return;
+        const alimento = {...data.alimento, imagen_url: data.imagen_url ?? data.alimento.imagen_url ?? ''};
+        const actual = catalogo.querySelector('.alimento-card[data-id="' + CSS.escape(String(alimento.id)) + '"]');
+        const html = crearTarjetaAlimento(alimento, catalogo);
+        if (actual) actual.outerHTML = html;
+        else { catalogo.querySelector('.alimentos-empty')?.remove(); catalogo.insertAdjacentHTML('beforeend', html); }
     }
 
     function escapeHtml(value) {
@@ -323,10 +299,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         const modal = formulario.closest('.modal');
                         bootstrap.Modal.getInstance(modal)?.hide();
                         const id = resultado.id;
-                        const tabla = formulario.id === 'formEliminarAlimento' ? document.getElementById('tablaAlimentos') : document.getElementById('tablaRegistrosComida');
-                        const tr = tabla?.querySelector('tbody tr[data-id="' + id + '"]');
-                        if (tr && DataTable.isDataTable(tabla)) new DataTable.Api(tabla).row(tr).remove().draw(false);
-                        else tr?.remove();
+                        if (formulario.id === 'formEliminarAlimento') {
+                            if (resultado.alimento) actualizarFilaAlimento(resultado);
+                            else document.querySelector('.alimento-card[data-id="' + CSS.escape(String(id)) + '"]')?.remove();
+                            const catalogo = document.getElementById('catalogoAlimentos');
+                            if (catalogo && !catalogo.querySelector('.alimento-card') && !catalogo.querySelector('.alimentos-empty')) catalogo.insertAdjacentHTML('beforeend', '<div class="alimentos-empty"><div class="alimentos-empty-icon"><i class="fa-solid fa-carrot"></i></div><h3>Catálogo actualizado</h3><p>Agrega un alimento para volver a llenar tu catálogo nutricional.</p></div>');
+                        } else {
+                            const tabla = document.getElementById('tablaRegistrosComida');
+                            const tr = tabla?.querySelector('tbody tr[data-id="' + id + '"]');
+                            if (tr && DataTable.isDataTable(tabla)) new DataTable.Api(tabla).row(tr).remove().draw(false);
+                            else tr?.remove();
+                        }
                         window.showToast?.('success', resultado.mensaje || 'Registro eliminado correctamente.');
                     } else {
                         window.showToast?.('success', resultado.mensaje || 'Cambios guardados correctamente.');

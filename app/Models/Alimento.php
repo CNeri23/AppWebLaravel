@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Alimento extends Model
 {
-    protected $fillable = ['nombre','categoria','unidad_base','nombre_porcion','cantidad_porcion','calorias','proteinas','carbohidratos','grasas','activo'];
+    protected $fillable = ['nombre','categoria','imagen','unidad_base','nombre_porcion','cantidad_porcion','calorias','proteinas','carbohidratos','grasas','activo'];
 
     protected function casts(): array
     {

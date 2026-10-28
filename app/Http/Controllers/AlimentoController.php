@@ -8,6 +8,7 @@ use App\Services\PermissionService;
 use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class AlimentoController extends Controller
@@ -27,19 +28,25 @@ class AlimentoController extends Controller
     public function store(Request $request)
     {
         $datos = $this->validar($request);
+        if ($request->hasFile('imagen')) $datos['imagen'] = $request->file('imagen')->store('alimentos', 'public');
         $alimento = Alimento::create($datos);
         AuditLogService::log('alimentacion', 'CREAR_ALIMENTO', 'Se creó el alimento "'.$alimento->nombre.'".', $alimento);
-        if ($request->expectsJson()) return response()->json(['success' => true, 'alimento' => $alimento, 'mensaje' => 'Alimento creado correctamente.']);
+        if ($request->expectsJson()) return response()->json(['success' => true, 'alimento' => $alimento, 'imagen_url' => $alimento->imagen ? Storage::url($alimento->imagen) : null, 'mensaje' => 'Alimento creado correctamente.']);
         return redirect()->route('alimentacion.alimentos.index')->with('success', 'Alimento creado correctamente.');
     }
 
     public function update(Request $request, Alimento $alimento)
     {
         $datos = $this->validar($request, $alimento);
+        if ($request->hasFile('imagen')) {
+            $nuevaImagen = $request->file('imagen')->store('alimentos', 'public');
+            if ($alimento->imagen) Storage::disk('public')->delete($alimento->imagen);
+            $datos['imagen'] = $nuevaImagen;
+        }
         $alimento->update($datos);
         $alimento->refresh();
         AuditLogService::log('alimentacion', 'EDITAR_ALIMENTO', 'Se actualizó el alimento "'.$alimento->nombre.'".', $alimento);
-        if ($request->expectsJson()) return response()->json(['success' => true, 'alimento' => $alimento, 'mensaje' => 'Alimento actualizado correctamente.']);
+        if ($request->expectsJson()) return response()->json(['success' => true, 'alimento' => $alimento, 'imagen_url' => $alimento->imagen ? Storage::url($alimento->imagen) : null, 'mensaje' => 'Alimento actualizado correctamente.']);
         return redirect()->route('alimentacion.alimentos.index')->with('success', 'Alimento actualizado correctamente.');
     }
 
@@ -47,11 +54,12 @@ class AlimentoController extends Controller
     {
         if ($alimento->detallesComida()->exists()) {
             $alimento->update(['activo' => false]);
-            if ($request->expectsJson()) return response()->json(['success' => true, 'id' => $alimento->id, 'mensaje' => 'El alimento tiene registros históricos y se desactivó para conservarlos.']);
+            if ($request->expectsJson()) return response()->json(['success' => true, 'id' => $alimento->id, 'alimento' => $alimento->fresh(), 'imagen_url' => $alimento->imagen ? Storage::url($alimento->imagen) : null, 'mensaje' => 'El alimento tiene registros históricos y se desactivó para conservarlos.']);
             return redirect()->route('alimentacion.alimentos.index')->with('success', 'El alimento tiene registros históricos y se desactivó para conservarlos.');
         }
 
         $nombre = $alimento->nombre;
+        if ($alimento->imagen) Storage::disk('public')->delete($alimento->imagen);
         $alimento->delete();
         AuditLogService::log('alimentacion', 'ELIMINAR_ALIMENTO', 'Se eliminó el alimento "'.$nombre.'".', $alimento);
         if ($request->expectsJson()) return response()->json(['success' => true, 'id' => $alimento->id, 'mensaje' => 'Alimento eliminado correctamente.']);
@@ -63,6 +71,7 @@ class AlimentoController extends Controller
         return $request->validate([
             'nombre' => ['required', 'string', 'max:150', Rule::unique('alimentos', 'nombre')->ignore($alimento?->id)],
             'categoria' => ['nullable', 'string', 'max:80'],
+            'imagen' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp,avif', 'max:4096'],
             'unidad_base' => ['required', Rule::in(['g', 'ml'])],
             'nombre_porcion' => ['nullable', 'string', 'max:80'],
             'cantidad_porcion' => ['nullable', 'numeric', 'gt:0', 'required_with:nombre_porcion'],
