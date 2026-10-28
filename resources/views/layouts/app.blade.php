@@ -74,6 +74,7 @@
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/datatables/css/datatables.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slim-select@2.9.2/dist/slimselect.min.css">
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     <link rel="stylesheet" href="{{ asset('css/layout.css') }}?v={{ @filemtime(public_path('css/layout.css')) }}">
     <link rel="stylesheet" href="{{ asset('css/toast.css') }}">
@@ -360,6 +361,7 @@
     </div>
 
     <script src="{{ asset('vendor/datatables/js/datatables.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slim-select@2.9.2/dist/slimselect.min.js"></script>
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('js/toast.js') }}"></script>
 
