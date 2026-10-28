@@ -1,0 +1,13 @@
+.finanzas-header-card { border-radius: 14px; background: var(--bs-card-bg); }
+.finanzas-header-content { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.8rem 1.25rem; }
+.finanzas-header-text { min-width:0; }
+.finanzas-header-text h2 { overflow-wrap:anywhere; }
+.finanzas-header-content .form-select { width:auto; min-width:210px; }
+.finanzas-categoria-actions { display:flex; justify-content:center; align-items:center; gap:.4rem; }
+.finanzas-action-btn { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; padding:0; border-radius:9px; }
+.finanzas-action-btn:disabled { opacity:.35; cursor:not-allowed; }
+#tablaCategoriasFinancieras td { vertical-align:middle; }
+@media (max-width:575.98px) {
+    .finanzas-header-content { align-items:stretch; flex-direction:column; padding:.8rem 1rem; }
+    .finanzas-header-content .form-select, .finanzas-header-content .btn { width:100%; }
+}
