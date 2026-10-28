@@ -27,8 +27,8 @@
 </div>
 
 <div class="alimentos-catalogo" id="catalogoAlimentos"
-    data-icon-editar="{{ e($accionEditarAlimento?->icono ?: '<i class="fa-solid fa-pen"></i>') }}"
-    data-icon-eliminar="{{ e($accionEliminarAlimento?->icono ?: '<i class="fa-solid fa-trash"></i>') }}"
+    data-icon-editar="{{ base64_encode($accionEditarAlimento?->icono ?: '<i class="fa-solid fa-pen"></i>') }}"
+    data-icon-eliminar="{{ base64_encode($accionEliminarAlimento?->icono ?: '<i class="fa-solid fa-trash"></i>') }}"
     data-puede-editar="{{ $puedeEditar ? 1 : 0 }}" data-puede-eliminar="{{ $puedeEliminar ? 1 : 0 }}"
     data-url-base="{{ url('/alimentacion/alimentos') }}">
     @forelse ($alimentos as $alimento)

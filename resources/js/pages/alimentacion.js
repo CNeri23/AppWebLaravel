@@ -238,10 +238,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function decodificarIcono(valor, respaldo) {
         if (!valor) return respaldo;
-        const temporal = document.createElement('textarea');
-        temporal.innerHTML = valor;
-        const icono = temporal.value;
-        return icono.includes('<') ? icono : respaldo;
+
+        try {
+            // Los iconos se envían en Base64 desde Blade para conservar intacto su HTML.
+            const icono = decodeURIComponent(Array.from(atob(valor), caracter =>
+                '%' + caracter.charCodeAt(0).toString(16).padStart(2, '0')
+            ).join(''));
+            return /<i\b[^>]*class=["'][^"']+["'][^>]*>\s*<\/i>/i.test(icono)
+                ? icono
+                : respaldo;
+        } catch (error) {
+            return respaldo;
+        }
     }
 
     const ALIMENTOS_POR_PAGINA = 8;
