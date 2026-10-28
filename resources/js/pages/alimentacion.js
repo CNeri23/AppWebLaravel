@@ -211,15 +211,18 @@ document.addEventListener('DOMContentLoaded', function () {
         if (formulario) formulario.dataset.valoresIniciales = JSON.stringify(serializarFormulario(formulario));
     }
 
-    function crearTarjetaAlimento(alimento, catalogo) {
+    function crearTarjetaAlimento(alimento, catalogo, tarjetaReferencia = null) {
         const id = escapeHtml(alimento.id);
         const url = (catalogo.dataset.urlBase || '/alimentacion/alimentos') + '/' + encodeURIComponent(alimento.id);
         const imagen = alimento.imagen_url || '';
         const activo = Number(alimento.activo);
         const porcion = alimento.nombre_porcion ? '<small>' + escapeHtml(alimento.nombre_porcion) + ' · ' + escapeHtml(alimento.cantidad_porcion) + ' ' + escapeHtml(alimento.unidad_base) + '</small>' : '';
         const media = imagen ? '<img src="' + escapeHtml(imagen) + '" alt="' + escapeHtml(alimento.nombre) + '" loading="lazy">' : '<div class="alimento-card-placeholder" aria-label="Sin imagen"><i class="fa-solid fa-utensils"></i><span>Sin imagen</span></div>';
-        const iconoEditar = decodificarIcono(catalogo.dataset.iconEditar, '<i class="fa-solid fa-pen"></i>');
-        const iconoEliminar = decodificarIcono(catalogo.dataset.iconEliminar, '<i class="fa-solid fa-trash"></i>');
+        // Reutiliza el HTML del icono que ya está renderizado por Blade en una tarjeta existente.
+        // Así se evita que la codificación/decodificación altere los iconos al actualizar por AJAX.
+        const referenciaIconos = tarjetaReferencia || catalogo.querySelector('.alimento-card');
+        const iconoEditar = obtenerIconoAccion(referenciaIconos, '#modalEditarAlimento', '<i class="fa-solid fa-pen"></i>');
+        const iconoEliminar = obtenerIconoAccion(referenciaIconos, '#modalEliminarAlimento', '<i class="fa-solid fa-trash"></i>');
         const editar = catalogo.dataset.puedeEditar === '1' ? '<button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn" data-bs-toggle="modal" data-bs-target="#modalEditarAlimento" data-id="' + id + '" data-nombre="' + escapeHtml(alimento.nombre) + '" data-categoria="' + escapeHtml(alimento.categoria || '') + '" data-unidad="' + escapeHtml(alimento.unidad_base || 'g') + '" data-nombre-porcion="' + escapeHtml(alimento.nombre_porcion || '') + '" data-cantidad-porcion="' + escapeHtml(alimento.cantidad_porcion ?? '') + '" data-calorias="' + escapeHtml(alimento.calorias) + '" data-proteinas="' + escapeHtml(alimento.proteinas) + '" data-carbohidratos="' + escapeHtml(alimento.carbohidratos) + '" data-grasas="' + escapeHtml(alimento.grasas) + '" data-activo="' + (activo ? '1' : '0') + '" data-imagen="' + escapeHtml(imagen) + '" data-url="' + escapeHtml(url) + '" data-tooltip="Editar alimento">' + iconoEditar + '<span>Editar</span></button>' : '';
         const eliminar = catalogo.dataset.puedeEliminar === '1' ? '<button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn" data-bs-toggle="modal" data-bs-target="#modalEliminarAlimento" data-nombre="' + escapeHtml(alimento.nombre) + '" data-url="' + escapeHtml(url) + '" data-tooltip="Eliminar alimento">' + iconoEliminar + '<span>Eliminar</span></button>' : '';
         return '<article class="alimento-card ' + (activo ? '' : 'is-inactive') + '" data-id="' + id + '"><div class="alimento-card-media">' + media + '<span class="badge rounded-pill alimento-card-status ' + (activo ? 'text-bg-success' : 'text-bg-secondary') + '">' + (activo ? 'Activo' : 'Inactivo') + '</span></div><div class="alimento-card-body"><span class="alimento-card-category">' + escapeHtml(alimento.categoria || 'Alimento') + '</span><h3>' + escapeHtml(alimento.nombre) + '</h3><div class="alimento-card-portion"><i class="fa-solid fa-scale-balanced"></i><span>' + escapeHtml(String(alimento.unidad_base || 'g').toUpperCase()) + ' por cada 100 ' + escapeHtml(alimento.unidad_base || 'g') + '</span>' + porcion + '</div><div class="alimento-card-calories"><strong>' + Number(alimento.calorias || 0).toFixed(1) + '</strong><span>kcal <small>/ 100 ' + escapeHtml(alimento.unidad_base || 'g') + '</small></span></div><div class="alimento-card-macros"><div><span class="macro-dot macro-protein"></span><small>Proteínas</small><strong>' + Number(alimento.proteinas || 0).toFixed(1) + ' g</strong></div><div><span class="macro-dot macro-carbs"></span><small>Carbohidratos</small><strong>' + Number(alimento.carbohidratos || 0).toFixed(1) + ' g</strong></div><div><span class="macro-dot macro-fat"></span><small>Grasas</small><strong>' + Number(alimento.grasas || 0).toFixed(1) + ' g</strong></div></div>' + ((editar || eliminar) ? '<div class="alimento-card-actions">' + editar + eliminar + '</div>' : '') + '</div></article>';
@@ -230,10 +233,25 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!catalogo || !data.alimento) return;
         const alimento = {...data.alimento, imagen_url: data.imagen_url ?? data.alimento.imagen_url ?? ''};
         const actual = catalogo.querySelector('.alimento-card[data-id="' + CSS.escape(String(alimento.id)) + '"]');
-        const html = crearTarjetaAlimento(alimento, catalogo);
+        const html = crearTarjetaAlimento(alimento, catalogo, actual);
         if (actual) actual.outerHTML = html;
         else { catalogo.querySelector('.alimentos-empty')?.remove(); catalogo.insertAdjacentHTML('beforeend', html); }
         actualizarPaginacionAlimentos();
+    }
+
+    function obtenerIconoAccion(tarjeta, modalObjetivo, respaldo) {
+        const boton = tarjeta?.querySelector('button[data-bs-target="' + modalObjetivo + '"]');
+        if (boton) {
+            const copia = boton.cloneNode(true);
+            copia.querySelectorAll('span').forEach(elemento => elemento.remove());
+            const icono = copia.innerHTML.trim();
+            if (icono) return icono;
+        }
+
+        // Respaldo para catálogos vacíos, usando los iconos configurados en Blade.
+        const catalogo = document.getElementById('catalogoAlimentos');
+        const atributo = modalObjetivo === '#modalEditarAlimento' ? 'iconEditar' : 'iconEliminar';
+        return decodificarIcono(catalogo?.dataset[atributo], respaldo);
     }
 
     function decodificarIcono(valor, respaldo) {
