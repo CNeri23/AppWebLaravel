@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function () {
     filtroAmbito?.addEventListener('change', () => {
         const url = new URL(window.location.href);
         url.searchParams.set('ambito', filtroAmbito.value);
-        if (window.navigateTo) window.navigateTo(url.toString());
+        if (typeof window.navegarSubmoduloSinRecargar === 'function') window.navegarSubmoduloSinRecargar(url.toString());
         else window.location.href = url.toString();
     });
 
