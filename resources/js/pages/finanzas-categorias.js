@@ -265,9 +265,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const id = eliminar.dataset.id;
             mostrarConfirmacionEliminar(eliminar.dataset.name || '', () => {
                 eliminar.disabled = true;
-                peticion('/finanzas/categorias/' + encodeURIComponent(id), 'POST', new FormData(Object.assign(document.createElement('form'), {})))
-                    .catch(mostrarError)
-                    .finally(() => { eliminar.disabled = false; });
                 const datos = new FormData();
                 datos.append('_method', 'DELETE');
                 peticion('/finanzas/categorias/' + encodeURIComponent(id), 'POST', datos)
