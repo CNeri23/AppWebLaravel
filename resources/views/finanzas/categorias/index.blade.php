@@ -19,7 +19,7 @@
             <p class="text-secondary mb-0">Organiza tus ingresos y gastos por categoría.</p>
         </div>
         <div class="d-flex flex-wrap align-items-center gap-2">
-            <select id="filtroAmbitoCategorias" class="form-select" aria-label="Ámbito de las categorías">
+            <select id="filtroAmbitoCategorias" class="form-select finanzas-select" aria-label="Ámbito de las categorías">
                 <option value="personal" {{ $ambito === 'personal' ? 'selected' : '' }}>Finanzas personales</option>
                 <option value="gimnasio" {{ $ambito === 'gimnasio' ? 'selected' : '' }}>Finanzas del gimnasio</option>
             </select>
