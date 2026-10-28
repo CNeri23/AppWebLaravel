@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function inicializarDataTable() {
         if (!window.DataTable) return;
         if (DataTable.isDataTable(tabla)) {
-            DataTable.getInstance(tabla)?.destroy();
+            jQuery(tabla).DataTable().destroy();
         }
         dataTable = new DataTable(tabla, {
             autoWidth: false,
