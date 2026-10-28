@@ -381,6 +381,24 @@ Route::middleware('auth')->group(function () {
         ->name('acciones.reordenar');
 
 
+    // Rutas finanzas: categorías
+
+    Route::get('/finanzas/categorias', [CategoriaFinancieraController::class, 'index'])
+        ->middleware('permiso:submodulo,categorias')
+        ->name('finanzas.categorias.index');
+
+    Route::post('/finanzas/categorias', [CategoriaFinancieraController::class, 'store'])
+        ->middleware('permiso:accion,finanzas.categorias.crear')
+        ->name('finanzas.categorias.store');
+
+    Route::put('/finanzas/categorias/{categoria}', [CategoriaFinancieraController::class, 'update'])
+        ->middleware('permiso:accion,finanzas.categorias.editar')
+        ->name('finanzas.categorias.update');
+
+    Route::delete('/finanzas/categorias/{categoria}', [CategoriaFinancieraController::class, 'destroy'])
+        ->middleware('permiso:accion,finanzas.categorias.eliminar')
+        ->name('finanzas.categorias.destroy');
+
     // Rutas alimentación
 
     Route::get('/alimentacion/alimentos', [AlimentoController::class, 'index'])
