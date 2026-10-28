@@ -133,11 +133,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function botones(categoria) {
         let html = '<div class="finanzas-categoria-actions">';
         if (tieneAccion('finanzas.categorias.editar')) {
-            html += '<button type="button" class="btn btn-outline-primary finanzas-action-btn btn-editar-categoria" data-id="' + categoria.id + '" data-tooltip="Editar categoría" aria-label="Editar categoría"><i class="fa-solid fa-pen-to-square"></i></button>';
+            html += '<button type="button" class="btn btn-sm btn-outline-primary finanzas-action-btn btn-editar-categoria" data-id="' + categoria.id + '" data-tooltip="Editar categoría" aria-label="Editar categoría"><i class="fa-solid fa-pen-to-square"></i></button>';
         }
         if (tieneAccion('finanzas.categorias.eliminar')) {
             const disabled = Number(categoria.movimientos_count || 0) > 0 ? ' disabled' : '';
-            html += '<button type="button" class="btn btn-outline-danger finanzas-action-btn btn-eliminar-categoria" data-id="' + categoria.id + '" data-name="' + escapeHtml(categoria.nombre) + '" data-tooltip="Eliminar categoría" aria-label="Eliminar categoría"' + disabled + '><i class="fa-regular fa-trash-can"></i></button>';
+            html += '<button type="button" class="btn btn-sm btn-outline-danger finanzas-action-btn btn-eliminar-categoria" data-id="' + categoria.id + '" data-name="' + escapeHtml(categoria.nombre) + '" data-tooltip="Eliminar categoría" aria-label="Eliminar categoría"' + disabled + '><i class="fa-regular fa-trash-can"></i></button>';
         }
         return html + '</div>';
     }
