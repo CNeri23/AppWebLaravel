@@ -59,15 +59,15 @@
                         <td><span class="badge rounded-pill {{ $categoria->tipo === 'ingreso' ? 'text-bg-success' : 'text-bg-danger' }}">{{ $categoria->tipo === 'ingreso' ? 'Ingreso' : 'Gasto' }}</span></td>
                         <td class="text-secondary">{{ $categoria->descripcion ?: 'Sin descripción' }}</td>
                         <td class="text-center">{{ $categoria->movimientos_count }}</td>
-                        <td>
+                        <td class="text-end px-4">
                             <div class="finanzas-categoria-actions">
                                 @if ($accionesCategorias->contains('slug', 'finanzas.categorias.editar'))
-                                    <button type="button" class="btn btn-outline-primary finanzas-action-btn btn-editar-categoria" data-id="{{ $categoria->id }}" data-tooltip="Editar categoría" aria-label="Editar categoría">
+                                    <button type="button" class="btn btn-sm btn-outline-primary finanzas-action-btn btn-editar-categoria" data-id="{{ $categoria->id }}" data-tooltip="Editar categoría" aria-label="Editar categoría">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                 @endif
                                 @if ($accionesCategorias->contains('slug', 'finanzas.categorias.eliminar'))
-                                    <button type="button" class="btn btn-outline-danger finanzas-action-btn btn-eliminar-categoria" data-id="{{ $categoria->id }}" data-name="{{ $categoria->nombre }}" data-tooltip="Eliminar categoría" aria-label="Eliminar categoría" {{ $categoria->movimientos_count > 0 ? 'disabled' : '' }}>
+                                    <button type="button" class="btn btn-sm btn-outline-danger finanzas-action-btn btn-eliminar-categoria" data-id="{{ $categoria->id }}" data-name="{{ $categoria->nombre }}" data-tooltip="Eliminar categoría" aria-label="Eliminar categoría" {{ $categoria->movimientos_count > 0 ? 'disabled' : '' }}>
                                         <i class="fa-regular fa-trash-can"></i>
                                     </button>
                                 @endif
