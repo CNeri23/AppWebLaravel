@@ -1,0 +1,202 @@
+/* Alimentación: mismos botones de acción compactos que Usuarios. */
+#tablaAlimentos .usuario-actions,
+#tablaRegistrosComida .usuario-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 2px;
+    width: fit-content;
+    min-width: max-content;
+    margin-inline: auto;
+    padding: 3px;
+    border-radius: 12px;
+    background: transparent;
+}
+
+#tablaAlimentos .btn.usuario-action-btn,
+#tablaRegistrosComida .btn.usuario-action-btn {
+    --ua: 100, 116, 139;
+    --bs-btn-color: var(--text-soft);
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: transparent;
+    --bs-btn-hover-color: rgb(var(--ua));
+    --bs-btn-hover-bg: rgba(var(--ua), 0.14);
+    --bs-btn-hover-border-color: transparent;
+    --bs-btn-active-color: rgb(var(--ua));
+    --bs-btn-active-bg: rgba(var(--ua), 0.22);
+    --bs-btn-active-border-color: transparent;
+    --bs-btn-disabled-color: var(--text-soft);
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: transparent;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    line-height: 1;
+    box-shadow: none;
+    transition: background-color 0.16s ease, color 0.16s ease, transform 0.2s ease;
+}
+
+#tablaAlimentos .btn.usuario-action-btn > i,
+#tablaAlimentos .btn.usuario-action-btn > svg,
+#tablaRegistrosComida .btn.usuario-action-btn > i,
+#tablaRegistrosComida .btn.usuario-action-btn > svg {
+    margin: 0 !important;
+    font-size: 14px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+#tablaAlimentos .btn.usuario-action-btn.btn-outline-primary,
+#tablaAlimentos .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen),
+#tablaRegistrosComida .btn.usuario-action-btn.btn-outline-primary,
+#tablaRegistrosComida .btn.usuario-action-btn:has(.fa-pen, .fa-pencil, .fa-edit, .fa-user-pen) {
+    --ua: 37, 99, 235;
+}
+
+#tablaAlimentos .btn.usuario-action-btn.btn-outline-success,
+#tablaRegistrosComida .btn.usuario-action-btn.btn-outline-success {
+    --ua: 22, 163, 74;
+}
+
+#tablaAlimentos .btn.usuario-action-btn.btn-outline-danger,
+#tablaAlimentos .btn.usuario-action-btn:has(.fa-trash, .fa-ban),
+#tablaRegistrosComida .btn.usuario-action-btn.btn-outline-danger,
+#tablaRegistrosComida .btn.usuario-action-btn:has(.fa-trash, .fa-ban) {
+    --ua: 220, 53, 69;
+}
+
+#tablaAlimentos .btn.usuario-action-btn.btn-outline-info,
+#tablaAlimentos .btn.usuario-action-btn:has(.fa-eye),
+#tablaRegistrosComida .btn.usuario-action-btn.btn-outline-info,
+#tablaRegistrosComida .btn.usuario-action-btn:has(.fa-eye) {
+    --ua: 8, 145, 178;
+}
+
+#tablaAlimentos .btn.usuario-action-btn,
+#tablaRegistrosComida .btn.usuario-action-btn {
+    color: rgb(var(--ua));
+    background: transparent;
+}
+
+#tablaAlimentos .btn.usuario-action-btn:hover,
+#tablaRegistrosComida .btn.usuario-action-btn:hover,
+#tablaAlimentos .btn.usuario-action-btn:focus-visible,
+#tablaRegistrosComida .btn.usuario-action-btn:focus-visible {
+    border-color: transparent;
+    color: rgb(var(--ua));
+    background: rgba(var(--ua), 0.13);
+    box-shadow: none;
+}
+
+#tablaAlimentos .btn.usuario-action-btn:active,
+#tablaRegistrosComida .btn.usuario-action-btn:active {
+    transform: scale(0.92);
+}
+
+[data-bs-theme="dark"] #tablaAlimentos .btn.usuario-action-btn,
+[data-bs-theme="dark"] #tablaRegistrosComida .btn.usuario-action-btn {
+    color: color-mix(in srgb, rgb(var(--ua)) 80%, #ffffff);
+}
+
+[data-bs-theme="dark"] #tablaAlimentos .btn.usuario-action-btn:hover,
+[data-bs-theme="dark"] #tablaRegistrosComida .btn.usuario-action-btn:hover {
+    background: rgba(var(--ua), 0.2);
+}
+
+@media (hover: hover) {
+    #tablaAlimentos .usuario-actions > :hover,
+    #tablaRegistrosComida .usuario-actions > :hover {
+        transform: translateY(-2px) scale(1.05);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #tablaAlimentos .usuario-actions *,
+    #tablaRegistrosComida .usuario-actions * {
+        transition: none !important;
+    }
+}
+
+/* Validación de formularios con el mismo lenguaje visual del resto del ERP. */
+#modalCrearAlimento .form-control.is-valid,
+#modalCrearAlimento .form-select.is-valid,
+#modalEditarAlimento .form-control.is-valid,
+#modalEditarAlimento .form-select.is-valid,
+#modalRegistrarComida .form-control.is-valid,
+#modalRegistrarComida .form-select.is-valid {
+    border-color: var(--bs-form-valid-border-color);
+}
+
+#modalCrearAlimento .form-control.is-invalid,
+#modalCrearAlimento .form-select.is-invalid,
+#modalEditarAlimento .form-control.is-invalid,
+#modalEditarAlimento .form-select.is-invalid,
+#modalRegistrarComida .form-control.is-invalid,
+#modalRegistrarComida .form-select.is-invalid {
+    border-color: var(--bs-form-invalid-border-color);
+}
+
+#modalCrearAlimento .invalid-feedback,
+#modalEditarAlimento .invalid-feedback,
+#modalRegistrarComida .invalid-feedback {
+    display: block;
+}
+
+
+/* Catálogo de alimentos en tarjetas visuales. */
+.alimentos-catalogo{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,285px),1fr));gap:1.15rem;align-items:stretch}
+.alimento-card{min-width:0;overflow:hidden;border:1px solid var(--bs-border-color,rgba(148,163,184,.22));border-radius:18px;background:var(--bs-body-bg,#fff);box-shadow:0 5px 18px rgba(15,23,42,.045);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+@media(hover:hover){.alimento-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(15,23,42,.10);border-color:color-mix(in srgb,var(--bs-primary) 35%,var(--bs-border-color))}}
+.alimento-card.is-inactive{opacity:.78}.alimento-card-media{position:relative;height:178px;overflow:hidden;background:var(--bs-tertiary-bg,#f1f5f9)}
+.alimento-card-media>img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}.alimento-card:hover .alimento-card-media>img{transform:scale(1.045)}
+.alimento-card-placeholder{display:flex;width:100%;height:100%;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;color:var(--text-soft,#64748b);background:radial-gradient(circle at 50% 0%,color-mix(in srgb,var(--bs-primary) 9%,transparent),transparent 70%)}
+.alimento-card-placeholder i{font-size:2rem;opacity:.6}.alimento-card-placeholder span{font-size:.78rem}.alimento-card-status{position:absolute;top:.8rem;right:.8rem;box-shadow:0 2px 8px rgba(15,23,42,.14)}
+.alimento-card-body{padding:1rem 1rem .85rem}.alimento-card-category{display:inline-block;margin-bottom:.25rem;color:var(--bs-primary);font-size:.7rem;font-weight:700;letter-spacing:.075em;line-height:1.4;text-transform:uppercase}
+.alimento-card-body h3{margin:0;font-size:1.05rem;font-weight:750;line-height:1.3;overflow-wrap:anywhere}.alimento-card-portion{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin-top:.7rem;color:var(--text-soft,#64748b);font-size:.76rem}
+.alimento-card-portion>i{color:var(--bs-primary)}.alimento-card-portion small{width:100%;padding-left:1.1rem;font-size:.72rem}
+.alimento-card-calories{display:flex;align-items:baseline;gap:.4rem;margin:.95rem 0 .8rem}.alimento-card-calories>strong{font-size:1.8rem;line-height:1;letter-spacing:-.04em;font-weight:800}
+.alimento-card-calories>span{font-size:.84rem;font-weight:650}.alimento-card-calories small{color:var(--text-soft,#64748b);font-size:.7rem;font-weight:500}
+.alimento-card-macros{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.35rem;padding:.7rem 0;border-top:1px solid var(--bs-border-color,rgba(148,163,184,.2));border-bottom:1px solid var(--bs-border-color,rgba(148,163,184,.2))}
+.alimento-card-macros>div{display:grid;grid-template-columns:8px minmax(0,1fr);align-items:center;column-gap:.35rem;row-gap:.15rem;min-width:0}.alimento-card-macros small{color:var(--text-soft,#64748b);font-size:.67rem;line-height:1.2;overflow-wrap:anywhere}
+.alimento-card-macros strong{grid-column:2;font-size:.8rem;font-weight:750}.macro-dot{width:7px;height:7px;border-radius:50%}.macro-protein{background:#0ea5e9}.macro-carbs{background:#f59e0b}.macro-fat{background:#a78bfa}
+.alimento-card-actions{display:flex;justify-content:flex-end;gap:.45rem;padding-top:.8rem}.alimento-card-actions .usuario-action-btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;min-width:88px;padding:.4rem .65rem;border-radius:9px;font-size:.76rem}
+.alimento-card-actions .usuario-action-btn>i{margin:0!important}.alimentos-empty{grid-column:1/-1;display:flex;min-height:270px;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 1rem;text-align:center;border:1px dashed var(--bs-border-color);border-radius:18px}
+.alimentos-empty-icon{display:grid;place-items:center;width:60px;height:60px;margin-bottom:1rem;border-radius:18px;background:color-mix(in srgb,var(--bs-primary) 10%,transparent);color:var(--bs-primary);font-size:1.5rem}
+.alimentos-empty h3{margin-bottom:.35rem;font-size:1.1rem;font-weight:750}.alimentos-empty p{max-width:390px;margin-bottom:1rem;color:var(--text-soft,#64748b);font-size:.9rem}
+.alimento-image-preview{display:flex;align-items:center;gap:.8rem;margin-top:.8rem;padding:.6rem;border:1px solid var(--bs-border-color);border-radius:12px;background:var(--bs-tertiary-bg)}
+.alimento-image-preview img{width:76px;height:64px;object-fit:cover;border-radius:8px}
+@media(max-width:575.98px){.alimentos-catalogo{grid-template-columns:1fr}.alimento-card-media{height:195px}}
+@media(prefers-reduced-motion:reduce){.alimento-card,.alimento-card-media>img{transition:none!important}}
+
+
+/* Paginación del catálogo: ocho alimentos por página. */
+.alimentos-paginacion{display:flex;grid-column:1/-1;align-items:center;justify-content:space-between;gap:1rem;margin-top:.25rem;padding:.85rem 0;}
+.alimentos-paginacion[hidden]{display:none!important}.alimentos-paginacion-info{color:var(--text-soft,#64748b);font-size:.84rem}
+.alimentos-paginacion-controles{display:flex;align-items:center;gap:.25rem}.alimentos-pagina-btn{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;padding:.35rem .65rem;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--text-main,var(--bs-body-color));font-size:.85rem;font-weight:600;transition:background-color .15s ease,color .15s ease,border-color .15s ease;}
+.alimentos-pagina-btn:hover:not(:disabled){border-color:transparent;background:var(--hover-bg,rgba(100,116,139,.12));color:var(--text-strong,var(--bs-body-color))}.alimentos-pagina-btn.active{border-color:transparent;background:var(--color-primary,var(--bs-primary));color:#fff;box-shadow:0 2px 6px var(--color-primary-soft,rgba(0,0,0,.12))}.alimentos-pagina-btn:focus-visible{outline:0;box-shadow:0 0 0 3px var(--color-primary-soft,rgba(100,116,139,.2))}.alimentos-pagina-btn:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:575.98px){.alimentos-paginacion{align-items:flex-start;flex-direction:column}.alimentos-paginacion-controles{flex-wrap:wrap}}
+
+
+/* Detalle de comida con imágenes y jerarquía nutricional. */
+.detalle-comida-body{padding:1.25rem!important}
+.detalle-comida-resumen{padding:1rem 1.1rem;margin-bottom:1rem;border:1px solid var(--bs-border-color);border-radius:14px;background:color-mix(in srgb,var(--color-primary,var(--bs-primary)) 6%,var(--bs-body-bg))}
+.detalle-comida-kicker{display:block;margin-bottom:.35rem;color:var(--color-primary,var(--bs-primary));font-size:.68rem;font-weight:800;letter-spacing:.11em}
+.detalle-comida-resumen h6{font-size:1.2rem}.detalle-comida-lista{display:grid;gap:.85rem}
+.detalle-alimento-card{display:grid;grid-template-columns:116px minmax(0,1fr);overflow:hidden;border:1px solid var(--bs-border-color);border-radius:15px;background:var(--bs-body-bg);transition:border-color .18s ease,transform .18s ease}
+.detalle-alimento-card:hover{border-color:color-mix(in srgb,var(--color-primary,var(--bs-primary)) 45%,var(--bs-border-color));transform:translateY(-1px)}
+.detalle-alimento-media{position:relative;min-height:140px;background:var(--bs-tertiary-bg)}.detalle-alimento-imagen{position:absolute;width:100%;height:100%;inset:0;object-fit:cover}
+.detalle-alimento-placeholder{position:absolute;inset:0;display:grid;place-items:center;color:var(--text-soft);font-size:1.7rem}.detalle-alimento-placeholder[hidden]{display:none!important}
+.detalle-alimento-info{min-width:0;padding:.9rem 1rem}.detalle-alimento-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.detalle-alimento-heading h6{margin:0;font-size:1rem;font-weight:750;overflow-wrap:anywhere}.detalle-alimento-cantidad{flex-shrink:0;padding:.25rem .5rem;border-radius:7px;background:var(--bs-tertiary-bg);color:var(--text-soft);font-size:.74rem;font-weight:650}
+.detalle-alimento-kcal{display:flex;align-items:baseline;gap:.35rem;margin:.6rem 0}.detalle-alimento-kcal strong{font-size:1.5rem;line-height:1.1;font-weight:800}.detalle-alimento-kcal span{color:var(--text-soft);font-size:.8rem}
+.detalle-alimento-macros{display:flex;flex-wrap:wrap;gap:.45rem .9rem;padding-top:.6rem;border-top:1px solid var(--bs-border-color)}
+.detalle-alimento-macros span{display:inline-flex;align-items:center;gap:.3rem;color:var(--text-soft);font-size:.72rem}.detalle-alimento-macros b{color:var(--bs-body-color);font-weight:700}
+.detalle-comida-vacio{padding:2rem;text-align:center;color:var(--text-soft);border:1px dashed var(--bs-border-color);border-radius:12px}
+@media(max-width:575.98px){.detalle-alimento-card{grid-template-columns:88px minmax(0,1fr)}.detalle-alimento-media{min-height:125px}.detalle-alimento-info{padding:.7rem}.detalle-alimento-heading{flex-direction:column;gap:.35rem}.detalle-alimento-macros{flex-direction:column;gap:.35rem}}
