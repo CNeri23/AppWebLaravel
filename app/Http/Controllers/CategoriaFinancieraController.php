@@ -66,6 +66,13 @@ class CategoriaFinancieraController extends Controller
         $this->autorizarAmbito($categoria);
         $datos = $this->validar($request, $categoria);
 
+        if ($categoria->movimientos()->exists() && $datos['tipo'] !== $categoria->tipo) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No puedes cambiar el tipo de una categoría que ya tiene movimientos asociados.',
+            ], 422);
+        }
+
         $categoria->update([
             'nombre' => trim($datos['nombre']),
             'tipo' => $datos['tipo'],
