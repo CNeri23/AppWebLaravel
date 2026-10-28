@@ -182,3 +182,21 @@
 .alimentos-paginacion-controles{display:flex;align-items:center;gap:.25rem}.alimentos-pagina-btn{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;padding:.35rem .65rem;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--text-main,var(--bs-body-color));font-size:.85rem;font-weight:600;transition:background-color .15s ease,color .15s ease,border-color .15s ease;}
 .alimentos-pagina-btn:hover:not(:disabled){border-color:transparent;background:var(--hover-bg,rgba(100,116,139,.12));color:var(--text-strong,var(--bs-body-color))}.alimentos-pagina-btn.active{border-color:transparent;background:var(--color-primary,var(--bs-primary));color:#fff;box-shadow:0 2px 6px var(--color-primary-soft,rgba(0,0,0,.12))}.alimentos-pagina-btn:focus-visible{outline:0;box-shadow:0 0 0 3px var(--color-primary-soft,rgba(100,116,139,.2))}.alimentos-pagina-btn:disabled{opacity:.4;cursor:not-allowed}
 @media(max-width:575.98px){.alimentos-paginacion{align-items:flex-start;flex-direction:column}.alimentos-paginacion-controles{flex-wrap:wrap}}
+
+
+/* Detalle de comida con imágenes y jerarquía nutricional. */
+.detalle-comida-body{padding:1.25rem!important}
+.detalle-comida-resumen{padding:1rem 1.1rem;margin-bottom:1rem;border:1px solid var(--bs-border-color);border-radius:14px;background:color-mix(in srgb,var(--color-primary,var(--bs-primary)) 6%,var(--bs-body-bg))}
+.detalle-comida-kicker{display:block;margin-bottom:.35rem;color:var(--color-primary,var(--bs-primary));font-size:.68rem;font-weight:800;letter-spacing:.11em}
+.detalle-comida-resumen h6{font-size:1.2rem}.detalle-comida-lista{display:grid;gap:.85rem}
+.detalle-alimento-card{display:grid;grid-template-columns:116px minmax(0,1fr);overflow:hidden;border:1px solid var(--bs-border-color);border-radius:15px;background:var(--bs-body-bg);transition:border-color .18s ease,transform .18s ease}
+.detalle-alimento-card:hover{border-color:color-mix(in srgb,var(--color-primary,var(--bs-primary)) 45%,var(--bs-border-color));transform:translateY(-1px)}
+.detalle-alimento-media{position:relative;min-height:140px;background:var(--bs-tertiary-bg)}.detalle-alimento-imagen{position:absolute;width:100%;height:100%;inset:0;object-fit:cover}
+.detalle-alimento-placeholder{position:absolute;inset:0;display:grid;place-items:center;color:var(--text-soft);font-size:1.7rem}.detalle-alimento-placeholder[hidden]{display:none!important}
+.detalle-alimento-info{min-width:0;padding:.9rem 1rem}.detalle-alimento-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.detalle-alimento-heading h6{margin:0;font-size:1rem;font-weight:750;overflow-wrap:anywhere}.detalle-alimento-cantidad{flex-shrink:0;padding:.25rem .5rem;border-radius:7px;background:var(--bs-tertiary-bg);color:var(--text-soft);font-size:.74rem;font-weight:650}
+.detalle-alimento-kcal{display:flex;align-items:baseline;gap:.35rem;margin:.6rem 0}.detalle-alimento-kcal strong{font-size:1.5rem;line-height:1.1;font-weight:800}.detalle-alimento-kcal span{color:var(--text-soft);font-size:.8rem}
+.detalle-alimento-macros{display:flex;flex-wrap:wrap;gap:.45rem .9rem;padding-top:.6rem;border-top:1px solid var(--bs-border-color)}
+.detalle-alimento-macros span{display:inline-flex;align-items:center;gap:.3rem;color:var(--text-soft);font-size:.72rem}.detalle-alimento-macros b{color:var(--bs-body-color);font-weight:700}
+.detalle-comida-vacio{padding:2rem;text-align:center;color:var(--text-soft);border:1px dashed var(--bs-border-color);border-radius:12px}
+@media(max-width:575.98px){.detalle-alimento-card{grid-template-columns:88px minmax(0,1fr)}.detalle-alimento-media{min-height:125px}.detalle-alimento-info{padding:.7rem}.detalle-alimento-heading{flex-direction:column;gap:.35rem}.detalle-alimento-macros{flex-direction:column;gap:.35rem}}

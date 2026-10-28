@@ -9,6 +9,7 @@ use App\Services\PermissionService;
 use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -88,8 +89,13 @@ class RegistroComidaController extends Controller
 
         AuditLogService::log('alimentacion', 'REGISTRAR_COMIDA', 'Se registró '.$registro->tipo_comida.' del '.$registro->fecha->format('d/m/Y').'.', $registro);
         if ($request->expectsJson()) {
-            $registro->load('detalles');
-            return response()->json(['success' => true, 'registro' => $registro, 'fecha' => $datos['fecha'], 'mensaje' => 'Comida registrada correctamente.']);
+            $registro->load(['detalles.alimento']);
+            $registro->detalles->each(function ($detalle) {
+                $detalle->setAttribute('imagen_url', $detalle->alimento?->imagen ? Storage::url($detalle->alimento->imagen) : null);
+            });
+            $registrosFecha = RegistroComida::with('detalles')->where('usuario_id', auth()->id())->whereDate('fecha', $datos['fecha'])->get();
+            $totales = $this->totales($registrosFecha);
+            return response()->json(['success' => true, 'registro' => $registro, 'fecha' => $datos['fecha'], 'totales' => $totales, 'mensaje' => 'Comida registrada correctamente.']);
         }
         return redirect()->route('alimentacion.registros.index', ['fecha' => $datos['fecha']])->with('success', 'Comida registrada correctamente.');
     }

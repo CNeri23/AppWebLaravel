@@ -42,10 +42,10 @@
 <div class="row g-3 mb-4">
     @foreach (['calorias' => ['Calorías','kcal','fa-fire-flame-curved'], 'proteinas' => ['Proteínas','g','fa-drumstick-bite'], 'carbohidratos' => ['Carbohidratos','g','fa-bread-slice'], 'grasas' => ['Grasas','g','fa-droplet']] as $key => $info)
     <div class="col-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card border-0 shadow-sm h-100 registro-total-card" data-total-key="{{ $key }}">
             <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between text-secondary"><span>{{ $info[0] }}</span><i class="fa-solid {{ $info[2] }} text-primary"></i></div>
-                <div class="fs-4 fw-bold mt-2">{{ number_format((float) $totales[$key], 1) }} <small class="fs-6 text-secondary">{{ $info[1] }}</small></div>
+                <div class="fs-4 fw-bold mt-2"><span class="registro-total-valor">{{ number_format((float) $totales[$key], 1) }}</span> <small class="fs-6 text-secondary">{{ $info[1] }}</small></div>
             </div>
         </div>
     </div>
@@ -65,7 +65,7 @@
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table id="tablaRegistrosComida" class="table table-hover align-middle mb-0 w-100">
+            <table id="tablaRegistrosComida" class="table table-hover align-middle mb-0 w-100" data-delete-url="{{ route('alimentacion.registros.destroy', ['registro' => '__ID__']) }}" data-puede-eliminar="{{ $puedeEliminar ? '1' : '0' }}">
                 <thead><tr><th class="ps-4">Comida</th><th>Notas</th><th>Alimentos</th><th>Calorías</th><th>Proteínas</th><th>Carbohidratos</th><th>Grasas</th><th class="text-center pe-4">Acciones</th></tr></thead>
                 <tbody>
                 @foreach ($registros as $registro)<tr data-id="{{ $registro->id }}">
@@ -81,7 +81,7 @@
                                 <button type="button" class="btn btn-sm btn-outline-info usuario-action-btn" data-tooltip="Ver alimentos"
                                     data-bs-toggle="modal" data-bs-target="#modalDetalleComida"
                                     data-tipo="{{ ucfirst($registro->tipo_comida) }}" data-notas="{{ $registro->notas }}"
-                                    data-detalles="{{ json_encode($registro->detalles->map(function ($d) { return ['nombre' => $d->nombre_alimento, 'cantidad' => $d->cantidad, 'unidad' => $d->unidad, 'calorias' => $d->calorias, 'proteinas' => $d->proteinas, 'carbohidratos' => $d->carbohidratos, 'grasas' => $d->grasas]; })->values()) }}">
+                                    data-detalles="{{ json_encode($registro->detalles->map(function ($d) { return ['nombre' => $d->nombre_alimento, 'imagen' => $d->alimento?->imagen ? \Illuminate\Support\Facades\Storage::url($d->alimento->imagen) : null, 'cantidad' => $d->cantidad, 'unidad' => $d->unidad, 'calorias' => $d->calorias, 'proteinas' => $d->proteinas, 'carbohidratos' => $d->carbohidratos, 'grasas' => $d->grasas]; })->values()) }}">
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
                                 @if ($puedeEliminar)
@@ -134,7 +134,7 @@
 <div class="modal fade" id="modalDetalleComida" tabindex="-1" aria-labelledby="modalDetalleComidaLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"><div class="modal-content">
         <div class="modal-header"><h5 class="modal-title fw-semibold" id="modalDetalleComidaLabel"><i class="fa-solid fa-list-check me-2"></i>Detalle de comida</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
-        <div class="modal-body"><h6 id="detalleTipoComida" class="fw-semibold"></h6><p id="detalleNotasComida" class="text-secondary"></p><div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead><tr><th>Alimento</th><th>Cantidad</th><th>Calorías</th><th>Proteínas</th><th>Carbohidratos</th><th>Grasas</th></tr></thead><tbody id="detalleTablaComida"></tbody></table></div></div>
+        <div class="modal-body detalle-comida-body"><div class="detalle-comida-resumen"><span class="detalle-comida-kicker">RESUMEN NUTRICIONAL</span><h6 id="detalleTipoComida" class="fw-bold mb-1"></h6><p id="detalleNotasComida" class="text-secondary mb-0"></p></div><div id="detalleListaComida" class="detalle-comida-lista"></div></div>
         <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button></div>
     </div></div>
 </div>
@@ -219,22 +219,49 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('eliminarTipoRegistro').textContent = button.dataset.tipo;
     });
 
+    function escapeHtmlComida(value) {
+        return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    }
+    function pintarDetalleComida(details) {
+        const lista = document.getElementById('detalleListaComida');
+        if (!lista) return;
+        lista.innerHTML = details.map(item => {
+            const imagen = item.imagen ? '<img class="detalle-alimento-imagen" src="' + escapeHtmlComida(item.imagen) + '" alt="' + escapeHtmlComida(item.nombre) + '" loading="lazy" onerror="this.hidden=true;this.nextElementSibling.hidden=false">' : '';
+            return '<article class="detalle-alimento-card"><div class="detalle-alimento-media">' + imagen + '<div class="detalle-alimento-placeholder" ' + (item.imagen ? 'hidden' : '') + '><i class="fa-solid fa-carrot"></i></div></div><div class="detalle-alimento-info"><div class="detalle-alimento-heading"><h6>' + escapeHtmlComida(item.nombre) + '</h6><span class="detalle-alimento-cantidad">' + escapeHtmlComida(item.cantidad) + ' ' + escapeHtmlComida(item.unidad) + '</span></div><div class="detalle-alimento-kcal"><strong>' + Number(item.calorias || 0).toFixed(1) + '</strong><span>kcal</span></div><div class="detalle-alimento-macros"><span><i class="macro-dot macro-protein"></i>Proteínas <b>' + Number(item.proteinas || 0).toFixed(1) + ' g</b></span><span><i class="macro-dot macro-carbs"></i>Carbohidratos <b>' + Number(item.carbohidratos || 0).toFixed(1) + ' g</b></span><span><i class="macro-dot macro-fat"></i>Grasas <b>' + Number(item.grasas || 0).toFixed(1) + ' g</b></span></div></div></article>';
+        }).join('') || '<div class="detalle-comida-vacio">No hay alimentos en este registro.</div>';
+    }
     document.getElementById('modalDetalleComida')?.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget;
         document.getElementById('detalleTipoComida').textContent = button.dataset.tipo;
         document.getElementById('detalleNotasComida').textContent = button.dataset.notas || 'Sin notas';
-        const tbody = document.getElementById('detalleTablaComida');
-        tbody.replaceChildren();
         let details = [];
         try { details = JSON.parse(button.dataset.detalles || '[]'); } catch (e) {}
-        details.forEach(item => {
-            const tr = document.createElement('tr');
-            [item.nombre, item.cantidad + ' ' + item.unidad, Number(item.calorias).toFixed(1) + ' kcal', Number(item.proteinas).toFixed(1) + ' g', Number(item.carbohidratos).toFixed(1) + ' g', Number(item.grasas).toFixed(1) + ' g'].forEach(value => {
-                const td = document.createElement('td'); td.textContent = value; tr.appendChild(td);
-            });
-            tbody.appendChild(tr);
-        });
+        pintarDetalleComida(details);
     });
+    document.addEventListener('alimentacion:registro-actualizado', function (event) {
+        const resultado = event.detail || {}, registro = resultado.registro, tabla = document.getElementById('tablaRegistrosComida');
+        if (!registro || !tabla || String(resultado.fecha) !== document.getElementById('filtroFecha')?.value) return;
+        const detalles = (registro.detalles || []).map(item => ({nombre:item.nombre_alimento || item.nombre,imagen:item.imagen_url || null,cantidad:item.cantidad,unidad:item.unidad,calorias:Number(item.calorias || 0),proteinas:Number(item.proteinas || 0),carbohidratos:Number(item.carbohidratos || 0),grasas:Number(item.grasas || 0)}));
+        const escape = escapeHtmlComida, suma = key => detalles.reduce((total,item)=>total+Number(item[key]||0),0);
+        const tipo = String(registro.tipo_comida || '').charAt(0).toUpperCase()+String(registro.tipo_comida || '').slice(1);
+        const dt = registro.created_at ? new Date(registro.created_at) : new Date();
+        const hora = Number.isNaN(dt.getTime()) ? '' : dt.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:false});
+        const detalleBtn = '<button type="button" class="btn btn-sm btn-outline-info usuario-action-btn" data-tooltip="Ver alimentos" data-bs-toggle="modal" data-bs-target="#modalDetalleComida" data-tipo="'+escape(tipo)+'" data-notas="'+escape(registro.notas||'')+'" data-detalles="'+escape(JSON.stringify(detalles))+'"><i class="fa-solid fa-eye"></i></button>';
+        const eliminarBtn = tabla.dataset.puedeEliminar === '1' ? '<button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn" data-tooltip="Eliminar registro" data-bs-toggle="modal" data-bs-target="#modalEliminarRegistro" data-url="'+escape(tabla.dataset.deleteUrl.replace('__ID__',registro.id))+'" data-tipo="'+escape(tipo)+'"><i class="fa-solid fa-trash"></i></button>' : '';
+        const fila = ['<span class="fw-semibold">'+escape(tipo)+'</span><small class="d-block text-secondary">'+escape(hora)+'</small>',escape(registro.notas||'—'),String(detalles.length),suma('calorias').toFixed(1)+' kcal',suma('proteinas').toFixed(1)+' g',suma('carbohidratos').toFixed(1)+' g',suma('grasas').toFixed(1)+' g','<div class="usuario-actions">'+detalleBtn+eliminarBtn+'</div>'];
+        if (window.DataTable && DataTable.isDataTable(tabla)) {
+            const api = new DataTable.Api(tabla), nuevaFila = api.row.add(fila);
+            nuevaFila.draw(false); if (nuevaFila.node()) nuevaFila.node().dataset.id = registro.id;
+        } else {
+            const tr = document.createElement('tr'); tr.dataset.id = registro.id;
+            fila.forEach((html,index)=>{const td=document.createElement('td');if(index===0)td.className='ps-4';if(index===7)td.className='text-center px-4';td.innerHTML=html;tr.appendChild(td);});
+            tabla.querySelector('tbody')?.appendChild(tr);
+        }
+        if (resultado.totales) Object.entries(resultado.totales).forEach(([key,value])=>{const output=document.querySelector('[data-total-key="'+key+'"] .registro-total-valor');if(output)output.textContent=Number(value||0).toFixed(1);});
+        const form=document.getElementById('formRegistroComida');
+        if(form){form.reset();form.querySelectorAll('.fila-alimento').forEach((row,index)=>{if(index>0)row.remove();});const food=form.querySelector('.fila-alimento .alimento-select'),unit=form.querySelector('.fila-alimento .unidad-select');if(food&&unit&&food.selectedOptions[0]){const selected=food.selectedOptions[0];Array.from(unit.options).forEach(option=>{option.disabled=option.value==='porcion'?selected.dataset.porcion!=='1':option.value!==selected.dataset.unidad;});unit.value=selected.dataset.unidad;}}
+    });
+
     @if (session('success'))
         if (typeof window.showToast === 'function') window.showToast('success', @json(session('success')));
     @endif
