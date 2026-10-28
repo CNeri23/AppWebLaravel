@@ -133,7 +133,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return false;
         }
         camposFormulario(formulario).forEach(campo => {
-            if (typeof campo.value === 'string') campo.value = campo.value.trim();
+            // Los input[type="file"] no permiten asignar una ruta; solo pueden limpiarse con value = ''.
+            if (campo.type !== 'file' && typeof campo.value === 'string') {
+                campo.value = campo.value.trim();
+            }
         });
         return true;
     }
