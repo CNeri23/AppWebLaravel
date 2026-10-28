@@ -218,8 +218,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const activo = Number(alimento.activo);
         const porcion = alimento.nombre_porcion ? '<small>' + escapeHtml(alimento.nombre_porcion) + ' · ' + escapeHtml(alimento.cantidad_porcion) + ' ' + escapeHtml(alimento.unidad_base) + '</small>' : '';
         const media = imagen ? '<img src="' + escapeHtml(imagen) + '" alt="' + escapeHtml(alimento.nombre) + '" loading="lazy">' : '<div class="alimento-card-placeholder" aria-label="Sin imagen"><i class="fa-solid fa-utensils"></i><span>Sin imagen</span></div>';
-        const editar = catalogo.dataset.puedeEditar === '1' ? '<button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn" data-bs-toggle="modal" data-bs-target="#modalEditarAlimento" data-id="' + id + '" data-nombre="' + escapeHtml(alimento.nombre) + '" data-categoria="' + escapeHtml(alimento.categoria || '') + '" data-unidad="' + escapeHtml(alimento.unidad_base || 'g') + '" data-nombre-porcion="' + escapeHtml(alimento.nombre_porcion || '') + '" data-cantidad-porcion="' + escapeHtml(alimento.cantidad_porcion ?? '') + '" data-calorias="' + escapeHtml(alimento.calorias) + '" data-proteinas="' + escapeHtml(alimento.proteinas) + '" data-carbohidratos="' + escapeHtml(alimento.carbohidratos) + '" data-grasas="' + escapeHtml(alimento.grasas) + '" data-activo="' + (activo ? '1' : '0') + '" data-imagen="' + escapeHtml(imagen) + '" data-url="' + escapeHtml(url) + '" data-tooltip="Editar alimento">' + (catalogo.dataset.iconEditar || '<i class="fa-solid fa-pen"></i>') + '<span>Editar</span></button>' : '';
-        const eliminar = catalogo.dataset.puedeEliminar === '1' ? '<button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn" data-bs-toggle="modal" data-bs-target="#modalEliminarAlimento" data-nombre="' + escapeHtml(alimento.nombre) + '" data-url="' + escapeHtml(url) + '" data-tooltip="Eliminar alimento">' + (catalogo.dataset.iconEliminar || '<i class="fa-solid fa-trash"></i>') + '<span>Eliminar</span></button>' : '';
+        const iconoEditar = decodificarIcono(catalogo.dataset.iconEditar, '<i class="fa-solid fa-pen"></i>');
+        const iconoEliminar = decodificarIcono(catalogo.dataset.iconEliminar, '<i class="fa-solid fa-trash"></i>');
+        const editar = catalogo.dataset.puedeEditar === '1' ? '<button type="button" class="btn btn-sm btn-outline-primary usuario-action-btn" data-bs-toggle="modal" data-bs-target="#modalEditarAlimento" data-id="' + id + '" data-nombre="' + escapeHtml(alimento.nombre) + '" data-categoria="' + escapeHtml(alimento.categoria || '') + '" data-unidad="' + escapeHtml(alimento.unidad_base || 'g') + '" data-nombre-porcion="' + escapeHtml(alimento.nombre_porcion || '') + '" data-cantidad-porcion="' + escapeHtml(alimento.cantidad_porcion ?? '') + '" data-calorias="' + escapeHtml(alimento.calorias) + '" data-proteinas="' + escapeHtml(alimento.proteinas) + '" data-carbohidratos="' + escapeHtml(alimento.carbohidratos) + '" data-grasas="' + escapeHtml(alimento.grasas) + '" data-activo="' + (activo ? '1' : '0') + '" data-imagen="' + escapeHtml(imagen) + '" data-url="' + escapeHtml(url) + '" data-tooltip="Editar alimento">' + iconoEditar + '<span>Editar</span></button>' : '';
+        const eliminar = catalogo.dataset.puedeEliminar === '1' ? '<button type="button" class="btn btn-sm btn-outline-danger usuario-action-btn" data-bs-toggle="modal" data-bs-target="#modalEliminarAlimento" data-nombre="' + escapeHtml(alimento.nombre) + '" data-url="' + escapeHtml(url) + '" data-tooltip="Eliminar alimento">' + iconoEliminar + '<span>Eliminar</span></button>' : '';
         return '<article class="alimento-card ' + (activo ? '' : 'is-inactive') + '" data-id="' + id + '"><div class="alimento-card-media">' + media + '<span class="badge rounded-pill alimento-card-status ' + (activo ? 'text-bg-success' : 'text-bg-secondary') + '">' + (activo ? 'Activo' : 'Inactivo') + '</span></div><div class="alimento-card-body"><span class="alimento-card-category">' + escapeHtml(alimento.categoria || 'Alimento') + '</span><h3>' + escapeHtml(alimento.nombre) + '</h3><div class="alimento-card-portion"><i class="fa-solid fa-scale-balanced"></i><span>' + escapeHtml(String(alimento.unidad_base || 'g').toUpperCase()) + ' por cada 100 ' + escapeHtml(alimento.unidad_base || 'g') + '</span>' + porcion + '</div><div class="alimento-card-calories"><strong>' + Number(alimento.calorias || 0).toFixed(1) + '</strong><span>kcal <small>/ 100 ' + escapeHtml(alimento.unidad_base || 'g') + '</small></span></div><div class="alimento-card-macros"><div><span class="macro-dot macro-protein"></span><small>Proteínas</small><strong>' + Number(alimento.proteinas || 0).toFixed(1) + ' g</strong></div><div><span class="macro-dot macro-carbs"></span><small>Carbohidratos</small><strong>' + Number(alimento.carbohidratos || 0).toFixed(1) + ' g</strong></div><div><span class="macro-dot macro-fat"></span><small>Grasas</small><strong>' + Number(alimento.grasas || 0).toFixed(1) + ' g</strong></div></div>' + ((editar || eliminar) ? '<div class="alimento-card-actions">' + editar + eliminar + '</div>' : '') + '</div></article>';
     }
 
@@ -231,6 +233,54 @@ document.addEventListener('DOMContentLoaded', function () {
         const html = crearTarjetaAlimento(alimento, catalogo);
         if (actual) actual.outerHTML = html;
         else { catalogo.querySelector('.alimentos-empty')?.remove(); catalogo.insertAdjacentHTML('beforeend', html); }
+        actualizarPaginacionAlimentos();
+    }
+
+    function decodificarIcono(valor, respaldo) {
+        if (!valor) return respaldo;
+        const temporal = document.createElement('textarea');
+        temporal.innerHTML = valor;
+        const icono = temporal.value;
+        return icono.includes('<') ? icono : respaldo;
+    }
+
+    const ALIMENTOS_POR_PAGINA = 8;
+    let paginaAlimentosActual = 1;
+
+    function actualizarPaginacionAlimentos(resetear = false) {
+        const catalogo = document.getElementById('catalogoAlimentos');
+        if (!catalogo) return;
+        const tarjetas = Array.from(catalogo.querySelectorAll('.alimento-card'));
+        const paginas = Math.max(1, Math.ceil(tarjetas.length / ALIMENTOS_POR_PAGINA));
+        if (resetear) paginaAlimentosActual = 1;
+        paginaAlimentosActual = Math.min(paginaAlimentosActual, paginas);
+        tarjetas.forEach((tarjeta, indice) => {
+            tarjeta.style.display = indice >= (paginaAlimentosActual - 1) * ALIMENTOS_POR_PAGINA && indice < paginaAlimentosActual * ALIMENTOS_POR_PAGINA ? '' : 'none';
+        });
+
+        let navegacion = document.getElementById('paginacionAlimentos');
+        if (!navegacion) {
+            navegacion = document.createElement('nav');
+            navegacion.id = 'paginacionAlimentos';
+            navegacion.className = 'alimentos-paginacion';
+            navegacion.setAttribute('aria-label', 'Paginación del catálogo de alimentos');
+            catalogo.insertAdjacentElement('afterend', navegacion);
+        }
+        if (tarjetas.length <= ALIMENTOS_POR_PAGINA) {
+            navegacion.innerHTML = '';
+            navegacion.hidden = true;
+            return;
+        }
+        navegacion.hidden = false;
+        const inicio = (paginaAlimentosActual - 1) * ALIMENTOS_POR_PAGINA + 1;
+        const fin = Math.min(paginaAlimentosActual * ALIMENTOS_POR_PAGINA, tarjetas.length);
+        let botones = '<span class="alimentos-paginacion-info">Mostrando ' + inicio + '–' + fin + ' de ' + tarjetas.length + ' alimentos</span><div class="alimentos-paginacion-controles">';
+        botones += '<button type="button" class="alimentos-pagina-btn" data-pagina="' + (paginaAlimentosActual - 1) + '" ' + (paginaAlimentosActual === 1 ? 'disabled' : '') + ' aria-label="Página anterior"><i class="fa-solid fa-chevron-left"></i></button>';
+        for (let pagina = 1; pagina <= paginas; pagina++) {
+            botones += '<button type="button" class="alimentos-pagina-btn ' + (pagina === paginaAlimentosActual ? 'active' : '') + '" data-pagina="' + pagina + '" aria-label="Página ' + pagina + '" ' + (pagina === paginaAlimentosActual ? 'aria-current="page"' : '') + '>' + pagina + '</button>';
+        }
+        botones += '<button type="button" class="alimentos-pagina-btn" data-pagina="' + (paginaAlimentosActual + 1) + '" ' + (paginaAlimentosActual === paginas ? 'disabled' : '') + ' aria-label="Página siguiente"><i class="fa-solid fa-chevron-right"></i></button></div>';
+        navegacion.innerHTML = botones;
     }
 
     function escapeHtml(value) {
@@ -305,6 +355,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (formulario.id === 'formEliminarAlimento') {
                             if (resultado.alimento) actualizarFilaAlimento(resultado);
                             else document.querySelector('.alimento-card[data-id="' + CSS.escape(String(id)) + '"]')?.remove();
+                            actualizarPaginacionAlimentos();
                             const catalogo = document.getElementById('catalogoAlimentos');
                             if (catalogo && !catalogo.querySelector('.alimento-card') && !catalogo.querySelector('.alimentos-empty')) catalogo.insertAdjacentHTML('beforeend', '<div class="alimentos-empty"><div class="alimentos-empty-icon"><i class="fa-solid fa-carrot"></i></div><h3>Catálogo actualizado</h3><p>Agrega un alimento para volver a llenar tu catálogo nutricional.</p></div>');
                         } else {
@@ -331,5 +382,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     inicializarEnviosAjax();
+    actualizarPaginacionAlimentos();
+
+    document.addEventListener('click', function (evento) {
+        const boton = evento.target.closest('.alimentos-pagina-btn');
+        if (!boton || boton.disabled) return;
+        paginaAlimentosActual = Number(boton.dataset.pagina);
+        actualizarPaginacionAlimentos();
+    });
 
 });

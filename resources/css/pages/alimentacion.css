@@ -174,3 +174,11 @@
 .alimento-image-preview img{width:76px;height:64px;object-fit:cover;border-radius:8px}
 @media(max-width:575.98px){.alimentos-catalogo{grid-template-columns:1fr}.alimento-card-media{height:195px}}
 @media(prefers-reduced-motion:reduce){.alimento-card,.alimento-card-media>img{transition:none!important}}
+
+
+/* Paginación del catálogo: ocho alimentos por página. */
+.alimentos-paginacion{display:flex;grid-column:1/-1;align-items:center;justify-content:space-between;gap:1rem;margin-top:.25rem;padding:.85rem 0;}
+.alimentos-paginacion[hidden]{display:none!important}.alimentos-paginacion-info{color:var(--text-soft,#64748b);font-size:.84rem}
+.alimentos-paginacion-controles{display:flex;align-items:center;gap:.35rem}.alimentos-pagina-btn{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;padding:.35rem .65rem;border:1px solid var(--bs-border-color);border-radius:9px;background:var(--bs-body-bg);color:var(--bs-body-color);font-size:.85rem;font-weight:600;transition:background-color .15s ease,color .15s ease,border-color .15s ease}
+.alimentos-pagina-btn:hover:not(:disabled),.alimentos-pagina-btn.active{border-color:var(--bs-primary);background:var(--bs-primary);color:#fff}.alimentos-pagina-btn:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:575.98px){.alimentos-paginacion{align-items:flex-start;flex-direction:column}.alimentos-paginacion-controles{flex-wrap:wrap}}
