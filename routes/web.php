@@ -22,6 +22,7 @@ use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\AlimentoController;
 use App\Http\Controllers\RegistroComidaController;
 use App\Http\Controllers\PanelNutricionalController;
+use App\Http\Controllers\CategoriaFinancieraController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
